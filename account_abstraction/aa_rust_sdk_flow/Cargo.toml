@@ -1,0 +1,20 @@
+[package]
+name = "aa_rust_sdk_flow"
+edition = "2024"
+version.workspace = true
+
+[dependencies]
+bip32 = "0.5"
+reqwest.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+serde_with.workspace = true
+tokio.workspace = true
+iota-keys.workspace = true
+move-core-types.workspace = true
+bcs.workspace = true
+fastcrypto.workspace = true
+iota-move-build.workspace = true
+shared-crypto.workspace = true
+iota-sdk.workspace = true
+anyhow.workspace = true
