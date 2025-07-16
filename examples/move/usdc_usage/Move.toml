@@ -6,6 +6,5 @@ edition = "2024.beta"
 Iota = { override = true, local = "../../../crates/iota-framework/packages/iota-framework" }
 usdc = { git = "https://github.com/circlefin/stablecoin-iota.git", subdir = "packages/usdc", rev = "master" }
 
-
 [addresses]
 usdc_usage = "0x0"

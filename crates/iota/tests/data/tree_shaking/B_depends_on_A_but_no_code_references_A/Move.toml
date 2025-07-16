@@ -7,4 +7,3 @@ A = { local = "../A" }
 
 [addresses]
 b = "0x0"
-

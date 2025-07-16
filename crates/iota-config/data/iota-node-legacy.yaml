@@ -49,8 +49,8 @@ p2p-config:
   listen-address: 0.0.0.0:8084
   external-address: /dns/hello.iota.io/udp/8084
   seed-peers:
-  - peer-id: 1cab034c3d3e43f8a33d39b3e358815537439ad8dc89c6660cac2e4ee994f017
-    address: /dns/test.iota.io/udp/8084
+    - peer-id: 1cab034c3d3e43f8a33d39b3e358815537439ad8dc89c6660cac2e4ee994f017
+      address: /dns/test.iota.io/udp/8084
   state-sync:
     checkpoint-content-timeout-ms: 10000
   anemo-config:
@@ -101,18 +101,18 @@ transaction-kv-store-read-config:
 jwk-fetch-interval-seconds: 3600
 zklogin-oauth-providers:
   Mainnet:
-  - Apple
-  - Playtron
-  - Twitch
+    - Apple
+    - Playtron
+    - Twitch
   Testnet:
-  - Apple
-  - Playtron
-  - Twitch
+    - Apple
+    - Playtron
+    - Twitch
   Unknown:
-  - Apple
-  - Playtron
-  - Twitch
-  - TestIssuer
+    - Apple
+    - Playtron
+    - Twitch
+    - TestIssuer
 authority-overload-config:
   max-txn-age-in-queue:
     secs: 0

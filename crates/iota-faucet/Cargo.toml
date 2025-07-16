@@ -1,8 +1,8 @@
 [package]
 name = "iota-faucet"
 version.workspace = true
-edition = "2021"
 authors = ["IOTA Foundation <info@iota.org>"]
+edition = "2021"
 license = "Apache-2.0"
 publish = false
 
@@ -13,45 +13,44 @@ axum.workspace = true
 bin-version.workspace = true
 clap.workspace = true
 dashmap.workspace = true
+eyre.workspace = true
+futures.workspace = true
+http.workspace = true
+once_cell.workspace = true
+parking_lot.workspace = true
+prometheus.workspace = true
+reqwest.workspace = true
+scopeguard.workspace = true
+serde.workspace = true
+tap.workspace = true
+tempfile.workspace = true
 thiserror.workspace = true
 tokio = { workspace = true, features = ["full"] }
-tracing.workspace = true
-serde.workspace = true
+tonic.workspace = true
 tower.workspace = true
 tower-http.workspace = true
-http.workspace = true
-futures.workspace = true
-uuid.workspace = true
-prometheus.workspace = true
-scopeguard.workspace = true
-tap.workspace = true
-ttl_cache.workspace = true
-eyre.workspace = true
-tempfile.workspace = true
-parking_lot.workspace = true
-tonic.workspace = true
-reqwest.workspace = true
-once_cell.workspace = true
 tower_governor = "0.4.3"
+tracing.workspace = true
+ttl_cache.workspace = true
+uuid.workspace = true
 
-iota-json-rpc-types.workspace = true
-iota-types.workspace = true
+async-recursion.workspace = true
 iota-config.workspace = true
+iota-json-rpc-types.workspace = true
 iota-keys.workspace = true
-iota-sdk.workspace = true
 iota-metrics.workspace = true
+iota-network-stack.workspace = true
+iota-sdk.workspace = true
+iota-types.workspace = true
+shared-crypto.workspace = true
 telemetry-subscribers.workspace = true
 typed-store.workspace = true
-shared-crypto.workspace = true
-async-recursion.workspace = true
-iota-network-stack.workspace = true
 
 [dev-dependencies]
+serde_json.workspace = true
 test-cluster.workspace = true
 wiremock.workspace = true
-serde_json.workspace = true
 
 [[bin]]
 name = "iota-faucet"
 path = "src/main.rs"
-

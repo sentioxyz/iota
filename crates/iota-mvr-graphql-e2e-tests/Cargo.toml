@@ -2,10 +2,10 @@
 name = "iota-mvr-graphql-e2e-tests"
 version = "0.1.0"
 authors = ["IOTA Foundation <info@iota.org>"]
-description = "End to end tests for IOTA GraphQL"
+edition = "2021"
 license = "Apache-2.0"
 publish = false
-edition = "2021"
+description = "End to end tests for IOTA GraphQL"
 
 [lints]
 workspace = true
@@ -13,11 +13,11 @@ workspace = true
 [dev-dependencies]
 anyhow.workspace = true
 async-trait.workspace = true
-telemetry-subscribers.workspace = true
 datatest-stable.workspace = true
-serde_json.workspace = true
 iota-mvr-graphql-rpc.workspace = true
 iota-transactional-test-runner.workspace = true
+serde_json.workspace = true
+telemetry-subscribers.workspace = true
 tokio.workspace = true
 
 [[test]]
@@ -28,4 +28,3 @@ harness = false
 
 [target.'cfg(msim)'.dependencies]
 msim.workspace = true
-

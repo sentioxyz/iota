@@ -1,5 +1,4 @@
-Tests for implicit dependency resolution
-========================================
+# Tests for implicit dependency resolution
 
 Notation: we use capital letters for names of deps, and lower case letters for
 their implementations. That is:
@@ -20,11 +19,9 @@ i1:
 i2: no deps
 ```
 
-Tests
------
+## Tests
 
-
-### Simple #########################################################################################
+### Simple
 
 implicit deps should be added
 
@@ -40,7 +37,7 @@ a ─→ i1 ──┐
 └───────→ i2
 ```
 
-### Transitive #####################################################################################
+### Transitive
 
 ```
 a:
@@ -51,7 +48,6 @@ b: no deps
 
 Expected: `a` and `b` should both have implicit deps added
 
-
 ```
 a ───→ b
 │└────┼┐│
@@ -60,8 +56,7 @@ a ───→ b
 i1 ──→ i2
 ```
 
-
-### Override #######################################################################################
+### Override
 
 ```
 a:
@@ -77,7 +72,7 @@ turn off implicits
 a ─→ i2a
 ```
 
-### Override in root 1 #############################################################################
+### Override in root 1
 
 ```
 a:
@@ -89,9 +84,10 @@ i1a: no deps
 ```
 
 Expected:
- - no implcits for `a` (because of explicit),
- - nor for `i1a` or `i2` (because they are system packages)
- - implicits added for `b`, but `i1` is overridden to `i1a` (because of override in `a`)
+
+- no implcits for `a` (because of explicit),
+- nor for `i1a` or `i2` (because they are system packages)
+- implicits added for `b`, but `i1` is overridden to `i1a` (because of override in `a`)
 
 ```
 a ─→ b ─→ i2
@@ -99,7 +95,7 @@ a ─→ b ─→ i2
 └──→ i1a
 ```
 
-### Override in root 1 error #######################################################################
+### Override in root 1 error
 
 ```
 a:
@@ -113,7 +109,8 @@ i1b:
 ```
 
 Expected:
- - Error because `i1b` and `b` have incompatible deps on `i2`
+
+- Error because `i1b` and `b` have incompatible deps on `i2`
 
 ```
 a ─→ b ───→ i2  ┐
@@ -121,7 +118,7 @@ a ─→ b ───→ i2  ┐
 └──→ i1b ─→ i2a ┘
 ```
 
-### Override in root 2 #############################################################################
+### Override in root 2
 
 ```
 a:
@@ -133,9 +130,10 @@ i2a: no deps
 ```
 
 Expected:
- - no implicits for `a`
- - implicits added for `b`
- - `i2` is overridden to `i2a` in both `b` and `i1` (because of override in `a`)
+
+- no implicits for `a`
+- implicits added for `b`
+- `i2` is overridden to `i2a` in both `b` and `i1` (because of override in `a`)
 
 ```
 a ─→ b ──→ i1
@@ -143,7 +141,7 @@ a ─→ b ──→ i1
 └──→ i2a ←─┘
 ```
 
-### Override in dep 1 ##############################################################################
+### Override in dep 1
 
 ```
 a:
@@ -156,9 +154,10 @@ i1a: no deps
 ```
 
 Expected:
- - implicits added for `a`
- - no implicits added for `c`, but `i1a` is replaced with `i1` because of implicit override in `a`
- - note difference between situation when `c` has no deps: no dep from `c` to `i2`
+
+- implicits added for `a`
+- no implicits added for `c`, but `i1a` is replaced with `i1` because of implicit override in `a`
+- note difference between situation when `c` has no deps: no dep from `c` to `i2`
 
 ```
 a ───→ c
@@ -168,7 +167,7 @@ a ───→ c
 i1 ──→ i2
 ```
 
-### Override in dep 2 ##############################################################################
+### Override in dep 2
 
 ```
 a:
@@ -181,9 +180,10 @@ i2a: no deps
 ```
 
 Expected:
- - implicits added for `a`
- - no implicits added for `d`, but `i2a` is replaced with `i2` because of implicit override in `a`
- - note difference between situation when `d` has no deps: no dep from `d` to `i1`
+
+- implicits added for `a`
+- no implicits added for `d`, but `i2a` is replaced with `i2` because of implicit override in `a`
+- note difference between situation when `d` has no deps: no dep from `d` to `i1`
 
 ```
 a ───→ d

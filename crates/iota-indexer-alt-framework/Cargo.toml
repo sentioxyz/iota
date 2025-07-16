@@ -2,9 +2,9 @@
 name = "iota-indexer-alt-framework"
 version.workspace = true
 authors = ["IOTA Foundation <info@iota.org>"]
+edition = "2021"
 license = "Apache-2.0"
 publish = false
-edition = "2021"
 
 [dependencies]
 anyhow.workspace = true
@@ -33,10 +33,10 @@ url.workspace = true
 iota-field-count.workspace = true
 iota-indexer-alt-metrics.workspace = true
 iota-pg-db.workspace = true
+iota-rpc-api.workspace = true
 iota-sql-macro.workspace = true
 iota-storage.workspace = true
 iota-types.workspace = true
-iota-rpc-api.workspace = true
 tonic.workspace = true
 
 [dev-dependencies]
@@ -49,4 +49,3 @@ iota-synthetic-ingestion.workspace = true
 [features]
 default = ["cluster"]
 cluster = ["dep:tracing-subscriber"]
-

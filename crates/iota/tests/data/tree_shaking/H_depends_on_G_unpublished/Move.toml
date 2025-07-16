@@ -5,7 +5,5 @@ edition = "2024.beta"
 [dependencies]
 G_unpublished = { local = "../G_unpublished" }
 
-
 [addresses]
 h_depends_on_g_unpublished = "0x0"
-

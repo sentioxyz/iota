@@ -7,4 +7,3 @@ A = { local = "../A" }
 
 [addresses]
 f_depends_on_a_as_bytecode_dep = "0x0"
-

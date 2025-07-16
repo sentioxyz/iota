@@ -1,6 +1,7 @@
 # iota-indexer-alt
 
 ## Running
+
 A source of checkpoints is required (exactly one of `--remote-store-url` or
 `--local-ingestion-path`), and a `--config` much be supplied.
 

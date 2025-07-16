@@ -12,10 +12,10 @@
 
 IOTA offers the following benefits and capabilities:
 
- * Unmatched scalability, instant settlement
- * A safe smart contract language accessible to mainstream developers
- * Ability to define rich and composable on-chain assets
- * Better user experience for web3 apps
+- Unmatched scalability, instant settlement
+- A safe smart contract language accessible to mainstream developers
+- Ability to define rich and composable on-chain assets
+- Better user experience for web3 apps
 
 IOTA is the only blockchain today that can scale with the growth of web3 while achieving industry-leading performance, cost, programmability, and usability. As IOTA approaches Mainnet launch, it will demonstrate capacity beyond the transaction processing capabilities of established systems – traditional and blockchain alike. IOTA is the first internet-scale programmable blockchain platform, a foundational layer for web3.
 
@@ -54,20 +54,19 @@ IOTA is supported by several cutting-edge [peer-reviewed studies](https://github
 
 Use the following links to learn more about IOTA and the IOTA ecosystem:
 
- * Learn more about working with IOTA in the [IOTA Documentation](https://docs.iota.org/).
- * Join the IOTA community on [IOTA Discord](https://discord.gg/iota).
- * Find out more about the IOTA ecosystem on the [IOTA Resources](https://iota.org/resources/) page.
- * Review information about IOTA governance, [decentralization](https://iota.org/decentralization), and [Developer Grants Program](https://iota.org/grants-hub) on the [IOTA Foundation](https://iota.org/about) site.
+- Learn more about working with IOTA in the [IOTA Documentation](https://docs.iota.org/).
+- Join the IOTA community on [IOTA Discord](https://discord.gg/iota).
+- Find out more about the IOTA ecosystem on the [IOTA Resources](https://iota.org/resources/) page.
+- Review information about IOTA governance, [decentralization](https://iota.org/decentralization), and [Developer Grants Program](https://iota.org/grants-hub) on the [IOTA Foundation](https://iota.org/about) site.
 
+## How to Contribute
 
- ## How to Contribute
+See the [Contributing Guide](CONTRIBUTING.md) for details on how to contribute to IOTA.
 
- See the [Contributing Guide](CONTRIBUTING.md) for details on how to contribute to IOTA.
+## Code of Conduct
 
- ## Code of Conduct
+See the [Code of Conduct](CODE_OF_CONDUCT.MD) for details on our code of conduct.
 
- See the [Code of Conduct](CODE_OF_CONDUCT.MD) for details on our code of conduct.
+## License
 
- ## License
-
- See the [LICENSE](LICENSE) file for more details.
+See the [LICENSE](LICENSE) file for more details.

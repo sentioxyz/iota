@@ -82,8 +82,8 @@ spec:
         app: iota-edge-proxy
       annotations:
         prometheus.io/path: /metrics
-        prometheus.io/port: '9184'
-        prometheus.io/scrape: 'true'
+        prometheus.io/port: "9184"
+        prometheus.io/scrape: "true"
     spec:
       containers:
         - name: iota-edge-proxy

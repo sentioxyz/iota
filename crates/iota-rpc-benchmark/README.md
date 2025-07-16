@@ -1,12 +1,15 @@
 # iota-rpc-benchmark: Benchmarking Tool for IOTA RPC Performance
 
 `iota-rpc-benchmark` is a benchmarking utility designed to measure performance across different RPC access methods in IOTA:
+
 - Direct database reads
-- JSON RPC endpoints 
+- JSON RPC endpoints
 - GraphQL queries
 
 ## Usage Examples
+
 Run benchmarks with:
+
 ```
 # Direct database queries:
 cargo run --bin iota-rpc-benchmark direct --db-url postgres://postgres:postgres@localhost:5432/iota --concurrency 10  --duration-secs 10

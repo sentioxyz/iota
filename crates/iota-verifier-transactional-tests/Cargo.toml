@@ -2,10 +2,10 @@
 name = "iota-verifier-transactional-tests"
 version = "0.1.0"
 authors = ["IOTA Foundation <info@iota.org>"]
-description = "Transactional tests for IOTA Verifier"
+edition = "2021"
 license = "Apache-2.0"
 publish = false
-edition = "2021"
+description = "Transactional tests for IOTA Verifier"
 
 [dev-dependencies]
 datatest-stable.workspace = true
@@ -16,4 +16,3 @@ name = "tests"
 harness = false
 
 [dependencies]
-

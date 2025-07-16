@@ -2,9 +2,9 @@
 name = "iota-display"
 version.workspace = true
 authors = ["IOTA Foundation <build@iota.org"]
+edition = "2021"
 license = "Apache-2.0"
 publish = false
-edition = "2021"
 
 [dependencies]
 anyhow.workspace = true
@@ -14,4 +14,3 @@ move-core-types.workspace = true
 
 iota-json-rpc-types.workspace = true
 iota-types.workspace = true
-

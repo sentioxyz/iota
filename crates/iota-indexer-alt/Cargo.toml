@@ -2,9 +2,9 @@
 name = "iota-indexer-alt"
 version.workspace = true
 authors = ["IOTA Foundation <info@iota.org>"]
+edition = "2021"
 license = "Apache-2.0"
 publish = false
-edition = "2021"
 
 [[bin]]
 name = "iota-indexer-alt"
@@ -45,5 +45,6 @@ wiremock.workspace = true
 
 [features]
 default = []
-benchmark = ["iota-synthetic-ingestion"]  # This will be used to enable benchmark mode
-
+benchmark = [
+  "iota-synthetic-ingestion",
+] # This will be used to enable benchmark mode

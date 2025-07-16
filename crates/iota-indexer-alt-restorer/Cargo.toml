@@ -2,9 +2,9 @@
 name = "iota-indexer-alt-restorer"
 version = "0.1.0"
 authors = ["IOTA Foundation <info@iota.org>"]
+edition = "2021"
 license = "Apache-2.0"
 publish = false
-edition = "2021"
 
 [dependencies]
 anyhow = { version = "1.0.71", features = ["backtrace"] }
@@ -17,22 +17,21 @@ url.workspace = true
 diesel = { workspace = true, features = ["chrono"] }
 diesel-async = { workspace = true, features = ["bb8", "postgres", "async-connection-wrapper"] }
 indicatif.workspace = true
-object_store.workspace = true
-prometheus.workspace = true
 iota-archival.workspace = true
 iota-config.workspace = true
 iota-core.workspace = true
 iota-field-count.workspace = true
-iota-indexer-alt-schema.workspace = true
 iota-indexer-alt-framework.workspace = true
+iota-indexer-alt-schema.workspace = true
 iota-pg-db.workspace = true
 iota-snapshot.workspace = true
 iota-storage.workspace = true
 iota-types.workspace = true
-tokio = { workspace = true, features = ["full"] }
+object_store.workspace = true
+prometheus.workspace = true
 telemetry-subscribers.workspace = true
+tokio = { workspace = true, features = ["full"] }
 
 [[bin]]
 name = "iota-indexer-alt-restorer"
 path = "src/main.rs"
-

@@ -2,7 +2,7 @@
 
 ## Build
 
-```bash 
+```bash
 ./docker/multisig-toolkit/build.sh
 ```
 
@@ -11,4 +11,3 @@
 ```bash
 docker run -p 4173:4173 multisig-toolkit:latest
 ```
-
