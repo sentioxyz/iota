@@ -1,5 +1,6 @@
 // Copyright (c) The Diem Core Contributors
 // Copyright (c) The Move Contributors
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use anyhow::Result;
@@ -38,6 +39,7 @@ pub fn download_dependency_repos<Progress: Write>(
         build_options.skip_fetch_latest_git_deps,
         progress_output,
         install_dir,
+        build_options.implicit_dependencies.clone(),
     );
     let (graph, _) = dep_graph_builder.get_graph(
         &DependencyKind::default(),

@@ -1,8 +1,9 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-module sui::address {
-    use sui::hex;
+module iota::address {
+    use iota::hex;
     use std::ascii;
     use std::bcs;
     use std::string;
@@ -65,7 +66,7 @@ module sui::address {
         string::from_ascii(to_ascii_string(a))
     }
 
-    /// Length of a Sui address in bytes
+    /// Length of a IOTA address in bytes
     public fun length(): u64 {
         LENGTH
     }

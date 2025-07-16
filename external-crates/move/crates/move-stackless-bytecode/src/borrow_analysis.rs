@@ -1,5 +1,6 @@
 // Copyright (c) The Diem Core Contributors
 // Copyright (c) The Move Contributors
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 //! Data flow analysis computing borrow information for preparation of memory_instrumentation.
@@ -590,7 +591,7 @@ impl<'a> BorrowAnalysis<'a> {
     }
 }
 
-impl<'a> TransferFunctions for BorrowAnalysis<'a> {
+impl TransferFunctions for BorrowAnalysis<'_> {
     type State = BorrowInfo;
     const BACKWARD: bool = false;
 
@@ -731,7 +732,7 @@ impl<'a> TransferFunctions for BorrowAnalysis<'a> {
     }
 }
 
-impl<'a> DataflowAnalysis for BorrowAnalysis<'a> {}
+impl DataflowAnalysis for BorrowAnalysis<'_> {}
 
 impl AbstractDomain for BorrowInfo {
     fn join(&mut self, other: &Self) -> JoinResult {

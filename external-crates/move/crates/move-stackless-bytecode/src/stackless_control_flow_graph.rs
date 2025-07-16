@@ -1,5 +1,6 @@
 // Copyright (c) The Diem Core Contributors
 // Copyright (c) The Move Contributors
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 //! Adapted from control_flow_graph for Bytecode, this module defines the control-flow graph on
@@ -280,7 +281,7 @@ struct DotCFGBlock<'env> {
     label_offsets: BTreeMap<Label, CodeOffset>,
 }
 
-impl<'env> std::fmt::Display for DotCFGBlock<'env> {
+impl std::fmt::Display for DotCFGBlock<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         let code_range = match self.content {
             BlockContent::Basic { lower, upper } => format!("offset {}..={}", lower, upper),

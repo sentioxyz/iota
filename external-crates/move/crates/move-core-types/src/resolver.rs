@@ -1,5 +1,6 @@
 // Copyright (c) The Diem Core Contributors
 // Copyright (c) The Move Contributors
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::{
@@ -10,7 +11,7 @@ use crate::{
 use std::fmt::Debug;
 use std::sync::Arc;
 
-/// Traits for resolving Move modules and resources from persistent storage
+// Traits for resolving Move modules and resources from persistent storage
 
 /// An execution context that remaps the modules referred to at runtime according to a linkage
 /// table, allowing the same module in storage to be run against different dependencies.

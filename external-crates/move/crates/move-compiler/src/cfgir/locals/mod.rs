@@ -1,5 +1,6 @@
 // Copyright (c) The Diem Core Contributors
 // Copyright (c) The Move Contributors
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 pub mod state;
@@ -155,7 +156,7 @@ impl<'a, 'b> Context<'a, 'b> {
     }
 }
 
-impl<'a> TransferFunctions for LocalsSafety<'a> {
+impl TransferFunctions for LocalsSafety<'_> {
     type State = LocalStates;
 
     fn execute(
@@ -171,7 +172,7 @@ impl<'a> TransferFunctions for LocalsSafety<'a> {
     }
 }
 
-impl<'a> AbstractInterpreter for LocalsSafety<'a> {}
+impl AbstractInterpreter for LocalsSafety<'_> {}
 
 pub fn verify(
     context: &super::CFGContext,

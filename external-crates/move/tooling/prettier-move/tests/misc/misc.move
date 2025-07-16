@@ -13,11 +13,11 @@
 module suitears::timelock {
 
     use std::{string::String, type_name::{Self, TypeName}};
-    use sui::{
+    use iota::{
         clock::Clock,
         coin::Coin,
         dynamic_field as df,
-        sui::SUI,
+        iota::IOTA,
         table::{Self, Table}
     };
 
@@ -30,7 +30,7 @@ module suitears::timelock {
         ((((acc.amount as u256) * accrued_rewards_per_share / (stake_factor as u256)) - acc.reward_debt) as u64)
     }
 
-    // sui-system/validator_set.move
+    // iota-system/validator_set.move
     fun compute_reward_adjustments(
         mut slashed_validator_indices: vector<u64>,
         reward_slashing_rate: u64,
@@ -134,7 +134,7 @@ module suitears::timelock {
      * @notice Locks the `data` for `unlock_time` milliseconds.
      *
      * @param data An object with the store ability.
-     * @param c The shared `sui::clock::Clock` object.
+     * @param c The shared `iota::clock::Clock` object.
      * @patam unlock_time The lock period in milliseconds.
      * @return {Timelock<T>}.
      *
@@ -155,7 +155,7 @@ module suitears::timelock {
      * @notice Unlocks a {Timelock<T>} and returns the locked resource `T`.
      *
      * @param self A {Timelock<T>}
-     * @param c The shared `sui::clock::Clock` object.
+     * @param c The shared `iota::clock::Clock` object.
      * @return `T`. An object with the store ability.
      *
      * aborts-if

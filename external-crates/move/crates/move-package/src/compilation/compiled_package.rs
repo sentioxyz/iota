@@ -1,5 +1,6 @@
 // Copyright (c) The Diem Core Contributors
 // Copyright (c) The Move Contributors
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::{
@@ -20,8 +21,8 @@ use move_bytecode_source_map::utils::{
 };
 use move_bytecode_utils::Modules;
 use move_command_line_common::files::{
-    extension_equals, find_filenames, try_exists, FileHash, MOVE_BYTECODE_EXTENSION,
-    MOVE_COMPILED_EXTENSION, MOVE_EXTENSION, SOURCE_MAP_EXTENSION,
+    extension_equals, find_filenames, try_exists, FileHash, DEBUG_INFO_EXTENSION,
+    MOVE_BYTECODE_EXTENSION, MOVE_COMPILED_EXTENSION, MOVE_EXTENSION,
 };
 use move_compiler::{
     compiled_unit::{AnnotatedCompiledUnit, CompiledUnit, NamedCompiledModule},
@@ -31,7 +32,7 @@ use move_compiler::{
         files::MappedFiles, NamedAddressMap, NumericalAddress, PackageConfig, PackagePaths,
         SaveFlag, SaveHook,
     },
-    sui_mode::{self},
+    iota_mode::{self},
     Compiler,
 };
 use move_disassembler::disassembler::Disassembler;
@@ -235,9 +236,9 @@ impl OnDiskCompiledPackage {
         let source_map = source_map_from_file(
             &self
                 .root_path
-                .join(CompiledPackageLayout::SourceMaps.path())
+                .join(CompiledPackageLayout::DebugInfo.path())
                 .join(&path_to_file)
-                .with_extension(SOURCE_MAP_EXTENSION),
+                .with_extension(DEBUG_INFO_EXTENSION),
         )?;
         let source_path = self
             .root_path
@@ -337,14 +338,14 @@ impl OnDiskCompiledPackage {
             compiled_unit.unit.serialize().as_slice(),
         )?;
         self.save_under(
-            CompiledPackageLayout::SourceMaps
+            CompiledPackageLayout::DebugInfo
                 .path()
                 .join(&file_path)
-                .with_extension(SOURCE_MAP_EXTENSION),
+                .with_extension(DEBUG_INFO_EXTENSION),
             compiled_unit.unit.serialize_source_map().as_slice(),
         )?;
         self.save_under(
-            CompiledPackageLayout::SourceMaps
+            CompiledPackageLayout::DebugInfo
                 .path()
                 .join(&file_path)
                 .with_extension("json"),
@@ -537,19 +538,16 @@ impl CompiledPackage {
         paths.push(sources_package_paths.clone());
 
         let lint_level = resolution_graph.build_options.lint_flag.get();
-        let sui_mode = resolution_graph
-            .build_options
-            .default_flavor
-            .map_or(false, |f| f == Flavor::Sui);
+        let iota_mode = resolution_graph.build_options.default_flavor == Some(Flavor::Iota);
 
         let mut compiler = Compiler::from_package_paths(vfs_root, paths, bytecode_deps)
             .unwrap()
             .set_flags(flags);
-        if sui_mode {
-            let (filter_attr_name, filters) = sui_mode::linters::known_filters();
+        if iota_mode {
+            let (filter_attr_name, filters) = iota_mode::linters::known_filters();
             compiler = compiler
                 .add_custom_known_filters(filter_attr_name, filters)
-                .add_visitors(sui_mode::linters::linter_visitors(lint_level))
+                .add_visitors(iota_mode::linters::linter_visitors(lint_level))
         }
         let (filter_attr_name, filters) = linters::known_filters();
         compiler = compiler
@@ -635,7 +633,7 @@ impl CompiledPackage {
         let mut compiled_docs = None;
         if resolution_graph.build_options.generate_docs {
             let root_named_address_map = resolved_package.resolved_table.clone();
-            let model = source_model::Model::new(
+            let model = source_model::Model::from_source(
                 file_map.clone(),
                 Some(root_package_name),
                 root_named_address_map,

@@ -1,14 +1,15 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 #[allow(unused_const)]
-module sui::transfer {
+module iota::transfer {
 
-    use sui::object::{Self, ID, UID};
-    use sui::prover;
+    use iota::object::{Self, ID, UID};
+    use iota::prover;
 
     #[test_only]
-    friend sui::test_scenario;
+    friend iota::test_scenario;
 
     /// This represents the ability to `receive` an object of type `T`.
     /// This type is ephemeral per-transaction and cannot be stored on-chain.
@@ -48,7 +49,7 @@ module sui::transfer {
     /// which (in turn) ensures that `obj` has a globally unique ID. Note that if the recipient
     /// address represents an object ID, the `obj` sent will be inaccessible after the transfer
     /// (though they will be retrievable at a future date once new features are added).
-    /// This function has custom rules performed by the Sui Move bytecode verifier that ensures
+    /// This function has custom rules performed by the IOTA Move bytecode verifier that ensures
     /// that `T` is an object defined in the module where `transfer` is invoked. Use
     /// `public_transfer` to transfer an object with `store` outside of its module.
     public fun transfer<T: key>(obj: T, recipient: address) {
@@ -66,7 +67,7 @@ module sui::transfer {
 
     /// Freeze `obj`. After freezing `obj` becomes immutable and can no longer be transferred or
     /// mutated.
-    /// This function has custom rules performed by the Sui Move bytecode verifier that ensures
+    /// This function has custom rules performed by the IOTA Move bytecode verifier that ensures
     /// that `T` is an object defined in the module where `freeze_object` is invoked. Use
     /// `public_freeze_object` to freeze an object with `store` outside of its module.
     public fun freeze_object<T: key>(obj: T) {
@@ -84,7 +85,7 @@ module sui::transfer {
     /// This is irreversible, i.e. once an object is shared, it will stay shared forever.
     /// Aborts with `ESharedNonNewObject` of the object being shared was not created in this
     /// transaction. This restriction may be relaxed in the future.
-    /// This function has custom rules performed by the Sui Move bytecode verifier that ensures
+    /// This function has custom rules performed by the IOTA Move bytecode verifier that ensures
     /// that `T` is an object defined in the module where `share_object` is invoked. Use
     /// `public_share_object` to share an object with `store` outside of its module.
     public fun share_object<T: key>(obj: T) {
@@ -103,7 +104,7 @@ module sui::transfer {
     /// Given mutable (i.e., locked) access to the `parent` and a `Receiving` argument
     /// referencing an object of type `T` owned by `parent` use the `to_receive`
     /// argument to receive and return the referenced owned object of type `T`.
-    /// This function has custom rules performed by the Sui Move bytecode verifier that ensures
+    /// This function has custom rules performed by the IOTA Move bytecode verifier that ensures
     /// that `T` is an object defined in the module where `receive` is invoked. Use
     /// `public_receive` to receivne an object with `store` outside of its module.
     public fun receive<T: key>(parent: &mut UID, to_receive: Receiving<T>): T {
@@ -138,7 +139,7 @@ module sui::transfer {
         // aborts if shared object:
         // - it's OK to freeze whether object is fresh or owned
         // - immutable object cannot be passed by value
-        aborts_if [abstract] sui::prover::shared(obj);
+        aborts_if [abstract] iota::prover::shared(obj);
         modifies [abstract] global<object::Ownership>(object::id(obj).bytes);
         ensures [abstract] exists<object::Ownership>(object::id(obj).bytes);
         ensures [abstract] global<object::Ownership>(object::id(obj).bytes).status == prover::IMMUTABLE;
@@ -148,7 +149,7 @@ module sui::transfer {
 
     spec share_object_impl {
         pragma opaque;
-        aborts_if [abstract] sui::prover::owned(obj);
+        aborts_if [abstract] iota::prover::owned(obj);
         modifies [abstract] global<object::Ownership>(object::id(obj).bytes);
         ensures [abstract] exists<object::Ownership>(object::id(obj).bytes);
         ensures [abstract] global<object::Ownership>(object::id(obj).bytes).status == prover::SHARED;
@@ -162,7 +163,7 @@ module sui::transfer {
         // aborts if shared object:
         // - it's OK to transfer whether object is fresh or already owned
         // - immutable object cannot be passed by value
-        aborts_if [abstract] sui::prover::shared(obj);
+        aborts_if [abstract] iota::prover::shared(obj);
         modifies [abstract] global<object::Ownership>(object::id(obj).bytes);
         ensures [abstract] exists<object::Ownership>(object::id(obj).bytes);
         ensures [abstract] global<object::Ownership>(object::id(obj).bytes).owner == recipient;

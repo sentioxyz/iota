@@ -1,5 +1,6 @@
 // Copyright (c) The Diem Core Contributors
 // Copyright (c) The Move Contributors
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::collections::BTreeMap;
@@ -42,7 +43,7 @@ pub(crate) struct ModuleBuilder<'env, 'translator> {
     pub module_name: ModuleName,
 }
 
-/// # Entry Points
+// # Entry Points
 
 impl<'env, 'translator> ModuleBuilder<'env, 'translator> {
     pub fn new(
@@ -88,7 +89,7 @@ impl<'env, 'translator> ModuleBuilder<'env, 'translator> {
     }
 }
 
-impl<'env, 'translator> ModuleBuilder<'env, 'translator> {
+impl ModuleBuilder<'_, '_> {
     /// Shortcut for accessing the symbol pool.
     pub fn symbol_pool(&self) -> &SymbolPool {
         self.parent.env.symbol_pool()
@@ -140,9 +141,9 @@ impl<'env, 'translator> ModuleBuilder<'env, 'translator> {
     }
 }
 
-/// # Attribute Analysis
+// # Attribute Analysis
 
-impl<'env, 'translator> ModuleBuilder<'env, 'translator> {
+impl ModuleBuilder<'_, '_> {
     pub fn translate_attributes<T: TName>(
         &mut self,
         attrs: &UniqueMap<T, EA::Attribute>,
@@ -245,9 +246,9 @@ impl<'env, 'translator> ModuleBuilder<'env, 'translator> {
     }
 }
 
-/// # Declaration Analysis
+// # Declaration Analysis
 
-impl<'env, 'translator> ModuleBuilder<'env, 'translator> {
+impl ModuleBuilder<'_, '_> {
     fn decl_ana(
         &mut self,
         module_def: &EA::ModuleDefinition,
@@ -361,9 +362,9 @@ impl<'env, 'translator> ModuleBuilder<'env, 'translator> {
     }
 }
 
-/// # Definition Analysis
+// # Definition Analysis
 
-impl<'env, 'translator> ModuleBuilder<'env, 'translator> {
+impl ModuleBuilder<'_, '_> {
     fn def_ana(&mut self, module_def: &EA::ModuleDefinition) {
         // Analyze all structs.
         for (name, def) in module_def.structs.key_cloned_iter() {
@@ -392,9 +393,9 @@ impl<'env, 'translator> ModuleBuilder<'env, 'translator> {
     }
 }
 
-/// ## Struct and Enum Definition Analysis
+// ## Struct and Enum Definition Analysis
 
-impl<'env, 'translator> ModuleBuilder<'env, 'translator> {
+impl ModuleBuilder<'_, '_> {
     fn def_ana_struct(&mut self, name: &PA::DatatypeName, def: &EA::StructDefinition) {
         let qsym = self.qualified_by_module_from_name(&name.0);
         let type_params = self
@@ -490,9 +491,9 @@ impl<'env, 'translator> ModuleBuilder<'env, 'translator> {
     }
 }
 
-/// ## Move Function Definition Analysis
+// ## Move Function Definition Analysis
 
-impl<'env, 'translator> ModuleBuilder<'env, 'translator> {
+impl ModuleBuilder<'_, '_> {
     /// Definition analysis for Move functions.
     /// If the function is pure, we translate its body.
     fn def_ana_fun(&mut self, name: &PA::FunctionName, body: &EA::FunctionBody) {
@@ -519,9 +520,9 @@ impl<'env, 'translator> ModuleBuilder<'env, 'translator> {
     }
 }
 
-/// # Environment Population
+// # Environment Population
 
-impl<'env, 'translator> ModuleBuilder<'env, 'translator> {
+impl ModuleBuilder<'_, '_> {
     fn populate_env_from_result(
         &mut self,
         loc: Loc,

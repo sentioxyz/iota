@@ -1,5 +1,6 @@
 // Copyright (c) The Diem Core Contributors
 // Copyright (c) The Move Contributors
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 //! This module defines the transfer functions for verifying reference safety of a procedure body.
@@ -443,7 +444,7 @@ fn execute_inner(
     Ok(())
 }
 
-impl<'a> TransferFunctions for ReferenceSafetyAnalysis<'a> {
+impl TransferFunctions for ReferenceSafetyAnalysis<'_> {
     type State = AbstractState;
     type Error = PartialVMError;
 
@@ -464,4 +465,4 @@ impl<'a> TransferFunctions for ReferenceSafetyAnalysis<'a> {
     }
 }
 
-impl<'a> AbstractInterpreter for ReferenceSafetyAnalysis<'a> {}
+impl AbstractInterpreter for ReferenceSafetyAnalysis<'_> {}

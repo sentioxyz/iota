@@ -1,5 +1,6 @@
 // Copyright (c) The Diem Core Contributors
 // Copyright (c) The Move Contributors
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 //! Contains definitions of symbols -- internalized strings which support fast hashing and
@@ -29,7 +30,7 @@ pub struct SymbolDisplay<'a> {
     pool: &'a SymbolPool,
 }
 
-impl<'a> fmt::Display for SymbolDisplay<'a> {
+impl fmt::Display for SymbolDisplay<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
         f.write_str(&self.pool.string(*self.sym))
     }

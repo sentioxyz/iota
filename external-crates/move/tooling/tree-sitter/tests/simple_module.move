@@ -1,7 +1,8 @@
 // Copyright (c) The Move Contributors
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-module sui::foo {
+module iota::foo {
     public struct Bar { x: u64 }
 
     fun f() { }

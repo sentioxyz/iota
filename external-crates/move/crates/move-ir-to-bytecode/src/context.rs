@@ -1,5 +1,6 @@
 // Copyright (c) The Diem Core Contributors
 // Copyright (c) The Move Contributors
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use anyhow::{bail, format_err, Result};
@@ -187,7 +188,7 @@ impl StoredCompiledDependency {
 }
 
 pub(crate) enum CompiledDependency<'a> {
-    /// Simple `CompiledDependecyView` where the borrowed `CompiledModule` is held elsewehere,
+    /// Simple `CompiledDependencyView` where the borrowed `CompiledModule` is held elsewhere,
     /// Commonly, it is borrowed from outside of the compilers API
     Borrowed(CompiledDependencyView<'a>),
     /// `Stored` holds the `CompiledModule` as well as the `CompiledDependencyView` into the module

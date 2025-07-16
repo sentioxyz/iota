@@ -1,5 +1,6 @@
 // Copyright (c) The Diem Core Contributors
 // Copyright (c) The Move Contributors
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::{
@@ -2140,8 +2141,8 @@ impl<'a, 'b> VersionedBinary<'a, 'b> {
             return Err(PartialVMError::new(StatusCode::UNKNOWN_VERSION));
         }
 
-        // Bad flavor to the version: for version 7 and above, only SUI_FLAVOR is supported
-        if version >= VERSION_7 && flavor != Some(BinaryFlavor::SUI_FLAVOR) {
+        // Bad flavor to the version: for version 7 and above, only IOTA_FLAVOR is supported
+        if version >= VERSION_7 && flavor != Some(BinaryFlavor::IOTA_FLAVOR) {
             return Err(PartialVMError::new(StatusCode::UNKNOWN_VERSION));
         }
 
@@ -2207,6 +2208,7 @@ impl<'a, 'b> VersionedBinary<'a, 'b> {
     }
 }
 
+#[allow(clippy::needless_lifetimes)]
 impl<'a> VersionedCursor<'a> {
     fn version(&self) -> u32 {
         self.version
@@ -2239,7 +2241,7 @@ impl<'a> VersionedCursor<'a> {
     }
 }
 
-impl<'a> Read for VersionedCursor<'a> {
+impl Read for VersionedCursor<'_> {
     fn read(&mut self, buf: &mut [u8]) -> std::io::Result<usize> {
         self.cursor.read(buf)
     }

@@ -1,13 +1,14 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 /// A storable handler for Balances in general. Is used in the `Coin`
 /// module to allow balance operations and can be used to implement
 /// custom coins with `Supply` and `Balance`s.
-module sui::balance {
-    use sui::tx_context::{Self, TxContext};
+module iota::balance {
+    use iota::tx_context::{Self, TxContext};
 
-    friend sui::sui;
+    friend iota::iota;
 
     /// For when trying to destroy a non-zero balance.
     const ENonZero: u64 = 0;
@@ -163,14 +164,14 @@ module sui::balance {
 }
 
 #[test_only]
-module sui::balance_tests {
-    use sui::balance;
-    use sui::sui::SUI;
-    use sui::test_utils;
+module iota::balance_tests {
+    use iota::balance;
+    use iota::iota::IOTA;
+    use iota::test_utils;
 
     #[test]
     fun test_balance() {
-        let balance = balance::zero<SUI>();
+        let balance = balance::zero<IOTA>();
         let another = balance::create_for_testing(1000);
 
         balance::join(&mut balance, another);

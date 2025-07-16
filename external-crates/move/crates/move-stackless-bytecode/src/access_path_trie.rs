@@ -1,5 +1,6 @@
 // Copyright (c) The Diem Core Contributors
 // Copyright (c) The Move Contributors
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 //! The obvious approach to abstracting a set of concrete paths is using a set of abstract paths.
@@ -139,9 +140,8 @@ impl<T: FootprintDomain> TrieNode<T> {
     where
         F: FnMut(&mut T, &[TempIndex], &[Type], &FunctionEnv, &dyn AccessPathMap<AbsAddr>) + Copy,
     {
-        match &mut self.data {
-            Some(d) => sub_data(d, actuals, type_actuals, func_env, sub_map),
-            None => (),
+        if let Some(d) = &mut self.data {
+            sub_data(d, actuals, type_actuals, func_env, sub_map)
         }
         let mut acc = Self::new_opt(self.data);
         for (mut k, v) in self.children.into_iter() {
@@ -251,15 +251,9 @@ impl<T: FootprintDomain> AccessPathTrie<T> {
     }
 
     fn get_node(&self, ap: AccessPath) -> Option<&TrieNode<T>> {
-        let mut node = match self.0.get(ap.root()) {
-            Some(n) => n,
-            None => return None,
-        };
+        let mut node = self.0.get(ap.root())?;
         for offset in ap.offsets() {
-            node = match node.get_offset(offset) {
-                Some(n) => n,
-                None => return None,
-            }
+            node = node.get_offset(offset)?
         }
         Some(node)
     }
@@ -581,7 +575,7 @@ pub struct AccessPathTrieDisplay<'a, T: FootprintDomain> {
     env: &'a FunctionEnv<'a>,
 }
 
-impl<'a, T: FootprintDomain> fmt::Display for AccessPathTrieDisplay<'a, T> {
+impl<T: FootprintDomain> fmt::Display for AccessPathTrieDisplay<'_, T> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         self.t
             .iter_paths(|path, v| writeln!(f, "{}: {:?}", path.display(self.env), v).unwrap());

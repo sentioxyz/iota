@@ -1,11 +1,12 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-/// This module provides handy functionality for wallets and `sui::Coin` management.
-module sui::pay {
-    use sui::tx_context::{Self, TxContext};
-    use sui::coin::{Self, Coin};
-    use sui::transfer;
+/// This module provides handy functionality for wallets and `iota::Coin` management.
+module iota::pay {
+    use iota::tx_context::{Self, TxContext};
+    use iota::coin::{Self, Coin};
+    use iota::transfer;
     use std::vector;
 
     /// For when empty vector is supplied into join function.
