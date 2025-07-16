@@ -55,3 +55,4 @@ serde_json = { version = "1.0.95", features = [
 [[bin]]
 name = "nodefw"
 path = "src/main.rs"
+

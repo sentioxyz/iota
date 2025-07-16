@@ -20,3 +20,4 @@ sui-enum-compat-util.workspace = true
 
 [target.'cfg(msim)'.dependencies]
 msim-macros.workspace = true
+

@@ -49,3 +49,4 @@ sui-synthetic-ingestion.workspace = true
 [features]
 default = ["cluster"]
 cluster = ["dep:tracing-subscriber"]
+

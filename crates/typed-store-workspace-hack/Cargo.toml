@@ -35,3 +35,4 @@ syn-f595c2ba2a3f28df = { package = "syn", version = "2", features = ["extra-trai
 quote = { version = "1" }
 regex = { version = "1" }
 regex-syntax = { version = "0.7" }
+

@@ -31,3 +31,4 @@ move-binary-format.workspace = true
 move-stdlib.workspace = true
 move-stdlib-natives.workspace = true
 move-compiler.workspace = true
+

@@ -52,3 +52,4 @@ rand.workspace = true
 reqwest.workspace = true
 move-cli.workspace = true
 quick-js = "0.4.1"
+

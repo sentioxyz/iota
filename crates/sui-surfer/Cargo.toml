@@ -34,3 +34,4 @@ sui-macros.workspace = true
 sui-simulator.workspace = true
 
 move-package.workspace = true
+

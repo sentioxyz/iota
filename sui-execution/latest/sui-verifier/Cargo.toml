@@ -19,3 +19,4 @@ move-abstract-interpreter = { path = "../../../external-crates/move/crates/move-
 
 sui-types.workspace = true
 sui-protocol-config.workspace = true
+

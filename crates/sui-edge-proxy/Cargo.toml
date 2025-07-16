@@ -25,3 +25,4 @@ mysten-metrics.workspace = true
 prometheus.workspace = true
 telemetry-subscribers.workspace = true
 rand = "0.8"
+

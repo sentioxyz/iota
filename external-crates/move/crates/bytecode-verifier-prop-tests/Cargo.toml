@@ -26,3 +26,4 @@ move-vm-config.workspace = true
 fuzzing = ["move-binary-format/fuzzing"]
 
 [dependencies]
+

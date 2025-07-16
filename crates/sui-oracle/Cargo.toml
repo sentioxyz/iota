@@ -35,3 +35,4 @@ shared-crypto.workspace = true
 bcs = "0.1.5"
 rand = "0.8.5"
 dirs = "4.0.0"
+

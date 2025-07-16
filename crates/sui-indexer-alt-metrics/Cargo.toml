@@ -16,3 +16,4 @@ tokio-util.workspace = true
 tracing.workspace = true
 
 sui-pg-db.workspace = true
+

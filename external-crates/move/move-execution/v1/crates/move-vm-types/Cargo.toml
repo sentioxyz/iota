@@ -27,3 +27,4 @@ proptest.workspace = true
 default = []
 fuzzing = ["proptest", "move-binary-format/fuzzing"]
 
+

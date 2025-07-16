@@ -24,3 +24,4 @@ move-abstract-interpreter = { path = "../../../v2/crates/move-abstract-interpret
 
 [features]
 fuzzing = ["move-binary-format/fuzzing"]
+

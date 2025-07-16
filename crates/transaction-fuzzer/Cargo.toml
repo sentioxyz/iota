@@ -27,3 +27,4 @@ sui-move-build.workspace = true
 
 [dev-dependencies]
 sui-protocol-config.workspace = true
+

@@ -25,3 +25,4 @@ move-vm-profiler.workspace = true
 default = [ ]
 tiered-gas = []
 tracing = []
+

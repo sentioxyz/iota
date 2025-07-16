@@ -45,3 +45,4 @@ harness = false
 
 [features]
 failpoints = ['move-vm-runtime/failpoints']
+

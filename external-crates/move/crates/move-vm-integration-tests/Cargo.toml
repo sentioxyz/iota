@@ -42,3 +42,4 @@ tracing = [
 [[bin]]
 name = "instantiation"
 path = "src/tests/instantiation_tests.rs"
+

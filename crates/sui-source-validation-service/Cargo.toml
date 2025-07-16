@@ -52,3 +52,4 @@ sui.workspace = true
 sui-move.workspace = true
 sui-json-rpc-types.workspace = true
 test-cluster.workspace = true
+

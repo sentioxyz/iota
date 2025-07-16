@@ -19,3 +19,4 @@ sui-json.workspace = true
 sui-protocol-config.workspace = true
 
 move-core-types.workspace = true
+

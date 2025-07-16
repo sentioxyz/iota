@@ -86,3 +86,4 @@ test-cluster.workspace = true
 [[bin]]
 name = "sui-indexer"
 path = "src/main.rs"
+

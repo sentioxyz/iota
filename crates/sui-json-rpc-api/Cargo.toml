@@ -26,3 +26,4 @@ sui-types.workspace = true
 # to not have to pull in the entire sui repo for it.
 
 [dev-dependencies]
+

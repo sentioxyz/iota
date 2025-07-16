@@ -22,3 +22,4 @@ sui-types.workspace = true
 tokio = { workspace = true, features = ["full"] }
 move-package.workspace = true
 sui-move-build.workspace = true
+

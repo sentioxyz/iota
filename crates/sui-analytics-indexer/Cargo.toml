@@ -60,3 +60,4 @@ tap.workspace = true
 [[bin]]
 name = "sui-analytics-indexer"
 path = "src/main.rs"
+

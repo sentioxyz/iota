@@ -25,3 +25,4 @@ move-vm-types = { path = "../../../external-crates/move/move-execution/v2/crates
 sui-protocol-config.workspace = true
 sui-types.workspace = true
 tracing.workspace = true
+

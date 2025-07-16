@@ -49,3 +49,4 @@ sui-bridge = { workspace = true, features = ["test-utils"] }
 [[bin]]
 name = "bridge-indexer"
 path = "src/main.rs"
+

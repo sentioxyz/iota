@@ -29,3 +29,4 @@ default = ["std", "hashbrown", "smallvec", "estimate-heapsize"]
 std = ["parking_lot"]
 # Full estimate: no call to allocator
 estimate-heapsize = []
+

@@ -8,3 +8,4 @@ edition = "2021"
 
 [dependencies]
 sui-field-count-derive.workspace = true
+

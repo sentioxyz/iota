@@ -18,3 +18,4 @@ shared-crypto.workspace = true
 
 [dev-dependencies]
 insta.workspace = true
+

@@ -614,8 +614,8 @@ anemo-cli = { git = "https://github.com/mystenlabs/anemo.git", rev = "9c52c3c794
 anemo-tower = { git = "https://github.com/mystenlabs/anemo.git", rev = "9c52c3c7946532163a79129db15180cdb984bab4" }
 
 # core-types from the new sdk for use in gRPC
-sui-sdk-types = { git = "https://github.com/MystenLabs/sui-rust-sdk.git", rev = "5e11579031793f086178332219f5847ec94da0c4", features = ["hash", "serde"] }
-sui-sdk-transaction-builder = { git = "https://github.com/MystenLabs/sui-rust-sdk.git", rev = "5e11579031793f086178332219f5847ec94da0c4", package = "sui-transaction-builder" }
+sui-sdk-types = { path = "../iota-rust-sdk/crates/iota-sdk-types", features = ["hash", "serde"] }
+sui-sdk-transaction-builder = { path = "../iota-rust-sdk/crates/iota-transaction-builder", package = "sui-transaction-builder" }
 
 ### Workspace Members ###
 anemo-benchmark = { path = "crates/anemo-benchmark" }
@@ -744,3 +744,4 @@ spinners = "4.1.0"
 include_dir = "0.7.3"
 
 [patch.crates-io]
+

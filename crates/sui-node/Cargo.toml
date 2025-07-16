@@ -62,3 +62,4 @@ sui-http.workspace = true
 
 [target.'cfg(msim)'.dependencies]
 sui-simulator.workspace = true
+

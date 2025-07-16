@@ -46,3 +46,4 @@ wiremock.workspace = true
 [features]
 default = []
 benchmark = ["sui-synthetic-ingestion"]  # This will be used to enable benchmark mode
+

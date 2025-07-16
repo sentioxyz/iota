@@ -41,3 +41,4 @@ hex-literal = "0.3.4"
 [[bin]]
 name = "deepbook-indexer"
 path = "src/main.rs"
+

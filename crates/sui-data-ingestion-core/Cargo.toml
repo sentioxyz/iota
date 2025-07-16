@@ -31,3 +31,4 @@ sui-rpc-api.workspace = true
 
 [dev-dependencies]
 rand.workspace = true
+

@@ -26,3 +26,4 @@ move-symbol-pool.workspace = true
 [build-dependencies]
 sui-framework-snapshot.workspace = true
 anyhow.workspace = true
+

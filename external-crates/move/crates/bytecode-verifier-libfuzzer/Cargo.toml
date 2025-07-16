@@ -37,3 +37,4 @@ name = "mixed"
 path = "fuzz_targets/mixed.rs"
 test = false
 doc = false
+

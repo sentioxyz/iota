@@ -108,3 +108,4 @@ tracing = [
     "move-vm-test-utils/tracing",
 ]
 fuzzing = ["move-core-types/fuzzing"]
+
