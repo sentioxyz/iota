@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::ops::Range;
@@ -7,7 +8,7 @@ use std::sync::Arc;
 use anyhow::{bail, Context, Result};
 use diesel::{ExpressionMethods, QueryDsl};
 use diesel_async::RunQueryDsl;
-use sui_indexer_alt_framework::{
+use iota_indexer_alt_framework::{
     db,
     models::cp_sequence_numbers::epoch_interval,
     pipeline::{concurrent::Handler, Processor},
@@ -17,7 +18,7 @@ use sui_indexer_alt_framework::{
         transaction::{TransactionDataAPI, TransactionKind},
     },
 };
-use sui_indexer_alt_schema::{epochs::StoredEpochEnd, schema::kv_epoch_ends};
+use iota_indexer_alt_schema::{epochs::StoredEpochEnd, schema::kv_epoch_ends};
 
 pub(crate) struct KvEpochEnds;
 
@@ -155,11 +156,11 @@ impl Handler for KvEpochEnds {
 mod tests {
     use super::*;
     use anyhow::Result;
-    use sui_indexer_alt_framework::{
+    use iota_indexer_alt_framework::{
         db::Connection, handlers::cp_sequence_numbers::CpSequenceNumbers,
         types::test_checkpoint_data_builder::TestCheckpointDataBuilder, Indexer,
     };
-    use sui_indexer_alt_schema::MIGRATIONS;
+    use iota_indexer_alt_schema::MIGRATIONS;
 
     async fn get_all_kv_epoch_ends(conn: &mut Connection<'_>) -> Result<Vec<StoredEpochEnd>> {
         let result = kv_epoch_ends::table

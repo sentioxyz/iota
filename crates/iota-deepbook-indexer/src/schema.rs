@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 // @generated automatically by Diesel CLI.
 
@@ -180,7 +181,7 @@ diesel::table! {
 }
 
 diesel::table! {
-    sui_error_transactions (id) {
+    iota_error_transactions (id) {
         id -> Int4,
         txn_digest -> Text,
         sender_address -> Text,
@@ -248,7 +249,7 @@ diesel::allow_tables_to_appear_in_same_query!(
     proposals,
     rebates,
     stakes,
-    sui_error_transactions,
+    iota_error_transactions,
     trade_params_update,
     votes,
     assets,

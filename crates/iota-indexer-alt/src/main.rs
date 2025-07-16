@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::path::Path;
@@ -8,15 +9,15 @@ use anyhow::Context;
 use anyhow::Result;
 use clap::Parser;
 use prometheus::Registry;
-use sui_indexer_alt::args::Args;
-use sui_indexer_alt::args::Command;
-use sui_indexer_alt::config::IndexerConfig;
-use sui_indexer_alt::config::Merge;
-use sui_indexer_alt::setup_indexer;
-use sui_indexer_alt_framework::db::reset_database;
-use sui_indexer_alt_framework::Indexer;
-use sui_indexer_alt_metrics::MetricsService;
-use sui_indexer_alt_schema::MIGRATIONS;
+use iota_indexer_alt::args::Args;
+use iota_indexer_alt::args::Command;
+use iota_indexer_alt::config::IndexerConfig;
+use iota_indexer_alt::config::Merge;
+use iota_indexer_alt::setup_indexer;
+use iota_indexer_alt_framework::db::reset_database;
+use iota_indexer_alt_framework::Indexer;
+use iota_indexer_alt_metrics::MetricsService;
+use iota_indexer_alt_schema::MIGRATIONS;
 use tokio::fs;
 use tokio::signal;
 use tokio_util::sync::CancellationToken;
@@ -138,7 +139,7 @@ async fn main() -> Result<()> {
             config,
         } => {
             let indexer_config = read_config(&config).await?;
-            sui_indexer_alt::benchmark::run_benchmark(
+            iota_indexer_alt::benchmark::run_benchmark(
                 database_url,
                 db_args,
                 benchmark_args,

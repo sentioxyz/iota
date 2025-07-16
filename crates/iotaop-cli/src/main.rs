@@ -1,9 +1,10 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use anyhow::Result;
 use clap::Parser;
-use suioplib::{
+use iotaoplib::{
     cli::{
         ci::{image_cmd, ImageAction, ImageArgs, ImageBuildArgs, ImageQueryArgs},
         ci_cmd, docker_cmd, iam_cmd, incidents_cmd, load_environment, pulumi_cmd,
@@ -20,8 +21,8 @@ use tracing_subscriber::{
 };
 
 #[derive(Parser, Debug)]
-#[command(author="build@mystenlabs.com", version, about, long_about = None)]
-pub(crate) struct SuiOpArgs {
+#[command(author="build@iota.org", version, about, long_about = None)]
+pub(crate) struct IotaOpArgs {
     /// The resource type we're operating on.
     #[command(subcommand)]
     resource: Resource,
@@ -67,7 +68,7 @@ async fn main() -> Result<()> {
         info!("Debug mode enabled");
     }
 
-    let args = SuiOpArgs::parse();
+    let args = IotaOpArgs::parse();
     match args.resource {
         Resource::Docker(args) => {
             docker_cmd(&args).await?;

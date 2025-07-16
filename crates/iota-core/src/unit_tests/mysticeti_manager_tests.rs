@@ -1,14 +1,15 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::{sync::Arc, time::Duration};
 
 use fastcrypto::traits::KeyPair;
 use futures::FutureExt;
-use mysten_metrics::RegistryService;
+use iota_metrics::RegistryService;
 use prometheus::Registry;
-use sui_swarm_config::network_config_builder::ConfigBuilder;
-use sui_types::messages_checkpoint::{
+use iota_swarm_config::network_config_builder::ConfigBuilder;
+use iota_types::messages_checkpoint::{
     CertifiedCheckpointSummary, CheckpointContents, CheckpointSummary,
 };
 use tokio::{sync::mpsc, time::sleep};
@@ -21,7 +22,7 @@ use crate::{
     consensus_manager::{
         mysticeti_manager::MysticetiManager, ConsensusManagerMetrics, ConsensusManagerTrait,
     },
-    consensus_validator::{SuiTxValidator, SuiTxValidatorMetrics},
+    consensus_validator::{IotaTxValidator, IotaTxValidatorMetrics},
     mysticeti_adapter::LazyMysticetiClient,
     state_accumulator::StateAccumulator,
 };
@@ -97,12 +98,12 @@ async fn test_mysticeti_manager() {
                 config,
                 epoch_store.clone(),
                 consensus_handler_initializer,
-                SuiTxValidator::new(
+                IotaTxValidator::new(
                     state.clone(),
                     Arc::new(NoopConsensusOverloadChecker {}),
                     Arc::new(CheckpointServiceNoop {}),
                     state.transaction_manager().clone(),
-                    SuiTxValidatorMetrics::new(&Registry::new()),
+                    IotaTxValidatorMetrics::new(&Registry::new()),
                 ),
             )
             .await;

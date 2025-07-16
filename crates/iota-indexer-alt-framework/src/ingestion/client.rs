@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::path::PathBuf;
@@ -8,9 +9,9 @@ use std::time::Duration;
 use backoff::backoff::Constant;
 use backoff::Error as BE;
 use backoff::ExponentialBackoff;
-use sui_rpc_api::client::AuthInterceptor;
-use sui_rpc_api::Client;
-use sui_storage::blob::Blob;
+use iota_rpc_api::client::AuthInterceptor;
+use iota_rpc_api::Client;
+use iota_storage::blob::Blob;
 use tokio_util::bytes::Bytes;
 use tokio_util::sync::CancellationToken;
 use tracing::debug;

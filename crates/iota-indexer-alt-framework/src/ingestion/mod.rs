@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 // Allow use of `unbounded_channel` in `ingestion` -- it is used by the regulator task to receive
@@ -42,7 +43,7 @@ pub struct ClientArgs {
     #[clap(long, group = "source")]
     pub local_ingestion_path: Option<PathBuf>,
 
-    /// Sui fullnode gRPC url to fetch checkpoints from.
+    /// IOTA fullnode gRPC url to fetch checkpoints from.
     /// If all remote_store_url, local_ingestion_path and rpc_api_url are provided, remote_store_url will be used.
     #[clap(long, env, group = "source")]
     pub rpc_api_url: Option<Url>,

@@ -1,13 +1,14 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use anyhow::Result;
-use sui_data_ingestion_core::Worker;
+use iota_data_ingestion_core::Worker;
 use tokio::sync::Mutex;
 
-use sui_types::base_types::ObjectID;
-use sui_types::full_checkpoint_content::CheckpointData;
-use sui_types::transaction::TransactionDataAPI;
+use iota_types::base_types::ObjectID;
+use iota_types::full_checkpoint_content::CheckpointData;
+use iota_types::transaction::TransactionDataAPI;
 
 use crate::handlers::AnalyticsHandler;
 use crate::tables::MoveCallEntry;

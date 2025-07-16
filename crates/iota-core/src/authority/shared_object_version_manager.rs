@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::authority::authority_per_epoch_store::CancelConsensusCertificateReason;
@@ -8,18 +9,18 @@ use crate::execution_cache::ObjectCacheRead;
 use std::collections::BTreeMap;
 use std::collections::HashMap;
 use std::collections::HashSet;
-use sui_types::base_types::ConsensusObjectSequenceKey;
-use sui_types::base_types::TransactionDigest;
-use sui_types::crypto::RandomnessRound;
-use sui_types::effects::{TransactionEffects, TransactionEffectsAPI};
-use sui_types::executable_transaction::VerifiedExecutableTransaction;
-use sui_types::storage::{
+use iota_types::base_types::ConsensusObjectSequenceKey;
+use iota_types::base_types::TransactionDigest;
+use iota_types::crypto::RandomnessRound;
+use iota_types::effects::{TransactionEffects, TransactionEffectsAPI};
+use iota_types::executable_transaction::VerifiedExecutableTransaction;
+use iota_types::storage::{
     transaction_non_shared_input_object_keys, transaction_receiving_object_keys, ObjectKey,
 };
-use sui_types::transaction::{
+use iota_types::transaction::{
     SenderSignedData, SharedInputObject, TransactionDataAPI, TransactionKey,
 };
-use sui_types::{base_types::SequenceNumber, error::SuiResult, SUI_RANDOMNESS_STATE_OBJECT_ID};
+use iota_types::{base_types::SequenceNumber, error::IotaResult, IOTA_RANDOMNESS_STATE_OBJECT_ID};
 use tracing::{debug, trace};
 
 pub struct SharedObjVerManager {}
@@ -43,7 +44,7 @@ impl SharedObjVerManager {
         certificates: &[VerifiedExecutableTransaction],
         randomness_round: Option<RandomnessRound>,
         cancelled_txns: &BTreeMap<TransactionDigest, CancelConsensusCertificateReason>,
-    ) -> SuiResult<ConsensusSharedObjVerAssignment> {
+    ) -> IotaResult<ConsensusSharedObjVerAssignment> {
         let mut shared_input_next_versions = get_or_init_versions(
             certificates.iter().map(|cert| cert.data()),
             epoch_store,
@@ -62,7 +63,7 @@ impl SharedObjVerManager {
                 .expect("randomness state obj must exist");
             let version = shared_input_next_versions
                 .get_mut(&(
-                    SUI_RANDOMNESS_STATE_OBJECT_ID,
+                    IOTA_RANDOMNESS_STATE_OBJECT_ID,
                     randomness_obj_initial_shared_version,
                 ))
                 .expect("randomness state object must have been added in get_or_init_versions()");
@@ -71,7 +72,7 @@ impl SharedObjVerManager {
                 TransactionKey::RandomnessRound(epoch_store.epoch(), round),
                 vec![(
                     (
-                        SUI_RANDOMNESS_STATE_OBJECT_ID,
+                        IOTA_RANDOMNESS_STATE_OBJECT_ID,
                         randomness_obj_initial_shared_version,
                     ),
                     *version,
@@ -196,7 +197,7 @@ impl SharedObjVerManager {
                         }
                     }
                     Some(CancelConsensusCertificateReason::DkgFailed) => {
-                        if id == &SUI_RANDOMNESS_STATE_OBJECT_ID {
+                        if id == &IOTA_RANDOMNESS_STATE_OBJECT_ID {
                             SequenceNumber::RANDOMNESS_UNAVAILABLE
                         } else {
                             SequenceNumber::CANCELLED_READ
@@ -277,7 +278,7 @@ fn get_or_init_versions<'a>(
     epoch_store: &AuthorityPerEpochStore,
     cache_reader: &dyn ObjectCacheRead,
     generate_randomness: bool,
-) -> SuiResult<HashMap<ConsensusObjectSequenceKey, SequenceNumber>> {
+) -> IotaResult<HashMap<ConsensusObjectSequenceKey, SequenceNumber>> {
     let mut shared_input_objects: Vec<_> = transactions
         .flat_map(|tx| {
             tx.transaction_data()
@@ -289,7 +290,7 @@ fn get_or_init_versions<'a>(
 
     if generate_randomness {
         shared_input_objects.push((
-            SUI_RANDOMNESS_STATE_OBJECT_ID,
+            IOTA_RANDOMNESS_STATE_OBJECT_ID,
             epoch_store
                 .epoch_start_config()
                 .randomness_obj_initial_shared_version()
@@ -315,18 +316,18 @@ mod tests {
     };
     use crate::authority::test_authority_builder::TestAuthorityBuilder;
     use std::collections::{BTreeMap, HashMap};
-    use sui_test_transaction_builder::TestTransactionBuilder;
-    use sui_types::base_types::{ObjectID, SequenceNumber, SuiAddress};
-    use sui_types::crypto::RandomnessRound;
-    use sui_types::digests::ObjectDigest;
-    use sui_types::effects::TestEffectsBuilder;
-    use sui_types::executable_transaction::{
+    use iota_test_transaction_builder::TestTransactionBuilder;
+    use iota_types::base_types::{ObjectID, SequenceNumber, IotaAddress};
+    use iota_types::crypto::RandomnessRound;
+    use iota_types::digests::ObjectDigest;
+    use iota_types::effects::TestEffectsBuilder;
+    use iota_types::executable_transaction::{
         CertificateProof, ExecutableTransaction, VerifiedExecutableTransaction,
     };
-    use sui_types::object::{Object, Owner};
-    use sui_types::programmable_transaction_builder::ProgrammableTransactionBuilder;
-    use sui_types::transaction::{ObjectArg, SenderSignedData, TransactionKey};
-    use sui_types::SUI_RANDOMNESS_STATE_OBJECT_ID;
+    use iota_types::object::{Object, Owner};
+    use iota_types::programmable_transaction_builder::ProgrammableTransactionBuilder;
+    use iota_types::transaction::{ObjectArg, SenderSignedData, TransactionKey};
+    use iota_types::IOTA_RANDOMNESS_STATE_OBJECT_ID;
 
     #[tokio::test]
     async fn test_assign_versions_from_consensus_basic() {
@@ -412,7 +413,7 @@ mod tests {
         let certs = vec![
             generate_shared_objs_tx_with_gas_version(
                 &[(
-                    SUI_RANDOMNESS_STATE_OBJECT_ID,
+                    IOTA_RANDOMNESS_STATE_OBJECT_ID,
                     randomness_obj_version,
                     // This can only be false since it's not allowed to use randomness object with mutable=true.
                     false,
@@ -421,7 +422,7 @@ mod tests {
             ),
             generate_shared_objs_tx_with_gas_version(
                 &[(
-                    SUI_RANDOMNESS_STATE_OBJECT_ID,
+                    IOTA_RANDOMNESS_STATE_OBJECT_ID,
                     randomness_obj_version,
                     false,
                 )],
@@ -442,7 +443,7 @@ mod tests {
         // Check that the randomness object's next version is initialized.
         assert_eq!(
             epoch_store
-                .get_next_object_version(&SUI_RANDOMNESS_STATE_OBJECT_ID, randomness_obj_version)
+                .get_next_object_version(&IOTA_RANDOMNESS_STATE_OBJECT_ID, randomness_obj_version)
                 .unwrap(),
             randomness_obj_version
         );
@@ -451,7 +452,7 @@ mod tests {
             shared_input_next_versions,
             // Randomness object's version is only incremented by 1 regardless of lamport version.
             HashMap::from([(
-                (SUI_RANDOMNESS_STATE_OBJECT_ID, randomness_obj_version),
+                (IOTA_RANDOMNESS_STATE_OBJECT_ID, randomness_obj_version),
                 next_randomness_obj_version
             )])
         );
@@ -461,7 +462,7 @@ mod tests {
                 (
                     TransactionKey::RandomnessRound(0, RandomnessRound::new(1)),
                     vec![(
-                        (SUI_RANDOMNESS_STATE_OBJECT_ID, randomness_obj_version),
+                        (IOTA_RANDOMNESS_STATE_OBJECT_ID, randomness_obj_version),
                         randomness_obj_version
                     ),]
                 ),
@@ -469,7 +470,7 @@ mod tests {
                     certs[0].key(),
                     // It is critical that the randomness object version is updated before the assignment.
                     vec![(
-                        (SUI_RANDOMNESS_STATE_OBJECT_ID, randomness_obj_version),
+                        (IOTA_RANDOMNESS_STATE_OBJECT_ID, randomness_obj_version),
                         next_randomness_obj_version
                     )]
                 ),
@@ -477,7 +478,7 @@ mod tests {
                     certs[1].key(),
                     // It is critical that the randomness object version is updated before the assignment.
                     vec![(
-                        (SUI_RANDOMNESS_STATE_OBJECT_ID, randomness_obj_version),
+                        (IOTA_RANDOMNESS_STATE_OBJECT_ID, randomness_obj_version),
                         next_randomness_obj_version
                     )]
                 ),
@@ -556,7 +557,7 @@ mod tests {
             generate_shared_objs_tx_with_gas_version(
                 &[
                     (
-                        SUI_RANDOMNESS_STATE_OBJECT_ID,
+                        IOTA_RANDOMNESS_STATE_OBJECT_ID,
                         randomness_obj_version,
                         false,
                     ),
@@ -606,7 +607,7 @@ mod tests {
                 ((id1, init_shared_version_1), SequenceNumber::from_u64(5)), // determined by tx3
                 ((id2, init_shared_version_2), SequenceNumber::from_u64(4)), // determined by tx1
                 (
-                    (SUI_RANDOMNESS_STATE_OBJECT_ID, randomness_obj_version),
+                    (IOTA_RANDOMNESS_STATE_OBJECT_ID, randomness_obj_version),
                     SequenceNumber::from_u64(1)
                 ), // not mutable
             ])
@@ -645,7 +646,7 @@ mod tests {
                     certs[4].key(),
                     vec![
                         (
-                            (SUI_RANDOMNESS_STATE_OBJECT_ID, randomness_obj_version),
+                            (IOTA_RANDOMNESS_STATE_OBJECT_ID, randomness_obj_version),
                             SequenceNumber::RANDOMNESS_UNAVAILABLE
                         ),
                         ((id2, init_shared_version_2), SequenceNumber::CANCELLED_READ)
@@ -747,7 +748,7 @@ mod tests {
                 .unwrap();
         }
         let tx_data = TestTransactionBuilder::new(
-            SuiAddress::ZERO,
+            IotaAddress::ZERO,
             (
                 ObjectID::random(),
                 SequenceNumber::from_u64(gas_object_version),

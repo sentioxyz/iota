@@ -1,5 +1,6 @@
 // Copyright (c) 2021, Facebook, Inc. and its affiliates
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use prometheus::{
@@ -66,7 +67,7 @@ impl QuorumDriverMetrics {
             attempt_times_ok_response: register_histogram_with_registry!(
                 "quorum_driver_attempt_times_ok_response",
                 "Total attempt times of ok response",
-                mysten_metrics::COUNT_BUCKETS.to_vec(),
+                iota_metrics::COUNT_BUCKETS.to_vec(),
                 registry,
             )
             .unwrap(),
@@ -85,7 +86,7 @@ impl QuorumDriverMetrics {
             transaction_retry_count: register_histogram_with_registry!(
                 "quorum_driver_transaction_retry_count",
                 "Histogram of transaction retry count",
-                mysten_metrics::COUNT_BUCKETS.to_vec(),
+                iota_metrics::COUNT_BUCKETS.to_vec(),
                 registry,
             )
             .unwrap(),

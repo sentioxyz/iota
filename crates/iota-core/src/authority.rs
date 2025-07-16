@@ -1,5 +1,6 @@
 // Copyright (c) 2021, Facebook, Inc. and its affiliates
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::congestion_tracker::CongestionTracker;
@@ -22,8 +23,8 @@ use move_binary_format::binary_config::BinaryConfig;
 use move_binary_format::CompiledModule;
 use move_core_types::annotated_value::MoveStructLayout;
 use move_core_types::language_storage::ModuleId;
-use mysten_common::fatal;
-use mysten_metrics::{TX_TYPE_SHARED_OBJ_TX, TX_TYPE_SINGLE_WRITER_TX};
+use iota_common::fatal;
+use iota_metrics::{TX_TYPE_SHARED_OBJ_TX, TX_TYPE_SINGLE_WRITER_TX};
 use parking_lot::Mutex;
 use prometheus::{
     register_histogram_vec_with_registry, register_histogram_with_registry,
@@ -49,20 +50,20 @@ use std::{
     sync::Arc,
     vec,
 };
-use sui_config::node::{AuthorityOverloadConfig, StateDebugDumpConfig};
-use sui_config::NodeConfig;
-use sui_protocol_config::PerObjectCongestionControlMode;
-use sui_types::crypto::RandomnessRound;
-use sui_types::dynamic_field::visitor as DFV;
-use sui_types::execution::ExecutionTimeObservationKey;
-use sui_types::execution::ExecutionTiming;
-use sui_types::execution_status::ExecutionStatus;
-use sui_types::inner_temporary_store::PackageStoreWithFallback;
-use sui_types::layout_resolver::into_struct_layout;
-use sui_types::layout_resolver::LayoutResolver;
-use sui_types::messages_consensus::{AuthorityCapabilitiesV1, AuthorityCapabilitiesV2};
-use sui_types::object::bounded_visitor::BoundedVisitor;
-use sui_types::transaction_executor::SimulateTransactionResult;
+use iota_config::node::{AuthorityOverloadConfig, StateDebugDumpConfig};
+use iota_config::NodeConfig;
+use iota_protocol_config::PerObjectCongestionControlMode;
+use iota_types::crypto::RandomnessRound;
+use iota_types::dynamic_field::visitor as DFV;
+use iota_types::execution::ExecutionTimeObservationKey;
+use iota_types::execution::ExecutionTiming;
+use iota_types::execution_status::ExecutionStatus;
+use iota_types::inner_temporary_store::PackageStoreWithFallback;
+use iota_types::layout_resolver::into_struct_layout;
+use iota_types::layout_resolver::LayoutResolver;
+use iota_types::messages_consensus::{AuthorityCapabilitiesV1, AuthorityCapabilitiesV2};
+use iota_types::object::bounded_visitor::BoundedVisitor;
+use iota_types::transaction_executor::SimulateTransactionResult;
 use tap::TapFallible;
 use tokio::sync::mpsc::unbounded_channel;
 use tokio::sync::RwLock;
@@ -74,72 +75,72 @@ use tracing::{debug, error, info, instrument, warn};
 use self::authority_store::ExecutionLockWriteGuard;
 use self::authority_store_pruner::AuthorityStorePruningMetrics;
 pub use authority_store::{AuthorityStore, ResolverWrapper, UpdateType};
-use mysten_metrics::{monitored_scope, spawn_monitored_task};
+use iota_metrics::{monitored_scope, spawn_monitored_task};
 
 use crate::jsonrpc_index::IndexStore;
 use crate::jsonrpc_index::{CoinInfo, ObjectIndexChanges};
-use mysten_common::debug_fatal;
+use iota_common::debug_fatal;
 use shared_crypto::intent::{AppId, Intent, IntentMessage, IntentScope, IntentVersion};
-use sui_archival::reader::ArchiveReaderBalancer;
-use sui_config::genesis::Genesis;
-use sui_config::node::{DBCheckpointConfig, ExpensiveSafetyCheckConfig};
-use sui_framework::{BuiltInFramework, SystemPackage};
-use sui_json_rpc_types::{
-    DevInspectResults, DryRunTransactionBlockResponse, EventFilter, SuiEvent, SuiMoveValue,
-    SuiObjectDataFilter, SuiTransactionBlockData, SuiTransactionBlockEffects,
-    SuiTransactionBlockEvents, TransactionFilter,
+use iota_archival::reader::ArchiveReaderBalancer;
+use iota_config::genesis::Genesis;
+use iota_config::node::{DBCheckpointConfig, ExpensiveSafetyCheckConfig};
+use iota_framework::{BuiltInFramework, SystemPackage};
+use iota_json_rpc_types::{
+    DevInspectResults, DryRunTransactionBlockResponse, EventFilter, IotaEvent, IotaMoveValue,
+    IotaObjectDataFilter, IotaTransactionBlockData, IotaTransactionBlockEffects,
+    IotaTransactionBlockEvents, TransactionFilter,
 };
-use sui_macros::{fail_point, fail_point_async, fail_point_if};
-use sui_storage::key_value_store::{TransactionKeyValueStore, TransactionKeyValueStoreTrait};
-use sui_storage::key_value_store_metrics::KeyValueStoreMetrics;
-use sui_types::authenticator_state::get_authenticator_state;
-use sui_types::committee::{EpochId, ProtocolVersion};
-use sui_types::crypto::{default_hash, AuthoritySignInfo, Signer};
-use sui_types::deny_list_v1::check_coin_deny_list_v1;
-use sui_types::digests::ChainIdentifier;
-use sui_types::digests::TransactionEventsDigest;
-use sui_types::dynamic_field::{DynamicFieldInfo, DynamicFieldName};
-use sui_types::effects::{
+use iota_macros::{fail_point, fail_point_async, fail_point_if};
+use iota_storage::key_value_store::{TransactionKeyValueStore, TransactionKeyValueStoreTrait};
+use iota_storage::key_value_store_metrics::KeyValueStoreMetrics;
+use iota_types::authenticator_state::get_authenticator_state;
+use iota_types::committee::{EpochId, ProtocolVersion};
+use iota_types::crypto::{default_hash, AuthoritySignInfo, Signer};
+use iota_types::deny_list_v1::check_coin_deny_list_v1;
+use iota_types::digests::ChainIdentifier;
+use iota_types::digests::TransactionEventsDigest;
+use iota_types::dynamic_field::{DynamicFieldInfo, DynamicFieldName};
+use iota_types::effects::{
     InputSharedObject, SignedTransactionEffects, TransactionEffects, TransactionEffectsAPI,
     TransactionEvents, VerifiedSignedTransactionEffects,
 };
-use sui_types::error::{ExecutionError, UserInputError};
-use sui_types::event::{Event, EventID};
-use sui_types::executable_transaction::VerifiedExecutableTransaction;
-use sui_types::gas::{GasCostSummary, SuiGasStatus};
-use sui_types::inner_temporary_store::{
+use iota_types::error::{ExecutionError, UserInputError};
+use iota_types::event::{Event, EventID};
+use iota_types::executable_transaction::VerifiedExecutableTransaction;
+use iota_types::gas::{GasCostSummary, IotaGasStatus};
+use iota_types::inner_temporary_store::{
     InnerTemporaryStore, ObjectMap, TemporaryModuleResolver, TxCoins, WrittenObjects,
 };
-use sui_types::message_envelope::Message;
-use sui_types::messages_checkpoint::{
+use iota_types::message_envelope::Message;
+use iota_types::messages_checkpoint::{
     CertifiedCheckpointSummary, CheckpointCommitment, CheckpointContents, CheckpointContentsDigest,
     CheckpointDigest, CheckpointRequest, CheckpointRequestV2, CheckpointResponse,
     CheckpointResponseV2, CheckpointSequenceNumber, CheckpointSummary, CheckpointSummaryResponse,
     CheckpointTimestamp, ECMHLiveObjectSetDigest, VerifiedCheckpoint,
 };
-use sui_types::messages_grpc::{
+use iota_types::messages_grpc::{
     HandleTransactionResponse, LayoutGenerationOption, ObjectInfoRequest, ObjectInfoRequestKind,
     ObjectInfoResponse, TransactionInfoRequest, TransactionInfoResponse, TransactionStatus,
 };
-use sui_types::metrics::{BytecodeVerifierMetrics, LimitsMetrics};
-use sui_types::object::{MoveObject, Owner, PastObjectRead, OBJECT_START_VERSION};
-use sui_types::storage::{
+use iota_types::metrics::{BytecodeVerifierMetrics, LimitsMetrics};
+use iota_types::object::{MoveObject, Owner, PastObjectRead, OBJECT_START_VERSION};
+use iota_types::storage::{
     BackingPackageStore, BackingStore, ObjectKey, ObjectOrTombstone, ObjectStore, WriteKind,
 };
-use sui_types::sui_system_state::epoch_start_sui_system_state::EpochStartSystemStateTrait;
-use sui_types::sui_system_state::SuiSystemStateTrait;
-use sui_types::sui_system_state::{get_sui_system_state, SuiSystemState};
-use sui_types::supported_protocol_versions::{ProtocolConfig, SupportedProtocolVersions};
-use sui_types::{
+use iota_types::iota_system_state::epoch_start_iota_system_state::EpochStartSystemStateTrait;
+use iota_types::iota_system_state::IotaSystemStateTrait;
+use iota_types::iota_system_state::{get_iota_system_state, IotaSystemState};
+use iota_types::supported_protocol_versions::{ProtocolConfig, SupportedProtocolVersions};
+use iota_types::{
     base_types::*,
     committee::Committee,
     crypto::AuthoritySignature,
-    error::{SuiError, SuiResult},
+    error::{IotaError, IotaResult},
     object::{Object, ObjectRead},
     transaction::*,
-    SUI_SYSTEM_ADDRESS,
+    IOTA_SYSTEM_ADDRESS,
 };
-use sui_types::{is_system_package, TypeTag};
+use iota_types::{is_system_package, TypeTag};
 use typed_store::TypedStoreError;
 
 use crate::authority::authority_per_epoch_store::{AuthorityPerEpochStore, CertTxGuard};
@@ -176,9 +177,9 @@ use crate::authority::authority_store_tables::AuthorityPrunerTables;
 use crate::authority_client::NetworkAuthorityClient;
 use crate::validator_tx_finalizer::ValidatorTxFinalizer;
 #[cfg(msim)]
-use sui_types::committee::CommitteeTrait;
-use sui_types::deny_list_v2::check_coin_deny_list_v2_during_signing;
-use sui_types::execution_config_utils::to_binary_config;
+use iota_types::committee::CommitteeTrait;
+use iota_types::deny_list_v2::check_coin_deny_list_v2_during_signing;
+use iota_types::execution_config_utils::to_binary_config;
 
 #[cfg(test)]
 #[path = "unit_tests/authority_tests.rs"]
@@ -869,7 +870,7 @@ impl AuthorityState {
     pub fn get_epoch_state_commitments(
         &self,
         epoch: EpochId,
-    ) -> SuiResult<Option<Vec<CheckpointCommitment>>> {
+    ) -> IotaResult<Option<Vec<CheckpointCommitment>>> {
         self.checkpoint_store.get_epoch_state_commitments(epoch)
     }
 
@@ -877,7 +878,7 @@ impl AuthorityState {
         &self,
         transaction: &VerifiedTransaction,
         epoch_store: &Arc<AuthorityPerEpochStore>,
-    ) -> SuiResult<CheckedInputObjects> {
+    ) -> IotaResult<CheckedInputObjects> {
         let tx_digest = transaction.digest();
         let tx_data = transaction.data().transaction_data();
 
@@ -887,7 +888,7 @@ impl AuthorityState {
         // Note: the deny checks may do redundant package loads but:
         // - they only load packages when there is an active package deny map
         // - the loads are cached anyway
-        sui_transaction_checks::deny::check_transaction_for_signing(
+        iota_transaction_checks::deny::check_transaction_for_signing(
             tx_data,
             transaction.tx_signatures(),
             &input_object_kinds,
@@ -907,7 +908,7 @@ impl AuthorityState {
                 .unwrap_or(false),
         )?;
 
-        let (_gas_status, checked_input_objects) = sui_transaction_checks::check_transaction_input(
+        let (_gas_status, checked_input_objects) = iota_transaction_checks::check_transaction_input(
             epoch_store.protocol_config(),
             epoch_store.reference_gas_price(),
             tx_data,
@@ -946,7 +947,7 @@ impl AuthorityState {
         transaction: VerifiedTransaction,
         sign: bool,
         epoch_store: &Arc<AuthorityPerEpochStore>,
-    ) -> SuiResult<Option<VerifiedSignedTransaction>> {
+    ) -> IotaResult<Option<VerifiedSignedTransaction>> {
         // Ensure that validator cannot reconfigure while we are signing the tx
         let _execution_lock = self.execution_lock_for_signing();
 
@@ -987,7 +988,7 @@ impl AuthorityState {
         &self,
         epoch_store: &Arc<AuthorityPerEpochStore>,
         transaction: VerifiedTransaction,
-    ) -> SuiResult<HandleTransactionResponse> {
+    ) -> IotaResult<HandleTransactionResponse> {
         let tx_digest = *transaction.digest();
         debug!("handle_transaction");
 
@@ -1040,7 +1041,7 @@ impl AuthorityState {
         &self,
         epoch_store: &Arc<AuthorityPerEpochStore>,
         transaction: VerifiedTransaction,
-    ) -> SuiResult<Option<(TransactionEffects, TransactionEvents)>> {
+    ) -> IotaResult<Option<(TransactionEffects, TransactionEvents)>> {
         let tx_digest = *transaction.digest();
         debug!("handle_vote_transaction");
 
@@ -1063,7 +1064,7 @@ impl AuthorityState {
             .get_reconfig_state_read_lock_guard()
             .should_accept_user_certs()
         {
-            return Err(SuiError::ValidatorHaltedAtEpochEnd);
+            return Err(IotaError::ValidatorHaltedAtEpochEnd);
         }
 
         match self.handle_transaction_impl(transaction, false, epoch_store) {
@@ -1095,7 +1096,7 @@ impl AuthorityState {
         consensus_overload_checker: &(impl ConsensusOverloadChecker + ?Sized),
         tx_data: &SenderSignedData,
         do_authority_overload_check: bool,
-    ) -> SuiResult {
+    ) -> IotaResult {
         if do_authority_overload_check {
             self.check_authority_overload(tx_data).tap_err(|_| {
                 self.update_overload_metrics("execution_queue");
@@ -1116,7 +1117,7 @@ impl AuthorityState {
             .get_cache_commit()
             .approximate_pending_transaction_count();
         if pending_tx_count > self.config.execution_cache.backpressure_threshold_for_rpc() {
-            return Err(SuiError::ValidatorOverloadedRetryAfter {
+            return Err(IotaError::ValidatorOverloadedRetryAfter {
                 retry_after_secs: 10,
             });
         }
@@ -1124,7 +1125,7 @@ impl AuthorityState {
         Ok(())
     }
 
-    fn check_authority_overload(&self, tx_data: &SenderSignedData) -> SuiResult {
+    fn check_authority_overload(&self, tx_data: &SenderSignedData) -> IotaResult {
         if !self.overload_info.is_overload.load(Ordering::Relaxed) {
             return Ok(());
         }
@@ -1149,7 +1150,7 @@ impl AuthorityState {
         &self,
         certificate: &VerifiedCertificate,
         epoch_store: &Arc<AuthorityPerEpochStore>,
-    ) -> SuiResult<TransactionEffects> {
+    ) -> IotaResult<TransactionEffects> {
         let _metrics_guard = if certificate.contains_shared_object() {
             self.metrics
                 .execute_certificate_latency_shared_object
@@ -1176,7 +1177,7 @@ impl AuthorityState {
         epoch_store
             .within_alive_epoch(self.notify_read_effects(*certificate.digest()))
             .await
-            .map_err(|_| SuiError::EpochEnded(epoch_store.epoch()))
+            .map_err(|_| IotaError::EpochEnded(epoch_store.epoch()))
             .and_then(|r| r)
     }
 
@@ -1187,7 +1188,7 @@ impl AuthorityState {
         &self,
         digest: TransactionDigest,
         epoch_store: &Arc<AuthorityPerEpochStore>,
-    ) -> SuiResult<TransactionEffects> {
+    ) -> IotaResult<TransactionEffects> {
         let _metrics_guard = self.metrics.await_transaction_latency.start_timer();
         debug!("await_transaction");
 
@@ -1198,7 +1199,7 @@ impl AuthorityState {
         epoch_store
             .within_alive_epoch(self.notify_read_effects(digest))
             .await
-            .map_err(|_| SuiError::EpochEnded(epoch_store.epoch()))
+            .map_err(|_| IotaError::EpochEnded(epoch_store.epoch()))
             .and_then(|r| r)
     }
 
@@ -1212,14 +1213,14 @@ impl AuthorityState {
     /// It is caller's responsibility to ensure input objects are available and locks are set.
     /// If this cannot be satisfied by the caller, execute_certificate() should be called instead.
     ///
-    /// Should only be called within sui-core.
+    /// Should only be called within iota-core.
     #[instrument(level = "trace", skip_all)]
     pub async fn try_execute_immediately(
         &self,
         certificate: &VerifiedExecutableTransaction,
         mut expected_effects_digest: Option<TransactionEffectsDigest>,
         epoch_store: &Arc<AuthorityPerEpochStore>,
-    ) -> SuiResult<(TransactionEffects, Option<ExecutionError>)> {
+    ) -> IotaResult<(TransactionEffects, Option<ExecutionError>)> {
         let _scope = monitored_scope("Execution::try_execute_immediately");
         let _metrics_guard = self.metrics.internal_execution_latency.start_timer();
 
@@ -1278,7 +1279,7 @@ impl AuthorityState {
         tx_lock: &CertLockGuard,
         certificate: &VerifiedExecutableTransaction,
         epoch_store: &Arc<AuthorityPerEpochStore>,
-    ) -> SuiResult<InputObjects> {
+    ) -> IotaResult<InputObjects> {
         let _scope = monitored_scope("Execution::load_input_objects");
         let _metrics_guard = self
             .metrics
@@ -1299,7 +1300,7 @@ impl AuthorityState {
     pub async fn try_execute_for_test(
         &self,
         certificate: &VerifiedCertificate,
-    ) -> SuiResult<(VerifiedSignedTransactionEffects, Option<ExecutionError>)> {
+    ) -> IotaResult<(VerifiedSignedTransactionEffects, Option<ExecutionError>)> {
         let epoch_store = self.epoch_store_for_testing();
         let (effects, execution_error_opt) = self
             .try_execute_immediately(
@@ -1315,7 +1316,7 @@ impl AuthorityState {
     pub async fn notify_read_effects(
         &self,
         digest: TransactionDigest,
-    ) -> SuiResult<TransactionEffects> {
+    ) -> IotaResult<TransactionEffects> {
         Ok(self
             .get_transaction_cache_reader()
             .notify_read_executed_effects(&[digest])
@@ -1324,7 +1325,7 @@ impl AuthorityState {
             .expect("must return correct number of effects"))
     }
 
-    fn check_owned_locks(&self, owned_object_refs: &[ObjectRef]) -> SuiResult {
+    fn check_owned_locks(&self, owned_object_refs: &[ObjectRef]) -> IotaResult {
         self.get_object_cache_reader()
             .check_owned_objects_are_live(owned_object_refs)
     }
@@ -1341,7 +1342,7 @@ impl AuthorityState {
         inner_temporary_store: &InnerTemporaryStore,
         certificate: &VerifiedExecutableTransaction,
         debug_dump_config: &StateDebugDumpConfig,
-    ) -> SuiResult<PathBuf> {
+    ) -> IotaResult<PathBuf> {
         let dump_dir = debug_dump_config
             .dump_file_directory
             .as_ref()
@@ -1359,7 +1360,7 @@ impl AuthorityState {
             certificate,
         )?
         .write_to_file(&dump_dir)
-        .map_err(|e| SuiError::FileIOError(e.to_string()))
+        .map_err(|e| IotaError::FileIOError(e.to_string()))
     }
 
     #[instrument(level = "trace", skip_all)]
@@ -1370,7 +1371,7 @@ impl AuthorityState {
         input_objects: InputObjects,
         expected_effects_digest: Option<TransactionEffectsDigest>,
         epoch_store: &Arc<AuthorityPerEpochStore>,
-    ) -> SuiResult<(
+    ) -> IotaResult<(
         TransactionEffects,
         Vec<ExecutionTiming>,
         Option<ExecutionError>,
@@ -1379,8 +1380,8 @@ impl AuthorityState {
         let digest = *certificate.digest();
 
         fail_point_if!("correlated-crash-process-certificate", || {
-            if sui_simulator::random::deterministic_probability_once(&digest, 0.01) {
-                sui_simulator::task::kill_current_node(None);
+            if iota_simulator::random::deterministic_probability_once(&digest, 0.01) {
+                iota_simulator::task::kill_current_node(None);
             }
         });
 
@@ -1401,7 +1402,7 @@ impl AuthorityState {
         if *execution_guard != epoch_store.epoch() {
             tx_guard.release();
             info!("The epoch of the execution_guard doesn't match the epoch store");
-            return Err(SuiError::WrongEpoch {
+            return Err(IotaError::WrongEpoch {
                 expected_epoch: epoch_store.epoch(),
                 actual_epoch: *execution_guard,
             });
@@ -1519,8 +1520,8 @@ impl AuthorityState {
         tx_guard: CertTxGuard,
         _execution_guard: ExecutionLockReadGuard<'_>,
         epoch_store: &Arc<AuthorityPerEpochStore>,
-    ) -> SuiResult {
-        let _scope: Option<mysten_metrics::MonitoredScopeGuard> =
+    ) -> IotaResult {
+        let _scope: Option<iota_metrics::MonitoredScopeGuard> =
             monitored_scope("Execution::commit_certificate");
         let _metrics_guard = self.metrics.commit_certificate_latency.start_timer();
 
@@ -1637,7 +1638,7 @@ impl AuthorityState {
         certificate: &VerifiedExecutableTransaction,
         input_objects: InputObjects,
         epoch_store: &Arc<AuthorityPerEpochStore>,
-    ) -> SuiResult<(
+    ) -> IotaResult<(
         InnerTemporaryStore,
         TransactionEffects,
         Vec<ExecutionTiming>,
@@ -1652,7 +1653,7 @@ impl AuthorityState {
         tx_data.validity_check(epoch_store.protocol_config())?;
 
         // The cost of partially re-auditing a transaction before execution is tolerated.
-        let (gas_status, input_objects) = sui_transaction_checks::check_certificate_input(
+        let (gas_status, input_objects) = iota_transaction_checks::check_certificate_input(
             certificate,
             input_objects,
             epoch_store.protocol_config(),
@@ -1673,10 +1674,10 @@ impl AuthorityState {
                 protocol_config,
                 self.metrics.limits_metrics.clone(),
                 // TODO: would be nice to pass the whole NodeConfig here, but it creates a
-                // cyclic dependency w/ sui-adapter
+                // cyclic dependency w/ iota-adapter
                 self.config
                     .expensive_safety_check_config
-                    .enable_deep_per_tx_sui_conservation_check(),
+                    .enable_deep_per_tx_iota_conservation_check(),
                 self.config.certificate_deny_config.certificate_deny_set(),
                 &epoch_store.epoch_start_config().epoch_data().epoch_id(),
                 epoch_store
@@ -1717,7 +1718,7 @@ impl AuthorityState {
         certificate: &VerifiedExecutableTransaction,
         input_objects: InputObjects,
         epoch_store: &Arc<AuthorityPerEpochStore>,
-    ) -> SuiResult<(
+    ) -> IotaResult<(
         InnerTemporaryStore,
         TransactionEffects,
         Option<ExecutionError>,
@@ -1736,7 +1737,7 @@ impl AuthorityState {
         &self,
         transaction: TransactionData,
         transaction_digest: TransactionDigest,
-    ) -> SuiResult<(
+    ) -> IotaResult<(
         DryRunTransactionBlockResponse,
         BTreeMap<ObjectID, (ObjectRef, Object, WriteKind)>,
         TransactionEffects,
@@ -1744,13 +1745,13 @@ impl AuthorityState {
     )> {
         let epoch_store = self.load_epoch_store_one_call_per_task();
         if !self.is_fullnode(&epoch_store) {
-            return Err(SuiError::UnsupportedFeatureError {
+            return Err(IotaError::UnsupportedFeatureError {
                 error: "dry-exec is only supported on fullnodes".to_string(),
             });
         }
 
         if transaction.kind().is_system_tx() {
-            return Err(SuiError::UnsupportedFeatureError {
+            return Err(IotaError::UnsupportedFeatureError {
                 error: "dry-exec does not support system transactions".to_string(),
             });
         }
@@ -1763,7 +1764,7 @@ impl AuthorityState {
         &self,
         transaction: TransactionData,
         transaction_digest: TransactionDigest,
-    ) -> SuiResult<(
+    ) -> IotaResult<(
         DryRunTransactionBlockResponse,
         BTreeMap<ObjectID, (ObjectRef, Object, WriteKind)>,
         TransactionEffects,
@@ -1779,7 +1780,7 @@ impl AuthorityState {
         epoch_store: &AuthorityPerEpochStore,
         transaction: TransactionData,
         transaction_digest: TransactionDigest,
-    ) -> SuiResult<(
+    ) -> IotaResult<(
         DryRunTransactionBlockResponse,
         BTreeMap<ObjectID, (ObjectRef, Object, WriteKind)>,
         TransactionEffects,
@@ -1791,7 +1792,7 @@ impl AuthorityState {
         let input_object_kinds = transaction.input_objects()?;
         let receiving_object_refs = transaction.receiving_objects();
 
-        sui_transaction_checks::deny::check_transaction_for_signing(
+        iota_transaction_checks::deny::check_transaction_for_signing(
             &transaction,
             &[],
             &input_object_kinds,
@@ -1816,10 +1817,10 @@ impl AuthorityState {
         let mut gas_data = transaction.gas_data().clone();
         let ((gas_status, checked_input_objects), mock_gas) = if transaction.gas().is_empty() {
             let sender = transaction.sender();
-            // use a 1B sui coin
-            const MIST_TO_SUI: u64 = 1_000_000_000;
-            const DRY_RUN_SUI: u64 = 1_000_000_000;
-            let max_coin_value = MIST_TO_SUI * DRY_RUN_SUI;
+            // use a 1B iota coin
+            const NANOS_TO_IOTA: u64 = 1_000_000_000;
+            const DRY_RUN_IOTA: u64 = 1_000_000_000;
+            let max_coin_value = NANOS_TO_IOTA * DRY_RUN_IOTA;
             let gas_object_id = ObjectID::random();
             let gas_object = Object::new_move(
                 MoveObject::new_gas_coin(OBJECT_START_VERSION, gas_object_id, max_coin_value),
@@ -1829,7 +1830,7 @@ impl AuthorityState {
             let gas_object_ref = gas_object.compute_object_reference();
             gas_data.payment = vec![gas_object_ref];
             (
-                sui_transaction_checks::check_transaction_input_with_given_gas(
+                iota_transaction_checks::check_transaction_input_with_given_gas(
                     epoch_store.protocol_config(),
                     epoch_store.reference_gas_price(),
                     &transaction,
@@ -1843,7 +1844,7 @@ impl AuthorityState {
             )
         } else {
             (
-                sui_transaction_checks::check_transaction_input(
+                iota_transaction_checks::check_transaction_input(
                     epoch_store.protocol_config(),
                     epoch_store.reference_gas_price(),
                     &transaction,
@@ -1860,7 +1861,7 @@ impl AuthorityState {
         let (kind, signer, _) = transaction.execution_parts();
 
         let silent = true;
-        let executor = sui_execution::executor(protocol_config, silent, None)
+        let executor = iota_execution::executor(protocol_config, silent, None)
             .expect("Creating an executor should not fail here");
 
         let expensive_checks = false;
@@ -1932,16 +1933,16 @@ impl AuthorityState {
 
         Ok((
             DryRunTransactionBlockResponse {
-                input: SuiTransactionBlockData::try_from(transaction, &module_cache).map_err(
-                    |e| SuiError::TransactionSerializationError {
+                input: IotaTransactionBlockData::try_from(transaction, &module_cache).map_err(
+                    |e| IotaError::TransactionSerializationError {
                         error: format!(
-                            "Failed to convert transaction to SuiTransactionBlockData: {}",
+                            "Failed to convert transaction to IotaTransactionBlockData: {}",
                             e
                         ),
                     },
-                )?, // TODO: replace the underlying try_from to SuiError. This one goes deep
+                )?, // TODO: replace the underlying try_from to IotaError. This one goes deep
                 effects: effects.clone().try_into()?,
-                events: SuiTransactionBlockEvents::try_from(
+                events: IotaTransactionBlockEvents::try_from(
                     inner_temp_store.events.clone(),
                     tx_digest,
                     None,
@@ -1960,16 +1961,16 @@ impl AuthorityState {
     pub fn simulate_transaction(
         &self,
         transaction: TransactionData,
-    ) -> SuiResult<SimulateTransactionResult> {
+    ) -> IotaResult<SimulateTransactionResult> {
         if transaction.kind().is_system_tx() {
-            return Err(SuiError::UnsupportedFeatureError {
+            return Err(IotaError::UnsupportedFeatureError {
                 error: "simulate does not support system transactions".to_string(),
             });
         }
 
         let epoch_store = self.load_epoch_store_one_call_per_task();
         if !self.is_fullnode(&epoch_store) {
-            return Err(SuiError::UnsupportedFeatureError {
+            return Err(IotaError::UnsupportedFeatureError {
                 error: "simulate is only supported on fullnodes".to_string(),
             });
         }
@@ -1981,14 +1982,14 @@ impl AuthorityState {
         &self,
         epoch_store: &AuthorityPerEpochStore,
         transaction: TransactionData,
-    ) -> SuiResult<SimulateTransactionResult> {
+    ) -> IotaResult<SimulateTransactionResult> {
         // Cheap validity checks for a transaction, including input size limits.
         transaction.validity_check_no_gas_check(epoch_store.protocol_config())?;
 
         let input_object_kinds = transaction.input_objects()?;
         let receiving_object_refs = transaction.receiving_objects();
 
-        sui_transaction_checks::deny::check_transaction_for_signing(
+        iota_transaction_checks::deny::check_transaction_for_signing(
             &transaction,
             &[],
             &input_object_kinds,
@@ -2013,10 +2014,10 @@ impl AuthorityState {
         let mut gas_data = transaction.gas_data().clone();
         let ((gas_status, checked_input_objects), mock_gas) = if transaction.gas().is_empty() {
             let sender = transaction.sender();
-            // use a 1B sui coin
-            const MIST_TO_SUI: u64 = 1_000_000_000;
-            const DRY_RUN_SUI: u64 = 1_000_000_000;
-            let max_coin_value = MIST_TO_SUI * DRY_RUN_SUI;
+            // use a 1B iota coin
+            const NANOS_TO_IOTA: u64 = 1_000_000_000;
+            const DRY_RUN_IOTA: u64 = 1_000_000_000;
+            let max_coin_value = NANOS_TO_IOTA * DRY_RUN_IOTA;
             let gas_object_id = ObjectID::MAX;
             let gas_object = Object::new_move(
                 MoveObject::new_gas_coin(OBJECT_START_VERSION, gas_object_id, max_coin_value),
@@ -2026,7 +2027,7 @@ impl AuthorityState {
             let gas_object_ref = gas_object.compute_object_reference();
             gas_data.payment = vec![gas_object_ref];
             (
-                sui_transaction_checks::check_transaction_input_with_given_gas(
+                iota_transaction_checks::check_transaction_input_with_given_gas(
                     epoch_store.protocol_config(),
                     epoch_store.reference_gas_price(),
                     &transaction,
@@ -2040,7 +2041,7 @@ impl AuthorityState {
             )
         } else {
             (
-                sui_transaction_checks::check_transaction_input(
+                iota_transaction_checks::check_transaction_input(
                     epoch_store.protocol_config(),
                     epoch_store.reference_gas_price(),
                     &transaction,
@@ -2057,7 +2058,7 @@ impl AuthorityState {
         let (kind, signer, _) = transaction.execution_parts();
 
         let silent = true;
-        let executor = sui_execution::executor(protocol_config, silent, None)
+        let executor = iota_execution::executor(protocol_config, silent, None)
             .expect("Creating an executor should not fail here");
 
         let expensive_checks = false;
@@ -2096,25 +2097,25 @@ impl AuthorityState {
     #[instrument(skip_all)]
     pub async fn dev_inspect_transaction_block(
         &self,
-        sender: SuiAddress,
+        sender: IotaAddress,
         transaction_kind: TransactionKind,
         gas_price: Option<u64>,
         gas_budget: Option<u64>,
-        gas_sponsor: Option<SuiAddress>,
+        gas_sponsor: Option<IotaAddress>,
         gas_objects: Option<Vec<ObjectRef>>,
         show_raw_txn_data_and_effects: Option<bool>,
         skip_checks: Option<bool>,
-    ) -> SuiResult<DevInspectResults> {
+    ) -> IotaResult<DevInspectResults> {
         let epoch_store = self.load_epoch_store_one_call_per_task();
 
         if !self.is_fullnode(&epoch_store) {
-            return Err(SuiError::UnsupportedFeatureError {
+            return Err(IotaError::UnsupportedFeatureError {
                 error: "dev-inspect is only supported on fullnodes".to_string(),
             });
         }
 
         if transaction_kind.is_system_tx() {
-            return Err(SuiError::UnsupportedFeatureError {
+            return Err(IotaError::UnsupportedFeatureError {
                 error: "system transactions are not supported".to_string(),
             });
         }
@@ -2143,7 +2144,7 @@ impl AuthorityState {
         });
 
         let raw_txn_data = if show_raw_txn_data_and_effects {
-            bcs::to_bytes(&transaction).map_err(|_| SuiError::TransactionSerializationError {
+            bcs::to_bytes(&transaction).map_err(|_| IotaError::TransactionSerializationError {
                 error: "Failed to serialize transaction during dev inspect".to_string(),
             })?
         } else {
@@ -2155,7 +2156,7 @@ impl AuthorityState {
         let input_object_kinds = transaction.input_objects()?;
         let receiving_object_refs = transaction.receiving_objects();
 
-        sui_transaction_checks::deny::check_transaction_for_signing(
+        iota_transaction_checks::deny::check_transaction_for_signing(
             &transaction,
             &[],
             &input_object_kinds,
@@ -2193,13 +2194,13 @@ impl AuthorityState {
                     dummy_gas_object.into(),
                 ));
             }
-            let checked_input_objects = sui_transaction_checks::check_dev_inspect_input(
+            let checked_input_objects = iota_transaction_checks::check_dev_inspect_input(
                 protocol_config,
                 &transaction_kind,
                 input_objects,
                 receiving_objects,
             )?;
-            let gas_status = SuiGasStatus::new(
+            let gas_status = IotaGasStatus::new(
                 max_tx_gas,
                 transaction.gas_price(),
                 reference_gas_price,
@@ -2218,7 +2219,7 @@ impl AuthorityState {
                 );
                 let gas_object_ref = dummy_gas_object.compute_object_reference();
                 transaction.gas_data_mut().payment = vec![gas_object_ref];
-                sui_transaction_checks::check_transaction_input_with_given_gas(
+                iota_transaction_checks::check_transaction_input_with_given_gas(
                     epoch_store.protocol_config(),
                     epoch_store.reference_gas_price(),
                     &transaction,
@@ -2229,7 +2230,7 @@ impl AuthorityState {
                     &self.config.verifier_signing_config,
                 )?
             } else {
-                sui_transaction_checks::check_transaction_input(
+                iota_transaction_checks::check_transaction_input(
                     epoch_store.protocol_config(),
                     epoch_store.reference_gas_price(),
                     &transaction,
@@ -2241,14 +2242,14 @@ impl AuthorityState {
             }
         };
 
-        let executor = sui_execution::executor(protocol_config, /* silent */ true, None)
+        let executor = iota_execution::executor(protocol_config, /* silent */ true, None)
             .expect("Creating an executor should not fail here");
         let gas_data = transaction.gas_data().clone();
         let intent_msg = IntentMessage::new(
             Intent {
                 version: IntentVersion::V0,
                 scope: IntentScope::TransactionData,
-                app_id: AppId::Sui,
+                app_id: AppId::Iota,
             },
             transaction,
         );
@@ -2274,7 +2275,7 @@ impl AuthorityState {
         );
 
         let raw_effects = if show_raw_txn_data_and_effects {
-            bcs::to_bytes(&effects).map_err(|_| SuiError::TransactionSerializationError {
+            bcs::to_bytes(&effects).map_err(|_| IotaError::TransactionSerializationError {
                 error: "Failed to serialize transaction effects during dev inspect".to_string(),
             })?
         } else {
@@ -2323,7 +2324,7 @@ impl AuthorityState {
         tx_coins: Option<TxCoins>,
         written: &WrittenObjects,
         inner_temporary_store: &InnerTemporaryStore,
-    ) -> SuiResult<u64> {
+    ) -> IotaResult<u64> {
         let changes = self
             .process_object_index(effects, written, inner_temporary_store)
             .tap_err(|e| warn!(tx_digest=?digest, "Failed to process object index, index_tx is skipped: {e}"))?;
@@ -2392,7 +2393,7 @@ impl AuthorityState {
         effects: &TransactionEffects,
         written: &WrittenObjects,
         inner_temporary_store: &InnerTemporaryStore,
-    ) -> SuiResult<ObjectIndexChanges> {
+    ) -> IotaResult<ObjectIndexChanges> {
         let epoch_store = self.load_epoch_store_one_call_per_task();
         let mut layout_resolver =
             epoch_store
@@ -2515,7 +2516,7 @@ impl AuthorityState {
         o: &Object,
         written: &WrittenObjects,
         resolver: &mut dyn LayoutResolver,
-    ) -> SuiResult<Option<DynamicFieldInfo>> {
+    ) -> IotaResult<Option<DynamicFieldInfo>> {
         // Skip if not a move object
         let Some(move_object) = o.data.try_as_move().cloned() else {
             return Ok(None);
@@ -2532,7 +2533,7 @@ impl AuthorityState {
 
         let field =
             DFV::FieldVisitor::deserialize(move_object.contents(), &layout).map_err(|e| {
-                SuiError::ObjectDeserializationError {
+                IotaError::ObjectDeserializationError {
                     error: e.to_string(),
                 }
             })?;
@@ -2544,19 +2545,19 @@ impl AuthorityState {
         let name_value = BoundedVisitor::deserialize_value(field.name_bytes, field.name_layout)
             .map_err(|e| {
                 warn!("{e}");
-                SuiError::ObjectDeserializationError {
+                IotaError::ObjectDeserializationError {
                     error: e.to_string(),
                 }
             })?;
 
         let name = DynamicFieldName {
             type_: name_type,
-            value: SuiMoveValue::from(name_value).to_json_value(),
+            value: IotaMoveValue::from(name_value).to_json_value(),
         };
 
         let value_metadata = field.value_metadata().map_err(|e| {
             warn!("{e}");
-            SuiError::ObjectDeserializationError {
+            IotaError::ObjectDeserializationError {
                 error: e.to_string(),
             }
         })?;
@@ -2616,7 +2617,7 @@ impl AuthorityState {
         effects: &TransactionEffects,
         inner_temporary_store: &InnerTemporaryStore,
         epoch_store: &Arc<AuthorityPerEpochStore>,
-    ) -> SuiResult {
+    ) -> IotaResult {
         if self.indexes.is_none() {
             return Ok(());
         }
@@ -2646,7 +2647,7 @@ impl AuthorityState {
                 .tap_err(|e| error!(?tx_digest, "Post processing - Couldn't index tx: {e}"))
                 .expect("Indexing tx should not fail");
 
-            let effects: SuiTransactionBlockEffects = effects.clone().try_into()?;
+            let effects: IotaTransactionBlockEffects = effects.clone().try_into()?;
             let events = self.make_transaction_block_events(
                 events.clone(),
                 *tx_digest,
@@ -2683,7 +2684,7 @@ impl AuthorityState {
         timestamp_ms: u64,
         epoch_store: &Arc<AuthorityPerEpochStore>,
         inner_temporary_store: &InnerTemporaryStore,
-    ) -> SuiResult<SuiTransactionBlockEvents> {
+    ) -> IotaResult<IotaTransactionBlockEvents> {
         let mut layout_resolver =
             epoch_store
                 .executor()
@@ -2691,7 +2692,7 @@ impl AuthorityState {
                     inner_temporary_store,
                     self.get_backing_package_store(),
                 )));
-        SuiTransactionBlockEvents::try_from(
+        IotaTransactionBlockEvents::try_from(
             transaction_events,
             digest,
             Some(timestamp_ms),
@@ -2714,11 +2715,11 @@ impl AuthorityState {
     pub async fn handle_transaction_info_request(
         &self,
         request: TransactionInfoRequest,
-    ) -> SuiResult<TransactionInfoResponse> {
+    ) -> IotaResult<TransactionInfoResponse> {
         let epoch_store = self.load_epoch_store_one_call_per_task();
         let (transaction, status) = self
             .get_transaction_status(&request.transaction_digest, &epoch_store)?
-            .ok_or(SuiError::TransactionNotFound {
+            .ok_or(IotaError::TransactionNotFound {
                 digest: request.transaction_digest,
             })?;
         Ok(TransactionInfoResponse {
@@ -2731,7 +2732,7 @@ impl AuthorityState {
     pub async fn handle_object_info_request(
         &self,
         request: ObjectInfoRequest,
-    ) -> SuiResult<ObjectInfoResponse> {
+    ) -> IotaResult<ObjectInfoResponse> {
         let epoch_store = self.load_epoch_store_one_call_per_task();
 
         let requested_object_seq = match request.request_kind {
@@ -2740,7 +2741,7 @@ impl AuthorityState {
                     .get_object_or_tombstone(request.object_id)
                     .await
                     .ok_or_else(|| {
-                        SuiError::from(UserInputError::ObjectNotFound {
+                        IotaError::from(UserInputError::ObjectNotFound {
                             object_id: request.object_id,
                             version: None,
                         })
@@ -2754,7 +2755,7 @@ impl AuthorityState {
             .get_object_store()
             .get_object_by_key(&request.object_id, requested_object_seq)
             .ok_or_else(|| {
-                SuiError::from(UserInputError::ObjectNotFound {
+                IotaError::from(UserInputError::ObjectNotFound {
                     object_id: request.object_id,
                     version: Some(requested_object_seq),
                 })
@@ -2793,7 +2794,7 @@ impl AuthorityState {
     pub fn handle_checkpoint_request(
         &self,
         request: &CheckpointRequest,
-    ) -> SuiResult<CheckpointResponse> {
+    ) -> IotaResult<CheckpointResponse> {
         let summary = match request.sequence_number {
             Some(seq) => self
                 .checkpoint_store
@@ -2817,7 +2818,7 @@ impl AuthorityState {
     pub fn handle_checkpoint_request_v2(
         &self,
         request: &CheckpointRequestV2,
-    ) -> SuiResult<CheckpointResponseV2> {
+    ) -> IotaResult<CheckpointResponseV2> {
         let summary = if request.certified {
             let summary = match request.sequence_number {
                 Some(seq) => self
@@ -2856,7 +2857,7 @@ impl AuthorityState {
         info!("supported versions are: {:?}", supported_protocol_versions);
         if !supported_protocol_versions.is_version_supported(current_version) {
             let msg = format!(
-                "Unsupported protocol version. The network is at {:?}, but this SuiNode only supports: {:?}. Shutting down.",
+                "Unsupported protocol version. The network is at {:?}, but this IotaNode only supports: {:?}. Shutting down.",
                 current_version, supported_protocol_versions,
             );
 
@@ -2867,7 +2868,7 @@ impl AuthorityState {
             std::process::exit(1);
 
             #[cfg(msim)]
-            sui_simulator::task::shutdown_current_node();
+            iota_simulator::task::shutdown_current_node();
         }
     }
 
@@ -3072,7 +3073,7 @@ impl AuthorityState {
         &self,
         genesis_objects: &[Object],
         epoch_store: &Arc<AuthorityPerEpochStore>,
-    ) -> SuiResult {
+    ) -> IotaResult {
         let Some(index_store) = &self.indexes else {
             return Ok(());
         };
@@ -3121,15 +3122,15 @@ impl AuthorityState {
     pub fn execution_lock_for_executable_transaction(
         &self,
         transaction: &VerifiedExecutableTransaction,
-    ) -> SuiResult<ExecutionLockReadGuard> {
+    ) -> IotaResult<ExecutionLockReadGuard> {
         let lock = self
             .execution_lock
             .try_read()
-            .map_err(|_| SuiError::ValidatorHaltedAtEpochEnd)?;
+            .map_err(|_| IotaError::ValidatorHaltedAtEpochEnd)?;
         if *lock == transaction.auth_sig().epoch() {
             Ok(lock)
         } else {
-            Err(SuiError::WrongEpoch {
+            Err(IotaError::WrongEpoch {
                 expected_epoch: *lock,
                 actual_epoch: transaction.auth_sig().epoch(),
             })
@@ -3140,10 +3141,10 @@ impl AuthorityState {
     /// This prevents reconfiguration from starting until we are finished handling the signing request.
     /// Otherwise, in-memory lock state could be cleared (by `ObjectLocks::clear_cached_locks`)
     /// while we are attempting to acquire locks for the transaction.
-    pub fn execution_lock_for_signing(&self) -> SuiResult<ExecutionLockReadGuard> {
+    pub fn execution_lock_for_signing(&self) -> IotaResult<ExecutionLockReadGuard> {
         self.execution_lock
             .try_read()
-            .map_err(|_| SuiError::ValidatorHaltedAtEpochEnd)
+            .map_err(|_| IotaError::ValidatorHaltedAtEpochEnd)
     }
 
     pub async fn execution_lock_for_reconfiguration(&self) -> ExecutionLockWriteGuard {
@@ -3160,7 +3161,7 @@ impl AuthorityState {
         accumulator: Arc<StateAccumulator>,
         expensive_safety_check_config: &ExpensiveSafetyCheckConfig,
         epoch_last_checkpoint: CheckpointSequenceNumber,
-    ) -> SuiResult<Arc<AuthorityPerEpochStore>> {
+    ) -> IotaResult<Arc<AuthorityPerEpochStore>> {
         Self::check_protocol_version(
             supported_protocol_versions,
             epoch_start_configuration
@@ -3312,7 +3313,7 @@ impl AuthorityState {
         expensive_safety_check_config: &ExpensiveSafetyCheckConfig,
     ) {
         info!(
-            "Performing sui conservation consistency check for epoch {}",
+            "Performing iota conservation consistency check for epoch {}",
             cur_epoch_store.epoch()
         );
 
@@ -3322,17 +3323,17 @@ impl AuthorityState {
 
         if let Err(err) = self
             .get_reconfig_api()
-            .expensive_check_sui_conservation(cur_epoch_store)
+            .expensive_check_iota_conservation(cur_epoch_store)
         {
             if cfg!(debug_assertions) {
                 panic!("{}", err);
             } else {
                 // We cannot panic in production yet because it is known that there are some
                 // inconsistencies in testnet. We will enable this once we make it balanced again in testnet.
-                warn!("Sui conservation consistency check failed: {}", err);
+                warn!("IOTA conservation consistency check failed: {}", err);
             }
         } else {
-            info!("Sui conservation consistency check passed");
+            info!("IOTA conservation consistency check passed");
         }
 
         // check for root state hash consistency with live object set
@@ -3409,7 +3410,7 @@ impl AuthorityState {
         checkpoint_path: &Path,
         cur_epoch_store: &AuthorityPerEpochStore,
         checkpoint_indexes: bool,
-    ) -> SuiResult {
+    ) -> IotaResult {
         let _metrics_guard = self.metrics.db_checkpoint_latency.start_timer();
         let current_epoch = cur_epoch_store.epoch();
 
@@ -3423,13 +3424,13 @@ impl AuthorityState {
 
         if checkpoint_path_tmp.exists() {
             fs::remove_dir_all(&checkpoint_path_tmp)
-                .map_err(|e| SuiError::FileIOError(e.to_string()))?;
+                .map_err(|e| IotaError::FileIOError(e.to_string()))?;
         }
 
         fs::create_dir_all(&checkpoint_path_tmp)
-            .map_err(|e| SuiError::FileIOError(e.to_string()))?;
+            .map_err(|e| IotaError::FileIOError(e.to_string()))?;
         fs::create_dir(&store_checkpoint_path_tmp)
-            .map_err(|e| SuiError::FileIOError(e.to_string()))?;
+            .map_err(|e| IotaError::FileIOError(e.to_string()))?;
 
         // NOTE: Do not change the order of invoking these checkpoint calls
         // We want to snapshot checkpoint db first to not race with state sync
@@ -3449,7 +3450,7 @@ impl AuthorityState {
         }
 
         fs::rename(checkpoint_path_tmp, checkpoint_path)
-            .map_err(|e| SuiError::FileIOError(e.to_string()))?;
+            .map_err(|e| IotaError::FileIOError(e.to_string()))?;
         Ok(())
     }
 
@@ -3476,18 +3477,18 @@ impl AuthorityState {
         self.get_object_store().get_object(object_id)
     }
 
-    pub async fn get_sui_system_package_object_ref(&self) -> SuiResult<ObjectRef> {
+    pub async fn get_iota_system_package_object_ref(&self) -> IotaResult<ObjectRef> {
         Ok(self
-            .get_object(&SUI_SYSTEM_ADDRESS.into())
+            .get_object(&IOTA_SYSTEM_ADDRESS.into())
             .await
             .expect("framework object should always exist")
             .compute_object_reference())
     }
 
     // This function is only used for testing.
-    pub fn get_sui_system_state_object_for_testing(&self) -> SuiResult<SuiSystemState> {
+    pub fn get_iota_system_state_object_for_testing(&self) -> IotaResult<IotaSystemState> {
         self.get_object_cache_reader()
-            .get_sui_system_state_object_unsafe()
+            .get_iota_system_state_object_unsafe()
     }
 
     #[instrument(level = "trace", skip_all)]
@@ -3495,7 +3496,7 @@ impl AuthorityState {
         &self,
         digest: &TransactionDigest,
         epoch_store: &AuthorityPerEpochStore,
-    ) -> SuiResult<Option<CheckpointSequenceNumber>> {
+    ) -> IotaResult<Option<CheckpointSequenceNumber>> {
         epoch_store.get_transaction_checkpoint(digest)
     }
 
@@ -3503,7 +3504,7 @@ impl AuthorityState {
     pub fn get_checkpoint_by_sequence_number(
         &self,
         sequence_number: CheckpointSequenceNumber,
-    ) -> SuiResult<Option<VerifiedCheckpoint>> {
+    ) -> IotaResult<Option<VerifiedCheckpoint>> {
         Ok(self
             .checkpoint_store
             .get_checkpoint_by_sequence_number(sequence_number)?)
@@ -3514,7 +3515,7 @@ impl AuthorityState {
         &self,
         digest: &TransactionDigest,
         epoch_store: &AuthorityPerEpochStore,
-    ) -> SuiResult<Option<VerifiedCheckpoint>> {
+    ) -> IotaResult<Option<VerifiedCheckpoint>> {
         let checkpoint = self.get_transaction_checkpoint_sequence(digest, epoch_store)?;
         let Some(checkpoint) = checkpoint else {
             return Ok(None);
@@ -3526,7 +3527,7 @@ impl AuthorityState {
     }
 
     #[instrument(level = "trace", skip_all)]
-    pub fn get_object_read(&self, object_id: &ObjectID) -> SuiResult<ObjectRead> {
+    pub fn get_object_read(&self, object_id: &ObjectID) -> IotaResult<ObjectRead> {
         Ok(
             match self
                 .get_object_cache_reader()
@@ -3548,19 +3549,19 @@ impl AuthorityState {
     }
 
     #[instrument(level = "trace", skip_all)]
-    pub fn get_move_object<T>(&self, object_id: &ObjectID) -> SuiResult<T>
+    pub fn get_move_object<T>(&self, object_id: &ObjectID) -> IotaResult<T>
     where
         T: DeserializeOwned,
     {
         let o = self.get_object_read(object_id)?.into_object()?;
         if let Some(move_object) = o.data.try_as_move() {
             Ok(bcs::from_bytes(move_object.contents()).map_err(|e| {
-                SuiError::ObjectDeserializationError {
+                IotaError::ObjectDeserializationError {
                     error: format!("{e}"),
                 }
             })?)
         } else {
-            Err(SuiError::ObjectDeserializationError {
+            Err(IotaError::ObjectDeserializationError {
                 error: format!("Provided object : [{object_id}] is not a Move object."),
             })
         }
@@ -3576,7 +3577,7 @@ impl AuthorityState {
         &self,
         object_id: &ObjectID,
         version: SequenceNumber,
-    ) -> SuiResult<PastObjectRead> {
+    ) -> IotaResult<PastObjectRead> {
         // Firstly we see if the object ever existed by getting its latest data
         let Some(obj_ref) = self
             .get_object_cache_reader()
@@ -3630,7 +3631,7 @@ impl AuthorityState {
         &self,
         object_id: &ObjectID,
         version: SequenceNumber,
-    ) -> SuiResult<Option<(Object, Option<MoveStructLayout>)>> {
+    ) -> IotaResult<Option<(Object, Option<MoveStructLayout>)>> {
         let Some(object) = self
             .get_object_cache_reader()
             .get_object_by_key(object_id, version)
@@ -3642,7 +3643,7 @@ impl AuthorityState {
         Ok(Some((object, layout)))
     }
 
-    fn get_object_layout(&self, object: &Object) -> SuiResult<Option<MoveStructLayout>> {
+    fn get_object_layout(&self, object: &Object) -> IotaResult<Option<MoveStructLayout>> {
         let layout = object
             .data
             .try_as_move()
@@ -3663,11 +3664,11 @@ impl AuthorityState {
         &self,
         object_id: &ObjectID,
         version: SequenceNumber,
-    ) -> SuiResult<Owner> {
+    ) -> IotaResult<Owner> {
         self.get_object_store()
             .get_object_by_key(object_id, version)
             .ok_or_else(|| {
-                SuiError::from(UserInputError::ObjectNotFound {
+                IotaError::from(UserInputError::ObjectNotFound {
                     object_id: *object_id,
                     version: Some(version),
                 })
@@ -3678,57 +3679,57 @@ impl AuthorityState {
     #[instrument(level = "trace", skip_all)]
     pub fn get_owner_objects(
         &self,
-        owner: SuiAddress,
+        owner: IotaAddress,
         // If `Some`, the query will start from the next item after the specified cursor
         cursor: Option<ObjectID>,
         limit: usize,
-        filter: Option<SuiObjectDataFilter>,
-    ) -> SuiResult<Vec<ObjectInfo>> {
+        filter: Option<IotaObjectDataFilter>,
+    ) -> IotaResult<Vec<ObjectInfo>> {
         if let Some(indexes) = &self.indexes {
             indexes.get_owner_objects(owner, cursor, limit, filter)
         } else {
-            Err(SuiError::IndexStoreNotAvailable)
+            Err(IotaError::IndexStoreNotAvailable)
         }
     }
 
     #[instrument(level = "trace", skip_all)]
     pub fn get_owned_coins_iterator_with_cursor(
         &self,
-        owner: SuiAddress,
+        owner: IotaAddress,
         // If `Some`, the query will start from the next item after the specified cursor
         cursor: (String, u64, ObjectID),
         limit: usize,
         one_coin_type_only: bool,
-    ) -> SuiResult<impl Iterator<Item = (CoinIndexKey2, CoinInfo)> + '_> {
+    ) -> IotaResult<impl Iterator<Item = (CoinIndexKey2, CoinInfo)> + '_> {
         if let Some(indexes) = &self.indexes {
             indexes.get_owned_coins_iterator_with_cursor(owner, cursor, limit, one_coin_type_only)
         } else {
-            Err(SuiError::IndexStoreNotAvailable)
+            Err(IotaError::IndexStoreNotAvailable)
         }
     }
 
     #[instrument(level = "trace", skip_all)]
     pub fn get_owner_objects_iterator(
         &self,
-        owner: SuiAddress,
+        owner: IotaAddress,
         // If `Some`, the query will start from the next item after the specified cursor
         cursor: Option<ObjectID>,
-        filter: Option<SuiObjectDataFilter>,
-    ) -> SuiResult<impl Iterator<Item = ObjectInfo> + '_> {
+        filter: Option<IotaObjectDataFilter>,
+    ) -> IotaResult<impl Iterator<Item = ObjectInfo> + '_> {
         let cursor_u = cursor.unwrap_or(ObjectID::ZERO);
         if let Some(indexes) = &self.indexes {
             indexes.get_owner_objects_iterator(owner, cursor_u, filter)
         } else {
-            Err(SuiError::IndexStoreNotAvailable)
+            Err(IotaError::IndexStoreNotAvailable)
         }
     }
 
     #[instrument(level = "trace", skip_all)]
     pub async fn get_move_objects<T>(
         &self,
-        owner: SuiAddress,
+        owner: IotaAddress,
         type_: MoveObjectType,
-    ) -> SuiResult<Vec<T>>
+    ) -> IotaResult<Vec<T>>
     where
         T: DeserializeOwned,
     {
@@ -3748,16 +3749,16 @@ impl AuthorityState {
 
         for (o, id) in objects.into_iter().zip(object_ids) {
             let object = o.ok_or_else(|| {
-                SuiError::from(UserInputError::ObjectNotFound {
+                IotaError::from(UserInputError::ObjectNotFound {
                     object_id: id.0,
                     version: Some(id.1),
                 })
             })?;
             let move_object = object.data.try_as_move().ok_or_else(|| {
-                SuiError::from(UserInputError::MovePackageAsObject { object_id: id.0 })
+                IotaError::from(UserInputError::MovePackageAsObject { object_id: id.0 })
             })?;
             move_objects.push(bcs::from_bytes(move_object.contents()).map_err(|e| {
-                SuiError::ObjectDeserializationError {
+                IotaError::ObjectDeserializationError {
                     error: format!("{e}"),
                 }
             })?);
@@ -3772,7 +3773,7 @@ impl AuthorityState {
         // If `Some`, the query will start from the next item after the specified cursor
         cursor: Option<ObjectID>,
         limit: usize,
-    ) -> SuiResult<Vec<(ObjectID, DynamicFieldInfo)>> {
+    ) -> IotaResult<Vec<(ObjectID, DynamicFieldInfo)>> {
         Ok(self
             .get_dynamic_fields_iterator(owner, cursor)?
             .take(limit)
@@ -3784,12 +3785,12 @@ impl AuthorityState {
         owner: ObjectID,
         // If `Some`, the query will start from the next item after the specified cursor
         cursor: Option<ObjectID>,
-    ) -> SuiResult<impl Iterator<Item = Result<(ObjectID, DynamicFieldInfo), TypedStoreError>> + '_>
+    ) -> IotaResult<impl Iterator<Item = Result<(ObjectID, DynamicFieldInfo), TypedStoreError>> + '_>
     {
         if let Some(indexes) = &self.indexes {
             indexes.get_dynamic_fields_iterator(owner, cursor)
         } else {
-            Err(SuiError::IndexStoreNotAvailable)
+            Err(IotaError::IndexStoreNotAvailable)
         }
     }
 
@@ -3799,16 +3800,16 @@ impl AuthorityState {
         owner: ObjectID,
         name_type: TypeTag,
         name_bcs_bytes: &[u8],
-    ) -> SuiResult<Option<ObjectID>> {
+    ) -> IotaResult<Option<ObjectID>> {
         if let Some(indexes) = &self.indexes {
             indexes.get_dynamic_field_object_id(owner, name_type, name_bcs_bytes)
         } else {
-            Err(SuiError::IndexStoreNotAvailable)
+            Err(IotaError::IndexStoreNotAvailable)
         }
     }
 
     #[instrument(level = "trace", skip_all)]
-    pub fn get_total_transaction_blocks(&self) -> SuiResult<u64> {
+    pub fn get_total_transaction_blocks(&self) -> IotaResult<u64> {
         Ok(self.get_indexes()?.next_sequence_number())
     }
 
@@ -3817,7 +3818,7 @@ impl AuthorityState {
         &self,
         digest: TransactionDigest,
         kv_store: Arc<TransactionKeyValueStore>,
-    ) -> SuiResult<(Transaction, TransactionEffects)> {
+    ) -> IotaResult<(Transaction, TransactionEffects)> {
         let transaction = kv_store.get_tx(digest).await?;
         let effects = kv_store.get_fx_by_tx_digest(digest).await?;
         Ok((transaction, effects))
@@ -3827,7 +3828,7 @@ impl AuthorityState {
     pub fn multi_get_checkpoint_by_sequence_number(
         &self,
         sequence_numbers: &[CheckpointSequenceNumber],
-    ) -> SuiResult<Vec<Option<VerifiedCheckpoint>>> {
+    ) -> IotaResult<Vec<Option<VerifiedCheckpoint>>> {
         Ok(self
             .checkpoint_store
             .multi_get_checkpoint_by_sequence_number(sequence_numbers)?)
@@ -3837,10 +3838,10 @@ impl AuthorityState {
     pub fn get_transaction_events(
         &self,
         digest: &TransactionEventsDigest,
-    ) -> SuiResult<TransactionEvents> {
+    ) -> IotaResult<TransactionEvents> {
         self.get_transaction_cache_reader()
             .get_events(digest)
-            .ok_or(SuiError::TransactionEventsNotFound { digest: *digest })
+            .ok_or(IotaError::TransactionEventsNotFound { digest: *digest })
     }
 
     pub fn get_transaction_input_objects(
@@ -3899,10 +3900,10 @@ impl AuthorityState {
         Ok(output_objects)
     }
 
-    fn get_indexes(&self) -> SuiResult<Arc<IndexStore>> {
+    fn get_indexes(&self) -> IotaResult<Arc<IndexStore>> {
         match &self.indexes {
             Some(i) => Ok(i.clone()),
-            None => Err(SuiError::UnsupportedFeatureError {
+            None => Err(IotaError::UnsupportedFeatureError {
                 error: "extended object indexing is not enabled on this server".into(),
             }),
         }
@@ -3914,7 +3915,7 @@ impl AuthorityState {
         cursor: Option<TransactionDigest>,
         limit: Option<usize>,
         reverse: bool,
-    ) -> SuiResult<Vec<TransactionDigest>> {
+    ) -> IotaResult<Vec<TransactionDigest>> {
         let metrics = KeyValueStoreMetrics::new_for_tests();
         let kv_store = Arc::new(TransactionKeyValueStore::new(
             "rocksdb",
@@ -3934,7 +3935,7 @@ impl AuthorityState {
         cursor: Option<TransactionDigest>,
         limit: Option<usize>,
         reverse: bool,
-    ) -> SuiResult<Vec<TransactionDigest>> {
+    ) -> IotaResult<Vec<TransactionDigest>> {
         if let Some(TransactionFilter::Checkpoint(sequence_number)) = filter {
             let checkpoint_contents = kv_store.get_checkpoint_contents(sequence_number).await?;
             let iter = checkpoint_contents.iter().map(|c| c.transaction);
@@ -3959,16 +3960,16 @@ impl AuthorityState {
         &self.checkpoint_store
     }
 
-    pub fn get_latest_checkpoint_sequence_number(&self) -> SuiResult<CheckpointSequenceNumber> {
+    pub fn get_latest_checkpoint_sequence_number(&self) -> IotaResult<CheckpointSequenceNumber> {
         self.get_checkpoint_store()
             .get_highest_executed_checkpoint_seq_number()?
-            .ok_or(SuiError::UserInputError {
+            .ok_or(IotaError::UserInputError {
                 error: UserInputError::LatestCheckpointSequenceNumberNotFound,
             })
     }
 
     #[cfg(msim)]
-    pub fn get_highest_pruned_checkpoint_for_testing(&self) -> SuiResult<CheckpointSequenceNumber> {
+    pub fn get_highest_pruned_checkpoint_for_testing(&self) -> IotaResult<CheckpointSequenceNumber> {
         self.database_for_testing()
             .perpetual_tables
             .get_highest_pruned_checkpoint()
@@ -3978,13 +3979,13 @@ impl AuthorityState {
     pub fn get_checkpoint_summary_by_sequence_number(
         &self,
         sequence_number: CheckpointSequenceNumber,
-    ) -> SuiResult<CheckpointSummary> {
+    ) -> IotaResult<CheckpointSummary> {
         let verified_checkpoint = self
             .get_checkpoint_store()
             .get_checkpoint_by_sequence_number(sequence_number)?;
         match verified_checkpoint {
             Some(verified_checkpoint) => Ok(verified_checkpoint.into_inner().into_data()),
-            None => Err(SuiError::UserInputError {
+            None => Err(IotaError::UserInputError {
                 error: UserInputError::VerifiedCheckpointNotFound(sequence_number),
             }),
         }
@@ -3994,20 +3995,20 @@ impl AuthorityState {
     pub fn get_checkpoint_summary_by_digest(
         &self,
         digest: CheckpointDigest,
-    ) -> SuiResult<CheckpointSummary> {
+    ) -> IotaResult<CheckpointSummary> {
         let verified_checkpoint = self
             .get_checkpoint_store()
             .get_checkpoint_by_digest(&digest)?;
         match verified_checkpoint {
             Some(verified_checkpoint) => Ok(verified_checkpoint.into_inner().into_data()),
-            None => Err(SuiError::UserInputError {
+            None => Err(IotaError::UserInputError {
                 error: UserInputError::VerifiedCheckpointDigestNotFound(Base58::encode(digest)),
             }),
         }
     }
 
     #[instrument(level = "trace", skip_all)]
-    pub fn find_publish_txn_digest(&self, package_id: ObjectID) -> SuiResult<TransactionDigest> {
+    pub fn find_publish_txn_digest(&self, package_id: ObjectID) -> IotaResult<TransactionDigest> {
         if is_system_package(package_id) {
             return self.find_genesis_txn_digest();
         }
@@ -4018,14 +4019,14 @@ impl AuthorityState {
     }
 
     #[instrument(level = "trace", skip_all)]
-    pub fn find_genesis_txn_digest(&self) -> SuiResult<TransactionDigest> {
+    pub fn find_genesis_txn_digest(&self) -> IotaResult<TransactionDigest> {
         let summary = self
             .get_verified_checkpoint_by_sequence_number(0)?
             .into_message();
         let content = self.get_checkpoint_contents(summary.content_digest)?;
         let genesis_transaction = content.enumerate_transactions(&summary).next();
         Ok(genesis_transaction
-            .ok_or(SuiError::UserInputError {
+            .ok_or(IotaError::UserInputError {
                 error: UserInputError::GenesisTransactionNotFound,
             })?
             .1
@@ -4036,13 +4037,13 @@ impl AuthorityState {
     pub fn get_verified_checkpoint_by_sequence_number(
         &self,
         sequence_number: CheckpointSequenceNumber,
-    ) -> SuiResult<VerifiedCheckpoint> {
+    ) -> IotaResult<VerifiedCheckpoint> {
         let verified_checkpoint = self
             .get_checkpoint_store()
             .get_checkpoint_by_sequence_number(sequence_number)?;
         match verified_checkpoint {
             Some(verified_checkpoint) => Ok(verified_checkpoint),
-            None => Err(SuiError::UserInputError {
+            None => Err(IotaError::UserInputError {
                 error: UserInputError::VerifiedCheckpointNotFound(sequence_number),
             }),
         }
@@ -4052,13 +4053,13 @@ impl AuthorityState {
     pub fn get_verified_checkpoint_summary_by_digest(
         &self,
         digest: CheckpointDigest,
-    ) -> SuiResult<VerifiedCheckpoint> {
+    ) -> IotaResult<VerifiedCheckpoint> {
         let verified_checkpoint = self
             .get_checkpoint_store()
             .get_checkpoint_by_digest(&digest)?;
         match verified_checkpoint {
             Some(verified_checkpoint) => Ok(verified_checkpoint),
-            None => Err(SuiError::UserInputError {
+            None => Err(IotaError::UserInputError {
                 error: UserInputError::VerifiedCheckpointDigestNotFound(Base58::encode(digest)),
             }),
         }
@@ -4068,10 +4069,10 @@ impl AuthorityState {
     pub fn get_checkpoint_contents(
         &self,
         digest: CheckpointContentsDigest,
-    ) -> SuiResult<CheckpointContents> {
+    ) -> IotaResult<CheckpointContents> {
         self.get_checkpoint_store()
             .get_checkpoint_contents(&digest)?
-            .ok_or(SuiError::UserInputError {
+            .ok_or(IotaError::UserInputError {
                 error: UserInputError::CheckpointContentsNotFound(digest),
             })
     }
@@ -4080,7 +4081,7 @@ impl AuthorityState {
     pub fn get_checkpoint_contents_by_sequence_number(
         &self,
         sequence_number: CheckpointSequenceNumber,
-    ) -> SuiResult<CheckpointContents> {
+    ) -> IotaResult<CheckpointContents> {
         let verified_checkpoint = self
             .get_checkpoint_store()
             .get_checkpoint_by_sequence_number(sequence_number)?;
@@ -4089,7 +4090,7 @@ impl AuthorityState {
                 let content_digest = verified_checkpoint.into_inner().content_digest;
                 self.get_checkpoint_contents(content_digest)
             }
-            None => Err(SuiError::UserInputError {
+            None => Err(IotaError::UserInputError {
                 error: UserInputError::VerifiedCheckpointNotFound(sequence_number),
             }),
         }
@@ -4104,13 +4105,13 @@ impl AuthorityState {
         cursor: Option<EventID>,
         limit: usize,
         descending: bool,
-    ) -> SuiResult<Vec<SuiEvent>> {
+    ) -> IotaResult<Vec<IotaEvent>> {
         let index_store = self.get_indexes()?;
 
         //Get the tx_num from tx_digest
         let (tx_num, event_num) = if let Some(cursor) = cursor.as_ref() {
             let tx_seq = index_store.get_transaction_seq(&cursor.tx_digest)?.ok_or(
-                SuiError::TransactionNotFound {
+                IotaError::TransactionNotFound {
                     digest: cursor.tx_digest,
                 },
             )?;
@@ -4157,7 +4158,7 @@ impl AuthorityState {
                 )?,
             // not using "_ =>" because we want to make sure we remember to add new variants here
             EventFilter::Any(_) => {
-                return Err(SuiError::UserInputError {
+                return Err(IotaError::UserInputError {
                     error: UserInputError::Unsupported(
                         "'Any' queries are not supported by the fullnode.".to_string(),
                     ),
@@ -4205,7 +4206,7 @@ impl AuthorityState {
             .map(|((digest, tx_digest, event_seq, timestamp), event)| {
                 event
                     .map(|e| (e, tx_digest, event_seq, timestamp))
-                    .ok_or(SuiError::TransactionEventsNotFound { digest })
+                    .ok_or(IotaError::TransactionEventsNotFound { digest })
             })
             .collect::<Result<Vec<_>, _>>()?;
 
@@ -4216,7 +4217,7 @@ impl AuthorityState {
             .type_layout_resolver(Box::new(backing_store));
         let mut events = vec![];
         for (e, tx_digest, event_seq, timestamp) in stored_events.into_iter() {
-            events.push(SuiEvent::try_from(
+            events.push(IotaEvent::try_from(
                 e.clone(),
                 tx_digest,
                 event_seq as u64,
@@ -4245,7 +4246,7 @@ impl AuthorityState {
     pub fn get_transaction_output(
         &self,
         transaction_digest: &TransactionDigest,
-    ) -> SuiResult<Option<(TransactionEffects, TransactionEvents)>> {
+    ) -> IotaResult<Option<(TransactionEffects, TransactionEvents)>> {
         let effects = self
             .get_transaction_cache_reader()
             .get_executed_effects(transaction_digest);
@@ -4267,7 +4268,7 @@ impl AuthorityState {
         &self,
         transaction_digest: &TransactionDigest,
         epoch_store: &Arc<AuthorityPerEpochStore>,
-    ) -> SuiResult<Option<(SenderSignedData, TransactionStatus)>> {
+    ) -> IotaResult<Option<(SenderSignedData, TransactionStatus)>> {
         // TODO: In the case of read path, we should not have to re-sign the effects.
         if let Some(effects) =
             self.get_signed_effects_and_maybe_resign(transaction_digest, epoch_store)?
@@ -4310,7 +4311,7 @@ impl AuthorityState {
         &self,
         transaction_digest: &TransactionDigest,
         epoch_store: &Arc<AuthorityPerEpochStore>,
-    ) -> SuiResult<Option<VerifiedSignedTransactionEffects>> {
+    ) -> IotaResult<Option<VerifiedSignedTransactionEffects>> {
         let effects = self
             .get_transaction_cache_reader()
             .get_executed_effects(transaction_digest);
@@ -4325,7 +4326,7 @@ impl AuthorityState {
         &self,
         effects: TransactionEffects,
         epoch_store: &Arc<AuthorityPerEpochStore>,
-    ) -> SuiResult<VerifiedSignedTransactionEffects> {
+    ) -> IotaResult<VerifiedSignedTransactionEffects> {
         let tx_digest = *effects.transaction_digest();
         let signed_effects = match epoch_store.get_effects_signature(&tx_digest)? {
             Some(sig) if sig.epoch == epoch_store.epoch() => {
@@ -4360,7 +4361,7 @@ impl AuthorityState {
                 let sig = AuthoritySignInfo::new(
                     epoch_store.epoch(),
                     &effects,
-                    Intent::sui_app(IntentScope::TransactionEffects),
+                    Intent::iota_app(IntentScope::TransactionEffects),
                     self.name,
                     &*self.secret,
                 );
@@ -4429,7 +4430,7 @@ impl AuthorityState {
         &self,
         object_ref: &ObjectRef,
         epoch_store: &AuthorityPerEpochStore,
-    ) -> SuiResult<Option<VerifiedSignedTransaction>> {
+    ) -> IotaResult<Option<VerifiedSignedTransaction>> {
         let lock_info = self
             .get_object_cache_reader()
             .get_lock(*object_ref, epoch_store)?;
@@ -4471,11 +4472,11 @@ impl AuthorityState {
         &self,
         expected_epoch: EpochId,
         buffer_stake_bps: u64,
-    ) -> SuiResult {
+    ) -> IotaResult {
         let epoch_store = self.load_epoch_store_one_call_per_task();
         let actual_epoch = epoch_store.epoch();
         if actual_epoch != expected_epoch {
-            return Err(SuiError::WrongEpoch {
+            return Err(IotaError::WrongEpoch {
                 expected_epoch,
                 actual_epoch,
             });
@@ -4487,11 +4488,11 @@ impl AuthorityState {
     pub fn clear_override_protocol_upgrade_buffer_stake(
         &self,
         expected_epoch: EpochId,
-    ) -> SuiResult {
+    ) -> IotaResult {
         let epoch_store = self.load_epoch_store_one_call_per_task();
         let actual_epoch = epoch_store.epoch();
         if actual_epoch != expected_epoch {
-            return Err(SuiError::WrongEpoch {
+            return Err(IotaError::WrongEpoch {
                 expected_epoch,
                 actual_epoch,
             });
@@ -4523,7 +4524,7 @@ impl AuthorityState {
             let modules = framework_injection::get_override_modules(&system_package.id, self.name)
                 .unwrap_or(modules);
 
-            let Some(obj_ref) = sui_framework::compare_system_package(
+            let Some(obj_ref) = iota_framework::compare_system_package(
                 &self.get_object_store(),
                 &system_package.id,
                 &modules,
@@ -5090,7 +5091,7 @@ impl AuthorityState {
         // This may be less than `checkpoint - 1` if the end-of-epoch PendingCheckpoint produced
         // >1 checkpoint.
         last_checkpoint: CheckpointSequenceNumber,
-    ) -> anyhow::Result<(SuiSystemState, TransactionEffects)> {
+    ) -> anyhow::Result<(IotaSystemState, TransactionEffects)> {
         let mut txns = Vec::new();
 
         if let Some(tx) = self.create_authenticator_state_tx(epoch_store) {
@@ -5247,7 +5248,7 @@ impl AuthorityState {
 
         let (temporary_store, effects, _timings, _execution_error_opt) =
             self.prepare_certificate(&execution_guard, &executable_tx, input_objects, epoch_store)?;
-        let system_obj = get_sui_system_state(&temporary_store.written)
+        let system_obj = get_iota_system_state(&temporary_store.written)
             .expect("change epoch tx must write to system object");
 
         // We must write tx and effects to the state sync tables so that state sync is able to
@@ -5272,7 +5273,7 @@ impl AuthorityState {
     async fn revert_uncommitted_epoch_transactions(
         &self,
         epoch_store: &AuthorityPerEpochStore,
-    ) -> SuiResult {
+    ) -> IotaResult {
         {
             let state = epoch_store.get_reconfig_state_write_lock_guard();
             if state.should_accept_user_certs() {
@@ -5313,7 +5314,7 @@ impl AuthorityState {
         epoch_start_configuration: EpochStartConfiguration,
         expensive_safety_check_config: &ExpensiveSafetyCheckConfig,
         epoch_last_checkpoint: CheckpointSequenceNumber,
-    ) -> SuiResult<Arc<AuthorityPerEpochStore>> {
+    ) -> IotaResult<Arc<AuthorityPerEpochStore>> {
         let new_epoch = new_committee.epoch;
         info!(new_epoch = ?new_epoch, "re-opening AuthorityEpochTables for new epoch");
         assert_eq!(
@@ -5358,7 +5359,7 @@ impl AuthorityState {
     }
 
     /// NOTE: this function is only to be used for fuzzing and testing. Never use in prod
-    pub async fn insert_objects_unsafe_for_testing_only(&self, objects: &[Object]) -> SuiResult {
+    pub async fn insert_objects_unsafe_for_testing_only(&self, objects: &[Object]) -> IotaResult {
         self.get_reconfig_api().bulk_insert_genesis_objects(objects);
         self.get_object_cache_reader()
             .force_reload_system_packages(&BuiltInFramework::all_package_ids());
@@ -5490,7 +5491,7 @@ impl TransactionKeyValueStoreTrait for AuthorityState {
         &self,
         transactions: &[TransactionDigest],
         effects: &[TransactionDigest],
-    ) -> SuiResult<(Vec<Option<Transaction>>, Vec<Option<TransactionEffects>>)> {
+    ) -> IotaResult<(Vec<Option<Transaction>>, Vec<Option<TransactionEffects>>)> {
         let txns = if !transactions.is_empty() {
             self.get_transaction_cache_reader()
                 .multi_get_transaction_blocks(transactions)
@@ -5517,7 +5518,7 @@ impl TransactionKeyValueStoreTrait for AuthorityState {
         checkpoint_summaries: &[CheckpointSequenceNumber],
         checkpoint_contents: &[CheckpointSequenceNumber],
         checkpoint_summaries_by_digest: &[CheckpointDigest],
-    ) -> SuiResult<(
+    ) -> IotaResult<(
         Vec<Option<CertifiedCheckpointSummary>>,
         Vec<Option<CheckpointContents>>,
         Vec<Option<CertifiedCheckpointSummary>>,
@@ -5559,7 +5560,7 @@ impl TransactionKeyValueStoreTrait for AuthorityState {
     async fn deprecated_get_transaction_checkpoint(
         &self,
         digest: TransactionDigest,
-    ) -> SuiResult<Option<CheckpointSequenceNumber>> {
+    ) -> IotaResult<Option<CheckpointSequenceNumber>> {
         Ok(self
             .get_checkpoint_cache()
             .deprecated_get_transaction_checkpoint(&digest)
@@ -5571,7 +5572,7 @@ impl TransactionKeyValueStoreTrait for AuthorityState {
         &self,
         object_id: ObjectID,
         version: VersionNumber,
-    ) -> SuiResult<Option<Object>> {
+    ) -> IotaResult<Option<Object>> {
         Ok(self
             .get_object_cache_reader()
             .get_object_by_key(&object_id, version))
@@ -5581,7 +5582,7 @@ impl TransactionKeyValueStoreTrait for AuthorityState {
     async fn multi_get_transaction_checkpoint(
         &self,
         digests: &[TransactionDigest],
-    ) -> SuiResult<Vec<Option<CheckpointSequenceNumber>>> {
+    ) -> IotaResult<Vec<Option<CheckpointSequenceNumber>>> {
         let res = self
             .get_checkpoint_cache()
             .deprecated_multi_get_transaction_checkpoint(digests);
@@ -5596,7 +5597,7 @@ impl TransactionKeyValueStoreTrait for AuthorityState {
     async fn multi_get_events_by_tx_digests(
         &self,
         digests: &[TransactionDigest],
-    ) -> SuiResult<Vec<Option<TransactionEvents>>> {
+    ) -> IotaResult<Vec<Option<TransactionEvents>>> {
         if digests.is_empty() {
             return Ok(vec![]);
         }
@@ -5623,9 +5624,9 @@ pub mod framework_injection {
     use move_binary_format::CompiledModule;
     use std::collections::BTreeMap;
     use std::{cell::RefCell, collections::BTreeSet};
-    use sui_framework::{BuiltInFramework, SystemPackage};
-    use sui_types::base_types::{AuthorityName, ObjectID};
-    use sui_types::is_system_package;
+    use iota_framework::{BuiltInFramework, SystemPackage};
+    use iota_types::base_types::{AuthorityName, ObjectID};
+    use iota_types::is_system_package;
 
     type FrameworkOverrideConfig = BTreeMap<ObjectID, PackageOverrideConfig>;
 
@@ -5781,7 +5782,7 @@ impl NodeStateDump {
         epoch_store: &Arc<AuthorityPerEpochStore>,
         inner_temporary_store: &InnerTemporaryStore,
         certificate: &VerifiedExecutableTransaction,
-    ) -> SuiResult<Self> {
+    ) -> IotaResult<Self> {
         // Epoch info
         let executed_epoch = epoch_store.epoch();
         let reference_gas_price = epoch_store.reference_gas_price();

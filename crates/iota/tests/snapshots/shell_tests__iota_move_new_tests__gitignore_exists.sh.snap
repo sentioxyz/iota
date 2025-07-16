@@ -1,15 +1,16 @@
 ---
-source: crates/sui/tests/shell_tests.rs
+source: crates/iota/tests/shell_tests.rs
 description: tests/shell_tests/new_tests/gitignore_exists.sh
 ---
 ----- script -----
 # Copyright (c) Mysten Labs, Inc.
+# Modifications Copyright (c) 2025 IOTA Stiftung
 # SPDX-License-Identifier: Apache-2.0
 
-# check that sui move new correctly updates existing .gitignore
+# check that iota move new correctly updates existing .gitignore
 mkdir example
 echo "existing_ignore" > example/.gitignore
-sui move new example
+iota move new example
 cat example/.gitignore
 
 ----- results -----

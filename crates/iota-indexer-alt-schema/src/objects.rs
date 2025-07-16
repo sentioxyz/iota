@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use anyhow::Context;
@@ -7,8 +8,8 @@ use diesel::{
     sql_types::SmallInt, FromSqlRow,
 };
 
-use sui_field_count::FieldCount;
-use sui_types::object::{Object, Owner};
+use iota_field_count::FieldCount;
+use iota_types::object::{Object, Owner};
 
 use crate::schema::{coin_balance_buckets, kv_objects, obj_info, obj_versions};
 

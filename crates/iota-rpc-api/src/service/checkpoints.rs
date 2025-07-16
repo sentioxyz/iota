@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::field_mask::FieldMaskTree;
@@ -17,10 +18,10 @@ use crate::Result;
 use crate::RpcError;
 use crate::RpcService;
 use prost_types::FieldMask;
-use sui_sdk_types::CheckpointContents;
-use sui_sdk_types::CheckpointDigest;
-use sui_sdk_types::CheckpointSequenceNumber;
-use sui_sdk_types::SignedCheckpointSummary;
+use iota_sdk_types::CheckpointContents;
+use iota_sdk_types::CheckpointDigest;
+use iota_sdk_types::CheckpointSequenceNumber;
+use iota_sdk_types::SignedCheckpointSummary;
 use tap::Pipe;
 
 impl RpcService {
@@ -176,11 +177,11 @@ impl RpcService {
 }
 
 pub(crate) fn checkpoint_data_to_full_checkpoint_response(
-    sui_types::full_checkpoint_content::CheckpointData {
+    iota_types::full_checkpoint_content::CheckpointData {
         checkpoint_summary,
         checkpoint_contents,
         transactions,
-    }: sui_types::full_checkpoint_content::CheckpointData,
+    }: iota_types::full_checkpoint_content::CheckpointData,
     read_mask: &FieldMaskTree,
 ) -> Result<GetFullCheckpointResponse> {
     let sequence_number = checkpoint_summary.sequence_number;
@@ -216,17 +217,17 @@ pub(crate) fn checkpoint_data_to_full_checkpoint_response(
         digest: read_mask.contains("digest").then(|| digest.into()),
         summary: read_mask
             .contains("summary")
-            .then(|| sui_sdk_types::CheckpointSummary::try_from(summary))
+            .then(|| iota_sdk_types::CheckpointSummary::try_from(summary))
             .transpose()?
             .map(Into::into),
         summary_bcs,
 
         signature: read_mask
             .contains("signature")
-            .then(|| sui_sdk_types::ValidatorAggregatedSignature::from(signature).into()),
+            .then(|| iota_sdk_types::ValidatorAggregatedSignature::from(signature).into()),
         contents: read_mask
             .contains("contents")
-            .then(|| sui_sdk_types::CheckpointContents::try_from(checkpoint_contents))
+            .then(|| iota_sdk_types::CheckpointContents::try_from(checkpoint_contents))
             .transpose()?
             .map(Into::into),
         contents_bcs,
@@ -237,18 +238,18 @@ pub(crate) fn checkpoint_data_to_full_checkpoint_response(
 }
 
 fn transaction_to_checkpoint_transaction(
-    sui_types::full_checkpoint_content::CheckpointTransaction {
+    iota_types::full_checkpoint_content::CheckpointTransaction {
         transaction,
         effects,
         events,
         input_objects,
         output_objects,
-    }: sui_types::full_checkpoint_content::CheckpointTransaction,
+    }: iota_types::full_checkpoint_content::CheckpointTransaction,
     read_mask: &FieldMaskTree,
 ) -> Result<FullCheckpointTransaction> {
     let digest = read_mask
         .contains("digest")
-        .then(|| sui_sdk_types::TransactionDigest::from(transaction.digest().to_owned()).into());
+        .then(|| iota_sdk_types::TransactionDigest::from(transaction.digest().to_owned()).into());
     let transaction = transaction.into_data().into_inner().intent_message.value;
     let transaction_bcs = read_mask
         .contains("transaction_bcs")
@@ -256,7 +257,7 @@ fn transaction_to_checkpoint_transaction(
         .transpose()?;
     let transaction = read_mask
         .contains("transaction")
-        .then(|| sui_sdk_types::Transaction::try_from(transaction))
+        .then(|| iota_sdk_types::Transaction::try_from(transaction))
         .transpose()?
         .map(Into::into);
     let effects_bcs = read_mask
@@ -265,7 +266,7 @@ fn transaction_to_checkpoint_transaction(
         .transpose()?;
     let effects = read_mask
         .contains("effects")
-        .then(|| sui_sdk_types::TransactionEffects::try_from(effects))
+        .then(|| iota_sdk_types::TransactionEffects::try_from(effects))
         .transpose()?
         .map(Into::into);
     let events_bcs = read_mask
@@ -275,7 +276,7 @@ fn transaction_to_checkpoint_transaction(
         .transpose()?;
     let events = read_mask
         .contains("events")
-        .then(|| events.map(sui_sdk_types::TransactionEvents::try_from))
+        .then(|| events.map(iota_sdk_types::TransactionEvents::try_from))
         .flatten()
         .transpose()?
         .map(Into::into);
@@ -317,18 +318,18 @@ fn transaction_to_checkpoint_transaction(
 }
 
 fn object_to_object_response(
-    object: sui_types::object::Object,
+    object: iota_types::object::Object,
     read_mask: &FieldMaskTree,
 ) -> Result<FullCheckpointObject> {
     let object_id = read_mask
         .contains("object_id")
-        .then(|| sui_sdk_types::ObjectId::from(object.id()).into());
+        .then(|| iota_sdk_types::ObjectId::from(object.id()).into());
     let version = read_mask
         .contains("version")
         .then(|| object.version().value());
     let digest = read_mask
         .contains("digest")
-        .then(|| sui_sdk_types::ObjectDigest::from(object.digest()).into());
+        .then(|| iota_sdk_types::ObjectDigest::from(object.digest()).into());
 
     let object_bcs = read_mask
         .contains("object_bcs")
@@ -336,7 +337,7 @@ fn object_to_object_response(
         .transpose()?;
     let object = read_mask
         .contains("object")
-        .then(|| sui_sdk_types::Object::try_from(object))
+        .then(|| iota_sdk_types::Object::try_from(object))
         .transpose()?
         .map(Into::into);
 

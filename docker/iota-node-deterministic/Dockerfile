@@ -11,7 +11,7 @@ ENV RUST_BACKTRACE=1
 ENV RUSTFLAGS="${RUSTFLAGS} -C codegen-units=1"
 ENV RUSTFLAGS="${RUSTFLAGS} -C target-feature=+crt-static"
 ENV RUSTFLAGS="${RUSTFLAGS} -C linker=/usr/bin/x86_64-linux-gnu-gcc"
-WORKDIR sui
+WORKDIR iota
 COPY . .
 RUN cargo fetch
 ARG PROFILE
@@ -20,12 +20,12 @@ RUN --network=none <<-EOF
 		--target x86_64-unknown-linux-gnu \
 		--frozen \
 		--profile ${PROFILE} \
-		--bin sui-node
-	mkdir -p /rootfs/opt/sui/bin /rootfs/usr/local/bin
+		--bin iota-node
+	mkdir -p /rootfs/opt/iota/bin /rootfs/usr/local/bin
 	cp \
-		target/x86_64-unknown-linux-gnu/release/sui-node \
-		/rootfs/opt/sui/bin/sui-node
-	ln -s /opt/sui/bin/sui-node /rootfs/usr/local/bin/sui-node
+		target/x86_64-unknown-linux-gnu/release/iota-node \
+		/rootfs/opt/iota/bin/iota-node
+	ln -s /opt/iota/bin/iota-node /rootfs/usr/local/bin/iota-node
 EOF
 
 FROM scratch AS package

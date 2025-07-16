@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::{
@@ -13,15 +14,15 @@ use crate::consensus_adapter::SubmitToConsensus;
 use governor::{clock::MonotonicClock, Quota, RateLimiter};
 use itertools::Itertools;
 use lru::LruCache;
-use mysten_common::debug_fatal;
-use mysten_metrics::{monitored_scope, spawn_monitored_task};
+use iota_common::debug_fatal;
+use iota_metrics::{monitored_scope, spawn_monitored_task};
 use simple_moving_average::{SingleSumSMA, SMA};
-use sui_config::node::ExecutionTimeObserverConfig;
-use sui_protocol_config::{ExecutionTimeEstimateParams, PerObjectCongestionControlMode};
-use sui_types::{
+use iota_config::node::ExecutionTimeObserverConfig;
+use iota_protocol_config::{ExecutionTimeEstimateParams, PerObjectCongestionControlMode};
+use iota_types::{
     base_types::ObjectID,
     committee::Committee,
-    error::SuiError,
+    error::IotaError,
     execution::{ExecutionTimeObservationKey, ExecutionTiming},
     messages_consensus::{AuthorityIndex, ConsensusTransaction, ExecutionTimeObservation},
     transaction::{
@@ -355,7 +356,7 @@ impl ExecutionTimeObserver {
             &epoch_store,
             Duration::from_secs(5),
         ) {
-            if !matches!(e, SuiError::EpochEnded(_)) {
+            if !matches!(e, IotaError::EpochEnded(_)) {
                 epoch_store
                     .metrics
                     .epoch_execution_time_observations_dropped
@@ -389,7 +390,7 @@ impl ExecutionTimeObserver {
     }
 }
 
-// Key used to save StoredExecutionTimeObservations in the Sui system state object's
+// Key used to save StoredExecutionTimeObservations in the IOTA system state object's
 // `extra_fields` Bag.
 pub const EXTRA_FIELD_EXECUTION_TIME_ESTIMATES_KEY: u64 = 0;
 
@@ -611,9 +612,9 @@ mod tests {
         ConnectionMonitorStatusForTests, ConsensusAdapter, ConsensusAdapterMetrics,
         MockConsensusClient,
     };
-    use sui_protocol_config::ProtocolConfig;
-    use sui_types::base_types::{ObjectID, SequenceNumber, SuiAddress};
-    use sui_types::transaction::{Argument, CallArg, ObjectArg, ProgrammableMoveCall};
+    use iota_protocol_config::ProtocolConfig;
+    use iota_types::base_types::{ObjectID, SequenceNumber, IotaAddress};
+    use iota_types::transaction::{Argument, CallArg, ObjectArg, ProgrammableMoveCall};
 
     #[tokio::test]
     async fn test_record_local_observations() {
@@ -1234,7 +1235,7 @@ mod tests {
 
         // Test single command transaction
         let single_move_tx = TransactionData::new_programmable(
-            SuiAddress::ZERO,
+            IotaAddress::ZERO,
             vec![],
             ProgrammableTransaction {
                 inputs: vec![],
@@ -1258,7 +1259,7 @@ mod tests {
 
         // Test multi-command transaction
         let multi_command_tx = TransactionData::new_programmable(
-            SuiAddress::ZERO,
+            IotaAddress::ZERO,
             vec![],
             ProgrammableTransaction {
                 inputs: vec![],

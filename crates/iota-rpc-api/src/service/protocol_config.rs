@@ -1,13 +1,14 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::proto::node::v2alpha::GetProtocolConfigRequest;
 use crate::proto::node::v2alpha::GetProtocolConfigResponse;
 use crate::Result;
 use crate::RpcService;
-use sui_protocol_config::ProtocolConfig;
-use sui_protocol_config::ProtocolConfigValue;
-use sui_protocol_config::ProtocolVersion;
+use iota_protocol_config::ProtocolConfig;
+use iota_protocol_config::ProtocolConfigValue;
+use iota_protocol_config::ProtocolVersion;
 
 impl RpcService {
     pub fn get_protocol_config(

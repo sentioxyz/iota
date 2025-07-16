@@ -1,8 +1,8 @@
 [package]
-name = "sui-graphql-e2e-tests"
+name = "iota-graphql-e2e-tests"
 version = "0.1.0"
-authors = ["Mysten Labs <eng@mystenlabs.com>"]
-description = "End to end tests for Sui GraphQL"
+authors = ["IOTA Foundation <info@iota.org>"]
+description = "End to end tests for IOTA GraphQL"
 license = "Apache-2.0"
 publish = false
 edition = "2021"
@@ -16,8 +16,8 @@ async-trait.workspace = true
 telemetry-subscribers.workspace = true
 datatest-stable.workspace = true
 serde_json.workspace = true
-sui-graphql-rpc.workspace = true
-sui-transactional-test-runner.workspace = true
+iota-graphql-rpc.workspace = true
+iota-transactional-test-runner.workspace = true
 tokio.workspace = true
 
 [[test]]
@@ -30,5 +30,5 @@ harness = false
 msim.workspace = true
 
 [features]
-staging = ["sui-graphql-rpc/staging"]
+staging = ["iota-graphql-rpc/staging"]
 

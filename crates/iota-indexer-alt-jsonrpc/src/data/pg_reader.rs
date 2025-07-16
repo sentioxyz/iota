@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::sync::Arc;
@@ -13,8 +14,8 @@ use diesel::query_dsl::methods::LimitDsl;
 use diesel::query_dsl::CompatibleType;
 use diesel_async::RunQueryDsl;
 use prometheus::Registry;
-use sui_indexer_alt_metrics::db::DbConnectionStatsCollector;
-use sui_pg_db as db;
+use iota_indexer_alt_metrics::db::DbConnectionStatsCollector;
+use iota_pg_db as db;
 use tokio_util::sync::CancellationToken;
 use tracing::debug;
 use url::Url;

@@ -1,11 +1,12 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-module sui_system::validator_wrapper;
+module iota_system::validator_wrapper;
 
-use sui::versioned::Versioned;
-use sui_system::validator::Validator;
-use sui::versioned;
+use iota::versioned::Versioned;
+use iota_system::validator::Validator;
+use iota::versioned;
 
 const EInvalidVersion: u64 = 0;
 

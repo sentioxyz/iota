@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 mod response_ext;
@@ -16,12 +17,12 @@ use crate::proto::node::v2::{
 use crate::proto::types::Bcs;
 use crate::proto::TryFromProtoError;
 use prost_types::FieldMask;
-use sui_types::base_types::{ObjectID, SequenceNumber};
-use sui_types::effects::{TransactionEffects, TransactionEvents};
-use sui_types::full_checkpoint_content::CheckpointData;
-use sui_types::messages_checkpoint::{CertifiedCheckpointSummary, CheckpointSequenceNumber};
-use sui_types::object::Object;
-use sui_types::transaction::Transaction;
+use iota_types::base_types::{ObjectID, SequenceNumber};
+use iota_types::effects::{TransactionEffects, TransactionEvents};
+use iota_types::full_checkpoint_content::CheckpointData;
+use iota_types::messages_checkpoint::{CertifiedCheckpointSummary, CheckpointSequenceNumber};
+use iota_types::object::Object;
+use iota_types::transaction::Transaction;
 
 pub type Result<T, E = tonic::Status> = std::result::Result<T, E>;
 pub type BoxError = Box<dyn std::error::Error + Send + Sync + 'static>;
@@ -165,7 +166,7 @@ impl Client {
         version: Option<u64>,
     ) -> Result<Object> {
         let request = crate::proto::node::v2::GetObjectRequest {
-            object_id: Some(sui_sdk_types::ObjectId::from(object_id).into()),
+            object_id: Some(iota_sdk_types::ObjectId::from(object_id).into()),
             version,
             read_mask: FieldMask::from_paths(["object_bcs"]).pipe(Some),
         };
@@ -221,7 +222,7 @@ pub struct TransactionExecutionResponse {
 
     pub effects: TransactionEffects,
     pub events: Option<TransactionEvents>,
-    pub balance_changes: Vec<sui_sdk_types::BalanceChange>,
+    pub balance_changes: Vec<iota_sdk_types::BalanceChange>,
 }
 
 /// Attempts to parse `CertifiedCheckpointSummary` from the bcs fields in `GetCheckpointResponse`
@@ -234,8 +235,8 @@ fn certified_checkpoint_summary_try_from_proto(
         .deserialize()
         .map_err(TryFromProtoError::from_error)?;
 
-    let signature = sui_types::crypto::AuthorityStrongQuorumSignInfo::from(
-        sui_sdk_types::ValidatorAggregatedSignature::try_from(
+    let signature = iota_types::crypto::AuthorityStrongQuorumSignInfo::from(
+        iota_sdk_types::ValidatorAggregatedSignature::try_from(
             signature
                 .as_ref()
                 .ok_or_else(|| TryFromProtoError::missing("signature"))?,
@@ -262,7 +263,7 @@ fn checkpoint_data_try_from_proto(
 
     let checkpoint_contents = contents_bcs
         .ok_or_else(|| TryFromProtoError::missing("contents_bcs"))?
-        .deserialize::<sui_types::messages_checkpoint::CheckpointContents>()
+        .deserialize::<iota_types::messages_checkpoint::CheckpointContents>()
         .map_err(TryFromProtoError::from_error)?;
 
     let transactions = transactions
@@ -309,7 +310,7 @@ fn checkpoint_data_try_from_proto(
                     .collect::<Result<_, TryFromProtoError>>()?;
 
                 Result::<_, TryFromProtoError>::Ok(
-                    sui_types::full_checkpoint_content::CheckpointTransaction {
+                    iota_types::full_checkpoint_content::CheckpointTransaction {
                         transaction,
                         effects,
                         events,

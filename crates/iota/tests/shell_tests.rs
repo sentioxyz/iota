@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use fs_extra::dir::CopyOptions;
@@ -6,7 +7,7 @@ use insta_cmd::get_cargo_bin;
 use std::fs;
 use std::path::Path;
 use std::process::Command;
-use sui_config::SUI_CLIENT_CONFIG;
+use iota_config::IOTA_CLIENT_CONFIG;
 use test_cluster::TestClusterBuilder;
 
 // [test_shell_snapshot] is run on every file matching [TEST_PATTERN] in [TEST_DIR].
@@ -21,7 +22,7 @@ const TEST_PATTERN: &str = r"\.sh$";
 
 /// run the bash script at [path], comparing its output to the insta snapshot of the same name.
 /// The script is run in a temporary working directory that contains a copy of the parent directory
-/// of [path], with the `sui` binary on the path.
+/// of [path], with the `iota` binary on the path.
 ///
 /// If [cluster] is provided, the config file for the cluster is passed as the `CONFIG` environment
 /// variable.
@@ -46,14 +47,14 @@ async fn test_shell_snapshot(path: &Path) -> datatest_stable::Result<()> {
     shell
         .env(
             "PATH",
-            format!("{}:{}", get_sui_bin_path(), std::env::var("PATH")?),
+            format!("{}:{}", get_iota_bin_path(), std::env::var("PATH")?),
         )
         .env("RUST_BACKTRACE", "0")
         .current_dir(sandbox)
         .arg(path.file_name().unwrap());
 
     if let Some(ref cluster) = cluster {
-        shell.env("CONFIG", cluster.swarm.dir().join(SUI_CLIENT_CONFIG));
+        shell.env("CONFIG", cluster.swarm.dir().join(IOTA_CLIENT_CONFIG));
     }
 
     // run it; snapshot test output
@@ -79,9 +80,9 @@ async fn test_shell_snapshot(path: &Path) -> datatest_stable::Result<()> {
     Ok(())
 }
 
-/// return the path to the `sui` binary that is currently under test
-fn get_sui_bin_path() -> String {
-    get_cargo_bin("sui")
+/// return the path to the `iota` binary that is currently under test
+fn get_iota_bin_path() -> String {
+    get_cargo_bin("iota")
         .parent()
         .unwrap()
         .to_str()

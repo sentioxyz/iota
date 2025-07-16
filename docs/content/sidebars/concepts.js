@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 const concepts = [
@@ -51,7 +52,7 @@ const concepts = [
 				label: 'Move Overview',
 				link: {
 					type: 'doc',
-					id: 'concepts/sui-move-concepts',
+					id: 'concepts/iota-move-concepts',
 				},
 				items: [
 					{
@@ -59,15 +60,15 @@ const concepts = [
 						label: 'Packages',
 						link: {
 							type: 'doc',
-							id: 'concepts/sui-move-concepts/packages',
+							id: 'concepts/iota-move-concepts/packages',
 						},
 						items: [
-							'concepts/sui-move-concepts/packages/upgrade',
-							'concepts/sui-move-concepts/packages/custom-policies',
-							'concepts/sui-move-concepts/packages/automated-address-management',
+							'concepts/iota-move-concepts/packages/upgrade',
+							'concepts/iota-move-concepts/packages/custom-policies',
+							'concepts/iota-move-concepts/packages/automated-address-management',
 						],
 					},
-					'concepts/sui-move-concepts/conventions',
+					'concepts/iota-move-concepts/conventions',
 				],
 			},
 			{
@@ -129,22 +130,22 @@ const concepts = [
 	},
 	{
 		type: 'category',
-		label: 'Sui Architecture',
+		label: 'IOTA Architecture',
 		link: {
 			type: 'doc',
-			id: 'concepts/sui-architecture',
+			id: 'concepts/iota-architecture',
 		},
 		items: [
-			'concepts/sui-architecture/high-level',
-			'concepts/sui-architecture/sui-storage',
-			'concepts/sui-architecture/sui-security',
-			'concepts/sui-architecture/transaction-lifecycle',
-			'concepts/sui-architecture/consensus',
-			'concepts/sui-architecture/indexer-functions',
-			'concepts/sui-architecture/epochs',
-			'concepts/sui-architecture/protocol-upgrades',
-			'concepts/sui-architecture/data-management-things',
-			'concepts/sui-architecture/staking-rewards',
+			'concepts/iota-architecture/high-level',
+			'concepts/iota-architecture/iota-storage',
+			'concepts/iota-architecture/iota-security',
+			'concepts/iota-architecture/transaction-lifecycle',
+			'concepts/iota-architecture/consensus',
+			'concepts/iota-architecture/indexer-functions',
+			'concepts/iota-architecture/epochs',
+			'concepts/iota-architecture/protocol-upgrades',
+			'concepts/iota-architecture/data-management-things',
+			'concepts/iota-architecture/staking-rewards',
 		],
 	},
 	{
@@ -156,9 +157,9 @@ const concepts = [
 		},
 		items: [
 			'concepts/tokenomics/staking-unstaking',
-			'concepts/tokenomics/sui-bridging',
+			'concepts/tokenomics/iota-bridging',
 			'concepts/tokenomics/gas-pricing',
-			'concepts/tokenomics/gas-in-sui',
+			'concepts/tokenomics/gas-in-iota',
 			'concepts/tokenomics/vesting-strategies'
 		],
 	},

@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::{Reducer, Worker, MAX_CHECKPOINTS_IN_PROGRESS};
@@ -6,7 +7,7 @@ use anyhow::Result;
 use async_trait::async_trait;
 use futures::StreamExt;
 use std::collections::HashMap;
-use sui_types::messages_checkpoint::CheckpointSequenceNumber;
+use iota_types::messages_checkpoint::CheckpointSequenceNumber;
 use tokio::sync::mpsc;
 use tokio_stream::wrappers::ReceiverStream;
 

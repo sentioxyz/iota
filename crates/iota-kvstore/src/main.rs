@@ -1,9 +1,10 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 use anyhow::Result;
 use prometheus::Registry;
-use sui_data_ingestion_core::{DataIngestionMetrics, IndexerExecutor, ReaderOptions, WorkerPool};
-use sui_kvstore::{BigTableClient, BigTableProgressStore, KvWorker};
+use iota_data_ingestion_core::{DataIngestionMetrics, IndexerExecutor, ReaderOptions, WorkerPool};
+use iota_kvstore::{BigTableClient, BigTableProgressStore, KvWorker};
 use telemetry_subscribers::TelemetryConfig;
 use tokio::sync::oneshot;
 
@@ -34,7 +35,7 @@ async fn main() -> Result<()> {
     executor
         .run(
             tempfile::tempdir()?.into_path(),
-            Some(format!("https://checkpoints.{}.sui.io", network)),
+            Some(format!("https://checkpoints.{}.iota.io", network)),
             vec![],
             ReaderOptions::default(),
             exit_receiver,

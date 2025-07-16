@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use arc_swap::ArcSwap;
@@ -6,9 +7,9 @@ use parking_lot::Mutex;
 use std::collections::{BTreeMap, VecDeque};
 use std::num::NonZeroU64;
 use std::sync::Arc;
-use sui_protocol_config::Chain;
-use sui_types::digests::ChainIdentifier;
-use sui_types::messages_consensus::TimestampMs;
+use iota_protocol_config::Chain;
+use iota_types::digests::ChainIdentifier;
+use iota_types::messages_consensus::TimestampMs;
 use tracing::{debug, warn};
 
 use crate::authority::AuthorityMetrics;

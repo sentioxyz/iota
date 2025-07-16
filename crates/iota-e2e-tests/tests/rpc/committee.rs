@@ -1,9 +1,10 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-use sui_macros::sim_test;
-use sui_rpc_api::proto::node::v2::node_service_client::NodeServiceClient;
-use sui_rpc_api::proto::node::v2::GetCommitteeRequest;
+use iota_macros::sim_test;
+use iota_rpc_api::proto::node::v2::node_service_client::NodeServiceClient;
+use iota_rpc_api::proto::node::v2::GetCommitteeRequest;
 use test_cluster::TestClusterBuilder;
 
 #[sim_test]
@@ -33,5 +34,5 @@ async fn get_committee() {
     assert_eq!(latest_committee, epoch_0_committee);
 
     // ensure we can convert proto committee type to sdk_types committee
-    sui_sdk_types::ValidatorCommittee::try_from(&latest_committee).unwrap();
+    iota_sdk_types::ValidatorCommittee::try_from(&latest_committee).unwrap();
 }

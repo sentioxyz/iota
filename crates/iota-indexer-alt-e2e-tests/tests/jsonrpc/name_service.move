@@ -1,9 +1,10 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 //# init --protocol-version 70 --simulator
 
-// Testing various input errors for the SuiNS name resolution:
+// Testing various input errors for the IotaNS name resolution:
 // 1. Not enough labels (need at least two)
 // 2. Too long
 // 3. Bad (inconsistent) use of separators
@@ -13,54 +14,54 @@
 
 //# run-jsonrpc
 {
-  "method": "suix_resolveNameServiceAddress",
+  "method": "iotax_resolveNameServiceAddress",
   "params": ["foo"]
 }
 
 //# run-jsonrpc
 {
-  "method": "suix_resolveNameServiceAddress",
-  "params": ["toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.sui"]
+  "method": "iotax_resolveNameServiceAddress",
+  "params": ["toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.toolong.iota"]
 }
 
 //# run-jsonrpc
 {
-  "method": "suix_resolveNameServiceAddress",
-  "params": ["foo*bar.sui"]
+  "method": "iotax_resolveNameServiceAddress",
+  "params": ["foo*bar.iota"]
 }
 
 //# run-jsonrpc
 {
-  "method": "suix_resolveNameServiceAddress",
-  "params": ["foo..sui"]
+  "method": "iotax_resolveNameServiceAddress",
+  "params": ["foo..iota"]
 }
 
 //# run-jsonrpc
 {
-  "method": "suix_resolveNameServiceAddress",
-  "params": ["toolongtoolongtoolongtoolongtoolongtoolongtoolongtoolongtoolongtoolong.sui"]
+  "method": "iotax_resolveNameServiceAddress",
+  "params": ["toolongtoolongtoolongtoolongtoolongtoolongtoolongtoolongtoolongtoolong.iota"]
 }
 
 //# run-jsonrpc
 {
-  "method": "suix_resolveNameServiceAddress",
-  "params": ["-foo.sui"]
+  "method": "iotax_resolveNameServiceAddress",
+  "params": ["-foo.iota"]
 }
 
 //# run-jsonrpc
 {
-  "method": "suix_resolveNameServiceAddress",
-  "params": ["foo-.sui"]
+  "method": "iotax_resolveNameServiceAddress",
+  "params": ["foo-.iota"]
 }
 
 //# run-jsonrpc
 {
-  "method": "suix_resolveNameServiceAddress",
-  "params": ["foo_bar.sui"]
+  "method": "iotax_resolveNameServiceAddress",
+  "params": ["foo_bar.iota"]
 }
 
 //# run-jsonrpc
 {
-  "method": "suix_resolveNameServiceAddress",
-  "params": ["🫠.sui"]
+  "method": "iotax_resolveNameServiceAddress",
+  "params": ["🫠.iota"]
 }

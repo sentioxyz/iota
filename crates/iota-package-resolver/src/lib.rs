@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use async_trait::async_trait;
@@ -15,9 +16,9 @@ use std::collections::BTreeSet;
 use std::num::NonZeroUsize;
 use std::sync::{Arc, Mutex};
 use std::{borrow::Cow, collections::BTreeMap};
-use sui_types::base_types::is_primitive_type_tag;
-use sui_types::transaction::{Argument, CallArg, Command, ProgrammableTransaction};
-use sui_types::type_input::{StructInput, TypeInput};
+use iota_types::base_types::is_primitive_type_tag;
+use iota_types::transaction::{Argument, CallArg, Command, ProgrammableTransaction};
+use iota_types::type_input::{StructInput, TypeInput};
 
 use crate::error::Error;
 use move_binary_format::errors::Location;
@@ -33,9 +34,9 @@ use move_core_types::{
     annotated_value::{MoveFieldLayout, MoveStructLayout, MoveTypeLayout},
     language_storage::{StructTag, TypeTag},
 };
-use sui_types::move_package::{MovePackage, TypeOrigin};
-use sui_types::object::Object;
-use sui_types::{base_types::SequenceNumber, Identifier};
+use iota_types::move_package::{MovePackage, TypeOrigin};
+use iota_types::object::Object;
+use iota_types::{base_types::SequenceNumber, Identifier};
 
 pub mod error;
 
@@ -1781,11 +1782,11 @@ mod tests {
     use move_core_types::ident_str;
     use std::sync::Arc;
     use std::{path::PathBuf, str::FromStr, sync::RwLock};
-    use sui_types::base_types::random_object_ref;
-    use sui_types::transaction::ObjectArg;
+    use iota_types::base_types::random_object_ref;
+    use iota_types::transaction::ObjectArg;
 
     use move_compiler::compiled_unit::NamedCompiledModule;
-    use sui_move_build::{BuildConfig, CompiledPackage};
+    use iota_move_build::{BuildConfig, CompiledPackage};
 
     use super::*;
 
@@ -2075,7 +2076,7 @@ mod tests {
     #[tokio::test]
     async fn test_err_value_nesting_big_phantom_type_param_layout() {
         let (_, cache) = package_cache([
-            (1, build_package("sui"), sui_types()),
+            (1, build_package("iota"), iota_types()),
             (1, build_package("d0"), d0_types()),
         ]);
 
@@ -2117,7 +2118,7 @@ mod tests {
     #[tokio::test]
     async fn test_err_value_nesting_type_param_application_layout() {
         let (_, cache) = package_cache([
-            (1, build_package("sui"), sui_types()),
+            (1, build_package("iota"), iota_types()),
             (1, build_package("d0"), d0_types()),
         ]);
 
@@ -2480,7 +2481,7 @@ mod tests {
         use AbilitySet as S;
 
         let (_, cache) = package_cache([
-            (1, build_package("sui"), sui_types()),
+            (1, build_package("iota"), iota_types()),
             (1, build_package("d0"), d0_types()),
         ]);
         let resolver = Resolver::new(cache);
@@ -2517,7 +2518,7 @@ mod tests {
         use AbilitySet as S;
 
         let (_, cache) = package_cache([
-            (1, build_package("sui"), sui_types()),
+            (1, build_package("iota"), iota_types()),
             (1, build_package("d0"), d0_types()),
         ]);
         let resolver = Resolver::new(cache);
@@ -2537,7 +2538,7 @@ mod tests {
         use AbilitySet as S;
 
         let (_, cache) = package_cache([
-            (1, build_package("sui"), sui_types()),
+            (1, build_package("iota"), iota_types()),
             (1, build_package("d0"), d0_types()),
         ]);
         let resolver = Resolver::new(cache);
@@ -2577,7 +2578,7 @@ mod tests {
         use AbilitySet as S;
 
         let (_, cache) = package_cache([
-            (1, build_package("sui"), sui_types()),
+            (1, build_package("iota"), iota_types()),
             (1, build_package("d0"), d0_types()),
         ]);
         let resolver = Resolver::new(cache);
@@ -2592,7 +2593,7 @@ mod tests {
     #[tokio::test]
     async fn test_err_ability_arity() {
         let (_, cache) = package_cache([
-            (1, build_package("sui"), sui_types()),
+            (1, build_package("iota"), iota_types()),
             (1, build_package("d0"), d0_types()),
         ]);
         let resolver = Resolver::new(cache);
@@ -2624,7 +2625,7 @@ mod tests {
     #[tokio::test]
     async fn test_err_too_many_type_params() {
         let (_, cache) = package_cache([
-            (1, build_package("sui"), sui_types()),
+            (1, build_package("iota"), iota_types()),
             (1, build_package("d0"), d0_types()),
         ]);
 
@@ -2651,7 +2652,7 @@ mod tests {
         use AbilitySet as S;
 
         let (_, cache) = package_cache([
-            (1, build_package("sui"), sui_types()),
+            (1, build_package("iota"), iota_types()),
             (1, build_package("d0"), d0_types()),
         ]);
 
@@ -2687,7 +2688,7 @@ mod tests {
         use AbilitySet as S;
 
         let (_, cache) = package_cache([
-            (1, build_package("sui"), sui_types()),
+            (1, build_package("iota"), iota_types()),
             (1, build_package("d0"), d0_types()),
         ]);
 
@@ -2727,7 +2728,7 @@ mod tests {
 
         let (_, cache) = package_cache([
             (1, build_package("std"), std_types()),
-            (1, build_package("sui"), sui_types()),
+            (1, build_package("iota"), iota_types()),
             (1, build_package("e0"), e0_types()),
         ]);
 
@@ -2807,7 +2808,7 @@ mod tests {
 
         let (_, cache) = package_cache([
             (1, build_package("std"), std_types()),
-            (1, build_package("sui"), sui_types()),
+            (1, build_package("iota"), iota_types()),
             (1, build_package("e0"), e0_types()),
         ]);
 
@@ -2865,7 +2866,7 @@ mod tests {
 
         let (_, cache) = package_cache([
             (1, build_package("std"), std_types()),
-            (1, build_package("sui"), sui_types()),
+            (1, build_package("iota"), iota_types()),
             (1, build_package("e0"), e0_types()),
         ]);
 
@@ -2974,7 +2975,7 @@ mod tests {
         types
     }
 
-    fn sui_types() -> TypeOriginTable {
+    fn iota_types() -> TypeOriginTable {
         vec![datakey("0x2", "object", "UID")]
     }
 

@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 //# init --protocol-version 70 --accounts A B --addresses test=0x0 --simulator
@@ -9,7 +10,7 @@
 // 4. ...after some have been deleted
 
 //# programmable --sender A --inputs @A
-//> 0: sui::table::new<u64, sui::coin::Coin<sui::sui::SUI>>();
+//> 0: iota::table::new<u64, iota::coin::Coin<iota::iota::IOTA>>();
 //> 1: TransferObjects([Result(0)], Input(0))
 
 //# programmable --sender A --inputs @A 42 43 44
@@ -24,7 +25,7 @@
 
 //# run-jsonrpc
 {
-  "method": "sui_multiGetObjects",
+  "method": "iota_multiGetObjects",
   "params": [
     [
       "@{obj_2_0}",
@@ -46,7 +47,7 @@
 
 //# run-jsonrpc
 {
-  "method": "sui_multiGetObjects",
+  "method": "iota_multiGetObjects",
   "params": [
     [
       "@{obj_2_0}",
@@ -61,13 +62,13 @@
 }
 
 //# programmable --sender A --inputs object(1,0) 0 object(3,0)
-//> 0: sui::table::add<u64, sui::coin::Coin<sui::sui::SUI>>(Input(0), Input(1), Input(2))
+//> 0: iota::table::add<u64, iota::coin::Coin<iota::iota::IOTA>>(Input(0), Input(1), Input(2))
 
 //# create-checkpoint
 
 //# run-jsonrpc
 {
-  "method": "sui_multiGetObjects",
+  "method": "iota_multiGetObjects",
   "params": [
     [
       "@{obj_2_0}",
@@ -88,7 +89,7 @@
 
 //# run-jsonrpc
 {
-  "method": "sui_multiGetObjects",
+  "method": "iota_multiGetObjects",
   "params": [
     [
       "@{obj_2_0}",

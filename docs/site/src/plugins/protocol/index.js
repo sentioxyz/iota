@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 // Plugin copies file from crates and creates fullnode doc
@@ -9,7 +10,7 @@ import fs from "fs";
 
 const PROTOCOL_PATH = path.join(
   __dirname,
-  "../../../../../crates/sui-rpc-api/proto/documentation.json",
+  "../../../../../crates/iota-rpc-api/proto/documentation.json",
 );
 const MDX_FILENAME = "fullnode-protocol";
 const MDX_TEST = new RegExp(`${MDX_FILENAME}\\.mdx$`);
@@ -17,7 +18,7 @@ const SPEC_MD = fs.readFileSync(PROTOCOL_PATH, "utf-8");
 
 const fullnodeProtocolPlugin = (context, options) => {
   return {
-    name: "sui-fullnode-protocol-plugin",
+    name: "iota-fullnode-protocol-plugin",
     configureWebpack() {
       return {
         module: {

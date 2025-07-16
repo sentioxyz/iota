@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 //# init --protocol-version 70 --accounts A B --addresses test=0x0 --simulator
@@ -9,7 +10,7 @@
 // 4. Structured transaction and effects
 // 5. Events
 // 6a. Balance Changes (gas only)
-// 6b. Balance Changes (transfer SUI)
+// 6b. Balance Changes (transfer IOTA)
 
 //# publish
 module test::counter {
@@ -42,7 +43,7 @@ module test::counter {
     c.x = c.x - x;
     let nft = NFT { id: object::new(ctx), x };
 
-    sui::event::emit(NFTMinted { id: object::id(&nft) });
+    iota::event::emit(NFTMinted { id: object::id(&nft) });
     nft
   }
 }
@@ -50,7 +51,7 @@ module test::counter {
 //# programmable --sender A --inputs object(1,0) 42 @A
 //> 0: test::counter::inc(Input(0));
 //> 1: test::counter::inc_by(Input(0), Input(1));
-//> 2: sui::coin::value<sui::sui::SUI>(Gas);
+//> 2: iota::coin::value<iota::iota::IOTA>(Gas);
 //> 3: test::counter::inc_by(Input(0), Result(2));
 //> 4: test::counter::take(Input(0), Input(1));
 //> 5: TransferObjects([Result(4)], Input(2))
@@ -63,19 +64,19 @@ module test::counter {
 
 //# run-jsonrpc
 {
-  "method": "sui_getTransactionBlock",
+  "method": "iota_getTransactionBlock",
   "params": ["@{digest_2}", {}]
 }
 
 //# run-jsonrpc
 {
-  "method": "sui_getTransactionBlock",
+  "method": "iota_getTransactionBlock",
   "params": ["11111111111111111111111111111111", {}]
 }
 
 //# run-jsonrpc
 {
-  "method": "sui_getTransactionBlock",
+  "method": "iota_getTransactionBlock",
   "params": [
     "@{digest_2}",
     {
@@ -87,7 +88,7 @@ module test::counter {
 
 //# run-jsonrpc
 {
-  "method": "sui_getTransactionBlock",
+  "method": "iota_getTransactionBlock",
   "params": [
     "@{digest_2}",
     {
@@ -99,7 +100,7 @@ module test::counter {
 
 //# run-jsonrpc
 {
-  "method": "sui_getTransactionBlock",
+  "method": "iota_getTransactionBlock",
   "params": [
     "@{digest_2}",
     {
@@ -110,7 +111,7 @@ module test::counter {
 
 //# run-jsonrpc
 {
-  "method": "sui_getTransactionBlock",
+  "method": "iota_getTransactionBlock",
   "params": [
     "@{digest_2}",
     {
@@ -121,7 +122,7 @@ module test::counter {
 
 //# run-jsonrpc
 {
-  "method": "sui_getTransactionBlock",
+  "method": "iota_getTransactionBlock",
   "params": [
     "@{digest_3}",
     {

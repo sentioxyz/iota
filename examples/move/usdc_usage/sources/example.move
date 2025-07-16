@@ -1,10 +1,11 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 module usdc_usage::example;
 
-use sui::coin::Coin;
-use sui::sui::SUI;
+use iota::coin::Coin;
+use iota::iota::IOTA;
 use usdc::usdc::USDC;
 
 public struct Sword has key, store {
@@ -23,8 +24,8 @@ public fun buy_sword_with_usdc(
   sword
 }
 
-public fun buy_sword_with_sui(
-  coin: Coin<SUI>,
+public fun buy_sword_with_iota(
+  coin: Coin<IOTA>,
   tx_context: &mut TxContext
 ): Sword {
   let sword = create_sword(coin.value(), tx_context);

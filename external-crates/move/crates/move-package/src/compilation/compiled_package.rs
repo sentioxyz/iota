@@ -1,5 +1,6 @@
 // Copyright (c) The Diem Core Contributors
 // Copyright (c) The Move Contributors
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::{
@@ -31,7 +32,7 @@ use move_compiler::{
         files::MappedFiles, NamedAddressMap, NumericalAddress, PackageConfig, PackagePaths,
         SaveFlag, SaveHook,
     },
-    sui_mode::{self},
+    iota_mode::{self},
     Compiler,
 };
 use move_disassembler::disassembler::Disassembler;
@@ -537,16 +538,16 @@ impl CompiledPackage {
         paths.push(sources_package_paths.clone());
 
         let lint_level = resolution_graph.build_options.lint_flag.get();
-        let sui_mode = resolution_graph.build_options.default_flavor == Some(Flavor::Sui);
+        let iota_mode = resolution_graph.build_options.default_flavor == Some(Flavor::Iota);
 
         let mut compiler = Compiler::from_package_paths(vfs_root, paths, bytecode_deps)
             .unwrap()
             .set_flags(flags);
-        if sui_mode {
-            let (filter_attr_name, filters) = sui_mode::linters::known_filters();
+        if iota_mode {
+            let (filter_attr_name, filters) = iota_mode::linters::known_filters();
             compiler = compiler
                 .add_custom_known_filters(filter_attr_name, filters)
-                .add_visitors(sui_mode::linters::linter_visitors(lint_level))
+                .add_visitors(iota_mode::linters::linter_visitors(lint_level))
         }
         let (filter_attr_name, filters) = linters::known_filters();
         compiler = compiler

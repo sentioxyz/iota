@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 //# init --protocol-version 70 --accounts A B --addresses test=0x0 --simulator
@@ -16,27 +17,27 @@
 
 //# programmable --sender A --inputs 44
 //> 0: SplitCoins(Gas, [Input(0)]);
-//> 1: sui::transfer::public_share_object<sui::coin::Coin<sui::sui::SUI>>(Result(0))
+//> 1: iota::transfer::public_share_object<iota::coin::Coin<iota::iota::IOTA>>(Result(0))
 
 //# programmable --sender A --inputs 45
 //> 0: SplitCoins(Gas, [Input(0)]);
-//> 1: sui::transfer::public_freeze_object<sui::coin::Coin<sui::sui::SUI>>(Result(0))
+//> 1: iota::transfer::public_freeze_object<iota::coin::Coin<iota::iota::IOTA>>(Result(0))
 
 //# programmable --sender A --inputs @A
-//> 0: sui::table::new<u64, u64>();
+//> 0: iota::table::new<u64, u64>();
 //> 1: TransferObjects([Result(0)], Input(0))
 
 //# programmable --sender A --inputs object(5,0) 46 47
-//> 0: sui::table::add<u64, u64>(Input(0), Input(1), Input(2))
+//> 0: iota::table::add<u64, u64>(Input(0), Input(1), Input(2))
 
 //# programmable --sender A --inputs object(5,0) 46
-//> 0: sui::table::remove<u64, u64>(Input(0), Input(1))
+//> 0: iota::table::remove<u64, u64>(Input(0), Input(1))
 
 //# create-checkpoint
 
 //# run-jsonrpc
 {
-  "method": "sui_tryMultiGetPastObjects",
+  "method": "iota_tryMultiGetPastObjects",
   "params": [
     [
       { "objectId": "@{obj_1_0}", "version": "2" },
@@ -53,7 +54,7 @@
 
 //# run-jsonrpc
 {
-  "method": "sui_tryMultiGetPastObjects",
+  "method": "iota_tryMultiGetPastObjects",
   "params": [
     [
       { "objectId": "@{obj_1_0}", "version": "2" },

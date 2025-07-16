@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use clap::Parser;
@@ -11,15 +12,15 @@ use move_unit_test::{extensions::set_extension_hook, UnitTestingConfig};
 use move_vm_runtime::native_extensions::NativeContextExtensions;
 use once_cell::sync::Lazy;
 use std::{cell::RefCell, collections::BTreeMap, path::Path, rc::Rc, sync::Arc};
-use sui_move_build::{decorate_warnings, implicit_deps};
-use sui_move_natives::{
+use iota_move_build::{decorate_warnings, implicit_deps};
+use iota_move_natives::{
     object_runtime::ObjectRuntime, test_scenario::InMemoryTestStore,
     transaction_context::TransactionContext, NativesCostTable,
 };
-use sui_package_management::system_package_versions::latest_system_packages;
-use sui_protocol_config::ProtocolConfig;
-use sui_types::{
-    base_types::{SuiAddress, TxContext},
+use iota_package_management::system_package_versions::latest_system_packages;
+use iota_protocol_config::ProtocolConfig;
+use iota_types::{
+    base_types::{IotaAddress, TxContext},
     digests::TransactionDigest,
     gas_model::tables::initial_cost_schedule_for_unit_tests,
     in_memory_storage::InMemoryStorage,
@@ -30,7 +31,7 @@ use sui_types::{
 const MAX_UNIT_TEST_INSTRUCTIONS: u64 = 1_000_000;
 
 #[derive(Parser)]
-#[group(id = "sui-move-test")]
+#[group(id = "iota-move-test")]
 pub struct Test {
     #[clap(flatten)]
     pub test: test::Test,
@@ -45,7 +46,7 @@ impl Test {
         let compute_coverage = self.test.compute_coverage;
         if !cfg!(debug_assertions) && compute_coverage {
             return Err(anyhow::anyhow!(
-                "The --coverage flag is currently supported only in debug builds. Please build the Sui CLI from source in debug mode."
+                "The --coverage flag is currently supported only in debug builds. Please build the IOTA CLI from source in debug mode."
             ));
         }
         // save disassembly if trace execution is enabled
@@ -96,7 +97,7 @@ pub fn run_move_unit_tests(
             report_stacktrace_on_abort: true,
             ..config
         },
-        sui_move_natives::all_natives(
+        iota_move_natives::all_natives(
             /* silent */ false,
             &ProtocolConfig::get_for_max_version_UNSAFE(),
         ),
@@ -132,7 +133,7 @@ fn new_testing_object_and_natives_cost_runtime(ext: &mut NativeContextExtensions
     ));
     ext.add(NativesCostTable::from_protocol_config(&protocol_config));
     let tx_context = TxContext::new_from_components(
-        &SuiAddress::ZERO,
+        &IotaAddress::ZERO,
         &TransactionDigest::default(),
         &0,
         0,

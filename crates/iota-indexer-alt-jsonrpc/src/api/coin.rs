@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::collections::{BTreeMap, HashMap};
@@ -11,15 +12,15 @@ use futures::future;
 use jsonrpsee::{core::RpcResult, proc_macros::rpc};
 use move_core_types::language_storage::{StructTag, TypeTag};
 use serde::{Deserialize, Serialize};
-use sui_indexer_alt_schema::objects::StoredCoinOwnerKind;
-use sui_indexer_alt_schema::schema::coin_balance_buckets;
-use sui_json_rpc_types::{Balance, Coin, Page as PageResponse, SuiCoinMetadata};
-use sui_open_rpc::Module;
-use sui_open_rpc_macros::open_rpc;
-use sui_sql_macro::sql;
-use sui_types::object::Object;
-use sui_types::{
-    base_types::{ObjectID, SuiAddress},
+use iota_indexer_alt_schema::objects::StoredCoinOwnerKind;
+use iota_indexer_alt_schema::schema::coin_balance_buckets;
+use iota_json_rpc_types::{Balance, Coin, Page as PageResponse, IotaCoinMetadata};
+use iota_open_rpc::Module;
+use iota_open_rpc_macros::open_rpc;
+use iota_sql_macro::sql;
+use iota_types::object::Object;
+use iota_types::{
+    base_types::{ObjectID, IotaAddress},
     gas_coin::GAS,
 };
 
@@ -32,16 +33,16 @@ use crate::{
 
 use super::rpc_module::RpcModule;
 
-#[open_rpc(namespace = "suix", tag = "Coin API")]
-#[rpc(server, namespace = "suix")]
+#[open_rpc(namespace = "iotax", tag = "Coin API")]
+#[rpc(server, namespace = "iotax")]
 trait CoinsApi {
     /// Return Coin objects owned by an address with a specified coin type.
-    /// If no coin type is specified, SUI coins are returned.
+    /// If no coin type is specified, IOTA coins are returned.
     #[method(name = "getCoins")]
     async fn get_coins(
         &self,
-        /// the owner's Sui address
-        owner: SuiAddress,
+        /// the owner's IOTA address
+        owner: IotaAddress,
         /// optional coin type
         coin_type: Option<String>,
         /// optional paging cursor
@@ -54,8 +55,8 @@ trait CoinsApi {
     #[method(name = "getAllBalances")]
     async fn get_all_balances(
         &self,
-        /// the owner's Sui address
-        owner: SuiAddress,
+        /// the owner's IOTA address
+        owner: IotaAddress,
     ) -> RpcResult<Vec<Balance>>;
 
     /// Return metadata (e.g., symbol, decimals) for a coin. Note that if the coin's metadata was
@@ -66,7 +67,7 @@ trait CoinsApi {
         &self,
         /// type name for the coin (e.g., 0x168da5bf1f48dafc111b0a488fa454aca95e0b5e::usdc::USDC)
         coin_type: String,
-    ) -> RpcResult<Option<SuiCoinMetadata>>;
+    ) -> RpcResult<Option<IotaCoinMetadata>>;
 }
 
 pub(crate) struct Coins(pub Context);
@@ -94,13 +95,13 @@ type Cursor = BcsCursor<BalanceCursor>;
 impl CoinsApiServer for Coins {
     async fn get_coins(
         &self,
-        owner: SuiAddress,
+        owner: IotaAddress,
         coin_type: Option<String>,
         cursor: Option<String>,
         limit: Option<usize>,
     ) -> RpcResult<PageResponse<Coin, String>> {
         let coin_type_tag = if let Some(coin_type) = coin_type {
-            sui_types::parse_sui_type_tag(&coin_type)
+            iota_types::parse_iota_type_tag(&coin_type)
                 .map_err(|e| invalid_params(Error::BadType(coin_type, e)))?
         } else {
             GAS::type_tag()
@@ -136,7 +137,7 @@ impl CoinsApiServer for Coins {
         })
     }
 
-    async fn get_all_balances(&self, owner: SuiAddress) -> RpcResult<Vec<Balance>> {
+    async fn get_all_balances(&self, owner: IotaAddress) -> RpcResult<Vec<Balance>> {
         let Self(ctx) = self;
         let coin_ids = filter_coins(ctx, owner, None, None).await?;
         let coin_futures = coin_ids
@@ -173,7 +174,7 @@ impl CoinsApiServer for Coins {
         Ok(balances)
     }
 
-    async fn get_coin_metadata(&self, coin_type: String) -> RpcResult<Option<SuiCoinMetadata>> {
+    async fn get_coin_metadata(&self, coin_type: String) -> RpcResult<Option<IotaCoinMetadata>> {
         let Self(ctx) = self;
 
         Ok(coin_metadata_response(ctx, &coin_type)
@@ -194,7 +195,7 @@ impl RpcModule for Coins {
 
 async fn filter_coins(
     ctx: &Context,
-    owner: SuiAddress,
+    owner: IotaAddress,
     coin_type_tag: Option<TypeTag>,
     page: Option<Page<Cursor>>,
 ) -> Result<PageResponse<ObjectID, String>, RpcError<Error>> {
@@ -330,7 +331,7 @@ async fn coin_response(ctx: &Context, id: ObjectID) -> Result<Coin, RpcError<Err
 async fn coin_metadata_response(
     ctx: &Context,
     coin_type: &str,
-) -> Result<Option<SuiCoinMetadata>, RpcError<Error>> {
+) -> Result<Option<IotaCoinMetadata>, RpcError<Error>> {
     let coin_type = StructTag::from_str(coin_type)
         .map_err(|e| invalid_params(Error::BadType(coin_type.to_owned(), e)))?;
 

@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 /// This module enriches query templates with real data from the database.
@@ -10,7 +11,7 @@ use bb8::Pool;
 use bb8_postgres::PostgresConnectionManager;
 use parking_lot::Mutex;
 use std::sync::Arc;
-use sui_indexer_alt_framework::task::TrySpawnStreamExt;
+use iota_indexer_alt_framework::task::TrySpawnStreamExt;
 use tokio_postgres::{types::Type, NoTls, Row};
 use tracing::warn;
 use url::Url;

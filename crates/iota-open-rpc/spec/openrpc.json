@@ -1,22 +1,22 @@
 {
   "openrpc": "1.2.6",
   "info": {
-    "title": "Sui JSON-RPC",
-    "description": "Sui JSON-RPC API for interaction with Sui Full node. Make RPC calls using https://fullnode.NETWORK.sui.io:443, where NETWORK is the network you want to use (testnet, devnet, mainnet). By default, local networks use port 9000.",
+    "title": "IOTA JSON-RPC",
+    "description": "IOTA JSON-RPC API for interaction with IOTA Full node. Make RPC calls using https://fullnode.NETWORK.iota.io:443, where NETWORK is the network you want to use (testnet, devnet, mainnet). By default, local networks use port 9000.",
     "contact": {
-      "name": "Mysten Labs",
-      "url": "https://mystenlabs.com",
-      "email": "build@mystenlabs.com"
+      "name": "IOTA Foundation",
+      "url": "https://iota.org",
+      "email": "build@iota.org"
     },
     "license": {
       "name": "Apache-2.0",
-      "url": "https://raw.githubusercontent.com/MystenLabs/sui/main/LICENSE"
+      "url": "https://raw.githubusercontent.com/iotaledger/iota/main/LICENSE"
     },
     "version": "1.45.3"
   },
   "methods": [
     {
-      "name": "sui_devInspectTransactionBlock",
+      "name": "iota_devInspectTransactionBlock",
       "tags": [
         {
           "name": "Write API"
@@ -28,7 +28,7 @@
           "name": "sender_address",
           "required": true,
           "schema": {
-            "$ref": "#/components/schemas/SuiAddress"
+            "$ref": "#/components/schemas/IotaAddress"
           }
         },
         {
@@ -150,7 +150,7 @@
       ]
     },
     {
-      "name": "sui_dryRunTransactionBlock",
+      "name": "iota_dryRunTransactionBlock",
       "tags": [
         {
           "name": "Write API"
@@ -305,7 +305,7 @@
       ]
     },
     {
-      "name": "sui_executeTransactionBlock",
+      "name": "iota_executeTransactionBlock",
       "tags": [
         {
           "name": "Write API"
@@ -341,14 +341,14 @@
         },
         {
           "name": "request_type",
-          "description": "The request type, derived from `SuiTransactionBlockResponseOptions` if None",
+          "description": "The request type, derived from `IotaTransactionBlockResponseOptions` if None",
           "schema": {
             "$ref": "#/components/schemas/ExecuteTransactionRequestType"
           }
         }
       ],
       "result": {
-        "name": "SuiTransactionBlockResponse",
+        "name": "IotaTransactionBlockResponse",
         "required": true,
         "schema": {
           "$ref": "#/components/schemas/TransactionBlockResponse"
@@ -508,7 +508,7 @@
       ]
     },
     {
-      "name": "sui_getChainIdentifier",
+      "name": "iota_getChainIdentifier",
       "tags": [
         {
           "name": "Read API"
@@ -535,7 +535,7 @@
       ]
     },
     {
-      "name": "sui_getCheckpoint",
+      "name": "iota_getCheckpoint",
       "tags": [
         {
           "name": "Read API"
@@ -594,7 +594,7 @@
       ]
     },
     {
-      "name": "sui_getCheckpoints",
+      "name": "iota_getCheckpoints",
       "tags": [
         {
           "name": "Read API"
@@ -740,7 +740,7 @@
       ]
     },
     {
-      "name": "sui_getEvents",
+      "name": "iota_getEvents",
       "tags": [
         {
           "name": "Read API"
@@ -758,7 +758,7 @@
         }
       ],
       "result": {
-        "name": "Vec<SuiEvent>",
+        "name": "Vec<IotaEvent>",
         "required": true,
         "schema": {
           "type": "array",
@@ -807,7 +807,7 @@
       ]
     },
     {
-      "name": "sui_getLatestCheckpointSequenceNumber",
+      "name": "iota_getLatestCheckpointSequenceNumber",
       "tags": [
         {
           "name": "Read API"
@@ -834,7 +834,7 @@
       ]
     },
     {
-      "name": "sui_getMoveFunctionArgTypes",
+      "name": "iota_getMoveFunctionArgTypes",
       "tags": [
         {
           "name": "Move Utils"
@@ -884,7 +884,7 @@
             },
             {
               "name": "module",
-              "value": "suifrens"
+              "value": "iotafrens"
             },
             {
               "name": "function",
@@ -917,7 +917,7 @@
       ]
     },
     {
-      "name": "sui_getNormalizedMoveFunction",
+      "name": "iota_getNormalizedMoveFunction",
       "tags": [
         {
           "name": "Move Utils"
@@ -948,10 +948,10 @@
         }
       ],
       "result": {
-        "name": "SuiMoveNormalizedFunction",
+        "name": "IotaMoveNormalizedFunction",
         "required": true,
         "schema": {
-          "$ref": "#/components/schemas/SuiMoveNormalizedFunction"
+          "$ref": "#/components/schemas/IotaMoveNormalizedFunction"
         }
       },
       "examples": [
@@ -996,7 +996,7 @@
       ]
     },
     {
-      "name": "sui_getNormalizedMoveModule",
+      "name": "iota_getNormalizedMoveModule",
       "tags": [
         {
           "name": "Move Utils"
@@ -1020,10 +1020,10 @@
         }
       ],
       "result": {
-        "name": "SuiMoveNormalizedModule",
+        "name": "IotaMoveNormalizedModule",
         "required": true,
         "schema": {
-          "$ref": "#/components/schemas/SuiMoveNormalizedModule"
+          "$ref": "#/components/schemas/IotaMoveNormalizedModule"
         }
       },
       "examples": [
@@ -1054,7 +1054,7 @@
       ]
     },
     {
-      "name": "sui_getNormalizedMoveModulesByPackage",
+      "name": "iota_getNormalizedMoveModulesByPackage",
       "tags": [
         {
           "name": "Move Utils"
@@ -1071,12 +1071,12 @@
         }
       ],
       "result": {
-        "name": "BTreeMap<String,SuiMoveNormalizedModule>",
+        "name": "BTreeMap<String,IotaMoveNormalizedModule>",
         "required": true,
         "schema": {
           "type": "object",
           "additionalProperties": {
-            "$ref": "#/components/schemas/SuiMoveNormalizedModule"
+            "$ref": "#/components/schemas/IotaMoveNormalizedModule"
           }
         }
       },
@@ -1104,7 +1104,7 @@
       ]
     },
     {
-      "name": "sui_getNormalizedMoveStruct",
+      "name": "iota_getNormalizedMoveStruct",
       "tags": [
         {
           "name": "Move Utils"
@@ -1135,10 +1135,10 @@
         }
       ],
       "result": {
-        "name": "SuiMoveNormalizedStruct",
+        "name": "IotaMoveNormalizedStruct",
         "required": true,
         "schema": {
-          "$ref": "#/components/schemas/SuiMoveNormalizedStruct"
+          "$ref": "#/components/schemas/IotaMoveNormalizedStruct"
         }
       },
       "examples": [
@@ -1175,7 +1175,7 @@
       ]
     },
     {
-      "name": "sui_getObject",
+      "name": "iota_getObject",
       "tags": [
         {
           "name": "Read API"
@@ -1200,10 +1200,10 @@
         }
       ],
       "result": {
-        "name": "SuiObjectResponse",
+        "name": "IotaObjectResponse",
         "required": true,
         "schema": {
-          "$ref": "#/components/schemas/SuiObjectResponse"
+          "$ref": "#/components/schemas/IotaObjectResponse"
         }
       },
       "examples": [
@@ -1234,7 +1234,7 @@
                 "objectId": "0x53e4567ccafa5f36ce84c80aa8bc9be64e0d5ae796884274aef3005ae6733809",
                 "version": "1",
                 "digest": "33K5ZXJ3RyubvYaHuEnQ1QXmmbhgtrFwp199dnEbL4n7",
-                "type": "0x2::coin::Coin<0x2::sui::SUI>",
+                "type": "0x2::coin::Coin<0x2::iota::IOTA>",
                 "owner": {
                   "AddressOwner": "0xc8ec1d5b84dd6289e193b9f88de4a994358c9f856135236c3e75a925e1c77ac3"
                 },
@@ -1242,7 +1242,7 @@
                 "storageRebate": "100",
                 "content": {
                   "dataType": "moveObject",
-                  "type": "0x2::coin::Coin<0x2::sui::SUI>",
+                  "type": "0x2::coin::Coin<0x2::iota::IOTA>",
                   "hasPublicTransfer": true,
                   "fields": {
                     "balance": "100000000",
@@ -1258,7 +1258,7 @@
       ]
     },
     {
-      "name": "sui_getProtocolConfig",
+      "name": "iota_getProtocolConfig",
       "tags": [
         {
           "name": "Read API"
@@ -1993,7 +1993,7 @@
       ]
     },
     {
-      "name": "sui_getTotalTransactionBlocks",
+      "name": "iota_getTotalTransactionBlocks",
       "tags": [
         {
           "name": "Read API"
@@ -2020,7 +2020,7 @@
       ]
     },
     {
-      "name": "sui_getTransactionBlock",
+      "name": "iota_getTransactionBlock",
       "tags": [
         {
           "name": "Read API"
@@ -2045,7 +2045,7 @@
         }
       ],
       "result": {
-        "name": "SuiTransactionBlockResponse",
+        "name": "IotaTransactionBlockResponse",
         "required": true,
         "schema": {
           "$ref": "#/components/schemas/TransactionBlockResponse"
@@ -2195,7 +2195,7 @@
       ]
     },
     {
-      "name": "sui_multiGetObjects",
+      "name": "iota_multiGetObjects",
       "tags": [
         {
           "name": "Read API"
@@ -2223,12 +2223,12 @@
         }
       ],
       "result": {
-        "name": "Vec<SuiObjectResponse>",
+        "name": "Vec<IotaObjectResponse>",
         "required": true,
         "schema": {
           "type": "array",
           "items": {
-            "$ref": "#/components/schemas/SuiObjectResponse"
+            "$ref": "#/components/schemas/IotaObjectResponse"
           }
         }
       },
@@ -2267,7 +2267,7 @@
                   "objectId": "0x77b3482580ee8d5bdc5b824808df54bfec4fc817622e5add0e48f749f01def98",
                   "version": "1",
                   "digest": "2QwXW3qzMEZPAyyP9VHtXbC2tp7iomypQc5XnkyPsu5d",
-                  "type": "0x2::coin::Coin<0x2::sui::SUI>",
+                  "type": "0x2::coin::Coin<0x2::iota::IOTA>",
                   "owner": {
                     "AddressOwner": "0x504d411325e3c7f89d412044fe99007efb0f94f1e64d2e8090c619a39299d87e"
                   },
@@ -2275,7 +2275,7 @@
                   "storageRebate": "100",
                   "content": {
                     "dataType": "moveObject",
-                    "type": "0x2::coin::Coin<0x2::sui::SUI>",
+                    "type": "0x2::coin::Coin<0x2::iota::IOTA>",
                     "hasPublicTransfer": true,
                     "fields": {
                       "balance": "100000000",
@@ -2291,7 +2291,7 @@
                   "objectId": "0x9060d87664c26a3f9a509228c21b16dc6797cf787c839a07edc03e6338421091",
                   "version": "1",
                   "digest": "5itvhMFvtJcV6fY2VY4x7F9Ex18q2N4Rr5WU4FXTJsFU",
-                  "type": "0x2::coin::Coin<0x2::sui::SUI>",
+                  "type": "0x2::coin::Coin<0x2::iota::IOTA>",
                   "owner": {
                     "AddressOwner": "0x23618df6438d21a48040e6bb568cafc13246bd847c60448160e0358cac4a1134"
                   },
@@ -2299,7 +2299,7 @@
                   "storageRebate": "100",
                   "content": {
                     "dataType": "moveObject",
-                    "type": "0x2::coin::Coin<0x2::sui::SUI>",
+                    "type": "0x2::coin::Coin<0x2::iota::IOTA>",
                     "hasPublicTransfer": true,
                     "fields": {
                       "balance": "100000000",
@@ -2315,7 +2315,7 @@
                   "objectId": "0xb37379c527753c5c8ab783f697e7b61439368cd75ebe63d633af32ffb4a022d1",
                   "version": "1",
                   "digest": "8rsTRNPs13DZvD2xneZEtf2nAAipep6uHXPXWVXfzDBr",
-                  "type": "0x2::coin::Coin<0x2::sui::SUI>",
+                  "type": "0x2::coin::Coin<0x2::iota::IOTA>",
                   "owner": {
                     "AddressOwner": "0x8b95b4eaa9fd3b22b43f6b2c8e92090bd6d16522a6fd4fa83ec70a5f197ad656"
                   },
@@ -2323,7 +2323,7 @@
                   "storageRebate": "100",
                   "content": {
                     "dataType": "moveObject",
-                    "type": "0x2::coin::Coin<0x2::sui::SUI>",
+                    "type": "0x2::coin::Coin<0x2::iota::IOTA>",
                     "hasPublicTransfer": true,
                     "fields": {
                       "balance": "100000000",
@@ -2339,7 +2339,7 @@
                   "objectId": "0xee309e94ff5c9f6b02c5637f018f6ea7bed8f6c3d80f2a595c2305e12dd6d07c",
                   "version": "1",
                   "digest": "3w6ars2tmgBST4ozGxPWzSpEGyn4AdxMBv3K9sdkCWfR",
-                  "type": "0x2::coin::Coin<0x2::sui::SUI>",
+                  "type": "0x2::coin::Coin<0x2::iota::IOTA>",
                   "owner": {
                     "AddressOwner": "0x3fbbd3ebef7dbcc7b02346cdf05674452cc61f316af5d5d7c02b94b023242685"
                   },
@@ -2347,7 +2347,7 @@
                   "storageRebate": "100",
                   "content": {
                     "dataType": "moveObject",
-                    "type": "0x2::coin::Coin<0x2::sui::SUI>",
+                    "type": "0x2::coin::Coin<0x2::iota::IOTA>",
                     "hasPublicTransfer": true,
                     "fields": {
                       "balance": "100000000",
@@ -2363,7 +2363,7 @@
                   "objectId": "0x29bc7c8d230db3b417edb1184cf075da5e934f672d3da3e003d989075efaecc7",
                   "version": "1",
                   "digest": "BE9GoMd7Mr8fGte3EdsXxUMwYjcErW71n6Gsm4iPvDmv",
-                  "type": "0x2::coin::Coin<0x2::sui::SUI>",
+                  "type": "0x2::coin::Coin<0x2::iota::IOTA>",
                   "owner": {
                     "AddressOwner": "0x9b5cd5df0df2a168259b7115a41ccc0a372b6fd0026e0c63043492ce4d0c19a6"
                   },
@@ -2371,7 +2371,7 @@
                   "storageRebate": "100",
                   "content": {
                     "dataType": "moveObject",
-                    "type": "0x2::coin::Coin<0x2::sui::SUI>",
+                    "type": "0x2::coin::Coin<0x2::iota::IOTA>",
                     "hasPublicTransfer": true,
                     "fields": {
                       "balance": "100000000",
@@ -2388,7 +2388,7 @@
       ]
     },
     {
-      "name": "sui_multiGetTransactionBlocks",
+      "name": "iota_multiGetTransactionBlocks",
       "tags": [
         {
           "name": "Read API"
@@ -2416,7 +2416,7 @@
         }
       ],
       "result": {
-        "name": "Vec<SuiTransactionBlockResponse>",
+        "name": "Vec<IotaTransactionBlockResponse>",
         "required": true,
         "schema": {
           "type": "array",
@@ -2807,7 +2807,7 @@
       ]
     },
     {
-      "name": "sui_tryGetPastObject",
+      "name": "iota_tryGetPastObject",
       "tags": [
         {
           "name": "Read API"
@@ -2840,7 +2840,7 @@
         }
       ],
       "result": {
-        "name": "SuiPastObjectResponse",
+        "name": "IotaPastObjectResponse",
         "required": true,
         "schema": {
           "$ref": "#/components/schemas/ObjectRead"
@@ -2879,7 +2879,7 @@
                 "objectId": "0x11af4b844ff94b3fbef6e36b518da3ad4c5856fa686464524a876b463d129760",
                 "version": "4",
                 "digest": "5VPAwDXy3BL72ehFc7gSJoz27ahMd6spUg5YwYc4ibcv",
-                "type": "0x2::coin::Coin<0x2::sui::SUI>",
+                "type": "0x2::coin::Coin<0x2::iota::IOTA>",
                 "owner": {
                   "AddressOwner": "0x3568c40e814d9d5396d23087a0fd641e91e0e00df6c012cded9ef9ba5e5bf042"
                 },
@@ -2887,7 +2887,7 @@
                 "storageRebate": "100",
                 "content": {
                   "dataType": "moveObject",
-                  "type": "0x2::coin::Coin<0x2::sui::SUI>",
+                  "type": "0x2::coin::Coin<0x2::iota::IOTA>",
                   "hasPublicTransfer": true,
                   "fields": {
                     "balance": "10000",
@@ -2903,7 +2903,7 @@
       ]
     },
     {
-      "name": "sui_tryMultiGetPastObjects",
+      "name": "iota_tryMultiGetPastObjects",
       "tags": [
         {
           "name": "Read API"
@@ -2931,7 +2931,7 @@
         }
       ],
       "result": {
-        "name": "Vec<SuiPastObjectResponse>",
+        "name": "Vec<IotaPastObjectResponse>",
         "required": true,
         "schema": {
           "type": "array",
@@ -2979,7 +2979,7 @@
                   "objectId": "0x38b3186a7bb26a1ab2c982a0a9b482aa70f5a010fffc60f20194ef0f597474e8",
                   "version": "4",
                   "digest": "hvBGBXvKVhC7XYgVPujuiLjxASR6UGAkSFrCRtVxX1F",
-                  "type": "0x2::coin::Coin<0x2::sui::SUI>",
+                  "type": "0x2::coin::Coin<0x2::iota::IOTA>",
                   "owner": {
                     "AddressOwner": "0x47866ff92885a3c21a7703f564721c198308aa0c71b771ada6b96c16fc9c0fa7"
                   },
@@ -2987,7 +2987,7 @@
                   "storageRebate": "100",
                   "content": {
                     "dataType": "moveObject",
-                    "type": "0x2::coin::Coin<0x2::sui::SUI>",
+                    "type": "0x2::coin::Coin<0x2::iota::IOTA>",
                     "hasPublicTransfer": true,
                     "fields": {
                       "balance": "10000",
@@ -3004,7 +3004,7 @@
                   "objectId": "0xceaf9ee4582d3a233101e322a22cb2a5bea2e681ea5af4e59bd1abb0bb4fcb27",
                   "version": "12",
                   "digest": "B5z4YkAgTi78fdxMbxG3fv2V4YBkhpc8PRCPz8MzLtbf",
-                  "type": "0x2::coin::Coin<0x2::sui::SUI>",
+                  "type": "0x2::coin::Coin<0x2::iota::IOTA>",
                   "owner": {
                     "AddressOwner": "0xa6ced287081357950315a8842c3870f2d83f980fe0996a92d351d6749a0a0b47"
                   },
@@ -3012,7 +3012,7 @@
                   "storageRebate": "100",
                   "content": {
                     "dataType": "moveObject",
-                    "type": "0x2::coin::Coin<0x2::sui::SUI>",
+                    "type": "0x2::coin::Coin<0x2::iota::IOTA>",
                     "hasPublicTransfer": true,
                     "fields": {
                       "balance": "20000",
@@ -3029,7 +3029,7 @@
       ]
     },
     {
-      "name": "sui_verifyZkLoginSignature",
+      "name": "iota_verifyZkLoginSignature",
       "tags": [
         {
           "name": "Read API"
@@ -3066,7 +3066,7 @@
           "description": "The author of the signature.",
           "required": true,
           "schema": {
-            "$ref": "#/components/schemas/SuiAddress"
+            "$ref": "#/components/schemas/IotaAddress"
           }
         }
       ],
@@ -3079,7 +3079,7 @@
       }
     },
     {
-      "name": "suix_getAllBalances",
+      "name": "iotax_getAllBalances",
       "tags": [
         {
           "name": "Coin Query API"
@@ -3089,10 +3089,10 @@
       "params": [
         {
           "name": "owner",
-          "description": "the owner's Sui address",
+          "description": "the owner's IOTA address",
           "required": true,
           "schema": {
-            "$ref": "#/components/schemas/SuiAddress"
+            "$ref": "#/components/schemas/IotaAddress"
           }
         }
       ],
@@ -3119,7 +3119,7 @@
             "name": "Result",
             "value": [
               {
-                "coinType": "0x2::sui::SUI",
+                "coinType": "0x2::iota::IOTA",
                 "coinObjectCount": 15,
                 "totalBalance": "3000000000",
                 "lockedBalance": {}
@@ -3130,7 +3130,7 @@
       ]
     },
     {
-      "name": "suix_getAllCoins",
+      "name": "iotax_getAllCoins",
       "tags": [
         {
           "name": "Coin Query API"
@@ -3140,10 +3140,10 @@
       "params": [
         {
           "name": "owner",
-          "description": "the owner's Sui address",
+          "description": "the owner's IOTA address",
           "required": true,
           "schema": {
-            "$ref": "#/components/schemas/SuiAddress"
+            "$ref": "#/components/schemas/IotaAddress"
           }
         },
         {
@@ -3192,7 +3192,7 @@
             "value": {
               "data": [
                 {
-                  "coinType": "0x2::sui::SUI",
+                  "coinType": "0x2::iota::IOTA",
                   "coinObjectId": "0x861c5e055605b2bb1199faf653a8771e448930bc95a0369fad43a9870a2e5878",
                   "version": "103626",
                   "digest": "Ao1QyN9UTmYzb2ead3D5xhSBk7TvACRvmnJW8gRbwP99",
@@ -3200,7 +3200,7 @@
                   "previousTransaction": "7dp5WtTmtGp83EXYYFMzjBJRFeSgR67AzqMETLrfgeFx"
                 },
                 {
-                  "coinType": "0x2::sui::SUI",
+                  "coinType": "0x2::iota::IOTA",
                   "coinObjectId": "0x7e769678d059761bff8a8f3944642e4c33a6e4fb0b55f8face36fadaa22f2a0d",
                   "version": "103626",
                   "digest": "5taVxHU9QLQD5cNdqxt8kNGAab93GMG4vX7zYDxEaohx",
@@ -3208,7 +3208,7 @@
                   "previousTransaction": "9xLdMXezY8d1yRA2TtN6pYjapyy2EVKHWNriGPFGCFvd"
                 },
                 {
-                  "coinType": "0x2::sui::SUI",
+                  "coinType": "0x2::iota::IOTA",
                   "coinObjectId": "0xa323d541ba5cf9e34919d2644cda38a263f69f47ae954dec65295231e0d2c7c8",
                   "version": "103626",
                   "digest": "82ZNKSSueWUQkpFNbBZGHSr3sUL5Rxfr7ucVRsvgQzz2",
@@ -3224,7 +3224,7 @@
       ]
     },
     {
-      "name": "suix_getBalance",
+      "name": "iotax_getBalance",
       "tags": [
         {
           "name": "Coin Query API"
@@ -3234,15 +3234,15 @@
       "params": [
         {
           "name": "owner",
-          "description": "the owner's Sui address",
+          "description": "the owner's IOTA address",
           "required": true,
           "schema": {
-            "$ref": "#/components/schemas/SuiAddress"
+            "$ref": "#/components/schemas/IotaAddress"
           }
         },
         {
           "name": "coin_type",
-          "description": "optional type names for the coin (e.g., 0x168da5bf1f48dafc111b0a488fa454aca95e0b5e::usdc::USDC), default to 0x2::sui::SUI if not specified.",
+          "description": "optional type names for the coin (e.g., 0x168da5bf1f48dafc111b0a488fa454aca95e0b5e::usdc::USDC), default to 0x2::iota::IOTA if not specified.",
           "schema": {
             "type": "string"
           }
@@ -3281,7 +3281,7 @@
       ]
     },
     {
-      "name": "suix_getCoinMetadata",
+      "name": "iotax_getCoinMetadata",
       "tags": [
         {
           "name": "Coin Query API"
@@ -3299,9 +3299,9 @@
         }
       ],
       "result": {
-        "name": "SuiCoinMetadata",
+        "name": "IotaCoinMetadata",
         "schema": {
-          "$ref": "#/components/schemas/SuiCoinMetadata"
+          "$ref": "#/components/schemas/IotaCoinMetadata"
         }
       },
       "examples": [
@@ -3328,7 +3328,7 @@
       ]
     },
     {
-      "name": "suix_getCoins",
+      "name": "iotax_getCoins",
       "tags": [
         {
           "name": "Coin Query API"
@@ -3338,15 +3338,15 @@
       "params": [
         {
           "name": "owner",
-          "description": "the owner's Sui address",
+          "description": "the owner's IOTA address",
           "required": true,
           "schema": {
-            "$ref": "#/components/schemas/SuiAddress"
+            "$ref": "#/components/schemas/IotaAddress"
           }
         },
         {
           "name": "coin_type",
-          "description": "optional type name for the coin (e.g., 0x168da5bf1f48dafc111b0a488fa454aca95e0b5e::usdc::USDC), default to 0x2::sui::SUI if not specified.",
+          "description": "optional type name for the coin (e.g., 0x168da5bf1f48dafc111b0a488fa454aca95e0b5e::usdc::USDC), default to 0x2::iota::IOTA if not specified.",
           "schema": {
             "type": "string"
           }
@@ -3377,7 +3377,7 @@
       },
       "examples": [
         {
-          "name": "Gets all SUI coins owned by the address provided. Return a paginated list of `limit` results per page. Similar to `suix_getAllCoins`, but provides a way to filter by coin type.",
+          "name": "Gets all IOTA coins owned by the address provided. Return a paginated list of `limit` results per page. Similar to `iotax_getAllCoins`, but provides a way to filter by coin type.",
           "params": [
             {
               "name": "owner",
@@ -3385,7 +3385,7 @@
             },
             {
               "name": "coin_type",
-              "value": "0x2::sui::SUI"
+              "value": "0x2::iota::IOTA"
             },
             {
               "name": "cursor",
@@ -3401,7 +3401,7 @@
             "value": {
               "data": [
                 {
-                  "coinType": "0x2::sui::SUI",
+                  "coinType": "0x2::iota::IOTA",
                   "coinObjectId": "0xd62ca040aba24f862a763851c54908cd2a0ee7d709c11b93d4a2083747b76856",
                   "version": "103626",
                   "digest": "C9fdokK19BpDCgUgWsJv3cfd4LDyk7WGYBeGhFHbEL2Z",
@@ -3409,7 +3409,7 @@
                   "previousTransaction": "tw5DzJTfdxTn4f3rekFrhN7dQTUezBgsEhycDobTBLb"
                 },
                 {
-                  "coinType": "0x2::sui::SUI",
+                  "coinType": "0x2::iota::IOTA",
                   "coinObjectId": "0xf44d295a385dc3544d211411b865e8bc4f01f49186970c7cf61e1cc829cc0be7",
                   "version": "103626",
                   "digest": "5qZkmtN5J5uGHURtiy9BtBhnXATPR2Wa6BJBDLrMzCaf",
@@ -3417,7 +3417,7 @@
                   "previousTransaction": "AfgFe7ZfjJ5dWV6VAy2LbtvBFhcABkvdvwEjLrRcFqtr"
                 },
                 {
-                  "coinType": "0x2::sui::SUI",
+                  "coinType": "0x2::iota::IOTA",
                   "coinObjectId": "0x42ef9314ccc792dd4401a88e69c66b4c5e43f21e9e57f4abe3c702649d3a7dd0",
                   "version": "103626",
                   "digest": "FLE2nB2Wio3oUyTx6HyzkrMsWiZxDg9Kk8s7ivvuoBbD",
@@ -3433,7 +3433,7 @@
       ]
     },
     {
-      "name": "suix_getCommitteeInfo",
+      "name": "iotax_getCommitteeInfo",
       "tags": [
         {
           "name": "Governance Read API"
@@ -3450,7 +3450,7 @@
         }
       ],
       "result": {
-        "name": "SuiCommittee",
+        "name": "IotaCommittee",
         "required": true,
         "schema": {
           "$ref": "#/components/schemas/CommitteeInfo"
@@ -3493,7 +3493,7 @@
       ]
     },
     {
-      "name": "suix_getDynamicFieldObject",
+      "name": "iotax_getDynamicFieldObject",
       "tags": [
         {
           "name": "Extended API"
@@ -3519,10 +3519,10 @@
         }
       ],
       "result": {
-        "name": "SuiObjectResponse",
+        "name": "IotaObjectResponse",
         "required": true,
         "schema": {
-          "$ref": "#/components/schemas/SuiObjectResponse"
+          "$ref": "#/components/schemas/IotaObjectResponse"
         }
       },
       "examples": [
@@ -3567,7 +3567,7 @@
       ]
     },
     {
-      "name": "suix_getDynamicFields",
+      "name": "iotax_getDynamicFields",
       "tags": [
         {
           "name": "Extended API"
@@ -3676,19 +3676,19 @@
       ]
     },
     {
-      "name": "suix_getLatestSuiSystemState",
+      "name": "iotax_getLatestIotaSystemState",
       "tags": [
         {
           "name": "Governance Read API"
         }
       ],
-      "description": "Return the latest SUI system state object on-chain.",
+      "description": "Return the latest IOTA system state object on-chain.",
       "params": [],
       "result": {
-        "name": "SuiSystemStateSummary",
+        "name": "IotaSystemStateSummary",
         "required": true,
         "schema": {
-          "$ref": "#/components/schemas/SuiSystemStateSummary"
+          "$ref": "#/components/schemas/IotaSystemStateSummary"
         }
       },
       "examples": [
@@ -3703,20 +3703,20 @@
       ]
     },
     {
-      "name": "suix_getOwnedObjects",
+      "name": "iotax_getOwnedObjects",
       "tags": [
         {
           "name": "Extended API"
         }
       ],
-      "description": "Return the list of objects owned by an address. Note that if the address owns more than `QUERY_MAX_RESULT_LIMIT` objects, the pagination is not accurate, because previous page may have been updated when the next page is fetched. Please use suix_queryObjects if this is a concern.",
+      "description": "Return the list of objects owned by an address. Note that if the address owns more than `QUERY_MAX_RESULT_LIMIT` objects, the pagination is not accurate, because previous page may have been updated when the next page is fetched. Please use iotax_queryObjects if this is a concern.",
       "params": [
         {
           "name": "address",
-          "description": "the owner's Sui address",
+          "description": "the owner's IOTA address",
           "required": true,
           "schema": {
-            "$ref": "#/components/schemas/SuiAddress"
+            "$ref": "#/components/schemas/IotaAddress"
           }
         },
         {
@@ -3747,7 +3747,7 @@
         "name": "ObjectsPage",
         "required": true,
         "schema": {
-          "$ref": "#/components/schemas/Page_for_SuiObjectResponse_and_ObjectID"
+          "$ref": "#/components/schemas/Page_for_IotaObjectResponse_and_ObjectID"
         }
       },
       "examples": [
@@ -3764,7 +3764,7 @@
                 "filter": {
                   "MatchAll": [
                     {
-                      "StructType": "0x2::coin::Coin<0x2::sui::SUI>"
+                      "StructType": "0x2::coin::Coin<0x2::iota::IOTA>"
                     },
                     {
                       "AddressOwner": "0xdbc9abc01a87906b033a75750e741edb2df5ea5d55c96a611371d22799d26827"
@@ -3803,7 +3803,7 @@
                     "objectId": "0x0b37a91692359a98496738a58c17a9334aeacc435c70ab9635e47a277d8f8dd9",
                     "version": "13488",
                     "digest": "FZzfCnKCSRW2jN9AwkiarjYQapViUQAh799aiRMZ4YC2",
-                    "type": "0x2::coin::Coin<0x2::sui::SUI>",
+                    "type": "0x2::coin::Coin<0x2::iota::IOTA>",
                     "owner": {
                       "AddressOwner": "0xdbc9abc01a87906b033a75750e741edb2df5ea5d55c96a611371d22799d26827"
                     },
@@ -3816,7 +3816,7 @@
                     "objectId": "0xd4feace07fc863a2eef286c3e95ed48e2c181bb65db5beaf7ea664b4ca6b744c",
                     "version": "13488",
                     "digest": "3cxBDcfnkVgtXWhnMnKKkMGtZdiEorUhb1vdp2DkVyfi",
-                    "type": "0x2::coin::Coin<0x2::sui::SUI>",
+                    "type": "0x2::coin::Coin<0x2::iota::IOTA>",
                     "owner": {
                       "AddressOwner": "0xdbc9abc01a87906b033a75750e741edb2df5ea5d55c96a611371d22799d26827"
                     },
@@ -3829,7 +3829,7 @@
                     "objectId": "0xe26860fac6839ce2d7ed7e6f29d276a1b4c23f2d9a9b6f0d8b2c17beace292b7",
                     "version": "13488",
                     "digest": "3tX9sgYC4A6nVKGjKEE5xxW6t4zkvDL9BwjuaxMg8arP",
-                    "type": "0x2::coin::Coin<0x2::sui::SUI>",
+                    "type": "0x2::coin::Coin<0x2::iota::IOTA>",
                     "owner": {
                       "AddressOwner": "0xdbc9abc01a87906b033a75750e741edb2df5ea5d55c96a611371d22799d26827"
                     },
@@ -3846,7 +3846,7 @@
       ]
     },
     {
-      "name": "suix_getReferenceGasPrice",
+      "name": "iotax_getReferenceGasPrice",
       "tags": [
         {
           "name": "Governance Read API"
@@ -3873,7 +3873,7 @@
       ]
     },
     {
-      "name": "suix_getStakes",
+      "name": "iotax_getStakes",
       "tags": [
         {
           "name": "Governance Read API"
@@ -3885,7 +3885,7 @@
           "name": "owner",
           "required": true,
           "schema": {
-            "$ref": "#/components/schemas/SuiAddress"
+            "$ref": "#/components/schemas/IotaAddress"
           }
         }
       ],
@@ -3916,7 +3916,7 @@
                 "stakingPool": "0x9a95cf69368e31b4dbe8ee9bdb3c0587bbc79d8fc6edf4007e185a962fd906df",
                 "stakes": [
                   {
-                    "stakedSuiId": "0xb4eeb46b70f0bebcae832aeef9f7c5db76052ab656e5f81853d0cf701cdbc8eb",
+                    "stakedIotaId": "0xb4eeb46b70f0bebcae832aeef9f7c5db76052ab656e5f81853d0cf701cdbc8eb",
                     "stakeRequestEpoch": "62",
                     "stakeActiveEpoch": "63",
                     "principal": "200000000000",
@@ -3924,7 +3924,7 @@
                     "estimatedReward": "520000000"
                   },
                   {
-                    "stakedSuiId": "0xf27ab513fc6ef8c344406c78da3d5ad3a5fcc295dc8803c15989a62d33ee8590",
+                    "stakedIotaId": "0xf27ab513fc6ef8c344406c78da3d5ad3a5fcc295dc8803c15989a62d33ee8590",
                     "stakeRequestEpoch": "142",
                     "stakeActiveEpoch": "143",
                     "principal": "200000000000",
@@ -3937,7 +3937,7 @@
                 "stakingPool": "0x14cc7fee4100fdcabda6d15c63c4b49c45ae23f2b936495cd38b1a4b04010295",
                 "stakes": [
                   {
-                    "stakedSuiId": "0xbaa75ac72e548aeecf2ce8b4e88530651d6e8f93e0fb79b4bc65a512beb5b9f3",
+                    "stakedIotaId": "0xbaa75ac72e548aeecf2ce8b4e88530651d6e8f93e0fb79b4bc65a512beb5b9f3",
                     "stakeRequestEpoch": "244",
                     "stakeActiveEpoch": "245",
                     "principal": "200000000000",
@@ -3951,7 +3951,7 @@
       ]
     },
     {
-      "name": "suix_getStakesByIds",
+      "name": "iotax_getStakesByIds",
       "tags": [
         {
           "name": "Governance Read API"
@@ -3960,7 +3960,7 @@
       "description": "Return one or more [DelegatedStake]. If a Stake was withdrawn its status will be Unstaked.",
       "params": [
         {
-          "name": "staked_sui_ids",
+          "name": "staked_iota_ids",
           "required": true,
           "schema": {
             "type": "array",
@@ -3985,7 +3985,7 @@
           "name": "Returns the staking information for the address the request provides.",
           "params": [
             {
-              "name": "staked_sui_ids",
+              "name": "staked_iota_ids",
               "value": [
                 "0x378423de90ed03b694cecf443c72b5387b29a731d26d98108d7abc4902107d7d",
                 "0x6a8e0f8fea6fda5488462e58724c034462b6064a08845e2ae2942fe7c4ee816d"
@@ -3999,7 +3999,7 @@
               "stakingPool": "0x63ee67e81398729f87d81d62f399c041b0f8d0938923ea7e3917608ee62df437",
               "stakes": [
                 {
-                  "stakedSuiId": "0x378423de90ed03b694cecf443c72b5387b29a731d26d98108d7abc4902107d7d",
+                  "stakedIotaId": "0x378423de90ed03b694cecf443c72b5387b29a731d26d98108d7abc4902107d7d",
                   "stakeRequestEpoch": "62",
                   "stakeActiveEpoch": "63",
                   "principal": "200000000000",
@@ -4007,7 +4007,7 @@
                   "estimatedReward": "520000000"
                 },
                 {
-                  "stakedSuiId": "0x6a8e0f8fea6fda5488462e58724c034462b6064a08845e2ae2942fe7c4ee816d",
+                  "stakedIotaId": "0x6a8e0f8fea6fda5488462e58724c034462b6064a08845e2ae2942fe7c4ee816d",
                   "stakeRequestEpoch": "244",
                   "stakeActiveEpoch": "245",
                   "principal": "200000000000",
@@ -4020,7 +4020,7 @@
       ]
     },
     {
-      "name": "suix_getTotalSupply",
+      "name": "iotax_getTotalSupply",
       "tags": [
         {
           "name": "Coin Query API"
@@ -4063,7 +4063,7 @@
       ]
     },
     {
-      "name": "suix_getValidatorsApy",
+      "name": "iotax_getValidatorsApy",
       "tags": [
         {
           "name": "Governance Read API"
@@ -4106,7 +4106,7 @@
       ]
     },
     {
-      "name": "suix_queryEvents",
+      "name": "iotax_queryEvents",
       "tags": [
         {
           "name": "Extended API"
@@ -4116,7 +4116,7 @@
       "params": [
         {
           "name": "query",
-          "description": "The event query criteria. See [Event filter](https://docs.sui.io/build/event_api#event-filters) documentation for examples.",
+          "description": "The event query criteria. See [Event filter](https://docs.iota.org/build/event_api#event-filters) documentation for examples.",
           "required": true,
           "schema": {
             "$ref": "#/components/schemas/EventFilter"
@@ -4250,7 +4250,7 @@
       ]
     },
     {
-      "name": "suix_queryTransactionBlocks",
+      "name": "iotax_queryTransactionBlocks",
       "tags": [
         {
           "name": "Extended API"
@@ -4348,7 +4348,7 @@
       ]
     },
     {
-      "name": "suix_resolveNameServiceAddress",
+      "name": "iotax_resolveNameServiceAddress",
       "tags": [
         {
           "name": "Extended API"
@@ -4366,9 +4366,9 @@
         }
       ],
       "result": {
-        "name": "SuiAddress",
+        "name": "IotaAddress",
         "schema": {
-          "$ref": "#/components/schemas/SuiAddress"
+          "$ref": "#/components/schemas/IotaAddress"
         }
       },
       "examples": [
@@ -4377,7 +4377,7 @@
           "params": [
             {
               "name": "name",
-              "value": "example.sui"
+              "value": "example.iota"
             }
           ],
           "result": {
@@ -4388,7 +4388,7 @@
       ]
     },
     {
-      "name": "suix_resolveNameServiceNames",
+      "name": "iotax_resolveNameServiceNames",
       "tags": [
         {
           "name": "Extended API"
@@ -4401,7 +4401,7 @@
           "description": "The address to resolve",
           "required": true,
           "schema": {
-            "$ref": "#/components/schemas/SuiAddress"
+            "$ref": "#/components/schemas/IotaAddress"
           }
         },
         {
@@ -4428,7 +4428,7 @@
       },
       "examples": [
         {
-          "name": "Returns the SuiNS name for the address the request provides. Currently, the API returns only the first name in cases where there are multiple. Future support will use the cursor ID and limit values in the request to control pagination of the response for addresses with multiple names.",
+          "name": "Returns the IotaNS name for the address the request provides. Currently, the API returns only the first name in cases where there are multiple. Future support will use the cursor ID and limit values in the request to control pagination of the response for addresses with multiple names.",
           "params": [
             {
               "name": "address",
@@ -4447,7 +4447,7 @@
             "name": "Result",
             "value": {
               "data": [
-                "example.sui"
+                "example.iota"
               ],
               "nextCursor": "0xd22bbb46f892c42d9ec0ae4de93e02c75973a51c17180798237326a58694a2cf",
               "hasNextPage": false
@@ -4457,7 +4457,7 @@
       ]
     },
     {
-      "name": "suix_subscribeEvent",
+      "name": "iotax_subscribeEvent",
       "tags": [
         {
           "name": "Extended API"
@@ -4469,11 +4469,11 @@
           "name": "PubSub"
         }
       ],
-      "description": "Subscribe to a stream of Sui event",
+      "description": "Subscribe to a stream of IOTA event",
       "params": [
         {
           "name": "filter",
-          "description": "The filter criteria of the event stream. See [Event filter](https://docs.sui.io/build/event_api#event-filters) documentation for examples.",
+          "description": "The filter criteria of the event stream. See [Event filter](https://docs.iota.org/build/event_api#event-filters) documentation for examples.",
           "required": true,
           "schema": {
             "$ref": "#/components/schemas/EventFilter"
@@ -4481,7 +4481,7 @@
         }
       ],
       "result": {
-        "name": "SuiEvent",
+        "name": "IotaEvent",
         "required": true,
         "schema": {
           "$ref": "#/components/schemas/Event"
@@ -4489,7 +4489,7 @@
       }
     },
     {
-      "name": "suix_subscribeTransaction",
+      "name": "iotax_subscribeTransaction",
       "tags": [
         {
           "name": "Extended API"
@@ -4501,7 +4501,7 @@
           "name": "PubSub"
         }
       ],
-      "description": "Subscribe to a stream of Sui transaction effects",
+      "description": "Subscribe to a stream of IOTA transaction effects",
       "params": [
         {
           "name": "filter",
@@ -4512,7 +4512,7 @@
         }
       ],
       "result": {
-        "name": "SuiTransactionBlockEffects",
+        "name": "IotaTransactionBlockEffects",
         "required": true,
         "schema": {
           "$ref": "#/components/schemas/TransactionBlockEffects"
@@ -4530,10 +4530,10 @@
       "params": [
         {
           "name": "signer",
-          "description": "the transaction signer's Sui address",
+          "description": "the transaction signer's IOTA address",
           "required": true,
           "schema": {
-            "$ref": "#/components/schemas/SuiAddress"
+            "$ref": "#/components/schemas/IotaAddress"
           }
         },
         {
@@ -4566,7 +4566,7 @@
           "name": "txn_builder_mode",
           "description": "Whether this is a regular transaction or a Dev Inspect Transaction",
           "schema": {
-            "$ref": "#/components/schemas/SuiTransactionBlockBuilderMode"
+            "$ref": "#/components/schemas/IotaTransactionBlockBuilderMode"
           }
         }
       ],
@@ -4589,10 +4589,10 @@
       "params": [
         {
           "name": "signer",
-          "description": "the transaction signer's Sui address",
+          "description": "the transaction signer's IOTA address",
           "required": true,
           "schema": {
-            "$ref": "#/components/schemas/SuiAddress"
+            "$ref": "#/components/schemas/IotaAddress"
           }
         },
         {
@@ -4646,10 +4646,10 @@
       "params": [
         {
           "name": "signer",
-          "description": "the transaction signer's Sui address",
+          "description": "the transaction signer's IOTA address",
           "required": true,
           "schema": {
-            "$ref": "#/components/schemas/SuiAddress"
+            "$ref": "#/components/schemas/IotaAddress"
           }
         },
         {
@@ -4689,12 +4689,12 @@
         },
         {
           "name": "arguments",
-          "description": "the arguments to be passed into the Move function, in [SuiJson](https://docs.sui.io/build/sui-json) format",
+          "description": "the arguments to be passed into the Move function, in [IotaJson](https://docs.iota.org/build/iota-json) format",
           "required": true,
           "schema": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/SuiJsonValue"
+              "$ref": "#/components/schemas/IotaJsonValue"
             }
           }
         },
@@ -4715,9 +4715,9 @@
         },
         {
           "name": "execution_mode",
-          "description": "Whether this is a Normal transaction or a Dev Inspect Transaction. Default to be `SuiTransactionBlockBuilderMode::Commit` when it's None.",
+          "description": "Whether this is a Normal transaction or a Dev Inspect Transaction. Default to be `IotaTransactionBlockBuilderMode::Commit` when it's None.",
           "schema": {
-            "$ref": "#/components/schemas/SuiTransactionBlockBuilderMode"
+            "$ref": "#/components/schemas/IotaTransactionBlockBuilderMode"
           }
         }
       ],
@@ -4740,15 +4740,15 @@
       "params": [
         {
           "name": "signer",
-          "description": "the transaction signer's Sui address",
+          "description": "the transaction signer's IOTA address",
           "required": true,
           "schema": {
-            "$ref": "#/components/schemas/SuiAddress"
+            "$ref": "#/components/schemas/IotaAddress"
           }
         },
         {
           "name": "input_coins",
-          "description": "the Sui coins to be used in this transaction",
+          "description": "the IOTA coins to be used in this transaction",
           "required": true,
           "schema": {
             "type": "array",
@@ -4764,7 +4764,7 @@
           "schema": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/SuiAddress"
+              "$ref": "#/components/schemas/IotaAddress"
             }
           }
         },
@@ -4804,25 +4804,25 @@
       }
     },
     {
-      "name": "unsafe_payAllSui",
+      "name": "unsafe_payAllIota",
       "tags": [
         {
           "name": "Transaction Builder API"
         }
       ],
-      "description": "Send all SUI coins to one recipient. This is for SUI coin only and does not require a separate gas coin object. Specifically, what pay_all_sui does are: 1. accumulate all SUI from input coins and deposit all SUI to the first input coin 2. transfer the updated first coin to the recipient and also use this first coin as gas coin object. 3. the balance of the first input coin after tx is sum(input_coins) - actual_gas_cost. 4. all other input coins other than the first are deleted.",
+      "description": "Send all IOTA coins to one recipient. This is for IOTA coin only and does not require a separate gas coin object. Specifically, what pay_all_iota does are: 1. accumulate all IOTA from input coins and deposit all IOTA to the first input coin 2. transfer the updated first coin to the recipient and also use this first coin as gas coin object. 3. the balance of the first input coin after tx is sum(input_coins) - actual_gas_cost. 4. all other input coins other than the first are deleted.",
       "params": [
         {
           "name": "signer",
-          "description": "the transaction signer's Sui address",
+          "description": "the transaction signer's IOTA address",
           "required": true,
           "schema": {
-            "$ref": "#/components/schemas/SuiAddress"
+            "$ref": "#/components/schemas/IotaAddress"
           }
         },
         {
           "name": "input_coins",
-          "description": "the Sui coins to be used in this transaction, including the coin for gas payment.",
+          "description": "the IOTA coins to be used in this transaction, including the coin for gas payment.",
           "required": true,
           "schema": {
             "type": "array",
@@ -4836,7 +4836,7 @@
           "description": "the recipient address,",
           "required": true,
           "schema": {
-            "$ref": "#/components/schemas/SuiAddress"
+            "$ref": "#/components/schemas/IotaAddress"
           }
         },
         {
@@ -4857,25 +4857,25 @@
       }
     },
     {
-      "name": "unsafe_paySui",
+      "name": "unsafe_payIota",
       "tags": [
         {
           "name": "Transaction Builder API"
         }
       ],
-      "description": "Send SUI coins to a list of addresses, following a list of amounts. This is for SUI coin only and does not require a separate gas coin object. Specifically, what pay_sui does are: 1. debit each input_coin to create new coin following the order of amounts and assign it to the corresponding recipient. 2. accumulate all residual SUI from input coins left and deposit all SUI to the first input coin, then use the first input coin as the gas coin object. 3. the balance of the first input coin after tx is sum(input_coins) - sum(amounts) - actual_gas_cost 4. all other input coints other than the first one are deleted.",
+      "description": "Send IOTA coins to a list of addresses, following a list of amounts. This is for IOTA coin only and does not require a separate gas coin object. Specifically, what pay_iota does are: 1. debit each input_coin to create new coin following the order of amounts and assign it to the corresponding recipient. 2. accumulate all residual IOTA from input coins left and deposit all IOTA to the first input coin, then use the first input coin as the gas coin object. 3. the balance of the first input coin after tx is sum(input_coins) - sum(amounts) - actual_gas_cost 4. all other input coints other than the first one are deleted.",
       "params": [
         {
           "name": "signer",
-          "description": "the transaction signer's Sui address",
+          "description": "the transaction signer's IOTA address",
           "required": true,
           "schema": {
-            "$ref": "#/components/schemas/SuiAddress"
+            "$ref": "#/components/schemas/IotaAddress"
           }
         },
         {
           "name": "input_coins",
-          "description": "the Sui coins to be used in this transaction, including the coin for gas payment.",
+          "description": "the IOTA coins to be used in this transaction, including the coin for gas payment.",
           "required": true,
           "schema": {
             "type": "array",
@@ -4891,7 +4891,7 @@
           "schema": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/SuiAddress"
+              "$ref": "#/components/schemas/IotaAddress"
             }
           }
         },
@@ -4934,10 +4934,10 @@
       "params": [
         {
           "name": "sender",
-          "description": "the transaction signer's Sui address",
+          "description": "the transaction signer's IOTA address",
           "required": true,
           "schema": {
-            "$ref": "#/components/schemas/SuiAddress"
+            "$ref": "#/components/schemas/IotaAddress"
           }
         },
         {
@@ -4997,15 +4997,15 @@
       "params": [
         {
           "name": "signer",
-          "description": "the transaction signer's Sui address",
+          "description": "the transaction signer's IOTA address",
           "required": true,
           "schema": {
-            "$ref": "#/components/schemas/SuiAddress"
+            "$ref": "#/components/schemas/IotaAddress"
           }
         },
         {
           "name": "coins",
-          "description": "Coin<SUI> object to stake",
+          "description": "Coin<IOTA> object to stake",
           "required": true,
           "schema": {
             "type": "array",
@@ -5023,10 +5023,10 @@
         },
         {
           "name": "validator",
-          "description": "the validator's Sui address",
+          "description": "the validator's IOTA address",
           "required": true,
           "schema": {
-            "$ref": "#/components/schemas/SuiAddress"
+            "$ref": "#/components/schemas/IotaAddress"
           }
         },
         {
@@ -5064,15 +5064,15 @@
       "params": [
         {
           "name": "signer",
-          "description": "the transaction signer's Sui address",
+          "description": "the transaction signer's IOTA address",
           "required": true,
           "schema": {
-            "$ref": "#/components/schemas/SuiAddress"
+            "$ref": "#/components/schemas/IotaAddress"
           }
         },
         {
-          "name": "staked_sui",
-          "description": "StakedSui object ID",
+          "name": "staked_iota",
+          "description": "StakedIota object ID",
           "required": true,
           "schema": {
             "$ref": "#/components/schemas/ObjectID"
@@ -5113,10 +5113,10 @@
       "params": [
         {
           "name": "signer",
-          "description": "the transaction signer's Sui address",
+          "description": "the transaction signer's IOTA address",
           "required": true,
           "schema": {
-            "$ref": "#/components/schemas/SuiAddress"
+            "$ref": "#/components/schemas/IotaAddress"
           }
         },
         {
@@ -5173,10 +5173,10 @@
       "params": [
         {
           "name": "signer",
-          "description": "the transaction signer's Sui address",
+          "description": "the transaction signer's IOTA address",
           "required": true,
           "schema": {
-            "$ref": "#/components/schemas/SuiAddress"
+            "$ref": "#/components/schemas/IotaAddress"
           }
         },
         {
@@ -5230,10 +5230,10 @@
       "params": [
         {
           "name": "signer",
-          "description": "the transaction signer's Sui address",
+          "description": "the transaction signer's IOTA address",
           "required": true,
           "schema": {
-            "$ref": "#/components/schemas/SuiAddress"
+            "$ref": "#/components/schemas/IotaAddress"
           }
         },
         {
@@ -5261,10 +5261,10 @@
         },
         {
           "name": "recipient",
-          "description": "the recipient's Sui address",
+          "description": "the recipient's IOTA address",
           "required": true,
           "schema": {
-            "$ref": "#/components/schemas/SuiAddress"
+            "$ref": "#/components/schemas/IotaAddress"
           }
         }
       ],
@@ -5277,25 +5277,25 @@
       }
     },
     {
-      "name": "unsafe_transferSui",
+      "name": "unsafe_transferIota",
       "tags": [
         {
           "name": "Transaction Builder API"
         }
       ],
-      "description": "Create an unsigned transaction to send SUI coin object to a Sui address. The SUI object is also used as the gas object.",
+      "description": "Create an unsigned transaction to send IOTA coin object to a IOTA address. The IOTA object is also used as the gas object.",
       "params": [
         {
           "name": "signer",
-          "description": "the transaction signer's Sui address",
+          "description": "the transaction signer's IOTA address",
           "required": true,
           "schema": {
-            "$ref": "#/components/schemas/SuiAddress"
+            "$ref": "#/components/schemas/IotaAddress"
           }
         },
         {
-          "name": "sui_object_id",
-          "description": "the Sui coin object to be used in this transaction",
+          "name": "iota_object_id",
+          "description": "the IOTA coin object to be used in this transaction",
           "required": true,
           "schema": {
             "$ref": "#/components/schemas/ObjectID"
@@ -5311,10 +5311,10 @@
         },
         {
           "name": "recipient",
-          "description": "the recipient's Sui address",
+          "description": "the recipient's IOTA address",
           "required": true,
           "schema": {
-            "$ref": "#/components/schemas/SuiAddress"
+            "$ref": "#/components/schemas/IotaAddress"
           }
         },
         {
@@ -5342,14 +5342,14 @@
       "Authenticator": {
         "oneOf": [
           {
-            "description": "The contained SuiAddress exclusively has all permissions: read, write, delete, transfer",
+            "description": "The contained IotaAddress exclusively has all permissions: read, write, delete, transfer",
             "type": "object",
             "required": [
               "SingleOwner"
             ],
             "properties": {
               "SingleOwner": {
-                "$ref": "#/components/schemas/SuiAddress"
+                "$ref": "#/components/schemas/IotaAddress"
               }
             },
             "additionalProperties": false
@@ -5357,7 +5357,7 @@
         ]
       },
       "AuthorityPublicKeyBytes": {
-        "description": "Defines the compressed version of the public key that we pass around in Sui",
+        "description": "Defines the compressed version of the public key that we pass around in IOTA",
         "allOf": [
           {
             "$ref": "#/components/schemas/Base64"
@@ -5898,7 +5898,7 @@
             "description": "Validator's Address.",
             "allOf": [
               {
-                "$ref": "#/components/schemas/SuiAddress"
+                "$ref": "#/components/schemas/IotaAddress"
               }
             ]
           }
@@ -5946,7 +5946,7 @@
             "description": "The sponsor of the gas for the transaction, might be different from the sender.",
             "anyOf": [
               {
-                "$ref": "#/components/schemas/SuiAddress"
+                "$ref": "#/components/schemas/IotaAddress"
               },
               {
                 "type": "null"
@@ -6024,7 +6024,7 @@
               "null"
             ],
             "items": {
-              "$ref": "#/components/schemas/SuiExecutionResult"
+              "$ref": "#/components/schemas/IotaExecutionResult"
             }
           }
         }
@@ -6211,7 +6211,7 @@
           }
         }
       },
-      "Ed25519SuiSignature": {
+      "Ed25519IotaSignature": {
         "$ref": "#/components/schemas/Base64"
       },
       "EndOfEpochData": {
@@ -6325,10 +6325,10 @@
             "description": "Parsed json value of the event"
           },
           "sender": {
-            "description": "Sender's Sui address.",
+            "description": "Sender's IOTA address.",
             "allOf": [
               {
-                "$ref": "#/components/schemas/SuiAddress"
+                "$ref": "#/components/schemas/IotaAddress"
               }
             ]
           },
@@ -6393,7 +6393,7 @@
             ],
             "properties": {
               "Sender": {
-                "$ref": "#/components/schemas/SuiAddress"
+                "$ref": "#/components/schemas/IotaAddress"
               }
             },
             "additionalProperties": false
@@ -6524,7 +6524,7 @@
         ]
       },
       "EventID": {
-        "description": "Unique ID of a Sui Event, the ID is a combination of transaction digest and event seq number.",
+        "description": "Unique ID of a IOTA Event, the ID is a combination of transaction digest and event seq number.",
         "type": "object",
         "required": [
           "eventSeq",
@@ -6639,7 +6639,7 @@
             "$ref": "#/components/schemas/BigInt_for_uint64"
           },
           "owner": {
-            "$ref": "#/components/schemas/SuiAddress"
+            "$ref": "#/components/schemas/IotaAddress"
           },
           "payment": {
             "type": "array",
@@ -6814,7 +6814,7 @@
           "arguments": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/SuiJsonValue"
+              "$ref": "#/components/schemas/IotaJsonValue"
             }
           },
           "function": {
@@ -6902,7 +6902,7 @@
             "type": "boolean"
           },
           {
-            "$ref": "#/components/schemas/SuiAddress"
+            "$ref": "#/components/schemas/IotaAddress"
           },
           {
             "type": "array",
@@ -7163,7 +7163,7 @@
                 "$ref": "#/components/schemas/Owner"
               },
               "sender": {
-                "$ref": "#/components/schemas/SuiAddress"
+                "$ref": "#/components/schemas/IotaAddress"
               },
               "type": {
                 "type": "string",
@@ -7206,7 +7206,7 @@
                 "$ref": "#/components/schemas/SequenceNumber"
               },
               "sender": {
-                "$ref": "#/components/schemas/SuiAddress"
+                "$ref": "#/components/schemas/IotaAddress"
               },
               "type": {
                 "type": "string",
@@ -7237,7 +7237,7 @@
                 "type": "string"
               },
               "sender": {
-                "$ref": "#/components/schemas/SuiAddress"
+                "$ref": "#/components/schemas/IotaAddress"
               },
               "type": {
                 "type": "string",
@@ -7268,7 +7268,7 @@
                 "type": "string"
               },
               "sender": {
-                "$ref": "#/components/schemas/SuiAddress"
+                "$ref": "#/components/schemas/IotaAddress"
               },
               "type": {
                 "type": "string",
@@ -7307,7 +7307,7 @@
                 "$ref": "#/components/schemas/Owner"
               },
               "sender": {
-                "$ref": "#/components/schemas/SuiAddress"
+                "$ref": "#/components/schemas/IotaAddress"
               },
               "type": {
                 "type": "string",
@@ -7331,7 +7331,7 @@
         ],
         "properties": {
           "bcs": {
-            "description": "Move object content or package content in BCS, default to be None unless SuiObjectDataOptions.showBcs is set to true",
+            "description": "Move object content or package content in BCS, default to be None unless IotaObjectDataOptions.showBcs is set to true",
             "anyOf": [
               {
                 "$ref": "#/components/schemas/RawData"
@@ -7342,7 +7342,7 @@
             ]
           },
           "content": {
-            "description": "Move object content or package content, default to be None unless SuiObjectDataOptions.showContent is set to true",
+            "description": "Move object content or package content, default to be None unless IotaObjectDataOptions.showContent is set to true",
             "anyOf": [
               {
                 "$ref": "#/components/schemas/Data"
@@ -7361,7 +7361,7 @@
             ]
           },
           "display": {
-            "description": "The Display metadata for frontend UI rendering, default to be None unless SuiObjectDataOptions.showContent is set to true This can also be None if the struct type does not have Display defined See more details in <https://forums.sui.io/t/nft-object-display-proposal/4872>",
+            "description": "The Display metadata for frontend UI rendering, default to be None unless IotaObjectDataOptions.showContent is set to true This can also be None if the struct type does not have Display defined See more details in <https://forums.iota.io/t/nft-object-display-proposal/4872>",
             "anyOf": [
               {
                 "$ref": "#/components/schemas/DisplayFieldsResponse"
@@ -7375,7 +7375,7 @@
             "$ref": "#/components/schemas/ObjectID"
           },
           "owner": {
-            "description": "The owner of this object. Default to be None unless SuiObjectDataOptions.showOwner is set to true",
+            "description": "The owner of this object. Default to be None unless IotaObjectDataOptions.showOwner is set to true",
             "anyOf": [
               {
                 "$ref": "#/components/schemas/Owner"
@@ -7386,7 +7386,7 @@
             ]
           },
           "previousTransaction": {
-            "description": "The digest of the transaction that created or last mutated this object. Default to be None unless SuiObjectDataOptions.showPreviousTransaction is set to true",
+            "description": "The digest of the transaction that created or last mutated this object. Default to be None unless IotaObjectDataOptions.showPreviousTransaction is set to true",
             "anyOf": [
               {
                 "$ref": "#/components/schemas/TransactionDigest"
@@ -7397,7 +7397,7 @@
             ]
           },
           "storageRebate": {
-            "description": "The amount of SUI we would rebate if this object gets deleted. This number is re-calculated each time the object is mutated based on the present storage gas price.",
+            "description": "The amount of IOTA we would rebate if this object gets deleted. This number is re-calculated each time the object is mutated based on the present storage gas price.",
             "anyOf": [
               {
                 "$ref": "#/components/schemas/BigInt_for_uint64"
@@ -7408,7 +7408,7 @@
             ]
           },
           "type": {
-            "description": "The type of the object. Default to be None unless SuiObjectDataOptions.showType is set to true",
+            "description": "The type of the object. Default to be None unless IotaObjectDataOptions.showType is set to true",
             "type": [
               "string",
               "null"
@@ -7745,7 +7745,7 @@
             "default": null,
             "anyOf": [
               {
-                "$ref": "#/components/schemas/SuiObjectDataFilter"
+                "$ref": "#/components/schemas/IotaObjectDataFilter"
               },
               {
                 "type": "null"
@@ -7799,20 +7799,20 @@
             ],
             "properties": {
               "AddressOwner": {
-                "$ref": "#/components/schemas/SuiAddress"
+                "$ref": "#/components/schemas/IotaAddress"
               }
             },
             "additionalProperties": false
           },
           {
-            "description": "Object is exclusively owned by a single object, and is mutable. The object ID is converted to SuiAddress as SuiAddress is universal.",
+            "description": "Object is exclusively owned by a single object, and is mutable. The object ID is converted to IotaAddress as IotaAddress is universal.",
             "type": "object",
             "required": [
               "ObjectOwner"
             ],
             "properties": {
               "ObjectOwner": {
-                "$ref": "#/components/schemas/SuiAddress"
+                "$ref": "#/components/schemas/IotaAddress"
               }
             },
             "additionalProperties": false
@@ -8028,7 +8028,7 @@
           }
         }
       },
-      "Page_for_SuiObjectResponse_and_ObjectID": {
+      "Page_for_IotaObjectResponse_and_ObjectID": {
         "description": "`next_cursor` points to the last item in the page; Reading with `next_cursor` will start from the next item after `next_cursor` if `next_cursor` is `Some`, otherwise it will start from the first item.",
         "type": "object",
         "required": [
@@ -8039,7 +8039,7 @@
           "data": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/SuiObjectResponse"
+              "$ref": "#/components/schemas/IotaObjectResponse"
             }
           },
           "hasNextPage": {
@@ -8388,10 +8388,10 @@
           }
         ]
       },
-      "Secp256k1SuiSignature": {
+      "Secp256k1IotaSignature": {
         "$ref": "#/components/schemas/Base64"
       },
-      "Secp256r1SuiSignature": {
+      "Secp256r1IotaSignature": {
         "$ref": "#/components/schemas/Base64"
       },
       "SequenceNumber": {
@@ -8407,11 +8407,11 @@
           {
             "type": "object",
             "required": [
-              "Ed25519SuiSignature"
+              "Ed25519IotaSignature"
             ],
             "properties": {
-              "Ed25519SuiSignature": {
-                "$ref": "#/components/schemas/Ed25519SuiSignature"
+              "Ed25519IotaSignature": {
+                "$ref": "#/components/schemas/Ed25519IotaSignature"
               }
             },
             "additionalProperties": false
@@ -8419,11 +8419,11 @@
           {
             "type": "object",
             "required": [
-              "Secp256k1SuiSignature"
+              "Secp256k1IotaSignature"
             ],
             "properties": {
-              "Secp256k1SuiSignature": {
-                "$ref": "#/components/schemas/Secp256k1SuiSignature"
+              "Secp256k1IotaSignature": {
+                "$ref": "#/components/schemas/Secp256k1IotaSignature"
               }
             },
             "additionalProperties": false
@@ -8431,11 +8431,11 @@
           {
             "type": "object",
             "required": [
-              "Secp256r1SuiSignature"
+              "Secp256r1IotaSignature"
             ],
             "properties": {
-              "Secp256r1SuiSignature": {
-                "$ref": "#/components/schemas/Secp256r1SuiSignature"
+              "Secp256r1IotaSignature": {
+                "$ref": "#/components/schemas/Secp256r1IotaSignature"
               }
             },
             "additionalProperties": false
@@ -8496,7 +8496,7 @@
           "principal",
           "stakeActiveEpoch",
           "stakeRequestEpoch",
-          "stakedSuiId"
+          "stakedIotaId"
         ],
         "properties": {
           "principal": {
@@ -8508,8 +8508,8 @@
           "stakeRequestEpoch": {
             "$ref": "#/components/schemas/BigInt_for_uint64"
           },
-          "stakedSuiId": {
-            "description": "ID of the StakedSui receipt object.",
+          "stakedIotaId": {
+            "description": "ID of the StakedIota receipt object.",
             "allOf": [
               {
                 "$ref": "#/components/schemas/ObjectID"
@@ -8518,7 +8518,7 @@
           }
         }
       },
-      "SuiActiveJwk": {
+      "IotaActiveJwk": {
         "type": "object",
         "required": [
           "epoch",
@@ -8530,17 +8530,17 @@
             "$ref": "#/components/schemas/BigInt_for_uint64"
           },
           "jwk": {
-            "$ref": "#/components/schemas/SuiJWK"
+            "$ref": "#/components/schemas/IotaJWK"
           },
           "jwk_id": {
-            "$ref": "#/components/schemas/SuiJwkId"
+            "$ref": "#/components/schemas/IotaJwkId"
           }
         }
       },
-      "SuiAddress": {
+      "IotaAddress": {
         "$ref": "#/components/schemas/Hex"
       },
-      "SuiArgument": {
+      "IotaArgument": {
         "description": "An argument to a transaction in a programmable transaction block",
         "oneOf": [
           {
@@ -8609,7 +8609,7 @@
           }
         ]
       },
-      "SuiAuthenticatorStateExpire": {
+      "IotaAuthenticatorStateExpire": {
         "type": "object",
         "required": [
           "min_epoch"
@@ -8620,7 +8620,7 @@
           }
         }
       },
-      "SuiCallArg": {
+      "IotaCallArg": {
         "oneOf": [
           {
             "type": "object",
@@ -8730,7 +8730,7 @@
                 ]
               },
               "value": {
-                "$ref": "#/components/schemas/SuiJsonValue"
+                "$ref": "#/components/schemas/IotaJsonValue"
               },
               "valueType": {
                 "default": null,
@@ -8743,7 +8743,7 @@
           }
         ]
       },
-      "SuiChangeEpoch": {
+      "IotaChangeEpoch": {
         "type": "object",
         "required": [
           "computation_charge",
@@ -8770,7 +8770,7 @@
           }
         }
       },
-      "SuiCoinMetadata": {
+      "IotaCoinMetadata": {
         "type": "object",
         "required": [
           "decimals",
@@ -8817,7 +8817,7 @@
           }
         }
       },
-      "SuiEndOfEpochTransactionKind": {
+      "IotaEndOfEpochTransactionKind": {
         "oneOf": [
           {
             "type": "string",
@@ -8835,7 +8835,7 @@
             ],
             "properties": {
               "ChangeEpoch": {
-                "$ref": "#/components/schemas/SuiChangeEpoch"
+                "$ref": "#/components/schemas/IotaChangeEpoch"
               }
             },
             "additionalProperties": false
@@ -8847,7 +8847,7 @@
             ],
             "properties": {
               "AuthenticatorStateExpire": {
-                "$ref": "#/components/schemas/SuiAuthenticatorStateExpire"
+                "$ref": "#/components/schemas/IotaAuthenticatorStateExpire"
               }
             },
             "additionalProperties": false
@@ -8878,7 +8878,7 @@
           }
         ]
       },
-      "SuiExecutionResult": {
+      "IotaExecutionResult": {
         "type": "object",
         "properties": {
           "mutableReferenceOutputs": {
@@ -8888,7 +8888,7 @@
               "type": "array",
               "items": [
                 {
-                  "$ref": "#/components/schemas/SuiArgument"
+                  "$ref": "#/components/schemas/IotaArgument"
                 },
                 {
                   "type": "array",
@@ -8930,7 +8930,7 @@
           }
         }
       },
-      "SuiJWK": {
+      "IotaJWK": {
         "type": "object",
         "required": [
           "alg",
@@ -8953,8 +8953,8 @@
           }
         }
       },
-      "SuiJsonValue": {},
-      "SuiJwkId": {
+      "IotaJsonValue": {},
+      "IotaJwkId": {
         "type": "object",
         "required": [
           "iss",
@@ -8969,7 +8969,7 @@
           }
         }
       },
-      "SuiMoveAbility": {
+      "IotaMoveAbility": {
         "type": "string",
         "enum": [
           "Copy",
@@ -8978,7 +8978,7 @@
           "Key"
         ]
       },
-      "SuiMoveAbilitySet": {
+      "IotaMoveAbilitySet": {
         "type": "object",
         "required": [
           "abilities"
@@ -8987,12 +8987,12 @@
           "abilities": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/SuiMoveAbility"
+              "$ref": "#/components/schemas/IotaMoveAbility"
             }
           }
         }
       },
-      "SuiMoveModuleId": {
+      "IotaMoveModuleId": {
         "type": "object",
         "required": [
           "address",
@@ -9007,7 +9007,7 @@
           }
         }
       },
-      "SuiMoveNormalizedEnum": {
+      "IotaMoveNormalizedEnum": {
         "type": "object",
         "required": [
           "abilities",
@@ -9016,12 +9016,12 @@
         ],
         "properties": {
           "abilities": {
-            "$ref": "#/components/schemas/SuiMoveAbilitySet"
+            "$ref": "#/components/schemas/IotaMoveAbilitySet"
           },
           "typeParameters": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/SuiMoveStructTypeParameter"
+              "$ref": "#/components/schemas/IotaMoveStructTypeParameter"
             }
           },
           "variants": {
@@ -9029,13 +9029,13 @@
             "additionalProperties": {
               "type": "array",
               "items": {
-                "$ref": "#/components/schemas/SuiMoveNormalizedField"
+                "$ref": "#/components/schemas/IotaMoveNormalizedField"
               }
             }
           }
         }
       },
-      "SuiMoveNormalizedField": {
+      "IotaMoveNormalizedField": {
         "type": "object",
         "required": [
           "name",
@@ -9046,11 +9046,11 @@
             "type": "string"
           },
           "type": {
-            "$ref": "#/components/schemas/SuiMoveNormalizedType"
+            "$ref": "#/components/schemas/IotaMoveNormalizedType"
           }
         }
       },
-      "SuiMoveNormalizedFunction": {
+      "IotaMoveNormalizedFunction": {
         "type": "object",
         "required": [
           "isEntry",
@@ -9066,27 +9066,27 @@
           "parameters": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/SuiMoveNormalizedType"
+              "$ref": "#/components/schemas/IotaMoveNormalizedType"
             }
           },
           "return": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/SuiMoveNormalizedType"
+              "$ref": "#/components/schemas/IotaMoveNormalizedType"
             }
           },
           "typeParameters": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/SuiMoveAbilitySet"
+              "$ref": "#/components/schemas/IotaMoveAbilitySet"
             }
           },
           "visibility": {
-            "$ref": "#/components/schemas/SuiMoveVisibility"
+            "$ref": "#/components/schemas/IotaMoveVisibility"
           }
         }
       },
-      "SuiMoveNormalizedModule": {
+      "IotaMoveNormalizedModule": {
         "type": "object",
         "required": [
           "address",
@@ -9103,13 +9103,13 @@
           "enums": {
             "type": "object",
             "additionalProperties": {
-              "$ref": "#/components/schemas/SuiMoveNormalizedEnum"
+              "$ref": "#/components/schemas/IotaMoveNormalizedEnum"
             }
           },
           "exposedFunctions": {
             "type": "object",
             "additionalProperties": {
-              "$ref": "#/components/schemas/SuiMoveNormalizedFunction"
+              "$ref": "#/components/schemas/IotaMoveNormalizedFunction"
             }
           },
           "fileFormatVersion": {
@@ -9120,7 +9120,7 @@
           "friends": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/SuiMoveModuleId"
+              "$ref": "#/components/schemas/IotaMoveModuleId"
             }
           },
           "name": {
@@ -9129,12 +9129,12 @@
           "structs": {
             "type": "object",
             "additionalProperties": {
-              "$ref": "#/components/schemas/SuiMoveNormalizedStruct"
+              "$ref": "#/components/schemas/IotaMoveNormalizedStruct"
             }
           }
         }
       },
-      "SuiMoveNormalizedStruct": {
+      "IotaMoveNormalizedStruct": {
         "type": "object",
         "required": [
           "abilities",
@@ -9143,23 +9143,23 @@
         ],
         "properties": {
           "abilities": {
-            "$ref": "#/components/schemas/SuiMoveAbilitySet"
+            "$ref": "#/components/schemas/IotaMoveAbilitySet"
           },
           "fields": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/SuiMoveNormalizedField"
+              "$ref": "#/components/schemas/IotaMoveNormalizedField"
             }
           },
           "typeParameters": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/SuiMoveStructTypeParameter"
+              "$ref": "#/components/schemas/IotaMoveStructTypeParameter"
             }
           }
         }
       },
-      "SuiMoveNormalizedType": {
+      "IotaMoveNormalizedType": {
         "oneOf": [
           {
             "type": "string",
@@ -9202,7 +9202,7 @@
                   "typeArguments": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/SuiMoveNormalizedType"
+                      "$ref": "#/components/schemas/IotaMoveNormalizedType"
                     }
                   }
                 }
@@ -9217,7 +9217,7 @@
             ],
             "properties": {
               "Vector": {
-                "$ref": "#/components/schemas/SuiMoveNormalizedType"
+                "$ref": "#/components/schemas/IotaMoveNormalizedType"
               }
             },
             "additionalProperties": false
@@ -9243,7 +9243,7 @@
             ],
             "properties": {
               "Reference": {
-                "$ref": "#/components/schemas/SuiMoveNormalizedType"
+                "$ref": "#/components/schemas/IotaMoveNormalizedType"
               }
             },
             "additionalProperties": false
@@ -9255,14 +9255,14 @@
             ],
             "properties": {
               "MutableReference": {
-                "$ref": "#/components/schemas/SuiMoveNormalizedType"
+                "$ref": "#/components/schemas/IotaMoveNormalizedType"
               }
             },
             "additionalProperties": false
           }
         ]
       },
-      "SuiMoveStructTypeParameter": {
+      "IotaMoveStructTypeParameter": {
         "type": "object",
         "required": [
           "constraints",
@@ -9270,14 +9270,14 @@
         ],
         "properties": {
           "constraints": {
-            "$ref": "#/components/schemas/SuiMoveAbilitySet"
+            "$ref": "#/components/schemas/IotaMoveAbilitySet"
           },
           "isPhantom": {
             "type": "boolean"
           }
         }
       },
-      "SuiMoveVisibility": {
+      "IotaMoveVisibility": {
         "type": "string",
         "enum": [
           "Private",
@@ -9285,7 +9285,7 @@
           "Friend"
         ]
       },
-      "SuiObjectDataFilter": {
+      "IotaObjectDataFilter": {
         "oneOf": [
           {
             "type": "object",
@@ -9296,7 +9296,7 @@
               "MatchAll": {
                 "type": "array",
                 "items": {
-                  "$ref": "#/components/schemas/SuiObjectDataFilter"
+                  "$ref": "#/components/schemas/IotaObjectDataFilter"
                 }
               }
             },
@@ -9311,7 +9311,7 @@
               "MatchAny": {
                 "type": "array",
                 "items": {
-                  "$ref": "#/components/schemas/SuiObjectDataFilter"
+                  "$ref": "#/components/schemas/IotaObjectDataFilter"
                 }
               }
             },
@@ -9326,7 +9326,7 @@
               "MatchNone": {
                 "type": "array",
                 "items": {
-                  "$ref": "#/components/schemas/SuiObjectDataFilter"
+                  "$ref": "#/components/schemas/IotaObjectDataFilter"
                 }
               }
             },
@@ -9396,7 +9396,7 @@
             ],
             "properties": {
               "AddressOwner": {
-                "$ref": "#/components/schemas/SuiAddress"
+                "$ref": "#/components/schemas/IotaAddress"
               }
             },
             "additionalProperties": false
@@ -9454,7 +9454,7 @@
           }
         ]
       },
-      "SuiObjectResponse": {
+      "IotaObjectResponse": {
         "type": "object",
         "properties": {
           "data": {
@@ -9479,7 +9479,7 @@
           }
         }
       },
-      "SuiProgrammableMoveCall": {
+      "IotaProgrammableMoveCall": {
         "description": "The transaction for calling a Move function, either an entry function or a public function (which cannot return references).",
         "type": "object",
         "required": [
@@ -9492,7 +9492,7 @@
             "description": "The arguments to the function.",
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/SuiArgument"
+              "$ref": "#/components/schemas/IotaArgument"
             }
           },
           "function": {
@@ -9520,8 +9520,8 @@
           }
         }
       },
-      "SuiSystemStateSummary": {
-        "description": "This is the JSON-RPC type for the SUI system state object. It flattens all fields to make them top-level fields such that it as minimum dependencies to the internal data structures of the SUI system state type.",
+      "IotaSystemStateSummary": {
+        "description": "This is the JSON-RPC type for the IOTA system state object. It flattens all fields to make them top-level fields such that it as minimum dependencies to the internal data structures of the IOTA system state type.",
         "type": "object",
         "required": [
           "activeValidators",
@@ -9567,7 +9567,7 @@
             "description": "The list of active validators in the current epoch.",
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/SuiValidatorSummary"
+              "$ref": "#/components/schemas/IotaValidatorSummary"
             }
           },
           "atRiskValidators": {
@@ -9577,7 +9577,7 @@
               "type": "array",
               "items": [
                 {
-                  "$ref": "#/components/schemas/SuiAddress"
+                  "$ref": "#/components/schemas/IotaAddress"
                 },
                 {
                   "$ref": "#/components/schemas/BigInt_for_uint64"
@@ -9719,7 +9719,7 @@
             ]
           },
           "stakeSubsidyBalance": {
-            "description": "Balance of SUI set aside for stake subsidies that will be drawn down over time.",
+            "description": "Balance of IOTA set aside for stake subsidies that will be drawn down over time.",
             "allOf": [
               {
                 "$ref": "#/components/schemas/BigInt_for_uint64"
@@ -9765,7 +9765,7 @@
             ]
           },
           "stakingPoolMappingsId": {
-            "description": "ID of the object that maps from staking pool's ID to the sui address of a validator.",
+            "description": "ID of the object that maps from staking pool's ID to the iota address of a validator.",
             "allOf": [
               {
                 "$ref": "#/components/schemas/ObjectID"
@@ -9851,12 +9851,12 @@
               "type": "array",
               "items": [
                 {
-                  "$ref": "#/components/schemas/SuiAddress"
+                  "$ref": "#/components/schemas/IotaAddress"
                 },
                 {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/SuiAddress"
+                    "$ref": "#/components/schemas/IotaAddress"
                   }
                 }
               ],
@@ -9874,7 +9874,7 @@
           }
         }
       },
-      "SuiTransaction": {
+      "IotaTransaction": {
         "description": "A single transaction in a programmable transaction block.",
         "oneOf": [
           {
@@ -9885,7 +9885,7 @@
             ],
             "properties": {
               "MoveCall": {
-                "$ref": "#/components/schemas/SuiProgrammableMoveCall"
+                "$ref": "#/components/schemas/IotaProgrammableMoveCall"
               }
             },
             "additionalProperties": false
@@ -9903,11 +9903,11 @@
                   {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/SuiArgument"
+                      "$ref": "#/components/schemas/IotaArgument"
                     }
                   },
                   {
-                    "$ref": "#/components/schemas/SuiArgument"
+                    "$ref": "#/components/schemas/IotaArgument"
                   }
                 ],
                 "maxItems": 2,
@@ -9927,12 +9927,12 @@
                 "type": "array",
                 "items": [
                   {
-                    "$ref": "#/components/schemas/SuiArgument"
+                    "$ref": "#/components/schemas/IotaArgument"
                   },
                   {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/SuiArgument"
+                      "$ref": "#/components/schemas/IotaArgument"
                     }
                   }
                 ],
@@ -9953,12 +9953,12 @@
                 "type": "array",
                 "items": [
                   {
-                    "$ref": "#/components/schemas/SuiArgument"
+                    "$ref": "#/components/schemas/IotaArgument"
                   },
                   {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/SuiArgument"
+                      "$ref": "#/components/schemas/IotaArgument"
                     }
                   }
                 ],
@@ -10004,7 +10004,7 @@
                     "$ref": "#/components/schemas/ObjectID"
                   },
                   {
-                    "$ref": "#/components/schemas/SuiArgument"
+                    "$ref": "#/components/schemas/IotaArgument"
                   }
                 ],
                 "maxItems": 3,
@@ -10032,7 +10032,7 @@
                   {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/SuiArgument"
+                      "$ref": "#/components/schemas/IotaArgument"
                     }
                   }
                 ],
@@ -10044,10 +10044,10 @@
           }
         ]
       },
-      "SuiTransactionBlockBuilderMode": {
+      "IotaTransactionBlockBuilderMode": {
         "oneOf": [
           {
-            "description": "Regular Sui Transactions that are committed on chain",
+            "description": "Regular IOTA Transactions that are committed on chain",
             "type": "string",
             "enum": [
               "Commit"
@@ -10062,8 +10062,8 @@
           }
         ]
       },
-      "SuiValidatorSummary": {
-        "description": "This is the JSON-RPC type for the SUI validator. It flattens all inner structures to top-level fields so that they are decoupled from the internal definitions.",
+      "IotaValidatorSummary": {
+        "description": "This is the JSON-RPC type for the IOTA validator. It flattens all inner structures to top-level fields so that they are decoupled from the internal definitions.",
         "type": "object",
         "required": [
           "commissionRate",
@@ -10082,7 +10082,7 @@
           "p2pAddress",
           "pendingPoolTokenWithdraw",
           "pendingStake",
-          "pendingTotalSuiWithdraw",
+          "pendingTotalIotaWithdraw",
           "poolTokenBalance",
           "primaryAddress",
           "projectUrl",
@@ -10090,8 +10090,8 @@
           "protocolPubkeyBytes",
           "rewardsPool",
           "stakingPoolId",
-          "stakingPoolSuiBalance",
-          "suiAddress",
+          "stakingPoolIotaBalance",
+          "iotaAddress",
           "votingPower",
           "workerAddress",
           "workerPubkeyBytes"
@@ -10233,7 +10233,7 @@
               }
             ]
           },
-          "pendingTotalSuiWithdraw": {
+          "pendingTotalIotaWithdraw": {
             "description": "Pending stake withdrawn during the current epoch, emptied at epoch boundaries.",
             "allOf": [
               {
@@ -10301,16 +10301,16 @@
               }
             ]
           },
-          "stakingPoolSuiBalance": {
-            "description": "The total number of SUI tokens in this pool.",
+          "stakingPoolIotaBalance": {
+            "description": "The total number of IOTA tokens in this pool.",
             "allOf": [
               {
                 "$ref": "#/components/schemas/BigInt_for_uint64"
               }
             ]
           },
-          "suiAddress": {
-            "$ref": "#/components/schemas/SuiAddress"
+          "iotaAddress": {
+            "$ref": "#/components/schemas/IotaAddress"
           },
           "votingPower": {
             "$ref": "#/components/schemas/BigInt_for_uint64"
@@ -10405,7 +10405,7 @@
                 ]
               },
               "sender": {
-                "$ref": "#/components/schemas/SuiAddress"
+                "$ref": "#/components/schemas/IotaAddress"
               },
               "transaction": {
                 "$ref": "#/components/schemas/TransactionBlockKind"
@@ -10661,7 +10661,7 @@
                 "description": "Input objects or primitive values",
                 "type": "array",
                 "items": {
-                  "$ref": "#/components/schemas/SuiCallArg"
+                  "$ref": "#/components/schemas/IotaCallArg"
                 }
               },
               "kind": {
@@ -10674,7 +10674,7 @@
                 "description": "The transactions to be executed sequentially. A failure in any transaction will result in the failure of the entire programmable transaction block.",
                 "type": "array",
                 "items": {
-                  "$ref": "#/components/schemas/SuiTransaction"
+                  "$ref": "#/components/schemas/IotaTransaction"
                 }
               }
             }
@@ -10701,7 +10701,7 @@
               "new_active_jwks": {
                 "type": "array",
                 "items": {
-                  "$ref": "#/components/schemas/SuiActiveJwk"
+                  "$ref": "#/components/schemas/IotaActiveJwk"
                 }
               },
               "round": {
@@ -10758,7 +10758,7 @@
               "transactions": {
                 "type": "array",
                 "items": {
-                  "$ref": "#/components/schemas/SuiEndOfEpochTransactionKind"
+                  "$ref": "#/components/schemas/IotaEndOfEpochTransactionKind"
                 }
               }
             }
@@ -11172,7 +11172,7 @@
             ],
             "properties": {
               "FromAddress": {
-                "$ref": "#/components/schemas/SuiAddress"
+                "$ref": "#/components/schemas/IotaAddress"
               }
             },
             "additionalProperties": false
@@ -11185,7 +11185,7 @@
             ],
             "properties": {
               "ToAddress": {
-                "$ref": "#/components/schemas/SuiAddress"
+                "$ref": "#/components/schemas/IotaAddress"
               }
             },
             "additionalProperties": false
@@ -11205,10 +11205,10 @@
                 ],
                 "properties": {
                   "from": {
-                    "$ref": "#/components/schemas/SuiAddress"
+                    "$ref": "#/components/schemas/IotaAddress"
                   },
                   "to": {
-                    "$ref": "#/components/schemas/SuiAddress"
+                    "$ref": "#/components/schemas/IotaAddress"
                   }
                 }
               }
@@ -11229,7 +11229,7 @@
                 ],
                 "properties": {
                   "addr": {
-                    "$ref": "#/components/schemas/SuiAddress"
+                    "$ref": "#/components/schemas/IotaAddress"
                   }
                 }
               }
@@ -11278,7 +11278,7 @@
             "$ref": "#/components/schemas/ObjectID"
           },
           "recipient": {
-            "$ref": "#/components/schemas/SuiAddress"
+            "$ref": "#/components/schemas/IotaAddress"
           }
         }
       },
@@ -11339,7 +11339,7 @@
         ],
         "properties": {
           "address": {
-            "$ref": "#/components/schemas/SuiAddress"
+            "$ref": "#/components/schemas/IotaAddress"
           },
           "apy": {
             "type": "number",

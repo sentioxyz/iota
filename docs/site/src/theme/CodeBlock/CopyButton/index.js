@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 import React, { useCallback, useState, useRef, useEffect } from "react";
@@ -12,7 +13,7 @@ export default function CopyButton({ code, className }) {
   const [isCopied, setIsCopied] = useState(false);
   const copyTimeout = useRef(undefined);
   const handleCopyCode = useCallback(() => {
-    // SUI CHANGE: `.replace()` added
+    // IOTA CHANGE: `.replace()` added
     copy(code.replace(/^\$ /, ""));
     setIsCopied(true);
     copyTimeout.current = window.setTimeout(() => {

@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 /// This script pulls sampled JSON RPC read requests from Grafana, extracts JSON bodies,
@@ -47,7 +48,7 @@ struct LogEntry {
 }
 
 /// One example message is:
-/// 2025-02-11T23:15:17.944697206Z stderr F 2025-02-11T23:15:17.944501Z  INFO sui_edge_proxy::handlers: Sampled read request headers={"host": "wallet-rpc.mainnet.sui.io", "client-sdk-type": "typescript", "client-sdk-version": "1.17.0", "client-target-api-version": "1.40.0", "client-request-method": "suix_getBalance", "content-type": "application/json", "content-length": "152", "accept-encoding": "gzip", "user-agent": "okhttp/4.9.2", "x-cloud-trace-context": "31caa7db658044d850a002ccf4ff15b1/8018737809747708392", "cookie": "_cfuvid=h0GD1bYot45Ln6kVCdL4qsFCCyw3h2cLw3caDNmhWNw-1739262948231-0.0.1.1-604800000", "via": "1.1 google", "x-forwarded-for": "171.236.184.3, 34.8.28.138", "x-forwarded-proto": "https", "connection": "Keep-Alive"} body=b"{\"jsonrpc\":\"2.0\",\"id\":189393,\"method\":\"suix_getBalance\",\"params\":[\"0x23cad599a375b9c2cedd62fa20112526c90a71764230425cb7f557c0c0b3b150\",\"0x2::sui::SUI\"]}" peer_type=Read
+/// 2025-02-11T23:15:17.944697206Z stderr F 2025-02-11T23:15:17.944501Z  INFO iota_edge_proxy::handlers: Sampled read request headers={"host": "wallet-rpc.mainnet.iota.io", "client-sdk-type": "typescript", "client-sdk-version": "1.17.0", "client-target-api-version": "1.40.0", "client-request-method": "iotax_getBalance", "content-type": "application/json", "content-length": "152", "accept-encoding": "gzip", "user-agent": "okhttp/4.9.2", "x-cloud-trace-context": "31caa7db658044d850a002ccf4ff15b1/8018737809747708392", "cookie": "_cfuvid=h0GD1bYot45Ln6kVCdL4qsFCCyw3h2cLw3caDNmhWNw-1739262948231-0.0.1.1-604800000", "via": "1.1 google", "x-forwarded-for": "171.236.184.3, 34.8.28.138", "x-forwarded-proto": "https", "connection": "Keep-Alive"} body=b"{\"jsonrpc\":\"2.0\",\"id\":189393,\"method\":\"iotax_getBalance\",\"params\":[\"0x23cad599a375b9c2cedd62fa20112526c90a71764230425cb7f557c0c0b3b150\",\"0x2::iota::IOTA\"]}" peer_type=Read
 fn extract_from_message(message: &str) -> Option<LogEntry> {
     let timestamp = message.split_whitespace().next()?.to_string();
 
@@ -138,7 +139,7 @@ async fn main() {
 
 async fn run() -> Result<(), Box<dyn Error>> {
     let grafana_url = env::var("GRAFANA_LOGS_URL")
-        .unwrap_or_else(|_| "https://metrics.sui.io/loki/api/v1/query_range".to_string());
+        .unwrap_or_else(|_| "https://metrics.iota.io/loki/api/v1/query_range".to_string());
     let net = env::var("NET").unwrap_or_else(|_| "mainnet".to_string());
     let namespace = if net == "testnet" {
         "rpc-testnet".to_string()
@@ -149,7 +150,7 @@ async fn run() -> Result<(), Box<dyn Error>> {
     };
     let substring = env::var("SUBSTRING").unwrap_or_else(|_| "Sampled read request".to_string());
     let query = format!(
-        r#"{{namespace="{}", container="sui-edge-proxy-mysten"}} |= "{}""#,
+        r#"{{namespace="{}", container="iota-edge-proxy-iota"}} |= "{}""#,
         namespace, substring
     );
     debug!("Query: {}", query);

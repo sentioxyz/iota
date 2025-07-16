@@ -1,11 +1,11 @@
 ---
-title: Access Sui Data
-description: Overview of the types of data access mechanisms available in Sui.
+title: Access IOTA Data
+description: Overview of the types of data access mechanisms available in IOTA.
 ---
 
-You can access Sui network data like [Transactions](/concepts/transactions.mdx), [Checkpoints](/concepts/cryptography/system/checkpoint-verification.mdx), [Objects](/concepts/object-model.mdx), [Events](/guides/developer/sui-101/using-events.mdx), and more through the available interfaces. You can use this data in your application workflows, to analyze network behavior across applications or protocols of interest, or to perform audits on parts or the whole of the network.
+You can access IOTA network data like [Transactions](/concepts/transactions.mdx), [Checkpoints](/concepts/cryptography/system/checkpoint-verification.mdx), [Objects](/concepts/object-model.mdx), [Events](/guides/developer/iota-101/using-events.mdx), and more through the available interfaces. You can use this data in your application workflows, to analyze network behavior across applications or protocols of interest, or to perform audits on parts or the whole of the network.
 
-This document outlines the interfaces that are currently available to access the Sui network data, along with an overview of how that's gradually evolving. Refer to the following definitions for release stages mentioned in this document:
+This document outlines the interfaces that are currently available to access the IOTA network data, along with an overview of how that's gradually evolving. Refer to the following definitions for release stages mentioned in this document:
 
 - **Alpha** - Experimental release that is subject to change and is not recommended for production use. You can use it for validation in non-production environments.
 - **Beta** - Somewhat stable release that is subject to change based on user feedback. Use it in production only after verifying the desired functional, performance, and other relevant characteristics in a non-production environment.
@@ -13,10 +13,10 @@ This document outlines the interfaces that are currently available to access the
 
 ## Current data access interfaces
 
-Currently, you can use any of the following mechanisms to access Sui network data:
+Currently, you can use any of the following mechanisms to access IOTA network data:
 
-- Directly connect to [JSON-RPC](/references/sui-api.mdx) hosted on Sui [Full nodes](guides/operator/sui-full-node.mdx) that are operated by [RPC providers](https://sui.io/developers#dev-tools) (filter by `RPC`) or [Data indexer operators](https://github.com/sui-foundation/awesome-sui?tab=readme-ov-file#indexers--data-services).
-  - The [Mainnet](https://fullnode.mainnet.sui.io:443), [Testnet](https://fullnode.testnet.sui.io:443), or [Devnet](https://fullnode.devnet.sui.io:443) load balancer URLs abstract the Sui Foundation-managed Full nodes. Those are not recommended for production use.
+- Directly connect to [JSON-RPC](/references/iota-api.mdx) hosted on IOTA [Full nodes](guides/operator/iota-full-node.mdx) that are operated by [RPC providers](https://iota.org/developers#dev-tools) (filter by `RPC`) or [Data indexer operators](https://github.com/iota-foundation/awesome-iota?tab=readme-ov-file#indexers--data-services).
+  - The [Mainnet](https://fullnode.mainnet.iota.io:443), [Testnet](https://fullnode.testnet.iota.io:443), or [Devnet](https://fullnode.devnet.iota.io:443) load balancer URLs abstract the IOTA Foundation-managed Full nodes. Those are not recommended for production use.
 - Set up your own [custom indexer](/guides/developer/advanced/custom-indexer.mdx) to continuously load the data of interest into a Postgres database.
 
 :::info
@@ -27,46 +27,46 @@ You can also use one of the [future-oriented interfaces](#future-state-data-inte
 
 ### JSON-RPC
 
-You can currently get real-time or historical data from a Sui Full node. Retention period for historical data depends on the [pruning strategy](/guides/operator/data-management.mdx#sui-full-node-pruning-policies) that node operators implement, though currently the default configuration for all Full nodes is to implicitly fall back on a [Sui Foundation-managed key-value store for historical transaction data](/guides/operator/data-management.mdx#sui-full-node-key-value-store-backup).
+You can currently get real-time or historical data from a IOTA Full node. Retention period for historical data depends on the [pruning strategy](/guides/operator/data-management.mdx#iota-full-node-pruning-policies) that node operators implement, though currently the default configuration for all Full nodes is to implicitly fall back on a [IOTA Foundation-managed key-value store for historical transaction data](/guides/operator/data-management.mdx#iota-full-node-key-value-store-backup).
 
 :::caution
 
-WebSocket-based JSON RPCs `suix_subscribeEvent` and `suix_subscribeTransaction` were deprecated in July 2024. Do not rely on those RPCs in your applications. Refer to [Future data access interfaces](#future-state-data-interfaces) to learn about a future alternative.
+WebSocket-based JSON RPCs `iotax_subscribeEvent` and `iotax_subscribeTransaction` were deprecated in July 2024. Do not rely on those RPCs in your applications. Refer to [Future data access interfaces](#future-state-data-interfaces) to learn about a future alternative.
 
 :::
 
 ### Custom indexer
 
-If you need more control over the types, granularity, and retention period of the data that you need in your application, or if you have specific query patterns that could be best served from a relational database, then you can set up your own [custom indexer](/guides/developer/advanced/custom-indexer.mdx) or reach out to a [Data indexer operator](https://github.com/sui-foundation/awesome-sui?tab=readme-ov-file#indexers--data-services) that might already have set one up. 
+If you need more control over the types, granularity, and retention period of the data that you need in your application, or if you have specific query patterns that could be best served from a relational database, then you can set up your own [custom indexer](/guides/developer/advanced/custom-indexer.mdx) or reach out to a [Data indexer operator](https://github.com/iota-foundation/awesome-iota?tab=readme-ov-file#indexers--data-services) that might already have set one up. 
 
 If you set up your own indexer, you are responsible for its ongoing maintenance and the related infrastructure and operational costs. You can reduce your costs by implementing a pruning strategy for the relational database by taking into account the retention needs of your application.
 
 ## Future data access interfaces
 
-<div class="bg-sui-ghost-white">
+<div class="bg-iota-ghost-white">
 ![Future state data serving stack](../images/dataservingstack.png)
 </div>
 
-Primary interfaces to access Sui access data in the future include:
+Primary interfaces to access IOTA access data in the future include:
 
 - Full node gRPC API will replace JSON-RPC on Full nodes, and is currently available in alpha. If you already use the JSON-RPC or are starting to utilize it as a dependency for your use case, you would need to migrate to gRPC or GraphQL (see below) within a reasonable duration. Refer to the [high-level timeline for gRPC availability](#grpc-api).
-- Indexer 2.0 will include a performant and scalable implementation of the Sui indexer framework and is currently available in alpha. You can use it to load data at scale from Full nodes into a Postgres relational database.
-- [GraphQL RPC](/references/sui-graphql.mdx) will include a lightweight GraphQL RPC Server that you can use to read data from the Indexer 2.0's relational database. It is currently available in alpha. You can use it as an alternative to gRPC, including for migration from JSON-RPC for an existing application. Refer to the [high-level timeline for GraphQL availability](#graphql-rpc-with-indexer-20).
+- Indexer 2.0 will include a performant and scalable implementation of the IOTA indexer framework and is currently available in alpha. You can use it to load data at scale from Full nodes into a Postgres relational database.
+- [GraphQL RPC](/references/iota-graphql.mdx) will include a lightweight GraphQL RPC Server that you can use to read data from the Indexer 2.0's relational database. It is currently available in alpha. You can use it as an alternative to gRPC, including for migration from JSON-RPC for an existing application. Refer to the [high-level timeline for GraphQL availability](#graphql-rpc-with-indexer-20).
 
-You could still utilize an [RPC provider](https://sui.io/developers#dev-tools) (filter by `RPC`) or a [Data indexer operator](https://github.com/sui-foundation/awesome-sui?tab=readme-ov-file#indexers--data-services) with these options, assuming some or all of those providers choose to operate the Indexer 2.0 and the GraphQL RPC Server.
+You could still utilize an [RPC provider](https://iota.org/developers#dev-tools) (filter by `RPC`) or a [Data indexer operator](https://github.com/iota-foundation/awesome-iota?tab=readme-ov-file#indexers--data-services) with these options, assuming some or all of those providers choose to operate the Indexer 2.0 and the GraphQL RPC Server.
 
 ### gRPC API
 
 As mentioned previously, gRPC API will replace the JSON-RPC on Full nodes, such that JSON-RPC will be deprecated when gRPC API is generally available. Apart from the message and request format changes between the two, the gRPC API comes with a couple of key functional differences:
 
 - It has streaming or subscription API endpoints to consume real-time streaming data in your application without having to poll for those records. This support is a proper replacement of the deprecated WebSocket support in JSON-RPC.
-- It doesn't have implicit fallback on the previously mentioned [Sui Foundation-managed key-value store for historical transaction data](/guides/operator/data-management.mdx#sui-full-node-key-value-store-backup). Full node operators, RPC providers, and data indexer operators are encouraged to run their own instance of a similar archival store, which you can explicitly define a dependency on to get the relevant historical data.
+- It doesn't have implicit fallback on the previously mentioned [IOTA Foundation-managed key-value store for historical transaction data](/guides/operator/data-management.mdx#iota-full-node-key-value-store-backup). Full node operators, RPC providers, and data indexer operators are encouraged to run their own instance of a similar archival store, which you can explicitly define a dependency on to get the relevant historical data.
 
 See [When to use gRPC vs GraphQL with Indexer 2.0](#when-to-use-grpc-vs-graphql-with-indexer-20) for a comparison with GraphQL RPC.
 
 :::info
 
-The gRPC API is in alpha and not recommended for production use. Its public documentation is coming soon. Until then, you can refer to [this technical proto spec](https://github.com/MystenLabs/sui/blob/main/crates/sui-rpc-api/proto/sui.node.v2.proto).
+The gRPC API is in alpha and not recommended for production use. Its public documentation is coming soon. Until then, you can refer to [this technical proto spec](https://github.com/iotaledger/iota/blob/develop/crates/iota-rpc-api/proto/iota.node.v2.proto).
 
 :::
 
@@ -86,17 +86,17 @@ The target times indicated below are tentative and subject to updates based on p
 
 As mentioned, Indexer 2.0 will include a performant and scalable implementation of the indexer framework. The underlying framework uses the Full node RPCs to ingest the data, initially using the current generally available JSON-RPC, and later using the gRPC API.
 
-Indexer 2.0 will be declarative such that you can seamlessly configure it to load different kinds of Sui network data into Postgres relational tables in parallel. This change is being implemented to improve the performance of the data ingestion into the Postgres database. In addition, you can configure pruning for different tables in the Postgres database, allowing you to tune it for the desired combination of performance and cost characteristics.
+Indexer 2.0 will be declarative such that you can seamlessly configure it to load different kinds of IOTA network data into Postgres relational tables in parallel. This change is being implemented to improve the performance of the data ingestion into the Postgres database. In addition, you can configure pruning for different tables in the Postgres database, allowing you to tune it for the desired combination of performance and cost characteristics.
 
 :::info
 
-Indexer 2.0 is currently in alpha and not recommended for production use. A sneak preview of how you could set up Indexer 2.0 today is available [on GitHub](https://github.com/amnn/sui-sender-indexer).
+Indexer 2.0 is currently in alpha and not recommended for production use. A sneak preview of how you could set up Indexer 2.0 today is available [on GitHub](https://github.com/amnn/iota-sender-indexer).
 
 :::
 
 ### GraphQL RPC
 
-The [GraphQL RPC Server](/references/sui-graphql.mdx) will provide a performant GraphQL RPC layer while reading data from the Indexer 2.0's Postgres database. GraphQL RPC will be an alternative to gRPC API. If you are already using JSON-RPC in your application today, you would have an option to migrate to GraphQL RPC by either operating the combined stack of Indexer 2.0, Postgres database, and GraphQL RPC server on your own, or by utilizing it as a service from an RPC provider or data indexer operator.
+The [GraphQL RPC Server](/references/iota-graphql.mdx) will provide a performant GraphQL RPC layer while reading data from the Indexer 2.0's Postgres database. GraphQL RPC will be an alternative to gRPC API. If you are already using JSON-RPC in your application today, you would have an option to migrate to GraphQL RPC by either operating the combined stack of Indexer 2.0, Postgres database, and GraphQL RPC server on your own, or by utilizing it as a service from an RPC provider or data indexer operator.
 
 GraphQL RPC Server will be a lightweight server component that will allow you to combine data from multiple Postgres database tables using GraphQL's expressive querying system, which is appealing to frontend developers.
 
@@ -104,7 +104,7 @@ See [When to use gRPC vs GraphQL with Indexer 2.0](#when-to-use-grpc-vs-graphql-
 
 :::info
 
-GraphQL RPC Server is currently in alpha and not recommended for production use. Check out [this getting started document for GraphQL RPCs](guides/developer/getting-started/graphql-rpc.mdx) that refers to the Mysten Labs-managed stack of GraphQL RPC Server along with the underlying Postgres database and Indexer 2.0.
+GraphQL RPC Server is currently in alpha and not recommended for production use. Check out [this getting started document for GraphQL RPCs](guides/developer/getting-started/graphql-rpc.mdx) that refers to the IOTA Foundation-managed stack of GraphQL RPC Server along with the underlying Postgres database and Indexer 2.0.
 
 Based on valuable feedback from the community, the GraphQL RPC release stage has been updated to alpha. Refer to the high-level timeline for beta and GA releases in this document.
 
@@ -116,7 +116,7 @@ The target times indicated in this table are tentative and subject to updates ba
 
 | Tentative time | Milestone | Description |
 | -------- | ------- | ------- |
-| July 2025 | Beta release of GraphQL RPC Server and Indexer 2.0. | You can start validating the setup of Indexer 2.0, along with testing the GraphQL RPC Server to access the indexed Sui data. You can also start migrating your application in the non-production environments, and share feedback on the improvements you want to see. |
+| July 2025 | Beta release of GraphQL RPC Server and Indexer 2.0. | You can start validating the setup of Indexer 2.0, along with testing the GraphQL RPC Server to access the indexed IOTA data. You can also start migrating your application in the non-production environments, and share feedback on the improvements you want to see. |
 | September 2025 | Deprecation of JSON-RPC. | **JSON-RPC will be deprecated at this point and migration notice period will start.** |
 | December 2025 | GA release of GraphQL RPC Server and Indexer 2.0. | You can start migration and cutover of your application in the production environment. |
 | June 2026 | End of migration timeline. | **JSON-RPC will be fully deactivated at this point.** This timeline assumes about 9 months of migration notice period. |

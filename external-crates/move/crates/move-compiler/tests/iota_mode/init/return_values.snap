@@ -1,12 +1,12 @@
 ---
 source: crates/move-compiler/tests/move_check_testsuite.rs
 info:
-  flavor: sui
+  flavor: iota
   edition: legacy
   lint: false
 ---
-error[Sui E02003]: invalid 'init' function
-  ┌─ tests/sui_mode/init/return_values.move:4:9
+error[IOTA E02003]: invalid 'init' function
+  ┌─ tests/iota_mode/init/return_values.move:4:9
   │
 4 │     fun init(_: &mut tx_context::TxContext): u64 {
   │         ^^^^                                 --- 'init' functions must have a return type of '()'

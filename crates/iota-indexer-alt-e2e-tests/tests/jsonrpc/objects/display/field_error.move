@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 //# init --protocol-version 70 --accounts A --addresses test=0x0 --simulator
@@ -12,8 +13,8 @@
 //# publish --sender A
 module test::mod {
   use std::string::utf8;
-  use sui::display;
-  use sui::package;
+  use iota::display;
+  use iota::package;
 
   public struct MOD() has drop;
 
@@ -88,12 +89,12 @@ module test::mod {
 
 //# run-jsonrpc
 {
-  "method": "sui_getObject",
+  "method": "iota_getObject",
   "params": ["@{obj_2_0}", { "showContent": true }]
 }
 
 //# run-jsonrpc
 {
-  "method": "sui_getObject",
+  "method": "iota_getObject",
   "params": ["@{obj_2_0}", { "showDisplay": true }]
 }

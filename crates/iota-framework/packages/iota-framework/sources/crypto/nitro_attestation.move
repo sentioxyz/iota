@@ -1,9 +1,10 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-module sui::nitro_attestation;
+module iota::nitro_attestation;
 
-use sui::clock::{Self, Clock};
+use iota::clock::{Self, Clock};
 
 #[allow(unused_const)]
 /// Error that the feature is not available on this network.

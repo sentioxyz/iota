@@ -1,14 +1,15 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use anyhow::anyhow;
 use move_binary_format::file_format::{Ability, AbilitySet, Visibility};
-use sui_json_rpc_types::{
-    SuiMoveAbility, SuiMoveAbilitySet, SuiMoveNormalizedFunction, SuiMoveNormalizedType,
-    SuiMoveVisibility,
+use iota_json_rpc_types::{
+    IotaMoveAbility, IotaMoveAbilitySet, IotaMoveNormalizedFunction, IotaMoveNormalizedType,
+    IotaMoveVisibility,
 };
-use sui_package_resolver::{FunctionDef, OpenSignature, OpenSignatureBody, Reference};
-use sui_types::{base_types::ObjectID, Identifier};
+use iota_package_resolver::{FunctionDef, OpenSignature, OpenSignatureBody, Reference};
+use iota_types::{base_types::ObjectID, Identifier};
 
 use crate::{
     context::Context,
@@ -23,7 +24,7 @@ pub(super) async fn function(
     package: ObjectID,
     module: &str,
     name: &str,
-) -> Result<SuiMoveNormalizedFunction, RpcError<Error>> {
+) -> Result<IotaMoveNormalizedFunction, RpcError<Error>> {
     use Error as E;
 
     if !Identifier::is_valid(module) {
@@ -39,7 +40,7 @@ pub(super) async fn function(
         .function_signature(*package, module, name)
         .await
         .map_err(|e| {
-            use sui_package_resolver::error::Error as PRE;
+            use iota_package_resolver::error::Error as PRE;
             match &e {
                 // These errors can be triggered by passing a type that doesn't exist for the
                 // dynamic field name.
@@ -78,8 +79,8 @@ pub(super) async fn function(
     Ok(normalized_function(&sig))
 }
 
-fn normalized_function(sig: &FunctionDef) -> SuiMoveNormalizedFunction {
-    SuiMoveNormalizedFunction {
+fn normalized_function(sig: &FunctionDef) -> IotaMoveNormalizedFunction {
+    IotaMoveNormalizedFunction {
         visibility: visibility(sig.visibility),
         is_entry: sig.is_entry,
         type_parameters: sig.type_params.iter().map(|a| ability_set(*a)).collect(),
@@ -88,8 +89,8 @@ fn normalized_function(sig: &FunctionDef) -> SuiMoveNormalizedFunction {
     }
 }
 
-fn normalized_signature(sig: &OpenSignature) -> SuiMoveNormalizedType {
-    use SuiMoveNormalizedType as T;
+fn normalized_signature(sig: &OpenSignature) -> IotaMoveNormalizedType {
+    use IotaMoveNormalizedType as T;
 
     let body = normalized_type(&sig.body);
     match sig.ref_ {
@@ -99,9 +100,9 @@ fn normalized_signature(sig: &OpenSignature) -> SuiMoveNormalizedType {
     }
 }
 
-fn normalized_type(sig: &OpenSignatureBody) -> SuiMoveNormalizedType {
+fn normalized_type(sig: &OpenSignatureBody) -> IotaMoveNormalizedType {
     use OpenSignatureBody as S;
-    use SuiMoveNormalizedType as T;
+    use IotaMoveNormalizedType as T;
     match sig {
         S::Address => T::Address,
         S::Bool => T::Bool,
@@ -122,25 +123,25 @@ fn normalized_type(sig: &OpenSignatureBody) -> SuiMoveNormalizedType {
     }
 }
 
-fn visibility(v: Visibility) -> SuiMoveVisibility {
+fn visibility(v: Visibility) -> IotaMoveVisibility {
     match v {
-        Visibility::Public => SuiMoveVisibility::Public,
-        Visibility::Friend => SuiMoveVisibility::Friend,
-        Visibility::Private => SuiMoveVisibility::Private,
+        Visibility::Public => IotaMoveVisibility::Public,
+        Visibility::Friend => IotaMoveVisibility::Friend,
+        Visibility::Private => IotaMoveVisibility::Private,
     }
 }
 
-fn ability_set(a: AbilitySet) -> SuiMoveAbilitySet {
-    SuiMoveAbilitySet {
+fn ability_set(a: AbilitySet) -> IotaMoveAbilitySet {
+    IotaMoveAbilitySet {
         abilities: a.into_iter().map(ability).collect(),
     }
 }
 
-fn ability(a: Ability) -> SuiMoveAbility {
+fn ability(a: Ability) -> IotaMoveAbility {
     match a {
-        Ability::Copy => SuiMoveAbility::Copy,
-        Ability::Drop => SuiMoveAbility::Drop,
-        Ability::Store => SuiMoveAbility::Store,
-        Ability::Key => SuiMoveAbility::Key,
+        Ability::Copy => IotaMoveAbility::Copy,
+        Ability::Drop => IotaMoveAbility::Drop,
+        Ability::Store => IotaMoveAbility::Store,
+        Ability::Key => IotaMoveAbility::Key,
     }
 }

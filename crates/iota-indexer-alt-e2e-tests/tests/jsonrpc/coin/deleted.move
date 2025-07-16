@@ -1,7 +1,8 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-// This test is to verify that deleted coins are not included in the result of suix_getCoins.
+// This test is to verify that deleted coins are not included in the result of iotax_getCoins.
 // We create two coins, of balances 12 and 34, call the rpc method to see both of them in the results.
 // Then we merge the coins and call the rpc method again to see that only the merged coin with
 // balance 46 is in the results.
@@ -24,7 +25,7 @@
 
 //# run-jsonrpc
 {
-  "method": "suix_getCoins",
+  "method": "iotax_getCoins",
   "params": ["@{A}"]
 }
 
@@ -35,6 +36,6 @@
 
 //# run-jsonrpc
 {
-  "method": "suix_getCoins",
+  "method": "iotax_getCoins",
   "params": ["@{A}"]
 }

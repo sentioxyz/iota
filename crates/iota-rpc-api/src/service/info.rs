@@ -1,11 +1,12 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::proto::node::v2::GetNodeInfoResponse;
 use crate::proto::types::timestamp_ms_to_proto;
 use crate::Result;
 use crate::RpcService;
-use sui_sdk_types::CheckpointDigest;
+use iota_sdk_types::CheckpointDigest;
 use tap::Pipe;
 
 impl RpcService {

@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::proto::node::v2alpha::AccountObject;
@@ -7,10 +8,10 @@ use crate::proto::node::v2alpha::ListAccountObjectsResponse;
 use crate::Result;
 use crate::RpcError;
 use crate::RpcService;
-use sui_sdk_types::Address;
-use sui_sdk_types::Version;
-use sui_sdk_types::{ObjectId, StructTag};
-use sui_types::sui_sdk_types_conversions::struct_tag_core_to_sdk;
+use iota_sdk_types::Address;
+use iota_sdk_types::Version;
+use iota_sdk_types::{ObjectId, StructTag};
+use iota_types::iota_sdk_types_conversions::struct_tag_core_to_sdk;
 use tap::Pipe;
 
 impl RpcService {

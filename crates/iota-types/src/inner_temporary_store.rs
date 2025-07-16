@@ -1,9 +1,10 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::base_types::{FullObjectID, SequenceNumber, VersionDigest};
 use crate::effects::{TransactionEffects, TransactionEffectsAPI, TransactionEvents};
-use crate::error::SuiResult;
+use crate::error::IotaResult;
 use crate::execution::DynamicallyLoadedObjectMetadata;
 use crate::storage::PackageObject;
 use crate::storage::{BackingPackageStore, InputKey};
@@ -135,7 +136,7 @@ where
 }
 
 impl BackingPackageStore for InnerTemporaryStore {
-    fn get_package_object(&self, package_id: &ObjectID) -> SuiResult<Option<PackageObject>> {
+    fn get_package_object(&self, package_id: &ObjectID) -> IotaResult<Option<PackageObject>> {
         Ok(self
             .written
             .get(package_id)
@@ -160,7 +161,7 @@ where
     P: BackingPackageStore,
     F: BackingPackageStore,
 {
-    fn get_package_object(&self, package_id: &ObjectID) -> SuiResult<Option<PackageObject>> {
+    fn get_package_object(&self, package_id: &ObjectID) -> IotaResult<Option<PackageObject>> {
         if let Some(package) = self.primary.get_package_object(package_id)? {
             Ok(Some(package))
         } else {

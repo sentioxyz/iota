@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::field_mask::FieldMaskTree;
@@ -10,7 +11,7 @@ use crate::ErrorReason;
 use crate::Result;
 use crate::RpcService;
 use prost_types::FieldMask;
-use sui_sdk_types::TransactionDigest;
+use iota_sdk_types::TransactionDigest;
 use tap::Pipe;
 
 mod execution;

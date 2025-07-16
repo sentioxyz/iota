@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 //# init --protocol-version 70 --addresses Test=0x0 --accounts A B --simulator --objects-snapshot-min-checkpoint-lag 2
@@ -48,19 +49,19 @@
 
 //# run-jsonrpc
 {
-  "method": "suix_getCoins",
+  "method": "iotax_getCoins",
   "params": ["@{A}", null, null, 3]
 }
 
 //# run-jsonrpc --cursors bcs(@{obj_2_0},1,4)
 {
-  "method": "suix_getCoins",
+  "method": "iotax_getCoins",
   "params": ["@{A}", null, "@{cursor_0}"]
 }
 
 //# run-jsonrpc --cursors bcs(@{obj_7_0},1,1)
 {
-  "method": "suix_getCoins",
+  "method": "iotax_getCoins",
   "params": ["@{A}", null, "@{cursor_0}"]
 }
 
@@ -72,13 +73,13 @@
 
 //# run-jsonrpc --cursors bcs(@{obj_1_0},2,4)
 {
-  "method": "suix_getCoins",
+  "method": "iotax_getCoins",
   "params": ["@{A}", null, "@{cursor_0}"]
 }
 
 //# run-jsonrpc --cursors bcs(@{obj_1_0},1,4)
 {
-  "method": "suix_getCoins",
+  "method": "iotax_getCoins",
   "params": ["@{A}", null, "@{cursor_0}"]
 }
 

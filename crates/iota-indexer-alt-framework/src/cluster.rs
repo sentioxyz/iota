@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::{
@@ -9,7 +10,7 @@ use std::{
 use anyhow::Context;
 use diesel_migrations::EmbeddedMigrations;
 use prometheus::Registry;
-use sui_indexer_alt_metrics::{MetricsArgs, MetricsService};
+use iota_indexer_alt_metrics::{MetricsArgs, MetricsService};
 use tokio::{signal, task::JoinHandle};
 use tokio_util::sync::CancellationToken;
 use tracing::info;
@@ -175,7 +176,7 @@ mod tests {
 
     use diesel::{Insertable, QueryDsl, Queryable};
     use diesel_async::RunQueryDsl;
-    use sui_synthetic_ingestion::synthetic_ingestion;
+    use iota_synthetic_ingestion::synthetic_ingestion;
     use tempfile::tempdir;
 
     use crate::db::temp::{get_available_port, TempDb};

@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use async_trait::async_trait;
@@ -11,7 +12,7 @@ pub struct TestResponse {
     pub service_version: Option<String>,
 }
 
-/// Trait for interacting with the offchain state of the Sui network. To reduce test flakiness,
+/// Trait for interacting with the offchain state of the IOTA network. To reduce test flakiness,
 /// these methods are used in the `RunGraphqlCommand` to stabilize the off-chain indexed state.
 #[async_trait]
 pub trait OffchainStateReader: Send + Sync + 'static {

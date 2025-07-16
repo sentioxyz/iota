@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use move_binary_format::errors::PartialVMResult;
@@ -12,12 +13,12 @@ use move_vm_types::{
     loaded_data::runtime_types::Type,
     views::{TypeView, ValueView},
 };
-use sui_types::gas_model::{
+use iota_types::gas_model::{
     gas_predicates::{native_function_threshold_exceeded, use_legacy_abstract_size},
     tables::{GasStatus, REFERENCE_SIZE, STRUCT_SIZE, VEC_SIZE},
 };
 
-pub struct SuiGasMeter<'g>(pub &'g mut GasStatus);
+pub struct IotaGasMeter<'g>(pub &'g mut GasStatus);
 
 /// Returns a tuple of (<pops>, <pushes>, <stack_size_decrease>, <stack_size_increase>)
 fn get_simple_instruction_stack_change(
@@ -67,7 +68,7 @@ fn get_simple_instruction_stack_change(
     }
 }
 
-impl GasMeter for SuiGasMeter<'_> {
+impl GasMeter for IotaGasMeter<'_> {
     /// Charge an instruction and fail if not enough gas units are left.
     fn charge_simple_instr(&mut self, instr: SimpleInstruction) -> PartialVMResult<()> {
         let (pops, pushes, pop_size, push_size) = get_simple_instruction_stack_change(instr);

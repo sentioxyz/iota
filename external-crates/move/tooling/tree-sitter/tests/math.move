@@ -1,8 +1,9 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 /// Basic math for nicer programmability
-module sui::math {
+module iota::math {
 
     /// Return the larger of `x` and `y`
     public fun max(x: u64, y: u64): u64 {

@@ -1,6 +1,6 @@
 # Contributing to This Project
 
-Thanks for considering making a contribution to the Sui network or its documentation. Before you get started, please take a moment to read these guidelines.
+Thanks for considering making a contribution to the IOTA network or its documentation. Before you get started, please take a moment to read these guidelines.
 
 ## Important Note
 
@@ -11,9 +11,9 @@ We appreciate contributions, but **simple typo fixes (e.g., minor spelling error
 
 ## Documentation
 
-Found a small error or typo in the main documentation? Each page on the [docs.sui.io](https://docs.sui.io/) site includes an **Edit this page** link at the bottom that you can use to edit the page in GitHub. The content is located in the docs/content directory of the Sui repo, so you can make a PR if you prefer. 
+Found a small error or typo in the main documentation? Each page on the [docs.iota.org](https://docs.iota.org/) site includes an **Edit this page** link at the bottom that you can use to edit the page in GitHub. The content is located in the docs/content directory of the IOTA repo, so you can make a PR if you prefer. 
 
-For larger documentation issues, you can [create an issue](https://github.com/MystenLabs/sui/issues/new/choose) in GitHub. To fix the problem yourself, follow the [documentation contribution](./docs/content/references/contribute/contribution-process.mdx) guidelines.
+For larger documentation issues, you can [create an issue](https://github.com/iotaledger/iota/issues/new/choose) in GitHub. To fix the problem yourself, follow the [documentation contribution](./docs/content/references/contribute/contribution-process.mdx) guidelines.
 
 If you change functionality, update the relevant documentation.
 
@@ -25,13 +25,13 @@ Found a bug or security vulnerability? Please check the existing issues before o
 
 Provide as much detail as possible, including steps to reproduce the issue, expected behavior, and actual behavior.
 
-## New Sui features
+## New IOTA features
 
-If you want to contribute code that creates a feature on Sui, start with a [Sui Improvement Proposal](https://github.com/sui-foundation/sips/tree/main) before developing the logic.
+If you want to contribute code that creates a feature on Iota, start with a [IOTA Improvement Proposal](https://github.com/sui-foundation/sips/tree/main) before developing the logic.
 
-## New Sui Framework Contributions
+## New IOTA Framework Contributions
 
-Want to contribute to the Sui framework? See [CONTRIBUTING.md](https://github.com/MystenLabs/sui/blob/main/crates/sui-framework/CONTRIBUTING.md) for information related to `sui-framework` crate contributions.
+Want to contribute to the IOTA framework? See [CONTRIBUTING.md](https://github.com/iotaledger/iota/blob/develop/crates/iota-framework/CONTRIBUTING.md) for information related to `iota-framework` crate contributions.
 
 ## Proposing Code Changes
 

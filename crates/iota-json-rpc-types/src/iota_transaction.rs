@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::fmt::{self, Display, Formatter, Write};
@@ -7,7 +8,7 @@ use enum_dispatch::enum_dispatch;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
-use sui_package_resolver::{PackageStore, Resolver};
+use iota_package_resolver::{PackageStore, Resolver};
 use tabled::{
     builder::Builder as TableBuilder,
     settings::{style::HorizontalLine, Panel as TablePanel, Style as TableStyle},
@@ -19,47 +20,47 @@ use move_bytecode_utils::module_cache::GetModule;
 use move_core_types::annotated_value::MoveTypeLayout;
 use move_core_types::identifier::{IdentStr, Identifier};
 use move_core_types::language_storage::{ModuleId, StructTag, TypeTag};
-use mysten_metrics::monitored_scope;
-use sui_json::{primitive_type, SuiJsonValue};
-use sui_types::authenticator_state::ActiveJwk;
-use sui_types::base_types::{
-    EpochId, ObjectID, ObjectRef, SequenceNumber, SuiAddress, TransactionDigest,
+use iota_metrics::monitored_scope;
+use iota_json::{primitive_type, IotaJsonValue};
+use iota_types::authenticator_state::ActiveJwk;
+use iota_types::base_types::{
+    EpochId, ObjectID, ObjectRef, SequenceNumber, IotaAddress, TransactionDigest,
 };
-use sui_types::crypto::SuiSignature;
-use sui_types::digests::{
+use iota_types::crypto::IotaSignature;
+use iota_types::digests::{
     AdditionalConsensusStateDigest, CheckpointDigest, ConsensusCommitDigest, ObjectDigest,
     TransactionEventsDigest,
 };
-use sui_types::effects::{TransactionEffects, TransactionEffectsAPI, TransactionEvents};
-use sui_types::error::{ExecutionError, SuiError, SuiResult};
-use sui_types::execution_status::ExecutionStatus;
-use sui_types::gas::GasCostSummary;
-use sui_types::layout_resolver::{get_layout_from_struct_tag, LayoutResolver};
-use sui_types::messages_checkpoint::CheckpointSequenceNumber;
-use sui_types::messages_consensus::ConsensusDeterminedVersionAssignments;
-use sui_types::object::Owner;
-use sui_types::parse_sui_type_tag;
-use sui_types::quorum_driver_types::ExecuteTransactionRequestType;
-use sui_types::signature::GenericSignature;
-use sui_types::storage::{DeleteKind, WriteKind};
-use sui_types::sui_serde::Readable;
-use sui_types::sui_serde::{
-    BigInt, SequenceNumber as AsSequenceNumber, SuiTypeTag as AsSuiTypeTag,
+use iota_types::effects::{TransactionEffects, TransactionEffectsAPI, TransactionEvents};
+use iota_types::error::{ExecutionError, IotaError, IotaResult};
+use iota_types::execution_status::ExecutionStatus;
+use iota_types::gas::GasCostSummary;
+use iota_types::layout_resolver::{get_layout_from_struct_tag, LayoutResolver};
+use iota_types::messages_checkpoint::CheckpointSequenceNumber;
+use iota_types::messages_consensus::ConsensusDeterminedVersionAssignments;
+use iota_types::object::Owner;
+use iota_types::parse_iota_type_tag;
+use iota_types::quorum_driver_types::ExecuteTransactionRequestType;
+use iota_types::signature::GenericSignature;
+use iota_types::storage::{DeleteKind, WriteKind};
+use iota_types::iota_serde::Readable;
+use iota_types::iota_serde::{
+    BigInt, SequenceNumber as AsSequenceNumber, IotaTypeTag as AsIotaTypeTag,
 };
-use sui_types::transaction::{
+use iota_types::transaction::{
     Argument, CallArg, ChangeEpoch, Command, EndOfEpochTransactionKind, GenesisObject,
     InputObjectKind, ObjectArg, ProgrammableMoveCall, ProgrammableTransaction, SenderSignedData,
     TransactionData, TransactionDataAPI, TransactionKind,
 };
-use sui_types::SUI_FRAMEWORK_ADDRESS;
+use iota_types::IOTA_FRAMEWORK_ADDRESS;
 
 use crate::balance_changes::BalanceChange;
 use crate::object_changes::ObjectChange;
-use crate::sui_transaction::GenericSignature::Signature;
-use crate::{Filter, Page, SuiEvent, SuiObjectRef};
+use crate::iota_transaction::GenericSignature::Signature;
+use crate::{Filter, Page, IotaEvent, IotaObjectRef};
 
-// similar to EpochId of sui-types but BigInt
-pub type SuiEpochId = BigInt<u64>;
+// similar to EpochId of iota-types but BigInt
+pub type IotaEpochId = BigInt<u64>;
 
 #[derive(Debug, Clone, Deserialize, Serialize, JsonSchema, Default)]
 #[serde(
@@ -67,17 +68,17 @@ pub type SuiEpochId = BigInt<u64>;
     rename = "TransactionBlockResponseQuery",
     default
 )]
-pub struct SuiTransactionBlockResponseQuery {
+pub struct IotaTransactionBlockResponseQuery {
     /// If None, no filter will be applied
     pub filter: Option<TransactionFilter>,
     /// config which fields to include in the response, by default only digest is included
-    pub options: Option<SuiTransactionBlockResponseOptions>,
+    pub options: Option<IotaTransactionBlockResponseOptions>,
 }
 
-impl SuiTransactionBlockResponseQuery {
+impl IotaTransactionBlockResponseQuery {
     pub fn new(
         filter: Option<TransactionFilter>,
-        options: Option<SuiTransactionBlockResponseOptions>,
+        options: Option<IotaTransactionBlockResponseOptions>,
     ) -> Self {
         Self { filter, options }
     }
@@ -90,7 +91,7 @@ impl SuiTransactionBlockResponseQuery {
     }
 }
 
-pub type TransactionBlocksPage = Page<SuiTransactionBlockResponse, TransactionDigest>;
+pub type TransactionBlocksPage = Page<IotaTransactionBlockResponse, TransactionDigest>;
 
 #[derive(Debug, Clone, Deserialize, Serialize, JsonSchema, Eq, PartialEq, Default)]
 #[serde(
@@ -98,7 +99,7 @@ pub type TransactionBlocksPage = Page<SuiTransactionBlockResponse, TransactionDi
     rename = "TransactionBlockResponseOptions",
     default
 )]
-pub struct SuiTransactionBlockResponseOptions {
+pub struct IotaTransactionBlockResponseOptions {
     /// Whether to show transaction input data. Default to be False
     pub show_input: bool,
     /// Whether to show bcs-encoded transaction input data
@@ -115,7 +116,7 @@ pub struct SuiTransactionBlockResponseOptions {
     pub show_raw_effects: bool,
 }
 
-impl SuiTransactionBlockResponseOptions {
+impl IotaTransactionBlockResponseOptions {
     pub fn new() -> Self {
         Self::default()
     }
@@ -208,11 +209,11 @@ impl SuiTransactionBlockResponseOptions {
 #[serde_as]
 #[derive(Serialize, Deserialize, Debug, JsonSchema, Clone, Default)]
 #[serde(rename_all = "camelCase", rename = "TransactionBlockResponse")]
-pub struct SuiTransactionBlockResponse {
+pub struct IotaTransactionBlockResponse {
     pub digest: TransactionDigest,
     /// Transaction input data
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub transaction: Option<SuiTransactionBlock>,
+    pub transaction: Option<IotaTransactionBlock>,
     /// BCS encoded [SenderSignedData] that includes input object references
     /// returns empty array if `show_raw_transaction` is false
     #[serde_as(as = "Base64")]
@@ -220,9 +221,9 @@ pub struct SuiTransactionBlockResponse {
     #[serde(skip_serializing_if = "Vec::is_empty", default)]
     pub raw_transaction: Vec<u8>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub effects: Option<SuiTransactionBlockEffects>,
+    pub effects: Option<IotaTransactionBlockEffects>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub events: Option<SuiTransactionBlockEvents>,
+    pub events: Option<IotaTransactionBlockEvents>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub object_changes: Option<Vec<ObjectChange>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -245,7 +246,7 @@ pub struct SuiTransactionBlockResponse {
     pub raw_effects: Vec<u8>,
 }
 
-impl SuiTransactionBlockResponse {
+impl IotaTransactionBlockResponse {
     pub fn new(digest: TransactionDigest) -> Self {
         Self {
             digest,
@@ -259,7 +260,7 @@ impl SuiTransactionBlockResponse {
 }
 
 /// We are specifically ignoring events for now until events become more stable.
-impl PartialEq for SuiTransactionBlockResponse {
+impl PartialEq for IotaTransactionBlockResponse {
     fn eq(&self, other: &Self) -> bool {
         self.transaction == other.transaction
             && self.effects == other.effects
@@ -269,7 +270,7 @@ impl PartialEq for SuiTransactionBlockResponse {
     }
 }
 
-impl Display for SuiTransactionBlockResponse {
+impl Display for IotaTransactionBlockResponse {
     fn fmt(&self, writer: &mut Formatter<'_>) -> fmt::Result {
         writeln!(writer, "Transaction Digest: {}", &self.digest)?;
 
@@ -366,7 +367,7 @@ fn write_obj_changes<T: Display>(
 }
 
 pub fn get_new_package_obj_from_response(
-    response: &SuiTransactionBlockResponse,
+    response: &IotaTransactionBlockResponse,
 ) -> Option<ObjectRef> {
     response.object_changes.as_ref().and_then(|changes| {
         changes
@@ -377,7 +378,7 @@ pub fn get_new_package_obj_from_response(
 }
 
 pub fn get_new_package_upgrade_cap_from_response(
-    response: &SuiTransactionBlockResponse,
+    response: &IotaTransactionBlockResponse,
 ) -> Option<ObjectRef> {
     response.object_changes.as_ref().and_then(|changes| {
         changes
@@ -386,7 +387,7 @@ pub fn get_new_package_upgrade_cap_from_response(
                 matches!(change, ObjectChange::Created {
                     owner: Owner::AddressOwner(_),
                     object_type: StructTag {
-                        address: SUI_FRAMEWORK_ADDRESS,
+                        address: IOTA_FRAMEWORK_ADDRESS,
                         module,
                         name,
                         ..
@@ -400,30 +401,30 @@ pub fn get_new_package_upgrade_cap_from_response(
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema, PartialEq, Eq)]
 #[serde(rename = "TransactionBlockKind", tag = "kind")]
-pub enum SuiTransactionBlockKind {
+pub enum IotaTransactionBlockKind {
     /// A system transaction that will update epoch information on-chain.
-    ChangeEpoch(SuiChangeEpoch),
+    ChangeEpoch(IotaChangeEpoch),
     /// A system transaction used for initializing the initial state of the chain.
-    Genesis(SuiGenesisTransaction),
+    Genesis(IotaGenesisTransaction),
     /// A system transaction marking the start of a series of transactions scheduled as part of a
     /// checkpoint
-    ConsensusCommitPrologue(SuiConsensusCommitPrologue),
+    ConsensusCommitPrologue(IotaConsensusCommitPrologue),
     /// A series of transactions where the results of one transaction can be used in future
     /// transactions
-    ProgrammableTransaction(SuiProgrammableTransactionBlock),
+    ProgrammableTransaction(IotaProgrammableTransactionBlock),
     /// A transaction which updates global authenticator state
-    AuthenticatorStateUpdate(SuiAuthenticatorStateUpdate),
+    AuthenticatorStateUpdate(IotaAuthenticatorStateUpdate),
     /// A transaction which updates global randomness state
-    RandomnessStateUpdate(SuiRandomnessStateUpdate),
+    RandomnessStateUpdate(IotaRandomnessStateUpdate),
     /// The transaction which occurs only at the end of the epoch
-    EndOfEpochTransaction(SuiEndOfEpochTransaction),
-    ConsensusCommitPrologueV2(SuiConsensusCommitPrologueV2),
-    ConsensusCommitPrologueV3(SuiConsensusCommitPrologueV3),
-    ConsensusCommitPrologueV4(SuiConsensusCommitPrologueV4),
+    EndOfEpochTransaction(IotaEndOfEpochTransaction),
+    ConsensusCommitPrologueV2(IotaConsensusCommitPrologueV2),
+    ConsensusCommitPrologueV3(IotaConsensusCommitPrologueV3),
+    ConsensusCommitPrologueV4(IotaConsensusCommitPrologueV4),
     // .. more transaction types go here
 }
 
-impl Display for SuiTransactionBlockKind {
+impl Display for IotaTransactionBlockKind {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let mut writer = String::new();
         match &self {
@@ -488,22 +489,22 @@ impl Display for SuiTransactionBlockKind {
     }
 }
 
-impl SuiTransactionBlockKind {
+impl IotaTransactionBlockKind {
     fn try_from(tx: TransactionKind, module_cache: &impl GetModule) -> Result<Self, anyhow::Error> {
         Ok(match tx {
             TransactionKind::ChangeEpoch(e) => Self::ChangeEpoch(e.into()),
-            TransactionKind::Genesis(g) => Self::Genesis(SuiGenesisTransaction {
+            TransactionKind::Genesis(g) => Self::Genesis(IotaGenesisTransaction {
                 objects: g.objects.iter().map(GenesisObject::id).collect(),
             }),
             TransactionKind::ConsensusCommitPrologue(p) => {
-                Self::ConsensusCommitPrologue(SuiConsensusCommitPrologue {
+                Self::ConsensusCommitPrologue(IotaConsensusCommitPrologue {
                     epoch: p.epoch,
                     round: p.round,
                     commit_timestamp_ms: p.commit_timestamp_ms,
                 })
             }
             TransactionKind::ConsensusCommitPrologueV2(p) => {
-                Self::ConsensusCommitPrologueV2(SuiConsensusCommitPrologueV2 {
+                Self::ConsensusCommitPrologueV2(IotaConsensusCommitPrologueV2 {
                     epoch: p.epoch,
                     round: p.round,
                     commit_timestamp_ms: p.commit_timestamp_ms,
@@ -511,7 +512,7 @@ impl SuiTransactionBlockKind {
                 })
             }
             TransactionKind::ConsensusCommitPrologueV3(p) => {
-                Self::ConsensusCommitPrologueV3(SuiConsensusCommitPrologueV3 {
+                Self::ConsensusCommitPrologueV3(IotaConsensusCommitPrologueV3 {
                     epoch: p.epoch,
                     round: p.round,
                     sub_dag_index: p.sub_dag_index,
@@ -522,7 +523,7 @@ impl SuiTransactionBlockKind {
                 })
             }
             TransactionKind::ConsensusCommitPrologueV4(p) => {
-                Self::ConsensusCommitPrologueV4(SuiConsensusCommitPrologueV4 {
+                Self::ConsensusCommitPrologueV4(IotaConsensusCommitPrologueV4 {
                     epoch: p.epoch,
                     round: p.round,
                     sub_dag_index: p.sub_dag_index,
@@ -534,62 +535,62 @@ impl SuiTransactionBlockKind {
                 })
             }
             TransactionKind::ProgrammableTransaction(p) => Self::ProgrammableTransaction(
-                SuiProgrammableTransactionBlock::try_from(p, module_cache)?,
+                IotaProgrammableTransactionBlock::try_from(p, module_cache)?,
             ),
             TransactionKind::AuthenticatorStateUpdate(update) => {
-                Self::AuthenticatorStateUpdate(SuiAuthenticatorStateUpdate {
+                Self::AuthenticatorStateUpdate(IotaAuthenticatorStateUpdate {
                     epoch: update.epoch,
                     round: update.round,
                     new_active_jwks: update
                         .new_active_jwks
                         .into_iter()
-                        .map(SuiActiveJwk::from)
+                        .map(IotaActiveJwk::from)
                         .collect(),
                 })
             }
             TransactionKind::RandomnessStateUpdate(update) => {
-                Self::RandomnessStateUpdate(SuiRandomnessStateUpdate {
+                Self::RandomnessStateUpdate(IotaRandomnessStateUpdate {
                     epoch: update.epoch,
                     randomness_round: update.randomness_round.0,
                     random_bytes: update.random_bytes,
                 })
             }
             TransactionKind::EndOfEpochTransaction(end_of_epoch_tx) => {
-                Self::EndOfEpochTransaction(SuiEndOfEpochTransaction {
+                Self::EndOfEpochTransaction(IotaEndOfEpochTransaction {
                     transactions: end_of_epoch_tx
                         .into_iter()
                         .map(|tx| match tx {
                             EndOfEpochTransactionKind::ChangeEpoch(e) => {
-                                SuiEndOfEpochTransactionKind::ChangeEpoch(e.into())
+                                IotaEndOfEpochTransactionKind::ChangeEpoch(e.into())
                             }
                             EndOfEpochTransactionKind::AuthenticatorStateCreate => {
-                                SuiEndOfEpochTransactionKind::AuthenticatorStateCreate
+                                IotaEndOfEpochTransactionKind::AuthenticatorStateCreate
                             }
                             EndOfEpochTransactionKind::AuthenticatorStateExpire(expire) => {
-                                SuiEndOfEpochTransactionKind::AuthenticatorStateExpire(
-                                    SuiAuthenticatorStateExpire {
+                                IotaEndOfEpochTransactionKind::AuthenticatorStateExpire(
+                                    IotaAuthenticatorStateExpire {
                                         min_epoch: expire.min_epoch,
                                     },
                                 )
                             }
                             EndOfEpochTransactionKind::RandomnessStateCreate => {
-                                SuiEndOfEpochTransactionKind::RandomnessStateCreate
+                                IotaEndOfEpochTransactionKind::RandomnessStateCreate
                             }
                             EndOfEpochTransactionKind::DenyListStateCreate => {
-                                SuiEndOfEpochTransactionKind::CoinDenyListStateCreate
+                                IotaEndOfEpochTransactionKind::CoinDenyListStateCreate
                             }
                             EndOfEpochTransactionKind::BridgeStateCreate(chain_id) => {
-                                SuiEndOfEpochTransactionKind::BridgeStateCreate(
+                                IotaEndOfEpochTransactionKind::BridgeStateCreate(
                                     (*chain_id.as_bytes()).into(),
                                 )
                             }
                             EndOfEpochTransactionKind::BridgeCommitteeInit(
                                 bridge_shared_version,
-                            ) => SuiEndOfEpochTransactionKind::BridgeCommitteeUpdate(
+                            ) => IotaEndOfEpochTransactionKind::BridgeCommitteeUpdate(
                                 bridge_shared_version,
                             ),
                             EndOfEpochTransactionKind::StoreExecutionTimeObservations(_) => {
-                                SuiEndOfEpochTransactionKind::StoreExecutionTimeObservations
+                                IotaEndOfEpochTransactionKind::StoreExecutionTimeObservations
                             }
                         })
                         .collect(),
@@ -604,18 +605,18 @@ impl SuiTransactionBlockKind {
     ) -> Result<Self, anyhow::Error> {
         Ok(match tx {
             TransactionKind::ChangeEpoch(e) => Self::ChangeEpoch(e.into()),
-            TransactionKind::Genesis(g) => Self::Genesis(SuiGenesisTransaction {
+            TransactionKind::Genesis(g) => Self::Genesis(IotaGenesisTransaction {
                 objects: g.objects.iter().map(GenesisObject::id).collect(),
             }),
             TransactionKind::ConsensusCommitPrologue(p) => {
-                Self::ConsensusCommitPrologue(SuiConsensusCommitPrologue {
+                Self::ConsensusCommitPrologue(IotaConsensusCommitPrologue {
                     epoch: p.epoch,
                     round: p.round,
                     commit_timestamp_ms: p.commit_timestamp_ms,
                 })
             }
             TransactionKind::ConsensusCommitPrologueV2(p) => {
-                Self::ConsensusCommitPrologueV2(SuiConsensusCommitPrologueV2 {
+                Self::ConsensusCommitPrologueV2(IotaConsensusCommitPrologueV2 {
                     epoch: p.epoch,
                     round: p.round,
                     commit_timestamp_ms: p.commit_timestamp_ms,
@@ -623,7 +624,7 @@ impl SuiTransactionBlockKind {
                 })
             }
             TransactionKind::ConsensusCommitPrologueV3(p) => {
-                Self::ConsensusCommitPrologueV3(SuiConsensusCommitPrologueV3 {
+                Self::ConsensusCommitPrologueV3(IotaConsensusCommitPrologueV3 {
                     epoch: p.epoch,
                     round: p.round,
                     sub_dag_index: p.sub_dag_index,
@@ -634,7 +635,7 @@ impl SuiTransactionBlockKind {
                 })
             }
             TransactionKind::ConsensusCommitPrologueV4(p) => {
-                Self::ConsensusCommitPrologueV4(SuiConsensusCommitPrologueV4 {
+                Self::ConsensusCommitPrologueV4(IotaConsensusCommitPrologueV4 {
                     epoch: p.epoch,
                     round: p.round,
                     sub_dag_index: p.sub_dag_index,
@@ -646,64 +647,64 @@ impl SuiTransactionBlockKind {
                 })
             }
             TransactionKind::ProgrammableTransaction(p) => Self::ProgrammableTransaction(
-                SuiProgrammableTransactionBlock::try_from_with_package_resolver(
+                IotaProgrammableTransactionBlock::try_from_with_package_resolver(
                     p,
                     package_resolver,
                 )
                 .await?,
             ),
             TransactionKind::AuthenticatorStateUpdate(update) => {
-                Self::AuthenticatorStateUpdate(SuiAuthenticatorStateUpdate {
+                Self::AuthenticatorStateUpdate(IotaAuthenticatorStateUpdate {
                     epoch: update.epoch,
                     round: update.round,
                     new_active_jwks: update
                         .new_active_jwks
                         .into_iter()
-                        .map(SuiActiveJwk::from)
+                        .map(IotaActiveJwk::from)
                         .collect(),
                 })
             }
             TransactionKind::RandomnessStateUpdate(update) => {
-                Self::RandomnessStateUpdate(SuiRandomnessStateUpdate {
+                Self::RandomnessStateUpdate(IotaRandomnessStateUpdate {
                     epoch: update.epoch,
                     randomness_round: update.randomness_round.0,
                     random_bytes: update.random_bytes,
                 })
             }
             TransactionKind::EndOfEpochTransaction(end_of_epoch_tx) => {
-                Self::EndOfEpochTransaction(SuiEndOfEpochTransaction {
+                Self::EndOfEpochTransaction(IotaEndOfEpochTransaction {
                     transactions: end_of_epoch_tx
                         .into_iter()
                         .map(|tx| match tx {
                             EndOfEpochTransactionKind::ChangeEpoch(e) => {
-                                SuiEndOfEpochTransactionKind::ChangeEpoch(e.into())
+                                IotaEndOfEpochTransactionKind::ChangeEpoch(e.into())
                             }
                             EndOfEpochTransactionKind::AuthenticatorStateCreate => {
-                                SuiEndOfEpochTransactionKind::AuthenticatorStateCreate
+                                IotaEndOfEpochTransactionKind::AuthenticatorStateCreate
                             }
                             EndOfEpochTransactionKind::AuthenticatorStateExpire(expire) => {
-                                SuiEndOfEpochTransactionKind::AuthenticatorStateExpire(
-                                    SuiAuthenticatorStateExpire {
+                                IotaEndOfEpochTransactionKind::AuthenticatorStateExpire(
+                                    IotaAuthenticatorStateExpire {
                                         min_epoch: expire.min_epoch,
                                     },
                                 )
                             }
                             EndOfEpochTransactionKind::RandomnessStateCreate => {
-                                SuiEndOfEpochTransactionKind::RandomnessStateCreate
+                                IotaEndOfEpochTransactionKind::RandomnessStateCreate
                             }
                             EndOfEpochTransactionKind::DenyListStateCreate => {
-                                SuiEndOfEpochTransactionKind::CoinDenyListStateCreate
+                                IotaEndOfEpochTransactionKind::CoinDenyListStateCreate
                             }
                             EndOfEpochTransactionKind::BridgeStateCreate(id) => {
-                                SuiEndOfEpochTransactionKind::BridgeStateCreate(
+                                IotaEndOfEpochTransactionKind::BridgeStateCreate(
                                     (*id.as_bytes()).into(),
                                 )
                             }
                             EndOfEpochTransactionKind::BridgeCommitteeInit(seq) => {
-                                SuiEndOfEpochTransactionKind::BridgeCommitteeUpdate(seq)
+                                IotaEndOfEpochTransactionKind::BridgeCommitteeUpdate(seq)
                             }
                             EndOfEpochTransactionKind::StoreExecutionTimeObservations(_) => {
-                                SuiEndOfEpochTransactionKind::StoreExecutionTimeObservations
+                                IotaEndOfEpochTransactionKind::StoreExecutionTimeObservations
                             }
                         })
                         .collect(),
@@ -737,7 +738,7 @@ impl SuiTransactionBlockKind {
 
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema, PartialEq, Eq)]
-pub struct SuiChangeEpoch {
+pub struct IotaChangeEpoch {
     #[schemars(with = "BigInt<u64>")]
     #[serde_as(as = "BigInt<u64>")]
     pub epoch: EpochId,
@@ -755,7 +756,7 @@ pub struct SuiChangeEpoch {
     pub epoch_start_timestamp_ms: u64,
 }
 
-impl From<ChangeEpoch> for SuiChangeEpoch {
+impl From<ChangeEpoch> for IotaChangeEpoch {
     fn from(e: ChangeEpoch) -> Self {
         Self {
             epoch: e.epoch,
@@ -768,27 +769,27 @@ impl From<ChangeEpoch> for SuiChangeEpoch {
 }
 
 #[derive(Debug, Deserialize, Serialize, JsonSchema, Clone, PartialEq, Eq)]
-#[enum_dispatch(SuiTransactionBlockEffectsAPI)]
+#[enum_dispatch(IotaTransactionBlockEffectsAPI)]
 #[serde(
     rename = "TransactionBlockEffects",
     rename_all = "camelCase",
     tag = "messageVersion"
 )]
-pub enum SuiTransactionBlockEffects {
-    V1(SuiTransactionBlockEffectsV1),
+pub enum IotaTransactionBlockEffects {
+    V1(IotaTransactionBlockEffectsV1),
 }
 
 #[enum_dispatch]
-pub trait SuiTransactionBlockEffectsAPI {
-    fn status(&self) -> &SuiExecutionStatus;
-    fn into_status(self) -> SuiExecutionStatus;
-    fn shared_objects(&self) -> &[SuiObjectRef];
+pub trait IotaTransactionBlockEffectsAPI {
+    fn status(&self) -> &IotaExecutionStatus;
+    fn into_status(self) -> IotaExecutionStatus;
+    fn shared_objects(&self) -> &[IotaObjectRef];
     fn created(&self) -> &[OwnedObjectRef];
     fn mutated(&self) -> &[OwnedObjectRef];
     fn unwrapped(&self) -> &[OwnedObjectRef];
-    fn deleted(&self) -> &[SuiObjectRef];
-    fn unwrapped_then_deleted(&self) -> &[SuiObjectRef];
-    fn wrapped(&self) -> &[SuiObjectRef];
+    fn deleted(&self) -> &[IotaObjectRef];
+    fn unwrapped_then_deleted(&self) -> &[IotaObjectRef];
+    fn wrapped(&self) -> &[IotaObjectRef];
     fn gas_object(&self) -> &OwnedObjectRef;
     fn events_digest(&self) -> Option<&TransactionEventsDigest>;
     fn dependencies(&self) -> &[TransactionDigest];
@@ -800,7 +801,7 @@ pub trait SuiTransactionBlockEffectsAPI {
     fn mutated_excluding_gas(&self) -> Vec<OwnedObjectRef>;
     fn modified_at_versions(&self) -> Vec<(ObjectID, SequenceNumber)>;
     fn all_changed_objects(&self) -> Vec<(&OwnedObjectRef, WriteKind)>;
-    fn all_deleted_objects(&self) -> Vec<(&SuiObjectRef, DeleteKind)>;
+    fn all_deleted_objects(&self) -> Vec<(&IotaObjectRef, DeleteKind)>;
 }
 
 #[serde_as]
@@ -809,7 +810,7 @@ pub trait SuiTransactionBlockEffectsAPI {
     rename = "TransactionBlockEffectsModifiedAtVersions",
     rename_all = "camelCase"
 )]
-pub struct SuiTransactionBlockEffectsModifiedAtVersions {
+pub struct IotaTransactionBlockEffectsModifiedAtVersions {
     object_id: ObjectID,
     #[schemars(with = "AsSequenceNumber")]
     #[serde_as(as = "AsSequenceNumber")]
@@ -820,9 +821,9 @@ pub struct SuiTransactionBlockEffectsModifiedAtVersions {
 #[serde_as]
 #[derive(Eq, PartialEq, Clone, Debug, Serialize, Deserialize, JsonSchema)]
 #[serde(rename = "TransactionBlockEffectsV1", rename_all = "camelCase")]
-pub struct SuiTransactionBlockEffectsV1 {
+pub struct IotaTransactionBlockEffectsV1 {
     /// The status of the execution
-    pub status: SuiExecutionStatus,
+    pub status: IotaExecutionStatus,
     /// The epoch when this transaction was executed.
     #[schemars(with = "BigInt<u64>")]
     #[serde_as(as = "BigInt<u64>")]
@@ -831,10 +832,10 @@ pub struct SuiTransactionBlockEffectsV1 {
     /// The version that every modified (mutated or deleted) object had before it was modified by
     /// this transaction.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub modified_at_versions: Vec<SuiTransactionBlockEffectsModifiedAtVersions>,
+    pub modified_at_versions: Vec<IotaTransactionBlockEffectsModifiedAtVersions>,
     /// The object references of the shared objects used in this transaction. Empty if no shared objects were used.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub shared_objects: Vec<SuiObjectRef>,
+    pub shared_objects: Vec<IotaObjectRef>,
     /// The transaction digest
     pub transaction_digest: TransactionDigest,
     /// ObjectRef and owner of new objects created.
@@ -850,13 +851,13 @@ pub struct SuiTransactionBlockEffectsV1 {
     pub unwrapped: Vec<OwnedObjectRef>,
     /// Object Refs of objects now deleted (the old refs).
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub deleted: Vec<SuiObjectRef>,
+    pub deleted: Vec<IotaObjectRef>,
     /// Object refs of objects previously wrapped in other objects but now deleted.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub unwrapped_then_deleted: Vec<SuiObjectRef>,
+    pub unwrapped_then_deleted: Vec<IotaObjectRef>,
     /// Object refs of objects now wrapped in other objects.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub wrapped: Vec<SuiObjectRef>,
+    pub wrapped: Vec<IotaObjectRef>,
     /// The updated gas object reference. Have a dedicated field for convenient access.
     /// It's also included in mutated.
     pub gas_object: OwnedObjectRef,
@@ -869,14 +870,14 @@ pub struct SuiTransactionBlockEffectsV1 {
     pub dependencies: Vec<TransactionDigest>,
 }
 
-impl SuiTransactionBlockEffectsAPI for SuiTransactionBlockEffectsV1 {
-    fn status(&self) -> &SuiExecutionStatus {
+impl IotaTransactionBlockEffectsAPI for IotaTransactionBlockEffectsV1 {
+    fn status(&self) -> &IotaExecutionStatus {
         &self.status
     }
-    fn into_status(self) -> SuiExecutionStatus {
+    fn into_status(self) -> IotaExecutionStatus {
         self.status
     }
-    fn shared_objects(&self) -> &[SuiObjectRef] {
+    fn shared_objects(&self) -> &[IotaObjectRef] {
         &self.shared_objects
     }
     fn created(&self) -> &[OwnedObjectRef] {
@@ -888,13 +889,13 @@ impl SuiTransactionBlockEffectsAPI for SuiTransactionBlockEffectsV1 {
     fn unwrapped(&self) -> &[OwnedObjectRef] {
         &self.unwrapped
     }
-    fn deleted(&self) -> &[SuiObjectRef] {
+    fn deleted(&self) -> &[IotaObjectRef] {
         &self.deleted
     }
-    fn unwrapped_then_deleted(&self) -> &[SuiObjectRef] {
+    fn unwrapped_then_deleted(&self) -> &[IotaObjectRef] {
         &self.unwrapped_then_deleted
     }
-    fn wrapped(&self) -> &[SuiObjectRef] {
+    fn wrapped(&self) -> &[IotaObjectRef] {
         &self.wrapped
     }
     fn gas_object(&self) -> &OwnedObjectRef {
@@ -951,7 +952,7 @@ impl SuiTransactionBlockEffectsAPI for SuiTransactionBlockEffectsV1 {
             .collect()
     }
 
-    fn all_deleted_objects(&self) -> Vec<(&SuiObjectRef, DeleteKind)> {
+    fn all_deleted_objects(&self) -> Vec<(&IotaObjectRef, DeleteKind)> {
         self.deleted
             .iter()
             .map(|r| (r, DeleteKind::Normal))
@@ -965,17 +966,17 @@ impl SuiTransactionBlockEffectsAPI for SuiTransactionBlockEffectsV1 {
     }
 }
 
-impl SuiTransactionBlockEffects {
+impl IotaTransactionBlockEffects {
     pub fn new_for_testing(
         transaction_digest: TransactionDigest,
-        status: SuiExecutionStatus,
+        status: IotaExecutionStatus,
     ) -> Self {
-        Self::V1(SuiTransactionBlockEffectsV1 {
+        Self::V1(IotaTransactionBlockEffectsV1 {
             transaction_digest,
             status,
             gas_object: OwnedObjectRef {
-                owner: Owner::AddressOwner(SuiAddress::random_for_testing_only()),
-                reference: sui_types::base_types::random_object_ref().into(),
+                owner: Owner::AddressOwner(IotaAddress::random_for_testing_only()),
+                reference: iota_types::base_types::random_object_ref().into(),
             },
             executed_epoch: 0,
             modified_at_versions: vec![],
@@ -993,26 +994,26 @@ impl SuiTransactionBlockEffects {
     }
 }
 
-impl TryFrom<TransactionEffects> for SuiTransactionBlockEffects {
-    type Error = SuiError;
+impl TryFrom<TransactionEffects> for IotaTransactionBlockEffects {
+    type Error = IotaError;
 
     fn try_from(effect: TransactionEffects) -> Result<Self, Self::Error> {
-        Ok(SuiTransactionBlockEffects::V1(
-            SuiTransactionBlockEffectsV1 {
+        Ok(IotaTransactionBlockEffects::V1(
+            IotaTransactionBlockEffectsV1 {
                 status: effect.status().clone().into(),
                 executed_epoch: effect.executed_epoch(),
                 modified_at_versions: effect
                     .modified_at_versions()
                     .into_iter()
                     .map(|(object_id, sequence_number)| {
-                        SuiTransactionBlockEffectsModifiedAtVersions {
+                        IotaTransactionBlockEffectsModifiedAtVersions {
                             object_id,
                             sequence_number,
                         }
                     })
                     .collect(),
                 gas_used: effect.gas_cost_summary().clone(),
-                shared_objects: to_sui_object_ref(
+                shared_objects: to_iota_object_ref(
                     effect
                         .input_shared_objects()
                         .into_iter()
@@ -1023,9 +1024,9 @@ impl TryFrom<TransactionEffects> for SuiTransactionBlockEffects {
                 created: to_owned_ref(effect.created()),
                 mutated: to_owned_ref(effect.mutated().to_vec()),
                 unwrapped: to_owned_ref(effect.unwrapped().to_vec()),
-                deleted: to_sui_object_ref(effect.deleted().to_vec()),
-                unwrapped_then_deleted: to_sui_object_ref(effect.unwrapped_then_deleted().to_vec()),
-                wrapped: to_sui_object_ref(effect.wrapped().to_vec()),
+                deleted: to_iota_object_ref(effect.deleted().to_vec()),
+                unwrapped_then_deleted: to_iota_object_ref(effect.unwrapped_then_deleted().to_vec()),
+                wrapped: to_iota_object_ref(effect.wrapped().to_vec()),
                 gas_object: OwnedObjectRef {
                     owner: effect.gas_object().1,
                     reference: effect.gas_object().0.into(),
@@ -1047,7 +1048,7 @@ fn owned_objref_string(obj: &OwnedObjectRef) -> String {
     )
 }
 
-fn objref_string(obj: &SuiObjectRef) -> String {
+fn objref_string(obj: &IotaObjectRef) -> String {
     format!(
         " ┌──\n │ ID: {} \n │ Version: {} \n │ Digest: {}\n └──",
         obj.object_id,
@@ -1056,7 +1057,7 @@ fn objref_string(obj: &SuiObjectRef) -> String {
     )
 }
 
-impl Display for SuiTransactionBlockEffects {
+impl Display for IotaTransactionBlockEffects {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let mut builder = TableBuilder::default();
 
@@ -1117,10 +1118,10 @@ impl Display for SuiTransactionBlockEffects {
         let gas_cost_summary = self.gas_cost_summary();
         builder.push_record(vec![format!(
             "Gas Cost Summary:\n   \
-             Storage Cost: {} MIST\n   \
-             Computation Cost: {} MIST\n   \
-             Storage Rebate: {} MIST\n   \
-             Non-refundable Storage Fee: {} MIST",
+             Storage Cost: {} NANOS\n   \
+             Computation Cost: {} NANOS\n   \
+             Storage Rebate: {} NANOS\n   \
+             Non-refundable Storage Fee: {} NANOS",
             gas_cost_summary.storage_cost,
             gas_cost_summary.computation_cost,
             gas_cost_summary.storage_rebate,
@@ -1148,27 +1149,27 @@ impl Display for SuiTransactionBlockEffects {
 #[derive(Eq, PartialEq, Clone, Debug, Serialize, Deserialize, JsonSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct DryRunTransactionBlockResponse {
-    pub effects: SuiTransactionBlockEffects,
-    pub events: SuiTransactionBlockEvents,
+    pub effects: IotaTransactionBlockEffects,
+    pub events: IotaTransactionBlockEvents,
     pub object_changes: Vec<ObjectChange>,
     pub balance_changes: Vec<BalanceChange>,
-    pub input: SuiTransactionBlockData,
+    pub input: IotaTransactionBlockData,
     pub execution_error_source: Option<String>,
 }
 
 #[derive(Eq, PartialEq, Clone, Debug, Default, Serialize, Deserialize, JsonSchema)]
 #[serde(rename = "TransactionBlockEvents", transparent)]
-pub struct SuiTransactionBlockEvents {
-    pub data: Vec<SuiEvent>,
+pub struct IotaTransactionBlockEvents {
+    pub data: Vec<IotaEvent>,
 }
 
-impl SuiTransactionBlockEvents {
+impl IotaTransactionBlockEvents {
     pub fn try_from(
         events: TransactionEvents,
         tx_digest: TransactionDigest,
         timestamp_ms: Option<u64>,
         resolver: &mut dyn LayoutResolver,
-    ) -> SuiResult<Self> {
+    ) -> IotaResult<Self> {
         Ok(Self {
             data: events
                 .data
@@ -1176,7 +1177,7 @@ impl SuiTransactionBlockEvents {
                 .enumerate()
                 .map(|(seq, event)| {
                     let layout = resolver.get_annotated_layout(&event.type_)?;
-                    SuiEvent::try_from(event, tx_digest, seq as u64, timestamp_ms, layout)
+                    IotaEvent::try_from(event, tx_digest, seq as u64, timestamp_ms, layout)
                 })
                 .collect::<Result<_, _>>()?,
         })
@@ -1188,7 +1189,7 @@ impl SuiTransactionBlockEvents {
         tx_digest: TransactionDigest,
         timestamp_ms: Option<u64>,
         resolver: &impl GetModule,
-    ) -> SuiResult<Self> {
+    ) -> IotaResult<Self> {
         Ok(Self {
             data: events
                 .data
@@ -1196,14 +1197,14 @@ impl SuiTransactionBlockEvents {
                 .enumerate()
                 .map(|(seq, event)| {
                     let layout = get_layout_from_struct_tag(event.type_.clone(), resolver)?;
-                    SuiEvent::try_from(event, tx_digest, seq as u64, timestamp_ms, layout)
+                    IotaEvent::try_from(event, tx_digest, seq as u64, timestamp_ms, layout)
                 })
                 .collect::<Result<_, _>>()?,
         })
     }
 }
 
-impl Display for SuiTransactionBlockEvents {
+impl Display for IotaTransactionBlockEvents {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         if self.data.is_empty() {
             writeln!(f, "╭─────────────────────────────╮")?;
@@ -1233,7 +1234,7 @@ impl Display for SuiTransactionBlockEvents {
 #[serde(rename = "DevInspectArgs", rename_all = "camelCase")]
 pub struct DevInspectArgs {
     /// The sponsor of the gas for the transaction, might be different from the sender.
-    pub gas_sponsor: Option<SuiAddress>,
+    pub gas_sponsor: Option<IotaAddress>,
     /// The gas budget for the transaction.
     pub gas_budget: Option<BigInt<u64>>,
     /// The gas objects used to pay for the transaction.
@@ -1251,12 +1252,12 @@ pub struct DevInspectResults {
     /// Summary of effects that likely would be generated if the transaction is actually run.
     /// Note however, that not all dev-inspect transactions are actually usable as transactions so
     /// it might not be possible actually generate these effects from a normal transaction.
-    pub effects: SuiTransactionBlockEffects,
+    pub effects: IotaTransactionBlockEffects,
     /// Events that likely would be generated if the transaction is actually run.
-    pub events: SuiTransactionBlockEvents,
+    pub events: IotaTransactionBlockEvents,
     /// Execution results (including return values) from executing the transactions
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub results: Option<Vec<SuiExecutionResult>>,
+    pub results: Option<Vec<IotaExecutionResult>>,
     /// Execution error from executing the transactions
     #[serde(skip_serializing_if = "Option::is_none")]
     pub error: Option<String>,
@@ -1269,15 +1270,15 @@ pub struct DevInspectResults {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
-#[serde(rename = "SuiExecutionResult", rename_all = "camelCase")]
-pub struct SuiExecutionResult {
+#[serde(rename = "IotaExecutionResult", rename_all = "camelCase")]
+pub struct IotaExecutionResult {
     /// The value of any arguments that were mutably borrowed.
     /// Non-mut borrowed values are not included
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub mutable_reference_outputs: Vec<(/* argument */ SuiArgument, Vec<u8>, SuiTypeTag)>,
+    pub mutable_reference_outputs: Vec<(/* argument */ IotaArgument, Vec<u8>, IotaTypeTag)>,
     /// The return values from the transaction
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub return_values: Vec<(Vec<u8>, SuiTypeTag)>,
+    pub return_values: Vec<(Vec<u8>, IotaTypeTag)>,
 }
 
 type ExecutionResult = (
@@ -1293,7 +1294,7 @@ impl DevInspectResults {
         raw_txn_data: Vec<u8>,
         raw_effects: Vec<u8>,
         resolver: &mut dyn LayoutResolver,
-    ) -> SuiResult<Self> {
+    ) -> IotaResult<Self> {
         let tx_digest = *effects.transaction_digest();
         let mut error = None;
         let mut results = None;
@@ -1306,13 +1307,13 @@ impl DevInspectResults {
                             let (mutable_reference_outputs, return_values) = srv;
                             let mutable_reference_outputs = mutable_reference_outputs
                                 .into_iter()
-                                .map(|(a, bytes, tag)| (a.into(), bytes, SuiTypeTag::from(tag)))
+                                .map(|(a, bytes, tag)| (a.into(), bytes, IotaTypeTag::from(tag)))
                                 .collect();
                             let return_values = return_values
                                 .into_iter()
-                                .map(|(bytes, tag)| (bytes, SuiTypeTag::from(tag)))
+                                .map(|(bytes, tag)| (bytes, IotaTypeTag::from(tag)))
                                 .collect();
-                            SuiExecutionResult {
+                            IotaExecutionResult {
                                 mutable_reference_outputs,
                                 return_values,
                             }
@@ -1323,7 +1324,7 @@ impl DevInspectResults {
         };
         Ok(Self {
             effects: effects.try_into()?,
-            events: SuiTransactionBlockEvents::try_from(events, tx_digest, None, resolver)?,
+            events: IotaTransactionBlockEvents::try_from(events, tx_digest, None, resolver)?,
             results,
             error,
             raw_txn_data,
@@ -1333,8 +1334,8 @@ impl DevInspectResults {
 }
 
 #[derive(Eq, PartialEq, Clone, Debug, Serialize, Deserialize, JsonSchema)]
-pub enum SuiTransactionBlockBuilderMode {
-    /// Regular Sui Transactions that are committed on chain
+pub enum IotaTransactionBlockBuilderMode {
+    /// Regular IOTA Transactions that are committed on chain
     Commit,
     /// Simulated transaction that allows calling any Move function with
     /// arbitrary values.
@@ -1343,14 +1344,14 @@ pub enum SuiTransactionBlockBuilderMode {
 
 #[derive(Eq, PartialEq, Clone, Debug, Serialize, Deserialize, JsonSchema)]
 #[serde(rename = "ExecutionStatus", rename_all = "camelCase", tag = "status")]
-pub enum SuiExecutionStatus {
+pub enum IotaExecutionStatus {
     // Gas used in the success case.
     Success,
     // Gas used in the failed case, and the error.
     Failure { error: String },
 }
 
-impl Display for SuiExecutionStatus {
+impl Display for IotaExecutionStatus {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         match self {
             Self::Success => write!(f, "success"),
@@ -1359,16 +1360,16 @@ impl Display for SuiExecutionStatus {
     }
 }
 
-impl SuiExecutionStatus {
+impl IotaExecutionStatus {
     pub fn is_ok(&self) -> bool {
-        matches!(self, SuiExecutionStatus::Success { .. })
+        matches!(self, IotaExecutionStatus::Success { .. })
     }
     pub fn is_err(&self) -> bool {
-        matches!(self, SuiExecutionStatus::Failure { .. })
+        matches!(self, IotaExecutionStatus::Failure { .. })
     }
 }
 
-impl From<ExecutionStatus> for SuiExecutionStatus {
+impl From<ExecutionStatus> for IotaExecutionStatus {
     fn from(status: ExecutionStatus) -> Self {
         match status {
             ExecutionStatus::Success => Self::Success,
@@ -1388,8 +1389,8 @@ impl From<ExecutionStatus> for SuiExecutionStatus {
     }
 }
 
-fn to_sui_object_ref(refs: Vec<ObjectRef>) -> Vec<SuiObjectRef> {
-    refs.into_iter().map(SuiObjectRef::from).collect()
+fn to_iota_object_ref(refs: Vec<ObjectRef>) -> Vec<IotaObjectRef> {
+    refs.into_iter().map(IotaObjectRef::from).collect()
 }
 
 fn to_owned_ref(owned_refs: Vec<(ObjectRef, Owner)>) -> Vec<OwnedObjectRef> {
@@ -1405,9 +1406,9 @@ fn to_owned_ref(owned_refs: Vec<(ObjectRef, Owner)>) -> Vec<OwnedObjectRef> {
 #[serde_as]
 #[derive(Debug, Deserialize, Serialize, JsonSchema, Clone, PartialEq, Eq)]
 #[serde(rename = "GasData", rename_all = "camelCase")]
-pub struct SuiGasData {
-    pub payment: Vec<SuiObjectRef>,
-    pub owner: SuiAddress,
+pub struct IotaGasData {
+    pub payment: Vec<IotaObjectRef>,
+    pub owner: IotaAddress,
     #[schemars(with = "BigInt<u64>")]
     #[serde_as(as = "BigInt<u64>")]
     pub price: u64,
@@ -1416,11 +1417,11 @@ pub struct SuiGasData {
     pub budget: u64,
 }
 
-impl Display for SuiGasData {
+impl Display for IotaGasData {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         writeln!(f, "Gas Owner: {}", self.owner)?;
-        writeln!(f, "Gas Budget: {} MIST", self.budget)?;
-        writeln!(f, "Gas Price: {} MIST", self.price)?;
+        writeln!(f, "Gas Budget: {} NANOS", self.budget)?;
+        writeln!(f, "Gas Price: {} NANOS", self.price)?;
         writeln!(f, "Gas Payment:")?;
         for payment in &self.payment {
             write!(f, "{} ", objref_string(payment))?;
@@ -1430,52 +1431,52 @@ impl Display for SuiGasData {
 }
 
 #[derive(Debug, Deserialize, Serialize, JsonSchema, Clone, PartialEq, Eq)]
-#[enum_dispatch(SuiTransactionBlockDataAPI)]
+#[enum_dispatch(IotaTransactionBlockDataAPI)]
 #[serde(
     rename = "TransactionBlockData",
     rename_all = "camelCase",
     tag = "messageVersion"
 )]
-pub enum SuiTransactionBlockData {
-    V1(SuiTransactionBlockDataV1),
+pub enum IotaTransactionBlockData {
+    V1(IotaTransactionBlockDataV1),
 }
 
 #[enum_dispatch]
-pub trait SuiTransactionBlockDataAPI {
-    fn transaction(&self) -> &SuiTransactionBlockKind;
-    fn sender(&self) -> &SuiAddress;
-    fn gas_data(&self) -> &SuiGasData;
+pub trait IotaTransactionBlockDataAPI {
+    fn transaction(&self) -> &IotaTransactionBlockKind;
+    fn sender(&self) -> &IotaAddress;
+    fn gas_data(&self) -> &IotaGasData;
 }
 
 #[derive(Debug, Deserialize, Serialize, JsonSchema, Clone, PartialEq, Eq)]
 #[serde(rename = "TransactionBlockDataV1", rename_all = "camelCase")]
-pub struct SuiTransactionBlockDataV1 {
-    pub transaction: SuiTransactionBlockKind,
-    pub sender: SuiAddress,
-    pub gas_data: SuiGasData,
+pub struct IotaTransactionBlockDataV1 {
+    pub transaction: IotaTransactionBlockKind,
+    pub sender: IotaAddress,
+    pub gas_data: IotaGasData,
 }
 
-impl SuiTransactionBlockDataAPI for SuiTransactionBlockDataV1 {
-    fn transaction(&self) -> &SuiTransactionBlockKind {
+impl IotaTransactionBlockDataAPI for IotaTransactionBlockDataV1 {
+    fn transaction(&self) -> &IotaTransactionBlockKind {
         &self.transaction
     }
-    fn sender(&self) -> &SuiAddress {
+    fn sender(&self) -> &IotaAddress {
         &self.sender
     }
-    fn gas_data(&self) -> &SuiGasData {
+    fn gas_data(&self) -> &IotaGasData {
         &self.gas_data
     }
 }
 
-impl SuiTransactionBlockData {
-    pub fn move_calls(&self) -> Vec<&SuiProgrammableMoveCall> {
+impl IotaTransactionBlockData {
+    pub fn move_calls(&self) -> Vec<&IotaProgrammableMoveCall> {
         match self {
             Self::V1(data) => match &data.transaction {
-                SuiTransactionBlockKind::ProgrammableTransaction(pt) => pt
+                IotaTransactionBlockKind::ProgrammableTransaction(pt) => pt
                     .commands
                     .iter()
                     .filter_map(|command| match command {
-                        SuiCommand::MoveCall(c) => Some(&**c),
+                        IotaCommand::MoveCall(c) => Some(&**c),
                         _ => None,
                     })
                     .collect(),
@@ -1485,7 +1486,7 @@ impl SuiTransactionBlockData {
     }
 }
 
-impl Display for SuiTransactionBlockData {
+impl Display for IotaTransactionBlockData {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         match self {
             Self::V1(data) => {
@@ -1497,26 +1498,26 @@ impl Display for SuiTransactionBlockData {
     }
 }
 
-impl SuiTransactionBlockData {
+impl IotaTransactionBlockData {
     pub fn try_from(
         data: TransactionData,
         module_cache: &impl GetModule,
     ) -> Result<Self, anyhow::Error> {
         let message_version = data.message_version();
         let sender = data.sender();
-        let gas_data = SuiGasData {
+        let gas_data = IotaGasData {
             payment: data
                 .gas()
                 .iter()
-                .map(|obj_ref| SuiObjectRef::from(*obj_ref))
+                .map(|obj_ref| IotaObjectRef::from(*obj_ref))
                 .collect(),
             owner: data.gas_owner(),
             price: data.gas_price(),
             budget: data.gas_budget(),
         };
-        let transaction = SuiTransactionBlockKind::try_from(data.into_kind(), module_cache)?;
+        let transaction = IotaTransactionBlockKind::try_from(data.into_kind(), module_cache)?;
         match message_version {
-            1 => Ok(SuiTransactionBlockData::V1(SuiTransactionBlockDataV1 {
+            1 => Ok(IotaTransactionBlockData::V1(IotaTransactionBlockDataV1 {
                 transaction,
                 sender,
                 gas_data,
@@ -1534,23 +1535,23 @@ impl SuiTransactionBlockData {
     ) -> Result<Self, anyhow::Error> {
         let message_version = data.message_version();
         let sender = data.sender();
-        let gas_data = SuiGasData {
+        let gas_data = IotaGasData {
             payment: data
                 .gas()
                 .iter()
-                .map(|obj_ref| SuiObjectRef::from(*obj_ref))
+                .map(|obj_ref| IotaObjectRef::from(*obj_ref))
                 .collect(),
             owner: data.gas_owner(),
             price: data.gas_price(),
             budget: data.gas_budget(),
         };
-        let transaction = SuiTransactionBlockKind::try_from_with_package_resolver(
+        let transaction = IotaTransactionBlockKind::try_from_with_package_resolver(
             data.into_kind(),
             package_resolver,
         )
         .await?;
         match message_version {
-            1 => Ok(SuiTransactionBlockData::V1(SuiTransactionBlockDataV1 {
+            1 => Ok(IotaTransactionBlockData::V1(IotaTransactionBlockDataV1 {
                 transaction,
                 sender,
                 gas_data,
@@ -1565,18 +1566,18 @@ impl SuiTransactionBlockData {
 
 #[derive(Debug, Deserialize, Serialize, JsonSchema, Clone, PartialEq, Eq)]
 #[serde(rename = "TransactionBlock", rename_all = "camelCase")]
-pub struct SuiTransactionBlock {
-    pub data: SuiTransactionBlockData,
+pub struct IotaTransactionBlock {
+    pub data: IotaTransactionBlockData,
     pub tx_signatures: Vec<GenericSignature>,
 }
 
-impl SuiTransactionBlock {
+impl IotaTransactionBlock {
     pub fn try_from(
         data: SenderSignedData,
         module_cache: &impl GetModule,
     ) -> Result<Self, anyhow::Error> {
         Ok(Self {
-            data: SuiTransactionBlockData::try_from(
+            data: IotaTransactionBlockData::try_from(
                 data.intent_message().value.clone(),
                 module_cache,
             )?,
@@ -1584,14 +1585,14 @@ impl SuiTransactionBlock {
         })
     }
 
-    // TODO: the SuiTransactionBlock `try_from` can be removed after cleaning up indexer v1, so are the related
-    // `try_from` methods for nested structs like SuiTransactionBlockData etc.
+    // TODO: the IotaTransactionBlock `try_from` can be removed after cleaning up indexer v1, so are the related
+    // `try_from` methods for nested structs like IotaTransactionBlockData etc.
     pub async fn try_from_with_package_resolver(
         data: SenderSignedData,
         package_resolver: &Resolver<impl PackageStore>,
     ) -> Result<Self, anyhow::Error> {
         Ok(Self {
-            data: SuiTransactionBlockData::try_from_with_package_resolver(
+            data: IotaTransactionBlockData::try_from_with_package_resolver(
                 data.intent_message().value.clone(),
                 package_resolver,
             )
@@ -1601,7 +1602,7 @@ impl SuiTransactionBlock {
     }
 }
 
-impl Display for SuiTransactionBlock {
+impl Display for IotaTransactionBlock {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let mut builder = TableBuilder::default();
 
@@ -1628,13 +1629,13 @@ impl Display for SuiTransactionBlock {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema, PartialEq, Eq)]
-pub struct SuiGenesisTransaction {
+pub struct IotaGenesisTransaction {
     pub objects: Vec<ObjectID>,
 }
 
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema, PartialEq, Eq)]
-pub struct SuiConsensusCommitPrologue {
+pub struct IotaConsensusCommitPrologue {
     #[schemars(with = "BigInt<u64>")]
     #[serde_as(as = "BigInt<u64>")]
     pub epoch: u64,
@@ -1648,7 +1649,7 @@ pub struct SuiConsensusCommitPrologue {
 
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema, PartialEq, Eq)]
-pub struct SuiConsensusCommitPrologueV2 {
+pub struct IotaConsensusCommitPrologueV2 {
     #[schemars(with = "BigInt<u64>")]
     #[serde_as(as = "BigInt<u64>")]
     pub epoch: u64,
@@ -1663,7 +1664,7 @@ pub struct SuiConsensusCommitPrologueV2 {
 
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema, PartialEq, Eq)]
-pub struct SuiConsensusCommitPrologueV3 {
+pub struct IotaConsensusCommitPrologueV3 {
     #[schemars(with = "BigInt<u64>")]
     #[serde_as(as = "BigInt<u64>")]
     pub epoch: u64,
@@ -1682,7 +1683,7 @@ pub struct SuiConsensusCommitPrologueV3 {
 
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema, PartialEq, Eq)]
-pub struct SuiConsensusCommitPrologueV4 {
+pub struct IotaConsensusCommitPrologueV4 {
     #[schemars(with = "BigInt<u64>")]
     #[serde_as(as = "BigInt<u64>")]
     pub epoch: u64,
@@ -1702,7 +1703,7 @@ pub struct SuiConsensusCommitPrologueV4 {
 
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema, PartialEq, Eq)]
-pub struct SuiAuthenticatorStateUpdate {
+pub struct IotaAuthenticatorStateUpdate {
     #[schemars(with = "BigInt<u64>")]
     #[serde_as(as = "BigInt<u64>")]
     pub epoch: u64,
@@ -1710,12 +1711,12 @@ pub struct SuiAuthenticatorStateUpdate {
     #[serde_as(as = "BigInt<u64>")]
     pub round: u64,
 
-    pub new_active_jwks: Vec<SuiActiveJwk>,
+    pub new_active_jwks: Vec<IotaActiveJwk>,
 }
 
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema, PartialEq, Eq)]
-pub struct SuiRandomnessStateUpdate {
+pub struct IotaRandomnessStateUpdate {
     #[schemars(with = "BigInt<u64>")]
     #[serde_as(as = "BigInt<u64>")]
     pub epoch: u64,
@@ -1728,16 +1729,16 @@ pub struct SuiRandomnessStateUpdate {
 
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema, PartialEq, Eq)]
-pub struct SuiEndOfEpochTransaction {
-    pub transactions: Vec<SuiEndOfEpochTransactionKind>,
+pub struct IotaEndOfEpochTransaction {
+    pub transactions: Vec<IotaEndOfEpochTransactionKind>,
 }
 
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema, PartialEq, Eq)]
-pub enum SuiEndOfEpochTransactionKind {
-    ChangeEpoch(SuiChangeEpoch),
+pub enum IotaEndOfEpochTransactionKind {
+    ChangeEpoch(IotaChangeEpoch),
     AuthenticatorStateCreate,
-    AuthenticatorStateExpire(SuiAuthenticatorStateExpire),
+    AuthenticatorStateExpire(IotaAuthenticatorStateExpire),
     RandomnessStateCreate,
     CoinDenyListStateCreate,
     BridgeStateCreate(CheckpointDigest),
@@ -1747,7 +1748,7 @@ pub enum SuiEndOfEpochTransactionKind {
 
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema, PartialEq, Eq)]
-pub struct SuiAuthenticatorStateExpire {
+pub struct IotaAuthenticatorStateExpire {
     #[schemars(with = "BigInt<u64>")]
     #[serde_as(as = "BigInt<u64>")]
     pub min_epoch: u64,
@@ -1755,23 +1756,23 @@ pub struct SuiAuthenticatorStateExpire {
 
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema, PartialEq, Eq)]
-pub struct SuiActiveJwk {
-    pub jwk_id: SuiJwkId,
-    pub jwk: SuiJWK,
+pub struct IotaActiveJwk {
+    pub jwk_id: IotaJwkId,
+    pub jwk: IotaJWK,
 
     #[schemars(with = "BigInt<u64>")]
     #[serde_as(as = "BigInt<u64>")]
     pub epoch: u64,
 }
 
-impl From<ActiveJwk> for SuiActiveJwk {
+impl From<ActiveJwk> for IotaActiveJwk {
     fn from(active_jwk: ActiveJwk) -> Self {
         Self {
-            jwk_id: SuiJwkId {
+            jwk_id: IotaJwkId {
                 iss: active_jwk.jwk_id.iss.clone(),
                 kid: active_jwk.jwk_id.kid.clone(),
             },
-            jwk: SuiJWK {
+            jwk: IotaJWK {
                 kty: active_jwk.jwk.kty.clone(),
                 e: active_jwk.jwk.e.clone(),
                 n: active_jwk.jwk.n.clone(),
@@ -1784,14 +1785,14 @@ impl From<ActiveJwk> for SuiActiveJwk {
 
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema, PartialEq, Eq)]
-pub struct SuiJwkId {
+pub struct IotaJwkId {
     pub iss: String,
     pub kid: String,
 }
 
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema, PartialEq, Eq)]
-pub struct SuiJWK {
+pub struct IotaJWK {
     pub kty: String,
     pub e: String,
     pub n: String,
@@ -1801,11 +1802,11 @@ pub struct SuiJWK {
 #[serde_as]
 #[derive(Debug, PartialEq, Eq, Clone, Serialize, Deserialize, JsonSchema)]
 #[serde(rename = "InputObjectKind")]
-pub enum SuiInputObjectKind {
+pub enum IotaInputObjectKind {
     // A Move package, must be immutable.
     MovePackage(ObjectID),
     // A Move object, either immutable, or owned mutable.
-    ImmOrOwnedMoveObject(SuiObjectRef),
+    ImmOrOwnedMoveObject(IotaObjectRef),
     // A Move object that's shared and mutable.
     SharedMoveObject {
         id: ObjectID,
@@ -1820,16 +1821,16 @@ pub enum SuiInputObjectKind {
 /// A series of commands where the results of one command can be used in future
 /// commands
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema, PartialEq, Eq)]
-pub struct SuiProgrammableTransactionBlock {
+pub struct IotaProgrammableTransactionBlock {
     /// Input objects or primitive values
-    pub inputs: Vec<SuiCallArg>,
+    pub inputs: Vec<IotaCallArg>,
     #[serde(rename = "transactions")]
     /// The transactions to be executed sequentially. A failure in any transaction will
     /// result in the failure of the entire programmable transaction block.
-    pub commands: Vec<SuiCommand>,
+    pub commands: Vec<IotaCommand>,
 }
 
-impl Display for SuiProgrammableTransactionBlock {
+impl Display for IotaProgrammableTransactionBlock {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         let Self { inputs, commands } = self;
         writeln!(f, "Inputs: {inputs:?}")?;
@@ -1841,20 +1842,20 @@ impl Display for SuiProgrammableTransactionBlock {
     }
 }
 
-impl SuiProgrammableTransactionBlock {
+impl IotaProgrammableTransactionBlock {
     fn try_from(
         value: ProgrammableTransaction,
         module_cache: &impl GetModule,
     ) -> Result<Self, anyhow::Error> {
         let ProgrammableTransaction { inputs, commands } = value;
         let input_types = Self::resolve_input_type(&inputs, &commands, module_cache);
-        Ok(SuiProgrammableTransactionBlock {
+        Ok(IotaProgrammableTransactionBlock {
             inputs: inputs
                 .into_iter()
                 .zip(input_types)
-                .map(|(arg, layout)| SuiCallArg::try_from(arg, layout.as_ref()))
+                .map(|(arg, layout)| IotaCallArg::try_from(arg, layout.as_ref()))
                 .collect::<Result<_, _>>()?,
-            commands: commands.into_iter().map(SuiCommand::from).collect(),
+            commands: commands.into_iter().map(IotaCommand::from).collect(),
         })
     }
 
@@ -1864,13 +1865,13 @@ impl SuiProgrammableTransactionBlock {
     ) -> Result<Self, anyhow::Error> {
         let input_types = package_resolver.pure_input_layouts(&value).await?;
         let ProgrammableTransaction { inputs, commands } = value;
-        Ok(SuiProgrammableTransactionBlock {
+        Ok(IotaProgrammableTransactionBlock {
             inputs: inputs
                 .into_iter()
                 .zip(input_types)
-                .map(|(arg, layout)| SuiCallArg::try_from(arg, layout.as_ref()))
+                .map(|(arg, layout)| IotaCallArg::try_from(arg, layout.as_ref()))
                 .collect::<Result<_, _>>()?,
-            commands: commands.into_iter().map(SuiCommand::from).collect(),
+            commands: commands.into_iter().map(IotaCommand::from).collect(),
         })
     }
 
@@ -1953,33 +1954,33 @@ fn get_signature_types(
 
 /// A single transaction in a programmable transaction block.
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema, PartialEq, Eq)]
-#[serde(rename = "SuiTransaction")]
-pub enum SuiCommand {
+#[serde(rename = "IotaTransaction")]
+pub enum IotaCommand {
     /// A call to either an entry or a public Move function
-    MoveCall(Box<SuiProgrammableMoveCall>),
+    MoveCall(Box<IotaProgrammableMoveCall>),
     /// `(Vec<forall T:key+store. T>, address)`
     /// It sends n-objects to the specified address. These objects must have store
     /// (public transfer) and either the previous owner must be an address or the object must
     /// be newly created.
-    TransferObjects(Vec<SuiArgument>, SuiArgument),
+    TransferObjects(Vec<IotaArgument>, IotaArgument),
     /// `(&mut Coin<T>, Vec<u64>)` -> `Vec<Coin<T>>`
     /// It splits off some amounts into a new coins with those amounts
-    SplitCoins(SuiArgument, Vec<SuiArgument>),
+    SplitCoins(IotaArgument, Vec<IotaArgument>),
     /// `(&mut Coin<T>, Vec<Coin<T>>)`
     /// It merges n-coins into the first coin
-    MergeCoins(SuiArgument, Vec<SuiArgument>),
+    MergeCoins(IotaArgument, Vec<IotaArgument>),
     /// Publishes a Move package. It takes the package bytes and a list of the package's transitive
     /// dependencies to link against on-chain.
     Publish(Vec<ObjectID>),
     /// Upgrades a Move package
-    Upgrade(Vec<ObjectID>, ObjectID, SuiArgument),
+    Upgrade(Vec<ObjectID>, ObjectID, IotaArgument),
     /// `forall T: Vec<T> -> vector<T>`
     /// Given n-values of the same type, it constructs a vector. For non objects or an empty vector,
     /// the type tag must be specified.
-    MakeMoveVec(Option<String>, Vec<SuiArgument>),
+    MakeMoveVec(Option<String>, Vec<IotaArgument>),
 }
 
-impl Display for SuiCommand {
+impl Display for IotaCommand {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
             Self::MoveCall(p) => {
@@ -2026,29 +2027,29 @@ impl Display for SuiCommand {
     }
 }
 
-impl From<Command> for SuiCommand {
+impl From<Command> for IotaCommand {
     fn from(value: Command) -> Self {
         match value {
-            Command::MoveCall(m) => SuiCommand::MoveCall(Box::new((*m).into())),
-            Command::TransferObjects(args, arg) => SuiCommand::TransferObjects(
-                args.into_iter().map(SuiArgument::from).collect(),
+            Command::MoveCall(m) => IotaCommand::MoveCall(Box::new((*m).into())),
+            Command::TransferObjects(args, arg) => IotaCommand::TransferObjects(
+                args.into_iter().map(IotaArgument::from).collect(),
                 arg.into(),
             ),
-            Command::SplitCoins(arg, args) => SuiCommand::SplitCoins(
+            Command::SplitCoins(arg, args) => IotaCommand::SplitCoins(
                 arg.into(),
-                args.into_iter().map(SuiArgument::from).collect(),
+                args.into_iter().map(IotaArgument::from).collect(),
             ),
-            Command::MergeCoins(arg, args) => SuiCommand::MergeCoins(
+            Command::MergeCoins(arg, args) => IotaCommand::MergeCoins(
                 arg.into(),
-                args.into_iter().map(SuiArgument::from).collect(),
+                args.into_iter().map(IotaArgument::from).collect(),
             ),
-            Command::Publish(_modules, dep_ids) => SuiCommand::Publish(dep_ids),
-            Command::MakeMoveVec(tag_opt, args) => SuiCommand::MakeMoveVec(
+            Command::Publish(_modules, dep_ids) => IotaCommand::Publish(dep_ids),
+            Command::MakeMoveVec(tag_opt, args) => IotaCommand::MakeMoveVec(
                 tag_opt.map(|tag| tag.to_string()),
-                args.into_iter().map(SuiArgument::from).collect(),
+                args.into_iter().map(IotaArgument::from).collect(),
             ),
             Command::Upgrade(_modules, dep_ids, current_package_id, ticket) => {
-                SuiCommand::Upgrade(dep_ids, current_package_id, SuiArgument::from(ticket))
+                IotaCommand::Upgrade(dep_ids, current_package_id, IotaArgument::from(ticket))
             }
         }
     }
@@ -2056,7 +2057,7 @@ impl From<Command> for SuiCommand {
 
 /// An argument to a transaction in a programmable transaction block
 #[derive(Debug, Copy, Clone, Serialize, Deserialize, JsonSchema, PartialEq, Eq)]
-pub enum SuiArgument {
+pub enum IotaArgument {
     /// The gas coin. The gas coin can only be used by-ref, except for with
     /// `TransferObjects`, which can use it by-value.
     GasCoin,
@@ -2070,7 +2071,7 @@ pub enum SuiArgument {
     NestedResult(u16, u16),
 }
 
-impl Display for SuiArgument {
+impl Display for IotaArgument {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
             Self::GasCoin => write!(f, "GasCoin"),
@@ -2081,7 +2082,7 @@ impl Display for SuiArgument {
     }
 }
 
-impl From<Argument> for SuiArgument {
+impl From<Argument> for IotaArgument {
     fn from(value: Argument) -> Self {
         match value {
             Argument::GasCoin => Self::GasCoin,
@@ -2095,7 +2096,7 @@ impl From<Argument> for SuiArgument {
 /// The transaction for calling a Move function, either an entry function or a public
 /// function (which cannot return references).
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema, PartialEq, Eq)]
-pub struct SuiProgrammableMoveCall {
+pub struct IotaProgrammableMoveCall {
     /// The package containing the module and function.
     pub package: ObjectID,
     /// The specific module in the package containing the function.
@@ -2107,7 +2108,7 @@ pub struct SuiProgrammableMoveCall {
     pub type_arguments: Vec<String>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     /// The arguments to the function.
-    pub arguments: Vec<SuiArgument>,
+    pub arguments: Vec<IotaArgument>,
 }
 
 fn write_sep<T: Display>(
@@ -2125,7 +2126,7 @@ fn write_sep<T: Display>(
     Ok(())
 }
 
-impl Display for SuiProgrammableMoveCall {
+impl Display for IotaProgrammableMoveCall {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         let Self {
             package,
@@ -2146,7 +2147,7 @@ impl Display for SuiProgrammableMoveCall {
     }
 }
 
-impl From<ProgrammableMoveCall> for SuiProgrammableMoveCall {
+impl From<ProgrammableMoveCall> for IotaProgrammableMoveCall {
     fn from(value: ProgrammableMoveCall) -> Self {
         let ProgrammableMoveCall {
             package,
@@ -2160,7 +2161,7 @@ impl From<ProgrammableMoveCall> for SuiProgrammableMoveCall {
             module: module.to_string(),
             function: function.to_string(),
             type_arguments: type_arguments.into_iter().map(|t| t.to_string()).collect(),
-            arguments: arguments.into_iter().map(SuiArgument::from).collect(),
+            arguments: arguments.into_iter().map(IotaArgument::from).collect(),
         }
     }
 }
@@ -2169,7 +2170,7 @@ const fn default_shared_object_mutability() -> bool {
     true
 }
 
-impl From<InputObjectKind> for SuiInputObjectKind {
+impl From<InputObjectKind> for IotaInputObjectKind {
     fn from(input: InputObjectKind) -> Self {
         match input {
             InputObjectKind::MovePackage(id) => Self::MovePackage(id),
@@ -2189,22 +2190,22 @@ impl From<InputObjectKind> for SuiInputObjectKind {
 
 #[derive(Debug, Serialize, Deserialize, JsonSchema, Clone)]
 #[serde(rename = "TypeTag", rename_all = "camelCase")]
-pub struct SuiTypeTag(String);
+pub struct IotaTypeTag(String);
 
-impl SuiTypeTag {
+impl IotaTypeTag {
     pub fn new(tag: String) -> Self {
         Self(tag)
     }
 }
 
-impl TryInto<TypeTag> for SuiTypeTag {
+impl TryInto<TypeTag> for IotaTypeTag {
     type Error = anyhow::Error;
     fn try_into(self) -> Result<TypeTag, Self::Error> {
-        parse_sui_type_tag(&self.0)
+        parse_iota_type_tag(&self.0)
     }
 }
 
-impl From<TypeTag> for SuiTypeTag {
+impl From<TypeTag> for IotaTypeTag {
     fn from(tag: TypeTag) -> Self {
         Self(format!("{}", tag))
     }
@@ -2220,7 +2221,7 @@ pub enum RPCTransactionRequestParams {
 #[derive(Serialize, Deserialize, JsonSchema, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct TransferObjectParams {
-    pub recipient: SuiAddress,
+    pub recipient: IotaAddress,
     pub object_id: ObjectID,
 }
 
@@ -2231,8 +2232,8 @@ pub struct MoveCallParams {
     pub module: String,
     pub function: String,
     #[serde(default)]
-    pub type_arguments: Vec<SuiTypeTag>,
-    pub arguments: Vec<SuiJsonValue>,
+    pub type_arguments: Vec<IotaTypeTag>,
+    pub arguments: Vec<IotaJsonValue>,
 }
 
 #[serde_as]
@@ -2242,9 +2243,9 @@ pub struct TransactionBlockBytes {
     /// BCS serialized transaction data bytes without its type tag, as base-64 encoded string.
     pub tx_bytes: Base64,
     /// the gas objects to be used
-    pub gas: Vec<SuiObjectRef>,
+    pub gas: Vec<IotaObjectRef>,
     /// objects to be used in this transaction
-    pub input_objects: Vec<SuiInputObjectKind>,
+    pub input_objects: Vec<IotaInputObjectKind>,
 }
 
 impl TransactionBlockBytes {
@@ -2254,12 +2255,12 @@ impl TransactionBlockBytes {
             gas: data
                 .gas()
                 .iter()
-                .map(|obj_ref| SuiObjectRef::from(*obj_ref))
+                .map(|obj_ref| IotaObjectRef::from(*obj_ref))
                 .collect(),
             input_objects: data
                 .input_objects()?
                 .into_iter()
-                .map(SuiInputObjectKind::from)
+                .map(IotaInputObjectKind::from)
                 .collect(),
         })
     }
@@ -2274,7 +2275,7 @@ impl TransactionBlockBytes {
 #[serde(rename = "OwnedObjectRef")]
 pub struct OwnedObjectRef {
     pub owner: Owner,
-    pub reference: SuiObjectRef,
+    pub reference: IotaObjectRef,
 }
 
 impl OwnedObjectRef {
@@ -2288,25 +2289,25 @@ impl OwnedObjectRef {
 
 #[derive(Eq, PartialEq, Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[serde(tag = "type", rename_all = "camelCase")]
-pub enum SuiCallArg {
+pub enum IotaCallArg {
     // Needs to become an Object Ref or Object ID, depending on object type
-    Object(SuiObjectArg),
+    Object(IotaObjectArg),
     // pure value, bcs encoded
-    Pure(SuiPureValue),
+    Pure(IotaPureValue),
 }
 
-impl SuiCallArg {
+impl IotaCallArg {
     pub fn try_from(
         value: CallArg,
         layout: Option<&MoveTypeLayout>,
     ) -> Result<Self, anyhow::Error> {
         Ok(match value {
-            CallArg::Pure(p) => SuiCallArg::Pure(SuiPureValue {
+            CallArg::Pure(p) => IotaCallArg::Pure(IotaPureValue {
                 value_type: layout.map(|l| l.into()),
-                value: SuiJsonValue::from_bcs_bytes(layout, &p)?,
+                value: IotaJsonValue::from_bcs_bytes(layout, &p)?,
             }),
             CallArg::Object(ObjectArg::ImmOrOwnedObject((id, version, digest))) => {
-                SuiCallArg::Object(SuiObjectArg::ImmOrOwnedObject {
+                IotaCallArg::Object(IotaObjectArg::ImmOrOwnedObject {
                     object_id: id,
                     version,
                     digest,
@@ -2316,13 +2317,13 @@ impl SuiCallArg {
                 id,
                 initial_shared_version,
                 mutable,
-            }) => SuiCallArg::Object(SuiObjectArg::SharedObject {
+            }) => IotaCallArg::Object(IotaObjectArg::SharedObject {
                 object_id: id,
                 initial_shared_version,
                 mutable,
             }),
             CallArg::Object(ObjectArg::Receiving((object_id, version, digest))) => {
-                SuiCallArg::Object(SuiObjectArg::Receiving {
+                IotaCallArg::Object(IotaObjectArg::Receiving {
                     object_id,
                     version,
                     digest,
@@ -2331,18 +2332,18 @@ impl SuiCallArg {
         })
     }
 
-    pub fn pure(&self) -> Option<&SuiJsonValue> {
+    pub fn pure(&self) -> Option<&IotaJsonValue> {
         match self {
-            SuiCallArg::Pure(v) => Some(&v.value),
+            IotaCallArg::Pure(v) => Some(&v.value),
             _ => None,
         }
     }
 
     pub fn object(&self) -> Option<&ObjectID> {
         match self {
-            SuiCallArg::Object(SuiObjectArg::SharedObject { object_id, .. })
-            | SuiCallArg::Object(SuiObjectArg::ImmOrOwnedObject { object_id, .. })
-            | SuiCallArg::Object(SuiObjectArg::Receiving { object_id, .. }) => Some(object_id),
+            IotaCallArg::Object(IotaObjectArg::SharedObject { object_id, .. })
+            | IotaCallArg::Object(IotaObjectArg::ImmOrOwnedObject { object_id, .. })
+            | IotaCallArg::Object(IotaObjectArg::Receiving { object_id, .. }) => Some(object_id),
             _ => None,
         }
     }
@@ -2351,15 +2352,15 @@ impl SuiCallArg {
 #[serde_as]
 #[derive(Eq, PartialEq, Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[serde(rename_all = "camelCase")]
-pub struct SuiPureValue {
+pub struct IotaPureValue {
     #[schemars(with = "Option<String>")]
-    #[serde_as(as = "Option<AsSuiTypeTag>")]
+    #[serde_as(as = "Option<AsIotaTypeTag>")]
     value_type: Option<TypeTag>,
-    value: SuiJsonValue,
+    value: IotaJsonValue,
 }
 
-impl SuiPureValue {
-    pub fn value(&self) -> SuiJsonValue {
+impl IotaPureValue {
+    pub fn value(&self) -> IotaJsonValue {
         self.value.clone()
     }
 
@@ -2371,7 +2372,7 @@ impl SuiPureValue {
 #[serde_as]
 #[derive(Eq, PartialEq, Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[serde(tag = "objectType", rename_all = "camelCase")]
-pub enum SuiObjectArg {
+pub enum IotaObjectArg {
     // A Move object, either immutable, or owned mutable.
     #[serde(rename_all = "camelCase")]
     ImmOrOwnedObject {
@@ -2404,11 +2405,11 @@ pub enum SuiObjectArg {
 
 #[derive(Clone)]
 pub struct EffectsWithInput {
-    pub effects: SuiTransactionBlockEffects,
+    pub effects: IotaTransactionBlockEffects,
     pub input: TransactionData,
 }
 
-impl From<EffectsWithInput> for SuiTransactionBlockEffects {
+impl From<EffectsWithInput> for IotaTransactionBlockEffects {
     fn from(e: EffectsWithInput) -> Self {
         e.effects
     }
@@ -2436,13 +2437,13 @@ pub enum TransactionFilter {
     /// Query for transactions that touch this object.
     AffectedObject(ObjectID),
     /// Query by sender address.
-    FromAddress(SuiAddress),
+    FromAddress(IotaAddress),
     /// Query by recipient address.
-    ToAddress(SuiAddress),
+    ToAddress(IotaAddress),
     /// Query by sender and recipient address.
-    FromAndToAddress { from: SuiAddress, to: SuiAddress },
+    FromAndToAddress { from: IotaAddress, to: IotaAddress },
     /// CURRENTLY NOT SUPPORTED. Query txs that have a given address as sender or recipient.
-    FromOrToAddress { addr: SuiAddress },
+    FromOrToAddress { addr: IotaAddress },
     /// Query by transaction kind
     TransactionKind(String),
     /// Query transactions of any given kind in the input.

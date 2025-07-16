@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 pub mod config;
@@ -19,8 +20,8 @@ use crate::direct::query_template_generator::QueryTemplateGenerator;
 
 #[derive(Parser)]
 #[clap(
-    name = "sui-rpc-benchmark",
-    about = "Benchmark tool for comparing Sui RPC access methods"
+    name = "iota-rpc-benchmark",
+    about = "Benchmark tool for comparing IOTA RPC access methods"
 )]
 pub struct Opts {
     #[clap(subcommand)]
@@ -34,7 +35,7 @@ pub enum Command {
     DirectQuery {
         #[clap(
             long,
-            default_value = "postgres://postgres:postgres@localhost:5432/sui",
+            default_value = "postgres://postgres:postgres@localhost:5432/iota",
             value_parser = value_parser!(Url)
         )]
         db_url: Url,

@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::net::{IpAddr, Ipv4Addr, SocketAddr};
@@ -7,13 +8,13 @@ use anyhow::Context;
 use prometheus::Registry;
 use reqwest::Client;
 use serde_json::{json, Value};
-use sui_indexer_alt_jsonrpc::{
+use iota_indexer_alt_jsonrpc::{
     api::write::WriteArgs, config::RpcConfig, data::system_package_task::SystemPackageTaskArgs,
     start_rpc, RpcArgs,
 };
-use sui_macros::sim_test;
-use sui_pg_db::{temp::get_available_port, DbArgs};
-use sui_swarm_config::genesis_config::AccountConfig;
+use iota_macros::sim_test;
+use iota_pg_db::{temp::get_available_port, DbArgs};
+use iota_swarm_config::genesis_config::AccountConfig;
 use test_cluster::{TestCluster, TestClusterBuilder};
 use tokio::task::JoinHandle;
 use tokio_util::sync::CancellationToken;
@@ -94,7 +95,7 @@ impl WriteTestCluster {
             .onchain_cluster
             .test_transaction_builder()
             .await
-            .transfer_sui(Some(1_000), recipient)
+            .transfer_iota(Some(1_000), recipient)
             .build();
         let tx_digest = tx.digest().to_string();
         let signed_tx = self.onchain_cluster.wallet.sign_transaction(&tx);
@@ -107,7 +108,7 @@ impl WriteTestCluster {
 
     /// Builds a transaction that would abort if called by a normal user.
     async fn privileged_transaction(&self) -> anyhow::Result<(String, String, Vec<String>)> {
-        let tx: sui_types::transaction::TransactionData = self
+        let tx: iota_types::transaction::TransactionData = self
             .onchain_cluster
             .test_transaction_builder()
             .await
@@ -164,7 +165,7 @@ async fn test_execution() {
     // Call the executeTransactionBlock method and check that the response is valid.
     let response = test_cluster
         .execute_jsonrpc(
-            "sui_executeTransactionBlock".to_string(),
+            "iota_executeTransactionBlock".to_string(),
             json!({
                 "tx_bytes": tx_bytes,
                 "signatures": sigs,
@@ -210,7 +211,7 @@ async fn test_execution_with_deprecated_mode() {
     // Call the executeTransactionBlock method and check that the response is valid.
     let response = test_cluster
         .execute_jsonrpc(
-            "sui_executeTransactionBlock".to_string(),
+            "iota_executeTransactionBlock".to_string(),
             json!({
                 "tx_bytes": tx_bytes,
                 "signatures": sigs,
@@ -244,7 +245,7 @@ async fn test_execution_with_no_sigs() {
     // Call the executeTransactionBlock method and check that the response is valid.
     let response = test_cluster
         .execute_jsonrpc(
-            "sui_executeTransactionBlock".to_string(),
+            "iota_executeTransactionBlock".to_string(),
             json!({
                 "tx_bytes": tx_bytes,
             }),
@@ -277,7 +278,7 @@ async fn test_execution_with_empty_sigs() {
     // Call the executeTransactionBlock method and check that the response is valid.
     let response = test_cluster
         .execute_jsonrpc(
-            "sui_executeTransactionBlock".to_string(),
+            "iota_executeTransactionBlock".to_string(),
             json!({
                 "tx_bytes": tx_bytes,
                 "signatures": [],
@@ -310,7 +311,7 @@ async fn test_execution_with_aborted_tx() {
     // Call the executeTransactionBlock method and check that the response is valid.
     let response = test_cluster
         .execute_jsonrpc(
-            "sui_executeTransactionBlock".to_string(),
+            "iota_executeTransactionBlock".to_string(),
             json!({
                 "tx_bytes": tx_bytes,
                 "signatures": sigs,
@@ -339,7 +340,7 @@ async fn test_dry_run() {
 
     let response = test_cluster
         .execute_jsonrpc(
-            "sui_dryRunTransactionBlock".to_string(),
+            "iota_dryRunTransactionBlock".to_string(),
             json!({
                 "tx_bytes": tx_bytes,
             }),
@@ -360,7 +361,7 @@ async fn test_dry_run_with_invalid_tx() {
 
     let response = test_cluster
         .execute_jsonrpc(
-            "sui_dryRunTransactionBlock".to_string(),
+            "iota_dryRunTransactionBlock".to_string(),
             json!({
                 "tx_bytes": "invalid_tx_bytes",
             }),

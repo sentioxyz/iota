@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 //# init --protocol-version 70 --accounts A --simulator
@@ -38,13 +39,13 @@
 
 //# run-jsonrpc
 {
-  "method": "suix_queryTransactionBlocks",
+  "method": "iotax_queryTransactionBlocks",
   "params": [{}]
 }
 
 //# run-jsonrpc
 {
-  "method": "suix_queryTransactionBlocks",
+  "method": "iotax_queryTransactionBlocks",
   "params": [
     { "filter": { "AffectedObject": "@{obj_1_0}" } }
   ]
@@ -52,7 +53,7 @@
 
 //# run-jsonrpc
 {
-  "method": "suix_queryTransactionBlocks",
+  "method": "iotax_queryTransactionBlocks",
   "params": [
     { "filter": { "AffectedObject": "@{obj_2_0}" } }
   ]
@@ -60,7 +61,7 @@
 
 //# run-jsonrpc
 {
-  "method": "suix_queryTransactionBlocks",
+  "method": "iotax_queryTransactionBlocks",
   "params": [
     { "filter": { "AffectedObject": "@{obj_2_0}" } },
     null, 1, false
@@ -69,7 +70,7 @@
 
 //# run-jsonrpc
 {
-  "method": "suix_queryTransactionBlocks",
+  "method": "iotax_queryTransactionBlocks",
   "params": [
     { "filter": { "AffectedObject": "@{obj_2_0}" } },
     null, 1, true
@@ -78,7 +79,7 @@
 
 //# run-jsonrpc --cursors 2
 {
-  "method": "suix_queryTransactionBlocks",
+  "method": "iotax_queryTransactionBlocks",
   "params": [
     { "filter": { "AffectedObject": "@{obj_1_0}" } },
     "@{cursor_0}", 1, false
@@ -87,7 +88,7 @@
 
 //# run-jsonrpc --cursors 1
 {
-  "method": "suix_queryTransactionBlocks",
+  "method": "iotax_queryTransactionBlocks",
   "params": [
     { "filter": { "AffectedObject": "@{obj_1_0}" } },
     "@{cursor_0}", 1, false

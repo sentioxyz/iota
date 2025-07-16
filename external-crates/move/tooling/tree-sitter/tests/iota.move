@@ -1,46 +1,47 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-/// Coin<SUI> is the token used to pay for gas in Sui.
-/// It has 9 decimals, and the smallest unit (10^-9) is called "mist".
-module sui::sui {
+/// Coin<IOTA> is the token used to pay for gas in IOTA.
+/// It has 9 decimals, and the smallest unit (10^-9) is called "nanos".
+module iota::iota {
     use std::option;
-    use sui::tx_context::{Self, TxContext};
-    use sui::balance::{Self, Balance};
-    use sui::transfer;
-    use sui::coin;
+    use iota::tx_context::{Self, TxContext};
+    use iota::balance::{Self, Balance};
+    use iota::transfer;
+    use iota::coin;
 
     const EAlreadyMinted: u64 = 0;
     /// Sender is not @0x0 the system address.
     const ENotSystemAddress: u64 = 1;
 
     #[allow(unused_const)]
-    /// The amount of Mist per Sui token based on the fact that mist is
-    /// 10^-9 of a Sui token
-    const MIST_PER_SUI: u64 = 1_000_000_000;
+    /// The amount of Nanos per IOTA token based on the fact that nanos is
+    /// 10^-9 of a IOTA token
+    const NANOS_PER_IOTA: u64 = 1_000_000_000;
 
     #[allow(unused_const)]
-    /// The total supply of Sui denominated in whole Sui tokens (10 Billion)
-    const TOTAL_SUPPLY_SUI: u64 = 10_000_000_000;
+    /// The total supply of IOTA denominated in whole IOTA tokens (10 Billion)
+    const TOTAL_SUPPLY_IOTA: u64 = 10_000_000_000;
 
-    /// The total supply of Sui denominated in Mist (10 Billion * 10^9)
-    const TOTAL_SUPPLY_MIST: u64 = 10_000_000_000_000_000_000;
+    /// The total supply of IOTA denominated in Nanos (10 Billion * 10^9)
+    const TOTAL_SUPPLY_NANOS: u64 = 10_000_000_000_000_000_000;
 
     /// Name of the coin
-    struct SUI has drop {}
+    struct IOTA has drop {}
 
     #[allow(unused_function)]
-    /// Register the `SUI` Coin to acquire its `Supply`.
+    /// Register the `IOTA` Coin to acquire its `Supply`.
     /// This should be called only once during genesis creation.
-    fun new(ctx: &mut TxContext): Balance<SUI> {
+    fun new(ctx: &mut TxContext): Balance<IOTA> {
         assert!(tx_context::sender(ctx) == @0x0, ENotSystemAddress);
         assert!(tx_context::epoch(ctx) == 0, EAlreadyMinted);
 
         let (treasury, metadata) = coin::create_currency(
-            SUI {},
+            IOTA {},
             9,
-            b"SUI",
-            b"Sui",
+            b"IOTA",
+            b"IOTA",
             // TODO: add appropriate description and logo url
             b"",
             option::none(),
@@ -48,12 +49,12 @@ module sui::sui {
         );
         transfer::public_freeze_object(metadata);
         let supply = coin::treasury_into_supply(treasury);
-        let total_sui = balance::increase_supply(&mut supply, TOTAL_SUPPLY_MIST);
+        let total_iota = balance::increase_supply(&mut supply, TOTAL_SUPPLY_NANOS);
         balance::destroy_supply(supply);
-        total_sui
+        total_iota
     }
 
-    public entry fun transfer(c: coin::Coin<SUI>, recipient: address) {
+    public entry fun transfer(c: coin::Coin<IOTA>, recipient: address) {
         transfer::public_transfer(c, recipient)
     }
 }

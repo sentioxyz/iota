@@ -1,9 +1,10 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 use crate::FaucetError;
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
-use sui_types::base_types::{ObjectID, SuiAddress, TransactionDigest};
+use iota_types::base_types::{ObjectID, IotaAddress, TransactionDigest};
 use uuid::Uuid;
 
 mod simple_faucet;
@@ -57,19 +58,19 @@ impl<F> AppState<F> {
 
 #[async_trait]
 pub trait Faucet {
-    /// Send `Coin<SUI>` of the specified amount to the recipient
+    /// Send `Coin<IOTA>` of the specified amount to the recipient
     async fn send(
         &self,
         id: Uuid,
-        recipient: SuiAddress,
+        recipient: IotaAddress,
         amounts: &[u64],
     ) -> Result<FaucetReceipt, FaucetError>;
 
-    /// Send `Coin<SUI>` of the specified amount to the recipient in a batch request
+    /// Send `Coin<IOTA>` of the specified amount to the recipient in a batch request
     async fn batch_send(
         &self,
         id: Uuid,
-        recipient: SuiAddress,
+        recipient: IotaAddress,
         amounts: &[u64],
     ) -> Result<BatchFaucetReceipt, FaucetError>;
 
@@ -82,8 +83,8 @@ pub const DEFAULT_NUM_OF_COINS: usize = 1;
 
 #[derive(Parser, Clone)]
 #[clap(
-    name = "Sui Faucet",
-    about = "Faucet for requesting test tokens on Sui",
+    name = "IOTA Faucet",
+    about = "Faucet for requesting test tokens on IOTA",
     rename_all = "kebab-case"
 )]
 pub struct FaucetConfig {
@@ -126,7 +127,7 @@ pub struct FaucetConfig {
     #[clap(long, action = clap::ArgAction::Set, default_value_t = false)]
     pub batch_enabled: bool,
 
-    /// Testnet faucet requires authentication via the Web UI at <https://faucet.sui.io>
+    /// Testnet faucet requires authentication via the Web UI at <https://faucet.iota.io>
     /// This flag is used to indicate that authentication mode is enabled.
     #[clap(long)]
     pub authenticated: bool,

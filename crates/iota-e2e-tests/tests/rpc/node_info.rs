@@ -1,10 +1,11 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-use sui_macros::sim_test;
-use sui_rpc_api::proto::node::v2::node_service_client::NodeServiceClient;
-use sui_rpc_api::proto::node::v2::GetNodeInfoRequest;
-use sui_rpc_api::proto::node::v2::GetNodeInfoResponse;
+use iota_macros::sim_test;
+use iota_rpc_api::proto::node::v2::node_service_client::NodeServiceClient;
+use iota_rpc_api::proto::node::v2::GetNodeInfoRequest;
+use iota_rpc_api::proto::node::v2::GetNodeInfoResponse;
 use test_cluster::TestClusterBuilder;
 
 #[sim_test]

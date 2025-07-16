@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::{collections::BTreeSet, sync::Arc};
@@ -19,8 +20,8 @@ use pipeline::{
     Processor,
 };
 use prometheus::Registry;
-use sui_indexer_alt_metrics::db::DbConnectionStatsCollector;
-use sui_pg_db::{temp::TempDb, Db, DbArgs};
+use iota_indexer_alt_metrics::db::DbConnectionStatsCollector;
+use iota_pg_db::{temp::TempDb, Db, DbArgs};
 use tempfile::tempdir;
 use tokio::task::JoinHandle;
 use tokio_util::sync::CancellationToken;
@@ -28,10 +29,10 @@ use tracing::{info, warn};
 use url::Url;
 
 pub use anyhow::Result;
-pub use sui_field_count::FieldCount;
-pub use sui_pg_db as db;
-pub use sui_sql_macro::sql;
-pub use sui_types as types;
+pub use iota_field_count::FieldCount;
+pub use iota_pg_db as db;
+pub use iota_sql_macro::sql;
+pub use iota_types as types;
 
 #[cfg(feature = "cluster")]
 pub mod cluster;

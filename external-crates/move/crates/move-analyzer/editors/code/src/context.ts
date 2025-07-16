@@ -1,10 +1,11 @@
 // Copyright (c) The Diem Core Contributors
 // Copyright (c) The Move Contributors
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 import {
     MOVE_CONF_NAME, LINT_OPT, TYPE_HINTS_OPT, PARAM_HINTS_OPT,
-    SUI_PATH_OPT, SERVER_PATH_OPT, FORCE_BUNDLED, Configuration,
+    IOTA_PATH_OPT, SERVER_PATH_OPT, FORCE_BUNDLED, Configuration,
 } from './configuration';
 import * as childProcess from 'child_process';
 import * as vscode from 'vscode';
@@ -240,7 +241,7 @@ export class Context {
         vscode.workspace.onDidChangeConfiguration(async event => {
 
             const server_path_conf = MOVE_CONF_NAME.concat('.').concat(SERVER_PATH_OPT);
-            const sui_path_conf = MOVE_CONF_NAME.concat('.').concat(SUI_PATH_OPT);
+            const iota_path_conf = MOVE_CONF_NAME.concat('.').concat(IOTA_PATH_OPT);
             const lint_conf = MOVE_CONF_NAME.concat('.').concat(LINT_OPT);
             const force_bundled_conf = MOVE_CONF_NAME.concat('.').concat(FORCE_BUNDLED);
             const type_hints_conf = MOVE_CONF_NAME.concat('.').concat(TYPE_HINTS_OPT);
@@ -250,7 +251,7 @@ export class Context {
                 event.affectsConfiguration(type_hints_conf) ||
                 event.affectsConfiguration(param_hints_conf);
             const pathsChanged = event.affectsConfiguration(server_path_conf) ||
-                event.affectsConfiguration(sui_path_conf) ||
+                event.affectsConfiguration(iota_path_conf) ||
                 event.affectsConfiguration(force_bundled_conf);
 
             if (optionsChanged || pathsChanged) {
@@ -345,7 +346,7 @@ export class Context {
         const standaloneVersion = semanticVersion(standaloneVersionString);
         log.info(`Standalone version: ${standaloneVersion}`);
 
-        const cliVersionString = version(this.configuration.suiPath, cliVersionArgs);
+        const cliVersionString = version(this.configuration.iotaPath, cliVersionArgs);
         const cliVersion = semanticVersion(cliVersionString);
         log.info(`CLI version: ${cliVersion}`);
 
@@ -360,7 +361,7 @@ export class Context {
                 await vscode.window.showInformationMessage(
                     `The move-analyzer binary at the user-specified path ('${this.configuration.serverPath}') ` +
                     'is not working. See troubleshooting instructions in the README file accompanying ' +
-                    'Move VSCode extension by Mysten in the VSCode marketplace',
+                    'Move VSCode extension by IOTA Foundation in the VSCode marketplace',
                     { modal: true },
                     items,
                 );
@@ -387,18 +388,18 @@ export class Context {
 
         if (cliVersion !== null && (highestVersion === null || semver.gt(cliVersion, highestVersion))) {
             if (bundledVersionString === null || bundledVersion === null || !this.configuration.forceBundled) {
-                // Even if there is a `sui` binary on the path that has a higher version than the bundled one,
+                // Even if there is a `iota` binary on the path that has a higher version than the bundled one,
                 // do not use it if the user has explicitly requested to use the bundled binary (and that binary
                 // is available).
                 highestVersionString = cliVersionString;
                 highestVersion = cliVersion;
-                this.resolvedServerPath = this.configuration.suiPath;
+                this.resolvedServerPath = this.configuration.iotaPath;
                 this.resolvedServerArgs = cliArgs;
                 log.info(`Setting v${cliVersion.version} of CLI move-analyzer` +
                     ` installed at '${this.resolvedServerPath}' as the highest one`);
             } else {
                 log.info(`User has requested to use the bundled move-analyzer v${bundledVersion.version}` +
-                    ` over the CLI one v${cliVersion.version} installed at '${this.configuration.suiPath}'`);
+                    ` over the CLI one v${cliVersion.version} installed at '${this.configuration.iotaPath}'`);
             }
         }
 
@@ -419,7 +420,7 @@ export class Context {
             await vscode.window.showErrorMessage(
                 'Pre-built move-analyzer binary is not available for this platform. ' +
                 'Follow the instructions to manually install the language server in the README ' +
-                'file accompanying Move VSCode extension by Mysten in the VSCode marketplace',
+                'file accompanying Move VSCode extension by IOTA Foundation in the VSCode marketplace',
                 { modal: true },
                 items,
             );

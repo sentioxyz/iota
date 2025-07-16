@@ -1,18 +1,18 @@
 ---
-title: Sui Move CLI
-description: The Sui CLI move command provides commands for working with Move source code directly from a terminal or console.
+title: IOTA Move CLI
+description: The IOTA CLI move command provides commands for working with Move source code directly from a terminal or console.
 ---
 
-The Sui CLI `move` command provides several commands for working with Move source code. A typical usage of `sui move` is to compile and test the Move code, or to generate a new Move project by using `sui move new project_name`, which creates the needed directories and the `Move.toml` file.
+The IOTA CLI `move` command provides several commands for working with Move source code. A typical usage of `iota move` is to compile and test the Move code, or to generate a new Move project by using `iota move new project_name`, which creates the needed directories and the `Move.toml` file.
 
 {@include: ../../snippets/cli-check-install.mdx}
 
 ## Commands
 
-Typing `sui move --help` into your terminal or console displays the following information on available commands.
+Typing `iota move --help` into your terminal or console displays the following information on available commands.
 
 ```
-Usage: sui move [OPTIONS] <COMMAND>
+Usage: iota move [OPTIONS] <COMMAND>
 
 Commands:
   build
@@ -48,10 +48,10 @@ The following examples demonstrate some of the most often used commands.
 
 ### Create a new Move project
 
-To create a new Move project that automatically adds the necessary dependencies in a `Move.toml` file, run `sui move new [<PROJECT-NAME>]`.
+To create a new Move project that automatically adds the necessary dependencies in a `Move.toml` file, run `iota move new [<PROJECT-NAME>]`.
 
 ```sh
-$ sui move new smart_contract_test
+$ iota move new smart_contract_test
 ```
 ```sh
 $ ls -l smart_contract_test
@@ -72,7 +72,7 @@ name = "smart_contract_test"
 version = "0.0.1"
 
 [dependencies]
-Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "framework/testnet" }
+IOTA = { git = "https://github.com/iotaledger/iota.git", subdir = "crates/iota-framework/packages/iota-framework", rev = "framework/testnet" }
 
 [addresses]
 smart_contract_test = "0x0"
@@ -80,28 +80,28 @@ smart_contract_test = "0x0"
 
 ### Build a Move project
 
-Use `sui move build` at the root of your Move project to build the package.
+Use `iota move build` at the root of your Move project to build the package.
 
 ```sh
-$ sui move build
+$ iota move build
 ```
 ```sh
-UPDATING GIT DEPENDENCY https://github.com/MystenLabs/sui.git
-INCLUDING DEPENDENCY Sui
+UPDATING GIT DEPENDENCY https://github.com/iotaledger/iota.git
+INCLUDING DEPENDENCY IOTA
 INCLUDING DEPENDENCY MoveStdlib
 BUILDING smart_contract_test
 ```
 
 ### Run tests in a Move project
 
-Use `sui move test` to run the tests in a Move package.
+Use `iota move test` to run the tests in a Move package.
 
 ```sh
-$ sui move test
+$ iota move test
 ```
 ```sh
-UPDATING GIT DEPENDENCY https://github.com/MystenLabs/sui.git
-INCLUDING DEPENDENCY Sui
+UPDATING GIT DEPENDENCY https://github.com/iotaledger/iota.git
+INCLUDING DEPENDENCY IOTA
 INCLUDING DEPENDENCY MoveStdlib
 BUILDING smart_contract_test
 Running Move unit tests
@@ -118,15 +118,15 @@ This command currently only works on debug builds of the CLI.  Please build the 
 :::
 
 
-This example uses [`first_package`](https://github.com/MystenLabs/sui/tree/main/examples/move/first_package) Move package.
+This example uses [`first_package`](https://github.com/iotaledger/iota/tree/main/examples/move/first_package) Move package.
 
-To get a summary of the test coverage, you must first run the `sui move test --coverage` command, and then the `sui move coverage summary --test` to get a summary of the test coverage in the example project.
+To get a summary of the test coverage, you must first run the `iota move test --coverage` command, and then the `iota move coverage summary --test` to get a summary of the test coverage in the example project.
 
 ```sh
-$ sui move test --coverage
+$ iota move test --coverage
 ```
 ```sh
-INCLUDING DEPENDENCY Sui
+INCLUDING DEPENDENCY IOTA
 INCLUDING DEPENDENCY MoveStdlib
 BUILDING first_package
 Running Move unit tests
@@ -134,7 +134,7 @@ Running Move unit tests
 [ PASS    ] 0x0::example::test_sword_transactions
 Test result: OK. Total tests: 2; passed: 2; failed: 0
 
-$ sui move coverage summary --test
+$ iota move coverage summary --test
 +-------------------------+
 | Move Coverage Summary   |
 +-------------------------+
@@ -147,13 +147,13 @@ Module 0000000000000000000000000000000000000000000000000000000000000000::example
 
 ## Help
 
-Each command has its own help section. For example `sui move build --help` displays the following prompt:
+Each command has its own help section. For example `iota move build --help` displays the following prompt:
 
 ```sh
-$ sui move build --help
+$ iota move build --help
 ```
 ```sh
-Usage: sui move build [OPTIONS]
+Usage: iota move build [OPTIONS]
 
 Options:
   -p, --path <PACKAGE_PATH>                     Path to a package which the command should be run with respect to

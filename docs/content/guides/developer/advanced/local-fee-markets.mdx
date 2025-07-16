@@ -5,7 +5,7 @@ description: Object-based local fee markets limit the rate of transactions writi
 
 Object-based local fee markets limit the rate of transactions writing to a single shared object, preventing the network from becoming overloaded with checkpoints that take too long to execute.
 
-The Sui network's object-based architecture allows processing many different user transactions massively in parallel, in a way that's not possible on most other networks. However, if multiple transactions are all writing to the same shared object, they must execute in sequential order. There is a limit to how many transactions the network can process that touch one specific object.
+The IOTA network's object-based architecture allows processing many different user transactions massively in parallel, in a way that's not possible on most other networks. However, if multiple transactions are all writing to the same shared object, they must execute in sequential order. There is a limit to how many transactions the network can process that touch one specific object.
 
 If you see transactions fail with the error `ExecutionCancelledDueToSharedObjectCongestion`, you are observing object-based local fee markets at work. Continue reading to learn:
 
@@ -15,13 +15,13 @@ If you see transactions fail with the error `ExecutionCancelledDueToSharedObject
 
 ## How object-based local fee markets work
 
-Sui's local fee market algorithm runs every time a new batch of sequenced transactions is received from consensus.
+IOTA's local fee market algorithm runs every time a new batch of sequenced transactions is received from consensus.
 
 1. Sorts all transactions in order of gas price, from highest to lowest.
 
-1. Estimates each transaction's execution cost using the [`TotalGasBudgetWithCap`](https://github.com/MystenLabs/sui/blob/main/crates/sui-core/src/authority/shared_object_congestion_tracker.rs#L143) heuristic.
+1. Estimates each transaction's execution cost using the [`TotalGasBudgetWithCap`](https://github.com/iotaledger/iota/blob/develop/crates/iota-core/src/authority/shared_object_congestion_tracker.rs#L143) heuristic.
 
-1. The [`SharedObjectCongestionTracker`](https://github.com/MystenLabs/sui/blob/main/crates/sui-core/src/authority/shared_object_congestion_tracker.rs) keeps a running tally of how much per-object congestion budget is used. If all shared objects used by the transaction have enough budget left, the transaction is scheduled. In that case, it consumes budget for the mutable shared objects that it uses. Keep in mind that immutable shared objects don't consume any budget, because multiple immutable uses of a shared object can execute in parallel. If the transaction cannot be scheduled, it is deferred until the next commit.
+1. The [`SharedObjectCongestionTracker`](https://github.com/iotaledger/iota/blob/develop/crates/iota-core/src/authority/shared_object_congestion_tracker.rs) keeps a running tally of how much per-object congestion budget is used. If all shared objects used by the transaction have enough budget left, the transaction is scheduled. In that case, it consumes budget for the mutable shared objects that it uses. Keep in mind that immutable shared objects don't consume any budget, because multiple immutable uses of a shared object can execute in parallel. If the transaction cannot be scheduled, it is deferred until the next commit.
 
 ### Priority ordering of transactions
 
@@ -37,7 +37,7 @@ An improved algorithm is in active development for estimating transaction execut
 
 :::
 
-Sui limits the per-commit execution capacity of each shared object. If transactions touching a shared object have a low estimated cost, more of them can fit. If they have a high estimated cost, not as many can fit.  
+IOTA limits the per-commit execution capacity of each shared object. If transactions touching a shared object have a low estimated cost, more of them can fit. If they have a high estimated cost, not as many can fit.  
 
 The cost of a transaction for local fee market purposes is estimated using the `TotalGasBudgetWithCap` heuristic. 
 
@@ -53,7 +53,7 @@ If a transaction is deferred for several commits without successfully being sche
 
 ### Determining total per-object capacity
 
-At the protocol level, Sui is configured with a fixed per-commit limit and burst capacity for each shared object. On average, a shared object's activity cannot exceed the per-commit limit. However, short bursts of traffic might exceed the limit temporarily.
+At the protocol level, IOTA is configured with a fixed per-commit limit and burst capacity for each shared object. On average, a shared object's activity cannot exceed the per-commit limit. However, short bursts of traffic might exceed the limit temporarily.
 
 There is no way to increase the total execution capacity of a particular shared object. The network sets that limit to ensure that validators, Full nodes, and indexers can all execute checkpoints in a reasonable amount of time.
 

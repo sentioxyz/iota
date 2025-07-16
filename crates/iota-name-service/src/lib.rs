@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::fmt;
@@ -9,19 +10,19 @@ use move_core_types::ident_str;
 use move_core_types::identifier::IdentStr;
 use move_core_types::language_storage::StructTag;
 use serde::{Deserialize, Serialize};
-use sui_types::base_types::{ObjectID, SuiAddress};
-use sui_types::collection_types::VecMap;
-use sui_types::dynamic_field::Field;
-use sui_types::id::{ID, UID};
-use sui_types::object::{MoveObject, Object};
-use sui_types::TypeTag;
+use iota_types::base_types::{ObjectID, IotaAddress};
+use iota_types::collection_types::VecMap;
+use iota_types::dynamic_field::Field;
+use iota_types::id::{ID, UID};
+use iota_types::object::{MoveObject, Object};
+use iota_types::TypeTag;
 
 const NAME_SERVICE_DOMAIN_MODULE: &IdentStr = ident_str!("domain");
 const NAME_SERVICE_DOMAIN_STRUCT: &IdentStr = ident_str!("Domain");
 const LEAF_EXPIRATION_TIMESTAMP: u64 = 0;
-const DEFAULT_TLD: &str = "sui";
+const DEFAULT_TLD: &str = "iota";
 const ACCEPTED_SEPARATORS: [char; 2] = ['.', '*'];
-const SUI_NEW_FORMAT_SEPARATOR: char = '@';
+const IOTA_NEW_FORMAT_SEPARATOR: char = '@';
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Registry {
@@ -30,7 +31,7 @@ pub struct Registry {
     registry: Table<Domain, NameRecord>,
     /// The `reverse_registry` table maps `address` to `domain_name`.
     /// Updated in the `set_reverse_lookup` function.
-    reverse_registry: Table<SuiAddress, Domain>,
+    reverse_registry: Table<IotaAddress, Domain>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, Eq, Hash, PartialEq)]
@@ -52,14 +53,14 @@ pub struct NameRecord {
     /// Timestamp in milliseconds when the record expires.
     pub expiration_timestamp_ms: u64,
     /// The target address that this domain points to
-    pub target_address: Option<SuiAddress>,
+    pub target_address: Option<IotaAddress>,
     /// Additional data which may be stored in a record
     pub data: VecMap<String, String>,
 }
 
-/// A SuinsRegistration object to manage an SLD
+/// A IotansRegistration object to manage an SLD
 #[derive(Debug, Serialize, Deserialize, Clone, Eq, PartialEq)]
-pub struct SuinsRegistration {
+pub struct IotansRegistration {
     pub id: UID,
     pub domain: Domain,
     pub domain_name: String,
@@ -71,11 +72,11 @@ pub struct SuinsRegistration {
 #[derive(Debug, Serialize, Deserialize, Clone, Eq, PartialEq)]
 pub struct SubDomainRegistration {
     pub id: UID,
-    pub nft: SuinsRegistration,
+    pub nft: IotansRegistration,
 }
 
 /// Two different view options for a domain.
-/// `At` -> `test@example` | `Dot` -> `test.example.sui`
+/// `At` -> `test@example` | `Dot` -> `test.example.iota`
 #[derive(Clone, Eq, PartialEq, Debug)]
 pub enum DomainFormat {
     At,
@@ -85,12 +86,12 @@ pub enum DomainFormat {
 #[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 #[serde(rename_all = "kebab-case")]
 pub struct NameServiceConfig {
-    pub package_address: SuiAddress,
+    pub package_address: IotaAddress,
     pub registry_id: ObjectID,
     pub reverse_registry_id: ObjectID,
 }
 
-/// Rust version of the Move sui::table::Table type.
+/// Rust version of the Move iota::table::Table type.
 #[derive(Debug, Serialize, Deserialize, Clone, Eq, PartialEq)]
 pub struct Table<K, V> {
     pub id: ObjectID,
@@ -124,7 +125,7 @@ pub enum NameServiceError {
 }
 
 impl Domain {
-    pub fn type_(package_address: SuiAddress) -> StructTag {
+    pub fn type_(package_address: IotaAddress) -> StructTag {
         StructTag {
             address: package_address.into(),
             module: NAME_SERVICE_DOMAIN_MODULE.to_owned(),
@@ -134,7 +135,7 @@ impl Domain {
     }
 
     /// Derive the parent domain for a given domain
-    /// E.g. `test.example.sui` -> `example.sui`
+    /// E.g. `test.example.iota` -> `example.iota`
     ///
     /// SAFETY: This is a safe operation because we only allow a
     /// domain's label vector size to be >= 2 (see `Domain::from_str`)
@@ -150,7 +151,7 @@ impl Domain {
 
     /// Returns the depth for a name.
     /// Depth is defined by the amount of labels in a domain, including TLD.
-    /// E.g. `test.example.sui` -> `3`
+    /// E.g. `test.example.iota` -> `3`
     ///
     /// SAFETY: We can safely cast to a u8 as the max depth is 235.
     pub fn depth(&self) -> u8 {
@@ -173,13 +174,13 @@ impl Domain {
         let _tld = labels.pop();
         let sld = labels.pop().unwrap();
 
-        format!("{}{}{}", labels.join(sep), SUI_NEW_FORMAT_SEPARATOR, sld)
+        format!("{}{}{}", labels.join(sep), IOTA_NEW_FORMAT_SEPARATOR, sld)
     }
 }
 
 impl NameServiceConfig {
     pub fn new(
-        package_address: SuiAddress,
+        package_address: IotaAddress,
         registry_id: ObjectID,
         reverse_registry_id: ObjectID,
     ) -> Self {
@@ -194,7 +195,7 @@ impl NameServiceConfig {
         let domain_type_tag = Domain::type_(self.package_address);
         let domain_bytes = bcs::to_bytes(domain).unwrap();
 
-        sui_types::dynamic_field::derive_dynamic_field_id(
+        iota_types::dynamic_field::derive_dynamic_field_id(
             self.registry_id,
             &TypeTag::Struct(Box::new(domain_type_tag)),
             &domain_bytes,
@@ -203,7 +204,7 @@ impl NameServiceConfig {
     }
 
     pub fn reverse_record_field_id(&self, address: &[u8]) -> ObjectID {
-        sui_types::dynamic_field::derive_dynamic_field_id(
+        iota_types::dynamic_field::derive_dynamic_field_id(
             self.reverse_registry_id,
             &TypeTag::Address,
             address,
@@ -220,7 +221,7 @@ impl NameServiceConfig {
         const MAINNET_NS_REVERSE_REGISTRY_ID: &str =
             "0x2fd099e17a292d2bc541df474f9fafa595653848cbabb2d7a4656ec786a1969f";
 
-        let package_address = SuiAddress::from_str(MAINNET_NS_PACKAGE_ADDRESS).unwrap();
+        let package_address = IotaAddress::from_str(MAINNET_NS_PACKAGE_ADDRESS).unwrap();
         let registry_id = ObjectID::from_str(MAINNET_NS_REGISTRY_ID).unwrap();
         let reverse_registry_id = ObjectID::from_str(MAINNET_NS_REVERSE_REGISTRY_ID).unwrap();
 
@@ -236,7 +237,7 @@ impl NameServiceConfig {
         const TESTNET_NS_REVERSE_REGISTRY_ID: &str =
             "0xcee9dbb070db70936c3a374439a6adb16f3ba97eac5468d2e1e6fff6ed93e465";
 
-        let package_address = SuiAddress::from_str(TESTNET_NS_PACKAGE_ADDRESS).unwrap();
+        let package_address = IotaAddress::from_str(TESTNET_NS_PACKAGE_ADDRESS).unwrap();
         let registry_id = ObjectID::from_str(TESTNET_NS_REGISTRY_ID).unwrap();
         let reverse_registry_id = ObjectID::from_str(TESTNET_NS_REVERSE_REGISTRY_ID).unwrap();
 
@@ -338,7 +339,7 @@ impl TryFrom<MoveObject> for NameRecord {
 }
 
 /// Parses a separator from the domain string input.
-/// E.g.  `example.sui` -> `.` | example*sui -> `@` | `example*sui` -> `*`
+/// E.g.  `example.iota` -> `.` | example*iota -> `@` | `example*iota` -> `*`
 fn separator(s: &str) -> Result<char, NameServiceError> {
     let mut domain_separator: Option<char> = None;
 
@@ -358,11 +359,11 @@ fn separator(s: &str) -> Result<char, NameServiceError> {
     }
 }
 
-/// Converts @label ending to label{separator}sui ending.
+/// Converts @label ending to label{separator}iota ending.
 ///
-/// E.g. `@example` -> `example.sui` | `test@example` -> `test.example.sui`
+/// E.g. `@example` -> `example.iota` | `test@example` -> `test.example.iota`
 fn convert_from_new_format(s: &str, separator: &char) -> Result<String, NameServiceError> {
-    let mut splits = s.split(SUI_NEW_FORMAT_SEPARATOR);
+    let mut splits = s.split(IOTA_NEW_FORMAT_SEPARATOR);
 
     let Some(before) = splits.next() else {
         return Err(NameServiceError::InvalidSeparator);
@@ -426,13 +427,13 @@ mod tests {
 
     #[test]
     fn test_parent_extraction() {
-        let mut name = Domain::from_str("leaf.node.test.sui").unwrap();
+        let mut name = Domain::from_str("leaf.node.test.iota").unwrap();
 
-        assert_eq!(name.parent().to_string(), "node.test.sui");
+        assert_eq!(name.parent().to_string(), "node.test.iota");
 
-        name = Domain::from_str("node.test.sui").unwrap();
+        name = Domain::from_str("node.test.iota").unwrap();
 
-        assert_eq!(name.parent().to_string(), "test.sui");
+        assert_eq!(name.parent().to_string(), "test.iota");
     }
 
     #[test]
@@ -440,9 +441,9 @@ mod tests {
         let system_time: u64 = 100;
 
         let mut name = NameRecord {
-            nft_id: sui_types::id::ID::new(ObjectID::random()),
+            nft_id: iota_types::id::ID::new(ObjectID::random()),
             data: VecMap { contents: vec![] },
-            target_address: Some(SuiAddress::random_for_testing_only()),
+            target_address: Some(IotaAddress::random_for_testing_only()),
             expiration_timestamp_ms: system_time + 10,
         };
 
@@ -455,45 +456,45 @@ mod tests {
 
     #[test]
     fn test_name_service_outputs() {
-        assert_eq!("@test".parse::<Domain>().unwrap().to_string(), "test.sui");
+        assert_eq!("@test".parse::<Domain>().unwrap().to_string(), "test.iota");
         assert_eq!(
-            "test.sui".parse::<Domain>().unwrap().to_string(),
-            "test.sui"
+            "test.iota".parse::<Domain>().unwrap().to_string(),
+            "test.iota"
         );
         assert_eq!(
             "test@sld".parse::<Domain>().unwrap().to_string(),
-            "test.sld.sui"
+            "test.sld.iota"
         );
         assert_eq!(
             "test.test@example".parse::<Domain>().unwrap().to_string(),
-            "test.test.example.sui"
+            "test.test.example.iota"
         );
         assert_eq!(
-            "sui@sui".parse::<Domain>().unwrap().to_string(),
-            "sui.sui.sui"
+            "iota@iota".parse::<Domain>().unwrap().to_string(),
+            "iota.iota.iota"
         );
 
-        assert_eq!("@sui".parse::<Domain>().unwrap().to_string(), "sui.sui");
+        assert_eq!("@iota".parse::<Domain>().unwrap().to_string(), "iota.iota");
 
         assert_eq!(
             "test*test@test".parse::<Domain>().unwrap().to_string(),
-            "test.test.test.sui"
+            "test.test.test.iota"
         );
         assert_eq!(
-            "test.test.sui".parse::<Domain>().unwrap().to_string(),
-            "test.test.sui"
+            "test.test.iota".parse::<Domain>().unwrap().to_string(),
+            "test.test.iota"
         );
         assert_eq!(
-            "test.test.test.sui".parse::<Domain>().unwrap().to_string(),
-            "test.test.test.sui"
+            "test.test.test.iota".parse::<Domain>().unwrap().to_string(),
+            "test.test.test.iota"
         );
     }
 
     #[test]
     fn test_different_wildcard() {
-        assert_eq!("test.sui".parse::<Domain>(), "test*sui".parse::<Domain>(),);
+        assert_eq!("test.iota".parse::<Domain>(), "test*iota".parse::<Domain>(),);
 
-        assert_eq!("@test".parse::<Domain>(), "test*sui".parse::<Domain>(),);
+        assert_eq!("@test".parse::<Domain>(), "test*iota".parse::<Domain>(),);
     }
 
     #[test]
@@ -501,30 +502,30 @@ mod tests {
         assert!("*".parse::<Domain>().is_err());
         assert!(".".parse::<Domain>().is_err());
         assert!("@".parse::<Domain>().is_err());
-        assert!("@inner.sui".parse::<Domain>().is_err());
-        assert!("@inner*sui".parse::<Domain>().is_err());
+        assert!("@inner.iota".parse::<Domain>().is_err());
+        assert!("@inner*iota".parse::<Domain>().is_err());
         assert!("test@".parse::<Domain>().is_err());
-        assert!("sui".parse::<Domain>().is_err());
-        assert!("test.test@example.sui".parse::<Domain>().is_err());
+        assert!("iota".parse::<Domain>().is_err());
+        assert!("test.test@example.iota".parse::<Domain>().is_err());
         assert!("test@test@example".parse::<Domain>().is_err());
     }
 
     #[test]
     fn output_tests() {
-        let mut domain = "test.sui".parse::<Domain>().unwrap();
-        assert!(domain.format(DomainFormat::Dot) == "test.sui");
+        let mut domain = "test.iota".parse::<Domain>().unwrap();
+        assert!(domain.format(DomainFormat::Dot) == "test.iota");
         assert!(domain.format(DomainFormat::At) == "@test");
 
-        domain = "test.test.sui".parse::<Domain>().unwrap();
-        assert!(domain.format(DomainFormat::Dot) == "test.test.sui");
+        domain = "test.test.iota".parse::<Domain>().unwrap();
+        assert!(domain.format(DomainFormat::Dot) == "test.test.iota");
         assert!(domain.format(DomainFormat::At) == "test@test");
 
-        domain = "test.test.test.sui".parse::<Domain>().unwrap();
-        assert!(domain.format(DomainFormat::Dot) == "test.test.test.sui");
+        domain = "test.test.test.iota".parse::<Domain>().unwrap();
+        assert!(domain.format(DomainFormat::Dot) == "test.test.test.iota");
         assert!(domain.format(DomainFormat::At) == "test.test@test");
 
-        domain = "test.test.test.test.sui".parse::<Domain>().unwrap();
-        assert!(domain.format(DomainFormat::Dot) == "test.test.test.test.sui");
+        domain = "test.test.test.test.iota".parse::<Domain>().unwrap();
+        assert!(domain.format(DomainFormat::Dot) == "test.test.test.test.iota");
         assert!(domain.format(DomainFormat::At) == "test.test.test@test");
     }
 }

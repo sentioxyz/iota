@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::str::FromStr;
@@ -6,13 +7,13 @@ use std::str::FromStr;
 use anyhow::Context as _;
 use futures::future::OptionFuture;
 use move_core_types::annotated_value::{MoveDatatypeLayout, MoveTypeLayout};
-use sui_indexer_alt_schema::transactions::{BalanceChange, StoredTxBalanceChange};
-use sui_json_rpc_types::{
-    BalanceChange as SuiBalanceChange, ObjectChange as SuiObjectChange, SuiEvent,
-    SuiTransactionBlock, SuiTransactionBlockData, SuiTransactionBlockEffects,
-    SuiTransactionBlockEvents, SuiTransactionBlockResponse, SuiTransactionBlockResponseOptions,
+use iota_indexer_alt_schema::transactions::{BalanceChange, StoredTxBalanceChange};
+use iota_json_rpc_types::{
+    BalanceChange as IotaBalanceChange, ObjectChange as IotaObjectChange, IotaEvent,
+    IotaTransactionBlock, IotaTransactionBlockData, IotaTransactionBlockEffects,
+    IotaTransactionBlockEvents, IotaTransactionBlockResponse, IotaTransactionBlockResponseOptions,
 };
-use sui_types::{
+use iota_types::{
     base_types::{ObjectID, SequenceNumber},
     digests::{ObjectDigest, TransactionDigest},
     effects::{IDOperation, ObjectChange, TransactionEffects, TransactionEffectsAPI},
@@ -40,8 +41,8 @@ use super::error::Error;
 pub(super) async fn transaction(
     ctx: &Context,
     digest: TransactionDigest,
-    options: &SuiTransactionBlockResponseOptions,
-) -> Result<SuiTransactionBlockResponse, RpcError<Error>> {
+    options: &IotaTransactionBlockResponseOptions,
+) -> Result<IotaTransactionBlockResponse, RpcError<Error>> {
     let tx = ctx.kv_loader().load_one_transaction(digest);
     let stored_bc: OptionFuture<_> = options
         .show_balance_changes
@@ -67,7 +68,7 @@ pub(super) async fn transaction(
 
     let digest = tx.digest()?;
 
-    let mut response = SuiTransactionBlockResponse::new(digest);
+    let mut response = IotaTransactionBlockResponse::new(digest);
 
     if options.show_input {
         response.transaction = Some(input(ctx, &tx).await?);
@@ -104,12 +105,12 @@ pub(super) async fn transaction(
 async fn input(
     ctx: &Context,
     tx: &TransactionContents,
-) -> Result<SuiTransactionBlock, RpcError<Error>> {
+) -> Result<IotaTransactionBlock, RpcError<Error>> {
     let data: TransactionData = tx.data()?;
     let tx_signatures: Vec<GenericSignature> = tx.signatures()?;
 
-    Ok(SuiTransactionBlock {
-        data: SuiTransactionBlockData::try_from_with_package_resolver(data, ctx.package_resolver())
+    Ok(IotaTransactionBlock {
+        data: IotaTransactionBlockData::try_from_with_package_resolver(data, ctx.package_resolver())
             .await
             .context("Failed to resolve types in transaction data")?,
         tx_signatures,
@@ -117,7 +118,7 @@ async fn input(
 }
 
 /// Extract a representation of the transaction's effects from the stored form.
-fn effects(tx: &TransactionContents) -> Result<SuiTransactionBlockEffects, RpcError<Error>> {
+fn effects(tx: &TransactionContents) -> Result<IotaTransactionBlockEffects, RpcError<Error>> {
     let effects: TransactionEffects = tx.effects()?;
     Ok(effects
         .try_into()
@@ -129,9 +130,9 @@ async fn events(
     ctx: &Context,
     digest: TransactionDigest,
     tx: &TransactionContents,
-) -> Result<SuiTransactionBlockEvents, RpcError<Error>> {
+) -> Result<IotaTransactionBlockEvents, RpcError<Error>> {
     let events: Vec<Event> = tx.events()?;
-    let mut sui_events = Vec::with_capacity(events.len());
+    let mut iota_events = Vec::with_capacity(events.len());
 
     for (ix, event) in events.into_iter().enumerate() {
         let layout = match ctx
@@ -152,20 +153,20 @@ async fn events(
             ),
         };
 
-        let sui_event =
-            SuiEvent::try_from(event, digest, ix as u64, Some(tx.timestamp_ms()), layout)
+        let iota_event =
+            IotaEvent::try_from(event, digest, ix as u64, Some(tx.timestamp_ms()), layout)
                 .with_context(|| format!("Failed to convert Event {ix} into response"))?;
 
-        sui_events.push(sui_event)
+        iota_events.push(iota_event)
     }
 
-    Ok(SuiTransactionBlockEvents { data: sui_events })
+    Ok(IotaTransactionBlockEvents { data: iota_events })
 }
 
 /// Extract the transaction's balance changes from their stored form.
 fn balance_changes(
     balance_changes: StoredTxBalanceChange,
-) -> Result<Vec<SuiBalanceChange>, RpcError<Error>> {
+) -> Result<Vec<IotaBalanceChange>, RpcError<Error>> {
     let balance_changes: Vec<BalanceChange> = bcs::from_bytes(&balance_changes.balance_changes)
         .context("Failed to deserialize BalanceChanges")?;
     let mut response = Vec::with_capacity(balance_changes.len());
@@ -179,7 +180,7 @@ fn balance_changes(
         let coin_type = TypeTag::from_str(&coin_type)
             .with_context(|| format!("Invalid coin type: {coin_type:?}"))?;
 
-        response.push(SuiBalanceChange {
+        response.push(IotaBalanceChange {
             owner,
             coin_type,
             amount,
@@ -195,7 +196,7 @@ async fn object_changes(
     ctx: &Context,
     digest: TransactionDigest,
     tx: &TransactionContents,
-) -> Result<Vec<SuiObjectChange>, RpcError<Error>> {
+) -> Result<Vec<IotaObjectChange>, RpcError<Error>> {
     let tx_data: TransactionData = tx.data()?;
     let effects: TransactionEffects = tx.effects()?;
 
@@ -273,7 +274,7 @@ async fn object_changes(
             (ID::None, _, Some((o, _))) if o.is_package() => continue,
             (ID::Deleted, None, _) => continue,
 
-            (ID::Created, _, Some((o, d))) if o.is_package() => SuiObjectChange::Published {
+            (ID::Created, _, Some((o, d))) if o.is_package() => IotaObjectChange::Published {
                 package_id: object_id,
                 version: o.version(),
                 digest: d,
@@ -287,7 +288,7 @@ async fn object_changes(
                     .collect(),
             },
 
-            (ID::Created, _, Some((o, d))) => SuiObjectChange::Created {
+            (ID::Created, _, Some((o, d))) => IotaObjectChange::Created {
                 sender: tx_data.sender(),
                 owner: o.owner().clone(),
                 object_type: o
@@ -299,7 +300,7 @@ async fn object_changes(
             },
 
             (ID::None, Some((i, _)), Some((o, od))) if i.owner() != o.owner() => {
-                SuiObjectChange::Transferred {
+                IotaObjectChange::Transferred {
                     sender: tx_data.sender(),
                     recipient: o.owner().clone(),
                     object_type: o
@@ -311,7 +312,7 @@ async fn object_changes(
                 }
             }
 
-            (ID::None, Some((i, _)), Some((o, od))) => SuiObjectChange::Mutated {
+            (ID::None, Some((i, _)), Some((o, od))) => IotaObjectChange::Mutated {
                 sender: tx_data.sender(),
                 owner: o.owner().clone(),
                 object_type: o
@@ -323,7 +324,7 @@ async fn object_changes(
                 digest: od,
             },
 
-            (ID::None, Some((i, _)), None) => SuiObjectChange::Wrapped {
+            (ID::None, Some((i, _)), None) => IotaObjectChange::Wrapped {
                 sender: tx_data.sender(),
                 object_type: i
                     .struct_tag()
@@ -332,7 +333,7 @@ async fn object_changes(
                 version: effects.lamport_version(),
             },
 
-            (ID::Deleted, Some((i, _)), None) => SuiObjectChange::Deleted {
+            (ID::Deleted, Some((i, _)), None) => IotaObjectChange::Deleted {
                 sender: tx_data.sender(),
                 object_type: i
                     .struct_tag()

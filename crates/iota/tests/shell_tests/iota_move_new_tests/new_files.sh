@@ -1,8 +1,9 @@
 # Copyright (c) Mysten Labs, Inc.
+# Modifications Copyright (c) 2025 IOTA Stiftung
 # SPDX-License-Identifier: Apache-2.0
 
-# basic test that sui move new outputs correct files
-sui move new example
+# basic test that iota move new outputs correct files
+iota move new example
 echo ==== files in project ====
 ls -A example
 echo ==== files in sources ====

@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::time::Duration;
@@ -6,12 +7,12 @@ use std::time::Duration;
 use anyhow::{bail, Context, Result};
 use diesel::{OptionalExtension, QueryDsl, SelectableHelper};
 use diesel_async::RunQueryDsl;
-use sui_indexer_alt_framework::types::{
+use iota_indexer_alt_framework::types::{
     full_checkpoint_content::CheckpointData,
-    sui_system_state::{get_sui_system_state, SuiSystemStateTrait},
+    iota_system_state::{get_iota_system_state, IotaSystemStateTrait},
     transaction::{TransactionDataAPI, TransactionKind},
 };
-use sui_indexer_alt_schema::{
+use iota_indexer_alt_schema::{
     checkpoints::StoredGenesis,
     epochs::StoredEpochStart,
     schema::{kv_epoch_starts, kv_genesis},
@@ -80,7 +81,7 @@ pub async fn bootstrap(
         bail!("Could not find Genesis transaction");
     };
 
-    let system_state = get_sui_system_state(&genesis_transaction.output_objects.as_slice())
+    let system_state = get_iota_system_state(&genesis_transaction.output_objects.as_slice())
         .context("Failed to get Genesis SystemState")?;
 
     let genesis = StoredGenesis {

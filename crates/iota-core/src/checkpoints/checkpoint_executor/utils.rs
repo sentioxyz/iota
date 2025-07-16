@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::{sync::Arc, time::Instant};
@@ -6,9 +7,9 @@ use std::{sync::Arc, time::Instant};
 use crate::checkpoints::CheckpointStore;
 use crate::execution_cache::TransactionCacheRead;
 use futures::{future::Either, Stream};
-use mysten_common::fatal;
+use iota_common::fatal;
 use std::time::Duration;
-use sui_types::{
+use iota_types::{
     base_types::{TransactionDigest, TransactionEffectsDigest},
     messages_checkpoint::{CheckpointSequenceNumber, VerifiedCheckpoint},
 };

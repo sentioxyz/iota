@@ -1,12 +1,13 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 //# init --protocol-version 70 --addresses Test=0x0 --accounts A B --simulator --objects-snapshot-min-checkpoint-lag 2
 
 //# publish --sender A
 module Test::fake {
-    use sui::coin;
-    use sui::url;
+    use iota::coin;
+    use iota::url;
 
     public struct FAKE has drop {}
 
@@ -27,8 +28,8 @@ module Test::fake {
 }
 
 module Test::real {
-    use sui::coin;
-    use sui::url;
+    use iota::coin;
+    use iota::url;
 
     public struct REAL has drop {}
 
@@ -77,25 +78,25 @@ module Test::real {
 
 //# run-jsonrpc
 {
-  "method": "suix_getCoinMetadata",
+  "method": "iotax_getCoinMetadata",
   "params": ["@{Test}::real::REAL"]
 }
 
 //# run-jsonrpc
 {
-  "method": "suix_getCoinMetadata",
+  "method": "iotax_getCoinMetadata",
   "params": ["@{Test}::fake::FAKE"]
 }
 
 //# run-jsonrpc
 {
-  "method": "suix_getCoinMetadata",
+  "method": "iotax_getCoinMetadata",
   "params": ["@{Test}::fake::NonExistent"]
 }
 
 //# run-jsonrpc
 {
-  "method": "suix_getCoinMetadata",
+  "method": "iotax_getCoinMetadata",
   "params": ["invalid_coin_type"]
 }
 
@@ -106,7 +107,7 @@ module Test::real {
 
 //# run-jsonrpc
 {
-  "method": "suix_getCoinMetadata",
+  "method": "iotax_getCoinMetadata",
   "params": ["@{Test}::real::REAL"]
 }
 
@@ -116,7 +117,7 @@ module Test::real {
 
 //# run-jsonrpc
 {
-  "method": "suix_getCoinMetadata",
+  "method": "iotax_getCoinMetadata",
   "params": ["@{Test}::real::REAL"]
 }
 
@@ -127,6 +128,6 @@ module Test::real {
 
 //# run-jsonrpc
 {
-  "method": "suix_getCoinMetadata",
+  "method": "iotax_getCoinMetadata",
   "params": ["@{Test}::real::REAL"]
 }

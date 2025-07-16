@@ -4,17 +4,17 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       }
     ]
@@ -24,17 +24,17 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       }
     ]
@@ -44,22 +44,22 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       }
     ]
@@ -69,22 +69,22 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       }
     ]
@@ -94,22 +94,22 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       }
     ]
@@ -119,22 +119,22 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       }
     ]
@@ -144,22 +144,22 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       }
     ]
@@ -169,22 +169,22 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       }
     ]
@@ -194,22 +194,22 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       }
     ]
@@ -219,22 +219,22 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       }
     ]
@@ -244,22 +244,22 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       }
     ]
@@ -269,22 +269,22 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       }
     ]
@@ -294,22 +294,22 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       }
     ]
@@ -319,22 +319,22 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       }
     ]
@@ -344,22 +344,22 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       }
     ]
@@ -369,22 +369,22 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       }
     ]
@@ -394,22 +394,22 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       }
     ]
@@ -419,22 +419,22 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       }
     ]
@@ -444,22 +444,22 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       }
     ]
@@ -469,22 +469,22 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       }
     ]
@@ -494,22 +494,22 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       }
     ]
@@ -519,22 +519,22 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       }
     ]
@@ -544,22 +544,22 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       }
     ]
@@ -569,22 +569,22 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       }
     ]
@@ -594,22 +594,22 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       }
     ]
@@ -619,22 +619,22 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       }
     ]
@@ -644,22 +644,22 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       }
     ]
@@ -669,22 +669,22 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       }
     ]
@@ -694,22 +694,22 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       }
     ]
@@ -719,22 +719,22 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       }
     ]
@@ -744,22 +744,22 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       }
     ]
@@ -769,22 +769,22 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       }
     ]
@@ -794,22 +794,22 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       }
     ]
@@ -819,22 +819,22 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       }
     ]
@@ -844,22 +844,22 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       }
     ]
@@ -869,22 +869,22 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       }
     ]
@@ -894,22 +894,22 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       }
     ]
@@ -919,22 +919,22 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       }
     ]
@@ -944,22 +944,22 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       }
     ]
@@ -969,22 +969,22 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       }
     ]
@@ -994,27 +994,27 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       },
       {
         "name": "Bridge",
-        "path": "crates/sui-framework/packages/bridge",
+        "path": "crates/iota-framework/packages/bridge",
         "id": "0x000000000000000000000000000000000000000000000000000000000000000b"
       }
     ]
@@ -1024,27 +1024,27 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       },
       {
         "name": "Bridge",
-        "path": "crates/sui-framework/packages/bridge",
+        "path": "crates/iota-framework/packages/bridge",
         "id": "0x000000000000000000000000000000000000000000000000000000000000000b"
       }
     ]
@@ -1054,27 +1054,27 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       },
       {
         "name": "Bridge",
-        "path": "crates/sui-framework/packages/bridge",
+        "path": "crates/iota-framework/packages/bridge",
         "id": "0x000000000000000000000000000000000000000000000000000000000000000b"
       }
     ]
@@ -1084,27 +1084,27 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       },
       {
         "name": "Bridge",
-        "path": "crates/sui-framework/packages/bridge",
+        "path": "crates/iota-framework/packages/bridge",
         "id": "0x000000000000000000000000000000000000000000000000000000000000000b"
       }
     ]
@@ -1114,27 +1114,27 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       },
       {
         "name": "Bridge",
-        "path": "crates/sui-framework/packages/bridge",
+        "path": "crates/iota-framework/packages/bridge",
         "id": "0x000000000000000000000000000000000000000000000000000000000000000b"
       }
     ]
@@ -1144,27 +1144,27 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       },
       {
         "name": "Bridge",
-        "path": "crates/sui-framework/packages/bridge",
+        "path": "crates/iota-framework/packages/bridge",
         "id": "0x000000000000000000000000000000000000000000000000000000000000000b"
       }
     ]
@@ -1174,27 +1174,27 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       },
       {
         "name": "Bridge",
-        "path": "crates/sui-framework/packages/bridge",
+        "path": "crates/iota-framework/packages/bridge",
         "id": "0x000000000000000000000000000000000000000000000000000000000000000b"
       }
     ]
@@ -1204,27 +1204,27 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       },
       {
         "name": "Bridge",
-        "path": "crates/sui-framework/packages/bridge",
+        "path": "crates/iota-framework/packages/bridge",
         "id": "0x000000000000000000000000000000000000000000000000000000000000000b"
       }
     ]
@@ -1234,27 +1234,27 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       },
       {
         "name": "Bridge",
-        "path": "crates/sui-framework/packages/bridge",
+        "path": "crates/iota-framework/packages/bridge",
         "id": "0x000000000000000000000000000000000000000000000000000000000000000b"
       }
     ]
@@ -1264,27 +1264,27 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       },
       {
         "name": "Bridge",
-        "path": "crates/sui-framework/packages/bridge",
+        "path": "crates/iota-framework/packages/bridge",
         "id": "0x000000000000000000000000000000000000000000000000000000000000000b"
       }
     ]
@@ -1294,27 +1294,27 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       },
       {
         "name": "Bridge",
-        "path": "crates/sui-framework/packages/bridge",
+        "path": "crates/iota-framework/packages/bridge",
         "id": "0x000000000000000000000000000000000000000000000000000000000000000b"
       }
     ]
@@ -1324,27 +1324,27 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       },
       {
         "name": "Bridge",
-        "path": "crates/sui-framework/packages/bridge",
+        "path": "crates/iota-framework/packages/bridge",
         "id": "0x000000000000000000000000000000000000000000000000000000000000000b"
       }
     ]
@@ -1354,27 +1354,27 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       },
       {
         "name": "Bridge",
-        "path": "crates/sui-framework/packages/bridge",
+        "path": "crates/iota-framework/packages/bridge",
         "id": "0x000000000000000000000000000000000000000000000000000000000000000b"
       }
     ]
@@ -1384,27 +1384,27 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       },
       {
         "name": "Bridge",
-        "path": "crates/sui-framework/packages/bridge",
+        "path": "crates/iota-framework/packages/bridge",
         "id": "0x000000000000000000000000000000000000000000000000000000000000000b"
       }
     ]
@@ -1414,27 +1414,27 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       },
       {
         "name": "Bridge",
-        "path": "crates/sui-framework/packages/bridge",
+        "path": "crates/iota-framework/packages/bridge",
         "id": "0x000000000000000000000000000000000000000000000000000000000000000b"
       }
     ]
@@ -1444,27 +1444,27 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       },
       {
         "name": "Bridge",
-        "path": "crates/sui-framework/packages/bridge",
+        "path": "crates/iota-framework/packages/bridge",
         "id": "0x000000000000000000000000000000000000000000000000000000000000000b"
       }
     ]
@@ -1474,27 +1474,27 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       },
       {
         "name": "Bridge",
-        "path": "crates/sui-framework/packages/bridge",
+        "path": "crates/iota-framework/packages/bridge",
         "id": "0x000000000000000000000000000000000000000000000000000000000000000b"
       }
     ]
@@ -1504,27 +1504,27 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       },
       {
         "name": "Bridge",
-        "path": "crates/sui-framework/packages/bridge",
+        "path": "crates/iota-framework/packages/bridge",
         "id": "0x000000000000000000000000000000000000000000000000000000000000000b"
       }
     ]
@@ -1534,27 +1534,27 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       },
       {
         "name": "Bridge",
-        "path": "crates/sui-framework/packages/bridge",
+        "path": "crates/iota-framework/packages/bridge",
         "id": "0x000000000000000000000000000000000000000000000000000000000000000b"
       }
     ]
@@ -1564,27 +1564,27 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       },
       {
         "name": "Bridge",
-        "path": "crates/sui-framework/packages/bridge",
+        "path": "crates/iota-framework/packages/bridge",
         "id": "0x000000000000000000000000000000000000000000000000000000000000000b"
       }
     ]
@@ -1594,27 +1594,27 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       },
       {
         "name": "Bridge",
-        "path": "crates/sui-framework/packages/bridge",
+        "path": "crates/iota-framework/packages/bridge",
         "id": "0x000000000000000000000000000000000000000000000000000000000000000b"
       }
     ]
@@ -1624,27 +1624,27 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       },
       {
         "name": "Bridge",
-        "path": "crates/sui-framework/packages/bridge",
+        "path": "crates/iota-framework/packages/bridge",
         "id": "0x000000000000000000000000000000000000000000000000000000000000000b"
       }
     ]
@@ -1654,27 +1654,27 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       },
       {
         "name": "Bridge",
-        "path": "crates/sui-framework/packages/bridge",
+        "path": "crates/iota-framework/packages/bridge",
         "id": "0x000000000000000000000000000000000000000000000000000000000000000b"
       }
     ]
@@ -1684,27 +1684,27 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       },
       {
         "name": "Bridge",
-        "path": "crates/sui-framework/packages/bridge",
+        "path": "crates/iota-framework/packages/bridge",
         "id": "0x000000000000000000000000000000000000000000000000000000000000000b"
       }
     ]
@@ -1714,27 +1714,27 @@
     "packages": [
       {
         "name": "MoveStdlib",
-        "path": "crates/sui-framework/packages/move-stdlib",
+        "path": "crates/iota-framework/packages/move-stdlib",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000001"
       },
       {
-        "name": "Sui",
-        "path": "crates/sui-framework/packages/sui-framework",
+        "name": "IOTA",
+        "path": "crates/iota-framework/packages/iota-framework",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000002"
       },
       {
-        "name": "SuiSystem",
-        "path": "crates/sui-framework/packages/sui-system",
+        "name": "IotaSystem",
+        "path": "crates/iota-framework/packages/iota-system",
         "id": "0x0000000000000000000000000000000000000000000000000000000000000003"
       },
       {
         "name": "DeepBook",
-        "path": "crates/sui-framework/packages/deepbook",
+        "path": "crates/iota-framework/packages/deepbook",
         "id": "0x000000000000000000000000000000000000000000000000000000000000dee9"
       },
       {
         "name": "Bridge",
-        "path": "crates/sui-framework/packages/bridge",
+        "path": "crates/iota-framework/packages/bridge",
         "id": "0x000000000000000000000000000000000000000000000000000000000000000b"
       }
     ]

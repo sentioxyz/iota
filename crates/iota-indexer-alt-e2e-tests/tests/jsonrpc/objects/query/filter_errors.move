@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 //# init --protocol-version 70 --accounts A --simulator
@@ -10,7 +11,7 @@
 
 //# run-jsonrpc
 {
-  "method": "suix_getOwnedObjects",
+  "method": "iotax_getOwnedObjects",
   "params": [
     "@{A}",
     {
@@ -27,7 +28,7 @@
 
 //# run-jsonrpc
 {
-  "method": "suix_getOwnedObjects",
+  "method": "iotax_getOwnedObjects",
   "params": [
     "@{A}",
     {
@@ -46,7 +47,7 @@
 
 //# run-jsonrpc
 {
-  "method": "suix_getOwnedObjects",
+  "method": "iotax_getOwnedObjects",
   "params": [
     "@{A}",
     {
@@ -70,7 +71,7 @@
 
 //# run-jsonrpc
 {
-  "method": "suix_getOwnedObjects",
+  "method": "iotax_getOwnedObjects",
   "params": [
     "@{A}",
     {

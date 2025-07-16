@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 //# init --protocol-version 70 --accounts A --addresses P0=0x0 --simulator
@@ -37,6 +38,6 @@ module P0::M {
 
 //# run-jsonrpc
 {
-  "method": "sui_getTransactionBlock",
+  "method": "iota_getTransactionBlock",
   "params": ["@{digest_3}", { "showObjectChanges": true }]
 }

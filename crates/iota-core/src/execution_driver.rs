@@ -1,16 +1,17 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::sync::{Arc, Weak};
 
-use mysten_common::fatal;
-use mysten_metrics::{monitored_scope, spawn_monitored_task};
+use iota_common::fatal;
+use iota_metrics::{monitored_scope, spawn_monitored_task};
 use rand::{
     rngs::{OsRng, StdRng},
     Rng, SeedableRng,
 };
-use sui_macros::fail_point_async;
-use sui_types::error::SuiError;
+use iota_macros::fail_point_async;
+use iota_types::error::IotaError;
 use tokio::sync::{mpsc::UnboundedReceiver, oneshot, Semaphore};
 use tracing::{error_span, info, trace, warn, Instrument};
 
@@ -124,7 +125,7 @@ pub async fn execution_process(
                 expected_effects_digest,
                 &epoch_store_clone,
             ).await {
-                Err(SuiError::ValidatorHaltedAtEpochEnd) => {
+                Err(IotaError::ValidatorHaltedAtEpochEnd) => {
                     warn!("Could not execute transaction {digest:?} because validator is halted at epoch end. certificate={certificate:?}");
                     return;
                 }

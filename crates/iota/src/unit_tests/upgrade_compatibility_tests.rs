@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 use insta::assert_snapshot;
 use std::fs;
@@ -14,9 +15,9 @@ use move_command_line_common::files::FileHash;
 use move_compiler::diagnostics::report_diagnostics_to_buffer;
 use move_compiler::shared::files::{FileName, FilesSourceText};
 use move_core_types::identifier::Identifier;
-use sui_move_build::BuildConfig;
-use sui_move_build::CompiledPackage;
-use sui_types::move_package::UpgradePolicy;
+use iota_move_build::BuildConfig;
+use iota_move_build::CompiledPackage;
+use iota_types::move_package::UpgradePolicy;
 
 #[test]
 fn test_all() {

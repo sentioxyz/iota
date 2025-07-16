@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 //# init --protocol-version 70 --accounts A --addresses P=0x0 --simulator
@@ -12,8 +13,8 @@
 
 //# publish
 module P::M {
-  use sui::dynamic_field as df;
-  use sui::dynamic_object_field as dof;
+  use iota::dynamic_field as df;
+  use iota::dynamic_object_field as dof;
 
   public struct Owner has key, store {
     id: UID
@@ -49,6 +50,6 @@ module P::M {
 
 //# run-jsonrpc
 {
-  "method": "suix_getDynamicFieldObject",
+  "method": "iotax_getDynamicFieldObject",
   "params": ["@{obj_2_0}", { "type": "u64", "value": "42" }]
 }

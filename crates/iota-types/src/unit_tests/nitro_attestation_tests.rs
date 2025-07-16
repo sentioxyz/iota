@@ -1,7 +1,8 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::error::SuiError;
+use crate::error::IotaError;
 
 use super::{parse_nitro_attestation, verify_nitro_attestation};
 use fastcrypto::encoding::Encoding;
@@ -32,7 +33,7 @@ fn test_over_certificate_expiration() {
     let res = verify_nitro_attestation(&parsed.0, &parsed.1, &parsed.2, now);
     assert_eq!(
         res.unwrap_err(),
-        SuiError::AttestationFailedToVerify(
+        IotaError::AttestationFailedToVerify(
             "InvalidCertificate: Certificate timestamp not valid".to_string()
         )
     );
@@ -42,7 +43,7 @@ fn test_over_certificate_expiration() {
     let res = verify_nitro_attestation(&parsed.0, &parsed.1, &parsed.2, now);
     assert_eq!(
         res.unwrap_err(),
-        SuiError::AttestationFailedToVerify(
+        IotaError::AttestationFailedToVerify(
             "InvalidCertificate: Certificate timestamp not valid".to_string()
         )
     );
@@ -54,7 +55,7 @@ fn test_with_malformed_attestation() {
 
     assert!(matches!(
         err,
-        SuiError::AttestationFailedToVerify(msg) if msg.starts_with("InvalidCoseSign1")
+        IotaError::AttestationFailedToVerify(msg) if msg.starts_with("InvalidCoseSign1")
     ));
 }
 

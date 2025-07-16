@@ -1,14 +1,14 @@
 ---
-title: Module `sui::vdf`
+title: Module `iota::vdf`
 ---
 
 
 
 -  [Constants](#@Constants_0)
--  [Function `hash_to_input`](#sui_vdf_hash_to_input)
--  [Function `hash_to_input_internal`](#sui_vdf_hash_to_input_internal)
--  [Function `vdf_verify`](#sui_vdf_vdf_verify)
--  [Function `vdf_verify_internal`](#sui_vdf_vdf_verify_internal)
+-  [Function `hash_to_input`](#iota_vdf_hash_to_input)
+-  [Function `hash_to_input_internal`](#iota_vdf_hash_to_input_internal)
+-  [Function `vdf_verify`](#iota_vdf_vdf_verify)
+-  [Function `vdf_verify_internal`](#iota_vdf_vdf_verify_internal)
 
 
 <pre><code></code></pre>
@@ -20,23 +20,23 @@ title: Module `sui::vdf`
 ## Constants
 
 
-<a name="sui_vdf_EInvalidInput"></a>
+<a name="iota_vdf_EInvalidInput"></a>
 
 
 
-<pre><code><b>const</b> <a href="../sui/vdf.md#sui_vdf_EInvalidInput">EInvalidInput</a>: u64 = 0;
+<pre><code><b>const</b> <a href="../iota/vdf.md#iota_vdf_EInvalidInput">EInvalidInput</a>: u64 = 0;
 </code></pre>
 
 
 
-<a name="sui_vdf_hash_to_input"></a>
+<a name="iota_vdf_hash_to_input"></a>
 
 ## Function `hash_to_input`
 
-Hash an arbitrary binary <code>message</code> to a class group element to be used as input for <code><a href="../sui/vdf.md#sui_vdf_vdf_verify">vdf_verify</a></code>.
+Hash an arbitrary binary <code>message</code> to a class group element to be used as input for <code><a href="../iota/vdf.md#iota_vdf_vdf_verify">vdf_verify</a></code>.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../sui/vdf.md#sui_vdf_hash_to_input">hash_to_input</a>(message: &vector&lt;u8&gt;): vector&lt;u8&gt;
+<pre><code><b>public</b> <b>fun</b> <a href="../iota/vdf.md#iota_vdf_hash_to_input">hash_to_input</a>(message: &vector&lt;u8&gt;): vector&lt;u8&gt;
 </code></pre>
 
 
@@ -45,8 +45,8 @@ Hash an arbitrary binary <code>message</code> to a class group element to be use
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../sui/vdf.md#sui_vdf_hash_to_input">hash_to_input</a>(message: &vector&lt;u8&gt;): vector&lt;u8&gt; {
-    <a href="../sui/vdf.md#sui_vdf_hash_to_input_internal">hash_to_input_internal</a>(message)
+<pre><code><b>public</b> <b>fun</b> <a href="../iota/vdf.md#iota_vdf_hash_to_input">hash_to_input</a>(message: &vector&lt;u8&gt;): vector&lt;u8&gt; {
+    <a href="../iota/vdf.md#iota_vdf_hash_to_input_internal">hash_to_input_internal</a>(message)
 }
 </code></pre>
 
@@ -54,14 +54,14 @@ Hash an arbitrary binary <code>message</code> to a class group element to be use
 
 </details>
 
-<a name="sui_vdf_hash_to_input_internal"></a>
+<a name="iota_vdf_hash_to_input_internal"></a>
 
 ## Function `hash_to_input_internal`
 
-The internal functions for <code><a href="../sui/vdf.md#sui_vdf_hash_to_input">hash_to_input</a></code>.
+The internal functions for <code><a href="../iota/vdf.md#iota_vdf_hash_to_input">hash_to_input</a></code>.
 
 
-<pre><code><b>fun</b> <a href="../sui/vdf.md#sui_vdf_hash_to_input_internal">hash_to_input_internal</a>(message: &vector&lt;u8&gt;): vector&lt;u8&gt;
+<pre><code><b>fun</b> <a href="../iota/vdf.md#iota_vdf_hash_to_input_internal">hash_to_input_internal</a>(message: &vector&lt;u8&gt;): vector&lt;u8&gt;
 </code></pre>
 
 
@@ -70,14 +70,14 @@ The internal functions for <code><a href="../sui/vdf.md#sui_vdf_hash_to_input">h
 <summary>Implementation</summary>
 
 
-<pre><code><b>native</b> <b>fun</b> <a href="../sui/vdf.md#sui_vdf_hash_to_input_internal">hash_to_input_internal</a>(message: &vector&lt;u8&gt;): vector&lt;u8&gt;;
+<pre><code><b>native</b> <b>fun</b> <a href="../iota/vdf.md#iota_vdf_hash_to_input_internal">hash_to_input_internal</a>(message: &vector&lt;u8&gt;): vector&lt;u8&gt;;
 </code></pre>
 
 
 
 </details>
 
-<a name="sui_vdf_vdf_verify"></a>
+<a name="iota_vdf_vdf_verify"></a>
 
 ## Function `vdf_verify`
 
@@ -95,7 +95,7 @@ crate. The final selection of the discriminant for Mainnet will be computed and 
 process.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../sui/vdf.md#sui_vdf_vdf_verify">vdf_verify</a>(input: &vector&lt;u8&gt;, output: &vector&lt;u8&gt;, proof: &vector&lt;u8&gt;, iterations: u64): bool
+<pre><code><b>public</b> <b>fun</b> <a href="../iota/vdf.md#iota_vdf_vdf_verify">vdf_verify</a>(input: &vector&lt;u8&gt;, output: &vector&lt;u8&gt;, proof: &vector&lt;u8&gt;, iterations: u64): bool
 </code></pre>
 
 
@@ -104,13 +104,13 @@ process.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../sui/vdf.md#sui_vdf_vdf_verify">vdf_verify</a>(
+<pre><code><b>public</b> <b>fun</b> <a href="../iota/vdf.md#iota_vdf_vdf_verify">vdf_verify</a>(
     input: &vector&lt;u8&gt;,
     output: &vector&lt;u8&gt;,
     proof: &vector&lt;u8&gt;,
     iterations: u64,
 ): bool {
-    <a href="../sui/vdf.md#sui_vdf_vdf_verify_internal">vdf_verify_internal</a>(input, output, proof, iterations)
+    <a href="../iota/vdf.md#iota_vdf_vdf_verify_internal">vdf_verify_internal</a>(input, output, proof, iterations)
 }
 </code></pre>
 
@@ -118,14 +118,14 @@ process.
 
 </details>
 
-<a name="sui_vdf_vdf_verify_internal"></a>
+<a name="iota_vdf_vdf_verify_internal"></a>
 
 ## Function `vdf_verify_internal`
 
-The internal functions for <code><a href="../sui/vdf.md#sui_vdf_vdf_verify_internal">vdf_verify_internal</a></code>.
+The internal functions for <code><a href="../iota/vdf.md#iota_vdf_vdf_verify_internal">vdf_verify_internal</a></code>.
 
 
-<pre><code><b>fun</b> <a href="../sui/vdf.md#sui_vdf_vdf_verify_internal">vdf_verify_internal</a>(input: &vector&lt;u8&gt;, output: &vector&lt;u8&gt;, proof: &vector&lt;u8&gt;, iterations: u64): bool
+<pre><code><b>fun</b> <a href="../iota/vdf.md#iota_vdf_vdf_verify_internal">vdf_verify_internal</a>(input: &vector&lt;u8&gt;, output: &vector&lt;u8&gt;, proof: &vector&lt;u8&gt;, iterations: u64): bool
 </code></pre>
 
 
@@ -134,7 +134,7 @@ The internal functions for <code><a href="../sui/vdf.md#sui_vdf_vdf_verify_inter
 <summary>Implementation</summary>
 
 
-<pre><code><b>native</b> <b>fun</b> <a href="../sui/vdf.md#sui_vdf_vdf_verify_internal">vdf_verify_internal</a>(
+<pre><code><b>native</b> <b>fun</b> <a href="../iota/vdf.md#iota_vdf_vdf_verify_internal">vdf_verify_internal</a>(
     input: &vector&lt;u8&gt;,
     output: &vector&lt;u8&gt;,
     proof: &vector&lt;u8&gt;,

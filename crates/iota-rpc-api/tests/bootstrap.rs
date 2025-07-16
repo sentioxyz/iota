@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use prost_types::FileDescriptorSet;
@@ -48,7 +49,7 @@ fn bootstrap() {
         .build_client(true)
         .build_server(true)
         .bytes(["."])
-        .btree_map([".sui.node.v2alpha.GetProtocolConfigResponse"])
+        .btree_map([".iota.node.v2alpha.GetProtocolConfigResponse"])
         .out_dir(&out_dir)
         .compile_fds(fds.clone())
     {

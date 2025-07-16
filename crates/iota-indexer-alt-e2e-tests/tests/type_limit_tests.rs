@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::path::PathBuf;
@@ -8,15 +9,15 @@ use move_core_types::{ident_str, language_storage::StructTag};
 use reqwest::Client;
 use serde_json::{json, Value};
 use simulacrum::Simulacrum;
-use sui_indexer_alt::config::{IndexerConfig, PipelineLayer};
-use sui_indexer_alt_e2e_tests::{find_address_owned, find_immutable, FullCluster};
-use sui_indexer_alt_framework::IndexerArgs;
-use sui_indexer_alt_jsonrpc::{
+use iota_indexer_alt::config::{IndexerConfig, PipelineLayer};
+use iota_indexer_alt_e2e_tests::{find_address_owned, find_immutable, FullCluster};
+use iota_indexer_alt_framework::IndexerArgs;
+use iota_indexer_alt_jsonrpc::{
     config::{PackageResolverLayer, RpcConfig},
     data::system_package_task::SystemPackageTaskArgs,
 };
-use sui_move_build::BuildConfig;
-use sui_types::{
+use iota_move_build::BuildConfig;
+use iota_types::{
     base_types::ObjectID,
     programmable_transaction_builder::ProgrammableTransactionBuilder,
     transaction::{Transaction, TransactionData},
@@ -24,7 +25,7 @@ use sui_types::{
 };
 use tokio_util::sync::CancellationToken;
 
-/// 5 SUI gas budget
+/// 5 IOTA gas budget
 const DEFAULT_GAS_BUDGET: u64 = 5_000_000_000;
 
 /// We get a successful response if everything is within limits.
@@ -306,7 +307,7 @@ impl TypeLimitCluster {
         let query = json!({
             "jsonrpc": "2.0",
             "id": 1,
-            "method": "sui_getObject",
+            "method": "iota_getObject",
             "params": [
                 id.to_string(),
                 {

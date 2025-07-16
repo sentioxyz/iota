@@ -1,13 +1,14 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use anyhow::Context as _;
 
 use jsonrpsee::{core::RpcResult, proc_macros::rpc};
-use sui_json_rpc_types::Checkpoint;
-use sui_open_rpc::Module;
-use sui_open_rpc_macros::open_rpc;
-use sui_types::sui_serde::BigInt;
+use iota_json_rpc_types::Checkpoint;
+use iota_open_rpc::Module;
+use iota_open_rpc_macros::open_rpc;
+use iota_types::iota_serde::BigInt;
 
 use crate::{
     context::Context,
@@ -16,8 +17,8 @@ use crate::{
 
 use super::rpc_module::RpcModule;
 
-#[open_rpc(namespace = "sui", tag = "Checkpoints API")]
-#[rpc(server, namespace = "sui")]
+#[open_rpc(namespace = "iota", tag = "Checkpoints API")]
+#[rpc(server, namespace = "iota")]
 trait CheckpointsApi {
     /// Return a checkpoint by its sequence number
     #[method(name = "getCheckpoint")]

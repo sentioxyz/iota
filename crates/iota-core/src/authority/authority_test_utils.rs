@@ -1,5 +1,6 @@
 // Copyright (c) 2021, Facebook, Inc. and its affiliates
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::checkpoints::CheckpointServiceNoop;
@@ -7,10 +8,10 @@ use crate::consensus_handler::SequencedConsensusTransaction;
 use core::default::Default;
 use fastcrypto::hash::MultisetHash;
 use fastcrypto::traits::KeyPair;
-use sui_protocol_config::Chain;
-use sui_types::crypto::{AccountKeyPair, AuthorityKeyPair};
-use sui_types::messages_consensus::ConsensusTransaction;
-use sui_types::utils::to_sender_signed_transaction;
+use iota_protocol_config::Chain;
+use iota_types::crypto::{AccountKeyPair, AuthorityKeyPair};
+use iota_types::messages_consensus::ConsensusTransaction;
+use iota_types::utils::to_sender_signed_transaction;
 
 use super::test_authority_builder::TestAuthorityBuilder;
 use super::*;
@@ -18,7 +19,7 @@ use super::*;
 pub async fn send_and_confirm_transaction(
     authority: &AuthorityState,
     transaction: Transaction,
-) -> Result<(CertifiedTransaction, SignedTransactionEffects), SuiError> {
+) -> Result<(CertifiedTransaction, SignedTransactionEffects), IotaError> {
     send_and_confirm_transaction_(
         authority,
         None, /* no fullnode_key_pair */
@@ -32,7 +33,7 @@ pub async fn send_and_confirm_transaction_(
     fullnode: Option<&AuthorityState>,
     transaction: Transaction,
     with_shared: bool, // transaction includes shared objects
-) -> Result<(CertifiedTransaction, SignedTransactionEffects), SuiError> {
+) -> Result<(CertifiedTransaction, SignedTransactionEffects), IotaError> {
     let (txn, effects, _execution_error_opt) = send_and_confirm_transaction_with_execution_error(
         authority,
         fullnode,
@@ -47,7 +48,7 @@ pub async fn send_and_confirm_transaction_(
 pub async fn certify_transaction(
     authority: &AuthorityState,
     transaction: Transaction,
-) -> Result<VerifiedCertificate, SuiError> {
+) -> Result<VerifiedCertificate, IotaError> {
     // Make the initial request
     let epoch_store = authority.load_epoch_store_one_call_per_task();
     // TODO: Move this check to a more appropriate place.
@@ -80,7 +81,7 @@ pub async fn execute_certificate_with_execution_error(
         SignedTransactionEffects,
         Option<ExecutionError>,
     ),
-    SuiError,
+    IotaError,
 > {
     let epoch_store = authority.load_epoch_store_one_call_per_task();
     // We also check the incremental effects of the transaction on the live object set against StateAccumulator
@@ -156,7 +157,7 @@ pub async fn send_and_confirm_transaction_with_execution_error(
         SignedTransactionEffects,
         Option<ExecutionError>,
     ),
-    SuiError,
+    IotaError,
 > {
     let certificate = certify_transaction(authority, transaction).await?;
     execute_certificate_with_execution_error(
@@ -170,7 +171,7 @@ pub async fn send_and_confirm_transaction_with_execution_error(
 }
 
 pub async fn init_state_validator_with_fullnode() -> (Arc<AuthorityState>, Arc<AuthorityState>) {
-    use sui_types::crypto::get_authority_key_pair;
+    use iota_types::crypto::get_authority_key_pair;
 
     let validator = TestAuthorityBuilder::new().build().await;
     let fullnode_key_pair = get_authority_key_pair().1;
@@ -197,7 +198,7 @@ pub async fn init_state_with_committee(
         .await
 }
 
-pub async fn init_state_with_ids<I: IntoIterator<Item = (SuiAddress, ObjectID)>>(
+pub async fn init_state_with_ids<I: IntoIterator<Item = (IotaAddress, ObjectID)>>(
     objects: I,
 ) -> Arc<AuthorityState> {
     let state = TestAuthorityBuilder::new().build().await;
@@ -210,7 +211,7 @@ pub async fn init_state_with_ids<I: IntoIterator<Item = (SuiAddress, ObjectID)>>
 }
 
 pub async fn init_state_with_ids_and_versions<
-    I: IntoIterator<Item = (SuiAddress, ObjectID, SequenceNumber)>,
+    I: IntoIterator<Item = (IotaAddress, ObjectID, SequenceNumber)>,
 >(
     objects: I,
 ) -> Arc<AuthorityState> {
@@ -230,7 +231,7 @@ pub async fn init_state_with_objects<I: IntoIterator<Item = Object>>(
     objects: I,
 ) -> Arc<AuthorityState> {
     let dir = tempfile::TempDir::new().unwrap();
-    let network_config = sui_swarm_config::network_config_builder::ConfigBuilder::new(&dir).build();
+    let network_config = iota_swarm_config::network_config_builder::ConfigBuilder::new(&dir).build();
     let genesis = network_config.genesis;
     let keypair = network_config.validator_configs[0]
         .protocol_key_pair()
@@ -251,14 +252,14 @@ pub async fn init_state_with_objects_and_committee<I: IntoIterator<Item = Object
 }
 
 pub async fn init_state_with_object_id(
-    address: SuiAddress,
+    address: IotaAddress,
     object: ObjectID,
 ) -> Arc<AuthorityState> {
     init_state_with_ids(std::iter::once((address, object))).await
 }
 
 pub async fn init_state_with_ids_and_expensive_checks<
-    I: IntoIterator<Item = (SuiAddress, ObjectID)>,
+    I: IntoIterator<Item = (IotaAddress, ObjectID)>,
 >(
     objects: I,
     config: ExpensiveSafetyCheckConfig,
@@ -277,9 +278,9 @@ pub async fn init_state_with_ids_and_expensive_checks<
 
 pub fn init_transfer_transaction(
     authority_state: &AuthorityState,
-    sender: SuiAddress,
+    sender: IotaAddress,
     secret: &AccountKeyPair,
-    recipient: SuiAddress,
+    recipient: IotaAddress,
     object_ref: ObjectRef,
     gas_object_ref: ObjectRef,
     gas_budget: u64,
@@ -301,9 +302,9 @@ pub fn init_transfer_transaction(
 }
 
 pub fn init_certified_transfer_transaction(
-    sender: SuiAddress,
+    sender: IotaAddress,
     secret: &AccountKeyPair,
-    recipient: SuiAddress,
+    recipient: IotaAddress,
     object_ref: ObjectRef,
     gas_object_ref: ObjectRef,
     authority_state: &AuthorityState,
@@ -348,7 +349,7 @@ pub fn init_certified_transaction(
 pub async fn certify_shared_obj_transaction_no_execution(
     authority: &AuthorityState,
     transaction: Transaction,
-) -> Result<VerifiedCertificate, SuiError> {
+) -> Result<VerifiedCertificate, IotaError> {
     let epoch_store = authority.load_epoch_store_one_call_per_task();
     let transaction = epoch_store.verify_transaction(transaction).unwrap();
     let response = authority
@@ -372,7 +373,7 @@ pub async fn certify_shared_obj_transaction_no_execution(
 pub async fn enqueue_all_and_execute_all(
     authority: &AuthorityState,
     certificates: Vec<VerifiedCertificate>,
-) -> Result<Vec<TransactionEffects>, SuiError> {
+) -> Result<Vec<TransactionEffects>, IotaError> {
     authority.enqueue_certificates_for_execution(
         certificates.clone(),
         &authority.epoch_store_for_testing(),
@@ -388,7 +389,7 @@ pub async fn enqueue_all_and_execute_all(
 pub async fn execute_sequenced_certificate_to_effects(
     authority: &AuthorityState,
     certificate: VerifiedCertificate,
-) -> Result<(TransactionEffects, Option<ExecutionError>), SuiError> {
+) -> Result<(TransactionEffects, Option<ExecutionError>), IotaError> {
     authority.enqueue_certificates_for_execution(
         vec![certificate.clone()],
         &authority.epoch_store_for_testing(),

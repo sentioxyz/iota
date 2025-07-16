@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 //# init --protocol-version 70 --accounts A --simulator
@@ -35,30 +36,30 @@
 
 //# run-jsonrpc
 {
-  "method": "sui_getCheckpoint",
+  "method": "iota_getCheckpoint",
   "params": ["0"]
 }
 
 //# run-jsonrpc
 {
-  "method": "sui_getCheckpoint",
+  "method": "iota_getCheckpoint",
   "params": ["1"]
 }
 
 //# run-jsonrpc
 {
-  "method": "sui_getCheckpoint",
+  "method": "iota_getCheckpoint",
   "params": ["2"]
 }
 
 //# run-jsonrpc
 {
-  "method": "sui_getCheckpoint",
+  "method": "iota_getCheckpoint",
   "params": ["3"]
 }
 
 //# run-jsonrpc
 {
-  "method": "sui_getCheckpoint",
+  "method": "iota_getCheckpoint",
   "params": ["4"]
 }

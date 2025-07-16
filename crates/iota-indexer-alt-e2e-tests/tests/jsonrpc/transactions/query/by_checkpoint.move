@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 //# init --protocol-version 70 --accounts A --simulator
@@ -45,31 +46,31 @@
 
 //# run-jsonrpc
 {
-  "method": "sui_getCheckpoint",
+  "method": "iota_getCheckpoint",
   "params": ["0"]
 }
 
 //# run-jsonrpc
 {
-  "method": "sui_getCheckpoint",
+  "method": "iota_getCheckpoint",
   "params": ["1"]
 }
 
 //# run-jsonrpc
 {
-  "method": "sui_getCheckpoint",
+  "method": "iota_getCheckpoint",
   "params": ["2"]
 }
 
 //# run-jsonrpc
 {
-  "method": "sui_getCheckpoint",
+  "method": "iota_getCheckpoint",
   "params": ["3"]
 }
 
 //# run-jsonrpc
 {
-  "method": "suix_queryTransactionBlocks",
+  "method": "iotax_queryTransactionBlocks",
   "params": [
     { "filter": { "Checkpoint": "1" } }
   ]
@@ -77,7 +78,7 @@
 
 //# run-jsonrpc
 {
-  "method": "suix_queryTransactionBlocks",
+  "method": "iotax_queryTransactionBlocks",
   "params": [
     { "filter": { "Checkpoint": "2" } }
   ]
@@ -85,7 +86,7 @@
 
 //# run-jsonrpc
 {
-  "method": "suix_queryTransactionBlocks",
+  "method": "iotax_queryTransactionBlocks",
   "params": [
     { "filter": { "Checkpoint": "3" } }
   ]
@@ -93,7 +94,7 @@
 
 //# run-jsonrpc
 {
-  "method": "suix_queryTransactionBlocks",
+  "method": "iotax_queryTransactionBlocks",
   "params": [
     { "filter": { "Checkpoint": "1" } },
     null, null, true
@@ -102,7 +103,7 @@
 
 //# run-jsonrpc
 {
-  "method": "suix_queryTransactionBlocks",
+  "method": "iotax_queryTransactionBlocks",
   "params": [
     { "filter": { "Checkpoint": "2" } },
     null, null, true
@@ -111,7 +112,7 @@
 
 //# run-jsonrpc
 {
-  "method": "suix_queryTransactionBlocks",
+  "method": "iotax_queryTransactionBlocks",
   "params": [
     { "filter": { "Checkpoint": "3" } },
     null, null, true
@@ -120,7 +121,7 @@
 
 //# run-jsonrpc
 {
-  "method": "suix_queryTransactionBlocks",
+  "method": "iotax_queryTransactionBlocks",
   "params": [
     { "filter": { "Checkpoint": "1" } },
     null, 2
@@ -129,7 +130,7 @@
 
 //# run-jsonrpc
 {
-  "method": "suix_queryTransactionBlocks",
+  "method": "iotax_queryTransactionBlocks",
   "params": [
     { "filter": { "Checkpoint": "2" } },
     null, 2
@@ -138,7 +139,7 @@
 
 //# run-jsonrpc
 {
-  "method": "suix_queryTransactionBlocks",
+  "method": "iotax_queryTransactionBlocks",
   "params": [
     { "filter": { "Checkpoint": "3" } },
     null, 2
@@ -147,7 +148,7 @@
 
 //# run-jsonrpc
 {
-  "method": "suix_queryTransactionBlocks",
+  "method": "iotax_queryTransactionBlocks",
   "params": [
     { "filter": { "Checkpoint": "1" } },
     null, 2, true
@@ -156,7 +157,7 @@
 
 //# run-jsonrpc
 {
-  "method": "suix_queryTransactionBlocks",
+  "method": "iotax_queryTransactionBlocks",
   "params": [
     { "filter": { "Checkpoint": "2" } },
     null, 2, true
@@ -165,7 +166,7 @@
 
 //# run-jsonrpc
 {
-  "method": "suix_queryTransactionBlocks",
+  "method": "iotax_queryTransactionBlocks",
   "params": [
     { "filter": { "Checkpoint": "3" } },
     null, 2, true
@@ -174,7 +175,7 @@
 
 //# run-jsonrpc --cursors 3
 {
-  "method": "suix_queryTransactionBlocks",
+  "method": "iotax_queryTransactionBlocks",
   "params": [
     { "filter": { "Checkpoint": "3" } },
     "@{cursor_0}", 2
@@ -183,7 +184,7 @@
 
 //# run-jsonrpc --cursors 3
 {
-  "method": "suix_queryTransactionBlocks",
+  "method": "iotax_queryTransactionBlocks",
   "params": [
     { "filter": { "Checkpoint": "3" } },
     "@{cursor_0}", 2, true
@@ -192,7 +193,7 @@
 
 //# run-jsonrpc --cursors 0
 {
-  "method": "suix_queryTransactionBlocks",
+  "method": "iotax_queryTransactionBlocks",
   "params": [
     { "filter": { "Checkpoint": "3" } },
     "@{cursor_0}", 2
@@ -201,7 +202,7 @@
 
 //# run-jsonrpc --cursors 6
 {
-  "method": "suix_queryTransactionBlocks",
+  "method": "iotax_queryTransactionBlocks",
   "params": [
     { "filter": { "Checkpoint": "3" } },
     "@{cursor_0}", 2
@@ -210,7 +211,7 @@
 
 //# run-jsonrpc --cursors 0
 {
-  "method": "suix_queryTransactionBlocks",
+  "method": "iotax_queryTransactionBlocks",
   "params": [
     { "filter": { "Checkpoint": "3" } },
     "@{cursor_0}", 2, true
@@ -219,7 +220,7 @@
 
 //# run-jsonrpc --cursors 6
 {
-  "method": "suix_queryTransactionBlocks",
+  "method": "iotax_queryTransactionBlocks",
   "params": [
     { "filter": { "Checkpoint": "3" } },
     "@{cursor_0}", 2, true

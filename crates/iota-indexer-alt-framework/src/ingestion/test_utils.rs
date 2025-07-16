@@ -1,9 +1,10 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use rand::prelude::StdRng;
 use rand::SeedableRng;
-use sui_storage::blob::{Blob, BlobEncoding};
+use iota_storage::blob::{Blob, BlobEncoding};
 
 use crate::types::crypto::KeypairTraits;
 use crate::types::full_checkpoint_content::CheckpointData;

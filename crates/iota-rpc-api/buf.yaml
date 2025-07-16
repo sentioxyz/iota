@@ -12,11 +12,11 @@ modules:
         - RPC_NO_CLIENT_STREAMING
       ignore_only:
         PACKAGE_VERSION_SUFFIX:
-          - proto/sui/types
+          - proto/iota/types
         ENUM_VALUE_PREFIX:
-          - proto/sui/types/signature_scheme.proto
+          - proto/iota/types/signature_scheme.proto
         ENUM_ZERO_VALUE_SUFFIX:
-          - proto/sui/types/signature_scheme.proto
+          - proto/iota/types/signature_scheme.proto
 
       enum_zero_value_suffix: _UNKNOWN
       rpc_allow_same_request_response: false

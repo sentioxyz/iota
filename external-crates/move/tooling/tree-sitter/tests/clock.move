@@ -1,12 +1,13 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 /// APIs for accessing time from move calls, via the `Clock`: a unique
 /// shared object that is created at 0x6 during genesis.
-module sui::clock {
-    use sui::object::{Self, UID};
-    use sui::transfer;
-    use sui::tx_context::{Self, TxContext};
+module iota::clock {
+    use iota::object::{Self, UID};
+    use iota::transfer;
+    use iota::tx_context::{Self, TxContext};
 
     /// Sender is not @0x0 the system address.
     const ENotSystemAddress: u64 = 0;
@@ -23,7 +24,7 @@ module sui::clock {
         id: UID,
         /// The clock's timestamp, which is set automatically by a
         /// system transaction every time consensus commits a
-        /// schedule, or by `sui::clock::increment_for_testing` during
+        /// schedule, or by `iota::clock::increment_for_testing` during
         /// testing.
         timestamp_ms: u64,
     }
@@ -64,7 +65,7 @@ module sui::clock {
     #[test_only]
     /// Expose the functionality of `create()` (usually only done during
     /// genesis) for tests that want to create a Clock.
-    public fun create_for_testing(ctx: &mut sui::tx_context::TxContext): Clock {
+    public fun create_for_testing(ctx: &mut iota::tx_context::TxContext): Clock {
         Clock {
             id: object::new(ctx),
             timestamp_ms: 0,

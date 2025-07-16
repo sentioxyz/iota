@@ -1,11 +1,12 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-use sui_macros::sim_test;
-use sui_rpc_api::proto::node::v2alpha::node_service_client::NodeServiceClient;
-use sui_rpc_api::proto::node::v2alpha::GetCoinInfoRequest;
-use sui_rpc_api::proto::node::v2alpha::GetCoinInfoResponse;
-use sui_sdk_types::TypeTag;
+use iota_macros::sim_test;
+use iota_rpc_api::proto::node::v2alpha::node_service_client::NodeServiceClient;
+use iota_rpc_api::proto::node::v2alpha::GetCoinInfoRequest;
+use iota_rpc_api::proto::node::v2alpha::GetCoinInfoResponse;
+use iota_sdk_types::TypeTag;
 use test_cluster::TestClusterBuilder;
 
 #[sim_test]
@@ -16,7 +17,7 @@ async fn get_coin_info() {
         .await
         .unwrap();
 
-    let coin_type_sdk: TypeTag = "0x2::sui::SUI".parse().unwrap();
+    let coin_type_sdk: TypeTag = "0x2::iota::IOTA".parse().unwrap();
     let request = GetCoinInfoRequest {
         coin_type: Some(coin_type_sdk.clone().into()),
     };
@@ -32,9 +33,9 @@ async fn get_coin_info() {
         .into_inner();
 
     assert_eq!(coin_type, Some(coin_type_sdk.into()));
-    assert_eq!(metadata.unwrap().symbol, Some("SUI".to_owned()));
+    assert_eq!(metadata.unwrap().symbol, Some("IOTA".to_owned()));
     assert_eq!(
         treasury.unwrap().total_supply,
-        Some(sui_types::gas_coin::TOTAL_SUPPLY_MIST)
+        Some(iota_types::gas_coin::TOTAL_SUPPLY_NANOS)
     );
 }

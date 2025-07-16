@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use anyhow::Context as _;
@@ -15,16 +16,16 @@ use diesel::{
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
-use sui_indexer_alt_schema::schema::{
+use iota_indexer_alt_schema::schema::{
     tx_affected_addresses, tx_affected_objects, tx_calls, tx_digests,
 };
-use sui_json_rpc_types::{Page as PageResponse, SuiTransactionBlockResponseOptions};
-use sui_sql_macro::sql;
-use sui_types::{
-    base_types::{ObjectID, SuiAddress},
+use iota_json_rpc_types::{Page as PageResponse, IotaTransactionBlockResponseOptions};
+use iota_sql_macro::sql;
+use iota_types::{
+    base_types::{ObjectID, IotaAddress},
     digests::TransactionDigest,
     messages_checkpoint::CheckpointSequenceNumber,
-    sui_serde::{BigInt, Readable},
+    iota_serde::{BigInt, Readable},
 };
 
 use crate::{
@@ -42,11 +43,11 @@ use super::error::Error;
     rename = "TransactionBlockResponseQuery",
     default
 )]
-pub(crate) struct SuiTransactionBlockResponseQuery {
+pub(crate) struct IotaTransactionBlockResponseQuery {
     /// If None, no filter will be applied.
     pub filter: Option<TransactionFilter>,
     /// Configures which fields to include in the response, by default only digest is included.
-    pub options: Option<SuiTransactionBlockResponseOptions>,
+    pub options: Option<IotaTransactionBlockResponseOptions>,
 }
 
 #[serde_as]
@@ -67,13 +68,13 @@ pub(crate) enum TransactionFilter {
     /// Query for transactions that touch this object.
     AffectedObject(ObjectID),
     /// Query by sender address.
-    FromAddress(SuiAddress),
+    FromAddress(IotaAddress),
     /// Query by sender and recipient address.
-    FromAndToAddress { from: SuiAddress, to: SuiAddress },
+    FromAndToAddress { from: IotaAddress, to: IotaAddress },
     /// Query transactions that have a given address as sender or recipient.
-    FromOrToAddress { addr: SuiAddress },
+    FromOrToAddress { addr: IotaAddress },
     /// Query by recipient address. On this RPC, this is an alias for `FromOrToAddress`.
-    ToAddress(SuiAddress),
+    ToAddress(IotaAddress),
 }
 
 type Cursor = JsonCursor<u64>;
@@ -288,8 +289,8 @@ async fn tx_affected_objects(
 async fn tx_affected_addresses(
     ctx: &Context,
     page: &Page<Cursor>,
-    from: Option<SuiAddress>,
-    to: SuiAddress,
+    from: Option<IotaAddress>,
+    to: IotaAddress,
 ) -> Result<Digests, RpcError<Error>> {
     use tx_affected_addresses::dsl as a;
 

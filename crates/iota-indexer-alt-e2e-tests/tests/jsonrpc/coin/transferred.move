@@ -1,7 +1,8 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-// Transfer an object from A to B and verify that the coin is now included in the result of suix_getCoins
+// Transfer an object from A to B and verify that the coin is now included in the result of iotax_getCoins
 // for B and not included in the result for A.
 
 //# init --protocol-version 70 --addresses Test=0x0 --accounts A B --simulator --objects-snapshot-min-checkpoint-lag 2
@@ -22,7 +23,7 @@
 
 //# run-jsonrpc
 {
-  "method": "suix_getCoins",
+  "method": "iotax_getCoins",
   "params": ["@{A}"]
 }
 
@@ -32,12 +33,12 @@
 
 //# run-jsonrpc
 {
-  "method": "suix_getCoins",
+  "method": "iotax_getCoins",
   "params": ["@{A}"]
 }
 
 //# run-jsonrpc
 {
-  "method": "suix_getCoins",
+  "method": "iotax_getCoins",
   "params": ["@{B}"]
 }

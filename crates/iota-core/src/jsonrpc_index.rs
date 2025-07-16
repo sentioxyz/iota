@@ -1,7 +1,8 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-//! IndexStore supports creation of various ancillary indexes of state in SuiDataStore.
+//! IndexStore supports creation of various ancillary indexes of state in IotaDataStore.
 //! The main user of this data is the explorer.
 
 use std::cmp::{max, min};
@@ -22,21 +23,21 @@ use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use typed_store::rocksdb::compaction_filter::Decision;
 use typed_store::TypedStoreError;
 
-use sui_json_rpc_types::{SuiObjectDataFilter, TransactionFilter};
-use sui_storage::mutex_table::MutexTable;
-use sui_storage::sharded_lru::ShardedLruCache;
-use sui_types::base_types::{
-    ObjectDigest, ObjectID, SequenceNumber, SuiAddress, TransactionDigest, TxSequenceNumber,
+use iota_json_rpc_types::{IotaObjectDataFilter, TransactionFilter};
+use iota_storage::mutex_table::MutexTable;
+use iota_storage::sharded_lru::ShardedLruCache;
+use iota_types::base_types::{
+    ObjectDigest, ObjectID, SequenceNumber, IotaAddress, TransactionDigest, TxSequenceNumber,
 };
-use sui_types::base_types::{ObjectInfo, ObjectRef};
-use sui_types::digests::TransactionEventsDigest;
-use sui_types::dynamic_field::{self, DynamicFieldInfo};
-use sui_types::effects::TransactionEvents;
-use sui_types::error::{SuiError, SuiResult, UserInputError};
-use sui_types::inner_temporary_store::TxCoins;
-use sui_types::object::{Object, Owner};
-use sui_types::parse_sui_struct_tag;
-use sui_types::storage::error::Error as StorageError;
+use iota_types::base_types::{ObjectInfo, ObjectRef};
+use iota_types::digests::TransactionEventsDigest;
+use iota_types::dynamic_field::{self, DynamicFieldInfo};
+use iota_types::effects::TransactionEvents;
+use iota_types::error::{IotaError, IotaResult, UserInputError};
+use iota_types::inner_temporary_store::TxCoins;
+use iota_types::object::{Object, Owner};
+use iota_types::parse_iota_struct_tag;
+use iota_types::storage::error::Error as StorageError;
 use tracing::{debug, info, instrument, trace};
 use typed_store::rocks::{
     default_db_options, read_size_from_env, DBBatch, DBMap, DBMapTableConfigMap, DBOptions,
@@ -51,7 +52,7 @@ use crate::par_index_live_object_set::{LiveObjectIndexer, ParMakeLiveObjectIndex
 
 type OwnedMutexGuard<T> = ArcMutexGuard<parking_lot::RawMutex, T>;
 
-type OwnerIndexKey = (SuiAddress, ObjectID);
+type OwnerIndexKey = (IotaAddress, ObjectID);
 type DynamicFieldKey = (ObjectID, ObjectID);
 type EventId = (TxSequenceNumber, usize);
 type EventIndex = (TransactionEventsDigest, TransactionDigest, u64);
@@ -59,7 +60,7 @@ type AllBalance = HashMap<TypeTag, TotalBalance>;
 
 #[derive(Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Debug)]
 pub struct CoinIndexKey2 {
-    pub owner: SuiAddress,
+    pub owner: IotaAddress,
     pub coin_type: String,
     // the balance of the coin inverted `!coin.balance` in order to force sorting of coins to be
     // from greatest to least
@@ -69,7 +70,7 @@ pub struct CoinIndexKey2 {
 
 impl CoinIndexKey2 {
     pub fn new_from_cursor(
-        owner: SuiAddress,
+        owner: IotaAddress,
         coin_type: String,
         inverted_balance: u64,
         object_id: ObjectID,
@@ -82,7 +83,7 @@ impl CoinIndexKey2 {
         }
     }
 
-    pub fn new(owner: SuiAddress, coin_type: String, balance: u64, object_id: ObjectID) -> Self {
+    pub fn new(owner: IotaAddress, coin_type: String, balance: u64, object_id: ObjectID) -> Self {
         Self {
             owner,
             coin_type,
@@ -190,16 +191,16 @@ impl IndexStoreMetrics {
 }
 
 pub struct IndexStoreCaches {
-    per_coin_type_balance: ShardedLruCache<(SuiAddress, TypeTag), SuiResult<TotalBalance>>,
-    all_balances: ShardedLruCache<SuiAddress, SuiResult<Arc<HashMap<TypeTag, TotalBalance>>>>,
-    locks: MutexTable<SuiAddress>,
+    per_coin_type_balance: ShardedLruCache<(IotaAddress, TypeTag), IotaResult<TotalBalance>>,
+    all_balances: ShardedLruCache<IotaAddress, IotaResult<Arc<HashMap<TypeTag, TotalBalance>>>>,
+    locks: MutexTable<IotaAddress>,
 }
 
 #[derive(Default)]
 pub struct IndexStoreCacheUpdates {
     _locks: Vec<OwnedMutexGuard<()>>,
-    per_coin_type_balance_changes: Vec<((SuiAddress, TypeTag), SuiResult<TotalBalance>)>,
-    all_balance_changes: Vec<(SuiAddress, SuiResult<Arc<AllBalance>>)>,
+    per_coin_type_balance_changes: Vec<((IotaAddress, TypeTag), IotaResult<TotalBalance>)>,
+    all_balance_changes: Vec<(IotaAddress, IotaResult<Arc<AllBalance>>)>,
 }
 
 #[derive(DBMapUtils)]
@@ -212,11 +213,11 @@ pub struct IndexStoreTables {
     /// - version of each column family and their respective initialization status
     meta: DBMap<(), MetadataInfo>,
 
-    /// Index from sui address to transactions initiated by that address.
-    transactions_from_addr: DBMap<(SuiAddress, TxSequenceNumber), TransactionDigest>,
+    /// Index from iota address to transactions initiated by that address.
+    transactions_from_addr: DBMap<(IotaAddress, TxSequenceNumber), TransactionDigest>,
 
-    /// Index from sui address to transactions that were sent to that address.
-    transactions_to_addr: DBMap<(SuiAddress, TxSequenceNumber), TransactionDigest>,
+    /// Index from iota address to transactions that were sent to that address.
+    transactions_to_addr: DBMap<(IotaAddress, TxSequenceNumber), TransactionDigest>,
 
     /// Index from object id to transactions that used that object id as input.
     #[deprecated]
@@ -237,7 +238,7 @@ pub struct IndexStoreTables {
     transactions_seq: DBMap<TransactionDigest, TxSequenceNumber>,
 
     /// This is an index of object references to currently existing objects, indexed by the
-    /// composite key of the SuiAddress of their owner and the object ID of the object.
+    /// composite key of the IotaAddress of their owner and the object ID of the object.
     /// This composite index allows an efficient iterator to list all objected currently owned
     /// by a specific user, and their object reference.
     owner_index: DBMap<OwnerIndexKey, ObjectInfo>,
@@ -254,7 +255,7 @@ pub struct IndexStoreTables {
     event_by_move_module: DBMap<(ModuleId, EventId), EventIndex>,
     event_by_move_event: DBMap<(StructTag, EventId), EventIndex>,
     event_by_event_module: DBMap<(ModuleId, EventId), EventIndex>,
-    event_by_sender: DBMap<(SuiAddress, EventId), EventIndex>,
+    event_by_sender: DBMap<(IotaAddress, EventId), EventIndex>,
     event_by_time: DBMap<(u64, EventId), EventIndex>,
 
     pruner_watermark: DBMap<(), TxSequenceNumber>,
@@ -436,7 +437,7 @@ impl IndexStore {
                     compaction_metrics.clone(),
                     db_options.clone(),
                     pruner_watermark.clone(),
-                    |(_, id): (SuiAddress, TxSequenceNumber)| id,
+                    |(_, id): (IotaAddress, TxSequenceNumber)| id,
                 ),
             ),
             (
@@ -446,7 +447,7 @@ impl IndexStore {
                     compaction_metrics.clone(),
                     db_options.clone(),
                     pruner_watermark.clone(),
-                    |(_, sequence_number): (SuiAddress, TxSequenceNumber)| sequence_number,
+                    |(_, sequence_number): (IotaAddress, TxSequenceNumber)| sequence_number,
                 ),
             ),
             (
@@ -521,7 +522,7 @@ impl IndexStore {
                     compaction_metrics.clone(),
                     db_options.clone(),
                     pruner_watermark.clone(),
-                    |(_, event_id): (SuiAddress, EventId)| event_id.0,
+                    |(_, event_id): (IotaAddress, EventId)| event_id.0,
                 ),
             ),
             (
@@ -601,7 +602,7 @@ impl IndexStore {
         batch: &mut DBBatch,
         object_index_changes: &ObjectIndexChanges,
         tx_coins: Option<TxCoins>,
-    ) -> SuiResult<IndexStoreCacheUpdates> {
+    ) -> IotaResult<IndexStoreCacheUpdates> {
         // In production if this code path is hit, we should expect `tx_coins` to not be None.
         // However, in many tests today we do not distinguish validator and/or fullnode, so
         // we gracefully exist here.
@@ -609,7 +610,7 @@ impl IndexStore {
             return Ok(IndexStoreCacheUpdates::default());
         }
         // Acquire locks on changed coin owners
-        let mut addresses: HashSet<SuiAddress> = HashSet::new();
+        let mut addresses: HashSet<IotaAddress> = HashSet::new();
         addresses.extend(
             object_index_changes
                 .deleted_owners
@@ -623,7 +624,7 @@ impl IndexStore {
                 .map(|((owner, _), _)| *owner),
         );
         let _locks = self.caches.locks.acquire_locks(addresses.into_iter());
-        let mut balance_changes: HashMap<SuiAddress, HashMap<TypeTag, TotalBalance>> =
+        let mut balance_changes: HashMap<IotaAddress, HashMap<TypeTag, TotalBalance>> =
             HashMap::new();
         // Index coin info
         let (input_coins, written_coins) = tx_coins.unwrap();
@@ -718,7 +719,7 @@ impl IndexStore {
                 balance_map.iter().map(|(type_tag, balance)| {
                     (
                         (*address, type_tag.clone()),
-                        Ok::<TotalBalance, SuiError>(*balance),
+                        Ok::<TotalBalance, IotaError>(*balance),
                     )
                 })
             })
@@ -728,7 +729,7 @@ impl IndexStore {
             .map(|(address, balance_map)| {
                 (
                     address,
-                    Ok::<Arc<HashMap<TypeTag, TotalBalance>>, SuiError>(Arc::new(balance_map)),
+                    Ok::<Arc<HashMap<TypeTag, TotalBalance>>, IotaError>(Arc::new(balance_map)),
                 )
             })
             .collect();
@@ -743,7 +744,7 @@ impl IndexStore {
     #[instrument(skip_all)]
     pub fn index_tx(
         &self,
-        sender: SuiAddress,
+        sender: IotaAddress,
         active_inputs: impl Iterator<Item = ObjectID>,
         mutated_objects: impl Iterator<Item = (ObjectRef, Owner)> + Clone,
         move_functions: impl Iterator<Item = (ObjectID, String, String)> + Clone,
@@ -752,7 +753,7 @@ impl IndexStore {
         digest: &TransactionDigest,
         timestamp_ms: u64,
         tx_coins: Option<TxCoins>,
-    ) -> SuiResult<u64> {
+    ) -> IotaResult<u64> {
         let sequence = self.next_sequence_number.fetch_add(1, Ordering::SeqCst);
         let mut batch = self.tables.transactions_from_addr.batch();
 
@@ -930,12 +931,12 @@ impl IndexStore {
         cursor: Option<TransactionDigest>,
         limit: Option<usize>,
         reverse: bool,
-    ) -> SuiResult<Vec<TransactionDigest>> {
+    ) -> IotaResult<Vec<TransactionDigest>> {
         // Lookup TransactionDigest sequence number,
         let cursor = if let Some(cursor) = cursor {
             Some(
                 self.get_transaction_seq(&cursor)?
-                    .ok_or(SuiError::TransactionNotFound { digest: cursor })?,
+                    .ok_or(IotaError::TransactionNotFound { digest: cursor })?,
             )
         } else {
             None
@@ -962,7 +963,7 @@ impl IndexStore {
             }
             // NOTE: filter via checkpoint sequence number is implemented in
             // `get_transactions` of authority.rs.
-            Some(_) => Err(SuiError::UserInputError {
+            Some(_) => Err(IotaError::UserInputError {
                 error: UserInputError::Unsupported(format!("{:?}", filter)),
             }),
             None => {
@@ -1005,7 +1006,7 @@ impl IndexStore {
         cursor: Option<TxSequenceNumber>,
         limit: Option<usize>,
         reverse: bool,
-    ) -> SuiResult<Vec<TransactionDigest>> {
+    ) -> IotaResult<Vec<TransactionDigest>> {
         Ok(if reverse {
             let iter = index
                 .reversed_safe_iter_with_bounds(
@@ -1052,7 +1053,7 @@ impl IndexStore {
         cursor: Option<TxSequenceNumber>,
         limit: Option<usize>,
         reverse: bool,
-    ) -> SuiResult<Vec<TransactionDigest>> {
+    ) -> IotaResult<Vec<TransactionDigest>> {
         if self.remove_deprecated_tables {
             return Ok(vec![]);
         }
@@ -1073,7 +1074,7 @@ impl IndexStore {
         cursor: Option<TxSequenceNumber>,
         limit: Option<usize>,
         reverse: bool,
-    ) -> SuiResult<Vec<TransactionDigest>> {
+    ) -> IotaResult<Vec<TransactionDigest>> {
         if self.remove_deprecated_tables {
             return Ok(vec![]);
         }
@@ -1090,11 +1091,11 @@ impl IndexStore {
     #[instrument(skip(self))]
     pub fn get_transactions_from_addr(
         &self,
-        addr: SuiAddress,
+        addr: IotaAddress,
         cursor: Option<TxSequenceNumber>,
         limit: Option<usize>,
         reverse: bool,
-    ) -> SuiResult<Vec<TransactionDigest>> {
+    ) -> IotaResult<Vec<TransactionDigest>> {
         Self::get_transactions_from_index(
             &self.tables.transactions_from_addr,
             addr,
@@ -1113,10 +1114,10 @@ impl IndexStore {
         cursor: Option<TxSequenceNumber>,
         limit: Option<usize>,
         reverse: bool,
-    ) -> SuiResult<Vec<TransactionDigest>> {
+    ) -> IotaResult<Vec<TransactionDigest>> {
         // If we are passed a function with no module return a UserInputError
         if function.is_some() && module.is_none() {
-            return Err(SuiError::UserInputError {
+            return Err(IotaError::UserInputError {
                 error: UserInputError::MoveFunctionInputError(
                     "Cannot supply function without supplying module".to_string(),
                 ),
@@ -1125,7 +1126,7 @@ impl IndexStore {
 
         // We cannot have a cursor without filling out the other keys.
         if cursor.is_some() && (module.is_none() || function.is_none()) {
-            return Err(SuiError::UserInputError {
+            return Err(IotaError::UserInputError {
                 error: UserInputError::MoveFunctionInputError(
                     "Cannot supply cursor without supplying module and function".to_string(),
                 ),
@@ -1199,11 +1200,11 @@ impl IndexStore {
     #[instrument(skip(self))]
     pub fn get_transactions_to_addr(
         &self,
-        addr: SuiAddress,
+        addr: IotaAddress,
         cursor: Option<TxSequenceNumber>,
         limit: Option<usize>,
         reverse: bool,
-    ) -> SuiResult<Vec<TransactionDigest>> {
+    ) -> IotaResult<Vec<TransactionDigest>> {
         Self::get_transactions_from_index(
             &self.tables.transactions_to_addr,
             addr,
@@ -1217,7 +1218,7 @@ impl IndexStore {
     pub fn get_transaction_seq(
         &self,
         digest: &TransactionDigest,
-    ) -> SuiResult<Option<TxSequenceNumber>> {
+    ) -> IotaResult<Option<TxSequenceNumber>> {
         Ok(self.tables.transactions_seq.get(digest)?)
     }
 
@@ -1228,7 +1229,7 @@ impl IndexStore {
         event_seq: usize,
         limit: usize,
         descending: bool,
-    ) -> SuiResult<Vec<(TransactionEventsDigest, TransactionDigest, usize, u64)>> {
+    ) -> IotaResult<Vec<(TransactionEventsDigest, TransactionDigest, usize, u64)>> {
         Ok(if descending {
             self.tables
                 .event_order
@@ -1262,10 +1263,10 @@ impl IndexStore {
         event_seq: usize,
         limit: usize,
         descending: bool,
-    ) -> SuiResult<Vec<(TransactionEventsDigest, TransactionDigest, usize, u64)>> {
+    ) -> IotaResult<Vec<(TransactionEventsDigest, TransactionDigest, usize, u64)>> {
         let seq = self
             .get_transaction_seq(digest)?
-            .ok_or(SuiError::TransactionNotFound { digest: *digest })?;
+            .ok_or(IotaError::TransactionNotFound { digest: *digest })?;
         Ok(if descending {
             self.tables
                 .event_order
@@ -1305,7 +1306,7 @@ impl IndexStore {
         event_seq: usize,
         limit: usize,
         descending: bool,
-    ) -> SuiResult<Vec<(TransactionEventsDigest, TransactionDigest, usize, u64)>> {
+    ) -> IotaResult<Vec<(TransactionEventsDigest, TransactionDigest, usize, u64)>> {
         Ok(if descending {
             index
                 .reversed_safe_iter_with_bounds(None, Some((key.clone(), (tx_seq, event_seq))))?
@@ -1338,7 +1339,7 @@ impl IndexStore {
         event_seq: usize,
         limit: usize,
         descending: bool,
-    ) -> SuiResult<Vec<(TransactionEventsDigest, TransactionDigest, usize, u64)>> {
+    ) -> IotaResult<Vec<(TransactionEventsDigest, TransactionDigest, usize, u64)>> {
         Self::get_event_from_index(
             &self.tables.event_by_move_module,
             module,
@@ -1357,7 +1358,7 @@ impl IndexStore {
         event_seq: usize,
         limit: usize,
         descending: bool,
-    ) -> SuiResult<Vec<(TransactionEventsDigest, TransactionDigest, usize, u64)>> {
+    ) -> IotaResult<Vec<(TransactionEventsDigest, TransactionDigest, usize, u64)>> {
         Self::get_event_from_index(
             &self.tables.event_by_move_event,
             struct_name,
@@ -1376,7 +1377,7 @@ impl IndexStore {
         event_seq: usize,
         limit: usize,
         descending: bool,
-    ) -> SuiResult<Vec<(TransactionEventsDigest, TransactionDigest, usize, u64)>> {
+    ) -> IotaResult<Vec<(TransactionEventsDigest, TransactionDigest, usize, u64)>> {
         Self::get_event_from_index(
             &self.tables.event_by_event_module,
             module_id,
@@ -1390,12 +1391,12 @@ impl IndexStore {
     #[instrument(skip(self))]
     pub fn events_by_sender(
         &self,
-        sender: &SuiAddress,
+        sender: &IotaAddress,
         tx_seq: TxSequenceNumber,
         event_seq: usize,
         limit: usize,
         descending: bool,
-    ) -> SuiResult<Vec<(TransactionEventsDigest, TransactionDigest, usize, u64)>> {
+    ) -> IotaResult<Vec<(TransactionEventsDigest, TransactionDigest, usize, u64)>> {
         Self::get_event_from_index(
             &self.tables.event_by_sender,
             sender,
@@ -1415,7 +1416,7 @@ impl IndexStore {
         event_seq: usize,
         limit: usize,
         descending: bool,
-    ) -> SuiResult<Vec<(TransactionEventsDigest, TransactionDigest, usize, u64)>> {
+    ) -> IotaResult<Vec<(TransactionEventsDigest, TransactionDigest, usize, u64)>> {
         Ok(if descending {
             self.tables
                 .event_by_time
@@ -1447,7 +1448,7 @@ impl IndexStore {
         })
     }
 
-    pub fn prune(&self, cut_time_ms: u64) -> SuiResult<TxSequenceNumber> {
+    pub fn prune(&self, cut_time_ms: u64) -> IotaResult<TxSequenceNumber> {
         match self
             .tables
             .event_by_time
@@ -1477,7 +1478,7 @@ impl IndexStore {
         &self,
         object: ObjectID,
         cursor: Option<ObjectID>,
-    ) -> SuiResult<impl Iterator<Item = Result<(ObjectID, DynamicFieldInfo), TypedStoreError>> + '_>
+    ) -> IotaResult<impl Iterator<Item = Result<(ObjectID, DynamicFieldInfo), TypedStoreError>> + '_>
     {
         debug!(?object, "get_dynamic_fields");
         // The object id 0 is the smallest possible
@@ -1499,12 +1500,12 @@ impl IndexStore {
         object: ObjectID,
         name_type: TypeTag,
         name_bcs_bytes: &[u8],
-    ) -> SuiResult<Option<ObjectID>> {
+    ) -> IotaResult<Option<ObjectID>> {
         debug!(?object, "get_dynamic_field_object_id");
         let dynamic_field_id =
             dynamic_field::derive_dynamic_field_id(object, &name_type, name_bcs_bytes).map_err(
                 |e| {
-                    SuiError::Unknown(format!(
+                    IotaError::Unknown(format!(
                         "Unable to generate dynamic field id. Got error: {e:?}"
                     ))
                 },
@@ -1531,7 +1532,7 @@ impl IndexStore {
             name_bcs_bytes,
         )
         .map_err(|e| {
-            SuiError::Unknown(format!(
+            IotaError::Unknown(format!(
                 "Unable to generate dynamic field id. Got error: {e:?}"
             ))
         })?;
@@ -1549,11 +1550,11 @@ impl IndexStore {
     #[instrument(skip(self))]
     pub fn get_owner_objects(
         &self,
-        owner: SuiAddress,
+        owner: IotaAddress,
         cursor: Option<ObjectID>,
         limit: usize,
-        filter: Option<SuiObjectDataFilter>,
-    ) -> SuiResult<Vec<ObjectInfo>> {
+        filter: Option<IotaObjectDataFilter>,
+    ) -> IotaResult<Vec<ObjectInfo>> {
         let cursor = match cursor {
             Some(cursor) => cursor,
             None => ObjectID::ZERO,
@@ -1566,9 +1567,9 @@ impl IndexStore {
 
     pub fn get_owned_coins_iterator(
         coin_index: &DBMap<CoinIndexKey2, CoinInfo>,
-        owner: SuiAddress,
+        owner: IotaAddress,
         coin_type_tag: Option<String>,
-    ) -> SuiResult<impl Iterator<Item = (CoinIndexKey2, CoinInfo)> + '_> {
+    ) -> IotaResult<impl Iterator<Item = (CoinIndexKey2, CoinInfo)> + '_> {
         let all_coins = coin_type_tag.is_none();
         let starting_coin_type =
             coin_type_tag.unwrap_or_else(|| String::from_utf8([0u8].to_vec()).unwrap());
@@ -1590,11 +1591,11 @@ impl IndexStore {
 
     pub fn get_owned_coins_iterator_with_cursor(
         &self,
-        owner: SuiAddress,
+        owner: IotaAddress,
         cursor: (String, u64, ObjectID),
         limit: usize,
         one_coin_type_only: bool,
-    ) -> SuiResult<impl Iterator<Item = (CoinIndexKey2, CoinInfo)> + '_> {
+    ) -> IotaResult<impl Iterator<Item = (CoinIndexKey2, CoinInfo)> + '_> {
         let (starting_coin_type, inverted_balance, starting_object_id) = cursor;
         let start_key = CoinIndexKey2::new_from_cursor(
             owner,
@@ -1628,10 +1629,10 @@ impl IndexStore {
     /// object id of each page, and use it to query the next page.
     pub fn get_owner_objects_iterator(
         &self,
-        owner: SuiAddress,
+        owner: IotaAddress,
         starting_object_id: ObjectID,
-        filter: Option<SuiObjectDataFilter>,
-    ) -> SuiResult<impl Iterator<Item = ObjectInfo> + '_> {
+        filter: Option<IotaObjectDataFilter>,
+    ) -> IotaResult<impl Iterator<Item = ObjectInfo> + '_> {
         Ok(self
             .tables
             .owner_index
@@ -1650,7 +1651,7 @@ impl IndexStore {
             .map(|(_, object_info)| object_info))
     }
 
-    pub fn insert_genesis_objects(&self, object_index_changes: ObjectIndexChanges) -> SuiResult {
+    pub fn insert_genesis_objects(&self, object_index_changes: ObjectIndexChanges) -> IotaResult {
         let mut batch = self.tables.owner_index.batch();
         batch.insert_batch(
             &self.tables.owner_index,
@@ -1668,7 +1669,7 @@ impl IndexStore {
         self.tables.owner_index.is_empty()
     }
 
-    pub fn checkpoint_db(&self, path: &Path) -> SuiResult {
+    pub fn checkpoint_db(&self, path: &Path) -> IotaResult {
         // We are checkpointing the whole db
         self.tables
             .transactions_from_addr
@@ -1681,7 +1682,7 @@ impl IndexStore {
     /// cache miss, we go to the database (expensive) and update the cache. Notice that db read is
     /// done with `spawn_blocking` as that is expected to block
     #[instrument(skip(self))]
-    pub fn get_balance(&self, owner: SuiAddress, coin_type: TypeTag) -> SuiResult<TotalBalance> {
+    pub fn get_balance(&self, owner: IotaAddress, coin_type: TypeTag) -> IotaResult<TotalBalance> {
         let force_disable_cache = read_size_from_env(ENV_VAR_DISABLE_INDEX_CACHE).unwrap_or(0) > 0;
         let cloned_coin_type = coin_type.clone();
         let metrics_cloned = self.metrics.clone();
@@ -1689,7 +1690,7 @@ impl IndexStore {
         if force_disable_cache {
             Self::get_balance_from_db(metrics_cloned, coin_index_cloned, owner, cloned_coin_type)
                 .map_err(|e| {
-                SuiError::ExecutionError(format!("Failed to read balance frm DB: {:?}", e))
+                IotaError::ExecutionError(format!("Failed to read balance frm DB: {:?}", e))
             })?;
         }
 
@@ -1722,7 +1723,7 @@ impl IndexStore {
                     cloned_coin_type,
                 )
                 .map_err(|e| {
-                    SuiError::ExecutionError(format!("Failed to read balance frm DB: {:?}", e))
+                    IotaError::ExecutionError(format!("Failed to read balance frm DB: {:?}", e))
                 })
             })
     }
@@ -1735,15 +1736,15 @@ impl IndexStore {
     #[instrument(skip(self))]
     pub fn get_all_balance(
         &self,
-        owner: SuiAddress,
-    ) -> SuiResult<Arc<HashMap<TypeTag, TotalBalance>>> {
+        owner: IotaAddress,
+    ) -> IotaResult<Arc<HashMap<TypeTag, TotalBalance>>> {
         let force_disable_cache = read_size_from_env(ENV_VAR_DISABLE_INDEX_CACHE).unwrap_or(0) > 0;
         let metrics_cloned = self.metrics.clone();
         let coin_index_cloned = self.tables.coin_index_2.clone();
         if force_disable_cache {
             Self::get_all_balances_from_db(metrics_cloned, coin_index_cloned, owner).map_err(
                 |e| {
-                    SuiError::ExecutionError(format!("Failed to read all balance from DB: {:?}", e))
+                    IotaError::ExecutionError(format!("Failed to read all balance from DB: {:?}", e))
                 },
             )?;
         }
@@ -1753,19 +1754,19 @@ impl IndexStore {
         let coin_index_cloned = self.tables.coin_index_2.clone();
         self.caches.all_balances.get_with(owner, move || {
             Self::get_all_balances_from_db(metrics_cloned, coin_index_cloned, owner).map_err(|e| {
-                SuiError::ExecutionError(format!("Failed to read all balance from DB: {:?}", e))
+                IotaError::ExecutionError(format!("Failed to read all balance from DB: {:?}", e))
             })
         })
     }
 
-    /// Read balance for a `SuiAddress` and `CoinType` from the backend database
+    /// Read balance for a `IotaAddress` and `CoinType` from the backend database
     #[instrument(skip_all)]
     pub fn get_balance_from_db(
         metrics: Arc<IndexStoreMetrics>,
         coin_index: DBMap<CoinIndexKey2, CoinInfo>,
-        owner: SuiAddress,
+        owner: IotaAddress,
         coin_type: TypeTag,
-    ) -> SuiResult<TotalBalance> {
+    ) -> IotaResult<TotalBalance> {
         metrics.balance_lookup_from_db.inc();
         let coin_type_str = coin_type.to_string();
         let coins =
@@ -1780,13 +1781,13 @@ impl IndexStore {
         Ok(TotalBalance { balance, num_coins })
     }
 
-    /// Read all balances for a `SuiAddress` from the backend database
+    /// Read all balances for a `IotaAddress` from the backend database
     #[instrument(skip_all)]
     pub fn get_all_balances_from_db(
         metrics: Arc<IndexStoreMetrics>,
         coin_index: DBMap<CoinIndexKey2, CoinInfo>,
-        owner: SuiAddress,
-    ) -> SuiResult<Arc<HashMap<TypeTag, TotalBalance>>> {
+        owner: IotaAddress,
+    ) -> IotaResult<Arc<HashMap<TypeTag, TotalBalance>>> {
         metrics.all_balance_lookup_from_db.inc();
         let mut balances: HashMap<TypeTag, TotalBalance> = HashMap::new();
         let coins = Self::get_owned_coins_iterator(&coin_index, owner, None)?
@@ -1799,8 +1800,8 @@ impl IndexStore {
                 coin_object_count += 1;
             }
             let coin_type =
-                TypeTag::Struct(Box::new(parse_sui_struct_tag(&coin_type).map_err(|e| {
-                    SuiError::ExecutionError(format!(
+                TypeTag::Struct(Box::new(parse_iota_struct_tag(&coin_type).map_err(|e| {
+                    IotaError::ExecutionError(format!(
                         "Failed to parse event sender address: {:?}",
                         e
                     ))
@@ -1818,24 +1819,24 @@ impl IndexStore {
 
     fn invalidate_per_coin_type_cache(
         &self,
-        keys: impl IntoIterator<Item = (SuiAddress, TypeTag)>,
-    ) -> SuiResult {
+        keys: impl IntoIterator<Item = (IotaAddress, TypeTag)>,
+    ) -> IotaResult {
         self.caches.per_coin_type_balance.batch_invalidate(keys);
         Ok(())
     }
 
     fn invalidate_all_balance_cache(
         &self,
-        addresses: impl IntoIterator<Item = SuiAddress>,
-    ) -> SuiResult {
+        addresses: impl IntoIterator<Item = IotaAddress>,
+    ) -> IotaResult {
         self.caches.all_balances.batch_invalidate(addresses);
         Ok(())
     }
 
     fn update_per_coin_type_cache(
         &self,
-        keys: impl IntoIterator<Item = ((SuiAddress, TypeTag), SuiResult<TotalBalance>)>,
-    ) -> SuiResult {
+        keys: impl IntoIterator<Item = ((IotaAddress, TypeTag), IotaResult<TotalBalance>)>,
+    ) -> IotaResult {
         self.caches
             .per_coin_type_balance
             .batch_merge(keys, Self::merge_balance);
@@ -1843,9 +1844,9 @@ impl IndexStore {
     }
 
     fn merge_balance(
-        old_balance: &SuiResult<TotalBalance>,
-        balance_delta: &SuiResult<TotalBalance>,
-    ) -> SuiResult<TotalBalance> {
+        old_balance: &IotaResult<TotalBalance>,
+        balance_delta: &IotaResult<TotalBalance>,
+    ) -> IotaResult<TotalBalance> {
         if let Ok(old_balance) = old_balance {
             if let Ok(balance_delta) = balance_delta {
                 Ok(TotalBalance {
@@ -1862,8 +1863,8 @@ impl IndexStore {
 
     fn update_all_balance_cache(
         &self,
-        keys: impl IntoIterator<Item = (SuiAddress, SuiResult<Arc<HashMap<TypeTag, TotalBalance>>>)>,
-    ) -> SuiResult {
+        keys: impl IntoIterator<Item = (IotaAddress, IotaResult<Arc<HashMap<TypeTag, TotalBalance>>>)>,
+    ) -> IotaResult {
         self.caches
             .all_balances
             .batch_merge(keys, Self::merge_all_balance);
@@ -1871,9 +1872,9 @@ impl IndexStore {
     }
 
     fn merge_all_balance(
-        old_balance: &SuiResult<Arc<HashMap<TypeTag, TotalBalance>>>,
-        balance_delta: &SuiResult<Arc<HashMap<TypeTag, TotalBalance>>>,
-    ) -> SuiResult<Arc<HashMap<TypeTag, TotalBalance>>> {
+        old_balance: &IotaResult<Arc<HashMap<TypeTag, TotalBalance>>>,
+        balance_delta: &IotaResult<Arc<HashMap<TypeTag, TotalBalance>>>,
+    ) -> IotaResult<Arc<HashMap<TypeTag, TotalBalance>>> {
         if let Ok(old_balance) = old_balance {
             if let Ok(balance_delta) = balance_delta {
                 let mut new_balance = HashMap::new();
@@ -1974,12 +1975,12 @@ mod tests {
     use prometheus::Registry;
     use std::collections::BTreeMap;
     use std::env::temp_dir;
-    use sui_types::base_types::{ObjectInfo, ObjectType, SuiAddress};
-    use sui_types::digests::TransactionDigest;
-    use sui_types::effects::TransactionEvents;
-    use sui_types::gas_coin::GAS;
-    use sui_types::object;
-    use sui_types::object::Owner;
+    use iota_types::base_types::{ObjectInfo, ObjectType, IotaAddress};
+    use iota_types::digests::TransactionDigest;
+    use iota_types::effects::TransactionEvents;
+    use iota_types::gas_coin::GAS;
+    use iota_types::object;
+    use iota_types::object::Owner;
 
     #[tokio::test]
     async fn test_index_cache() -> anyhow::Result<()> {
@@ -1992,7 +1993,7 @@ mod tests {
         // balance.
         let index_store =
             IndexStore::new_without_init(temp_dir(), &Registry::default(), Some(128), false);
-        let address: SuiAddress = AccountAddress::random().into();
+        let address: IotaAddress = AccountAddress::random().into();
         let mut written_objects = BTreeMap::new();
         let mut input_objects = BTreeMap::new();
         let mut object_map = BTreeMap::new();

@@ -1,12 +1,13 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use anyhow::Context as _;
 use diesel::{ExpressionMethods, QueryDsl};
 use futures::future::OptionFuture;
-use sui_indexer_alt_schema::schema::watermarks;
-use sui_name_service::{Domain, NameRecord, NameServiceError};
-use sui_types::base_types::SuiAddress;
+use iota_indexer_alt_schema::schema::watermarks;
+use iota_name_service::{Domain, NameRecord, NameServiceError};
+use iota_types::base_types::IotaAddress;
 use tokio::join;
 
 use crate::{
@@ -17,12 +18,12 @@ use crate::{
 
 use super::Error;
 
-/// Attempt to to translate the given SuiNS `name` to its address, as long as the mapping exists,
+/// Attempt to to translate the given IotaNS `name` to its address, as long as the mapping exists,
 /// and it hasn't expired.
 pub(super) async fn resolved_address(
     ctx: &Context,
     name: &str,
-) -> Result<Option<SuiAddress>, RpcError<Error>> {
+) -> Result<Option<IotaAddress>, RpcError<Error>> {
     use Error as E;
 
     let domain: Domain = name

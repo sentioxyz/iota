@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::authority::authority_per_epoch_store::AuthorityPerEpochStore;
@@ -10,10 +11,10 @@ use consensus_core::BlockRef;
 use prometheus::Registry;
 use std::sync::{Arc, Weak};
 use std::time::Duration;
-use sui_types::error::{SuiError, SuiResult};
-use sui_types::executable_transaction::VerifiedExecutableTransaction;
-use sui_types::messages_consensus::{ConsensusTransaction, ConsensusTransactionKind};
-use sui_types::transaction::{VerifiedCertificate, VerifiedTransaction};
+use iota_types::error::{IotaError, IotaResult};
+use iota_types::executable_transaction::VerifiedExecutableTransaction;
+use iota_types::messages_consensus::{ConsensusTransaction, ConsensusTransactionKind};
+use iota_types::transaction::{VerifiedCertificate, VerifiedTransaction};
 use tokio::sync::{mpsc, oneshot};
 use tokio::task::JoinHandle;
 use tracing::debug;
@@ -99,13 +100,13 @@ impl MockConsensusClient {
         }
     }
 
-    fn submit_impl(&self, transactions: &[ConsensusTransaction]) -> SuiResult<BlockStatusReceiver> {
+    fn submit_impl(&self, transactions: &[ConsensusTransaction]) -> IotaResult<BlockStatusReceiver> {
         // TODO: maybe support multi-transactions and remove this check
         assert!(transactions.len() == 1);
         let transaction = &transactions[0];
         self.tx_sender
             .try_send(transaction.clone())
-            .map_err(|_| SuiError::from("MockConsensusClient channel overflowed"))?;
+            .map_err(|_| IotaError::from("MockConsensusClient channel overflowed"))?;
         Ok(with_block_status(consensus_core::BlockStatus::Sequenced(
             BlockRef::MIN,
         )))
@@ -117,7 +118,7 @@ impl SubmitToConsensus for MockConsensusClient {
         &self,
         transactions: &[ConsensusTransaction],
         _epoch_store: &Arc<AuthorityPerEpochStore>,
-    ) -> SuiResult {
+    ) -> IotaResult {
         self.submit_impl(transactions).map(|_response| ())
     }
 
@@ -126,7 +127,7 @@ impl SubmitToConsensus for MockConsensusClient {
         transaction: &ConsensusTransaction,
         _epoch_store: &Arc<AuthorityPerEpochStore>,
         _timeout: Duration,
-    ) -> SuiResult {
+    ) -> IotaResult {
         self.submit_impl(&[transaction.clone()]).map(|_response| ())
     }
 }
@@ -137,7 +138,7 @@ impl ConsensusClient for MockConsensusClient {
         &self,
         transactions: &[ConsensusTransaction],
         _epoch_store: &Arc<AuthorityPerEpochStore>,
-    ) -> SuiResult<BlockStatusReceiver> {
+    ) -> IotaResult<BlockStatusReceiver> {
         self.submit_impl(transactions)
     }
 }

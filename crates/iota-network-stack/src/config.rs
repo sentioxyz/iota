@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 use crate::metrics::{DefaultMetricsCallbackProvider, MetricsCallbackProvider};
 use crate::{
@@ -107,8 +108,8 @@ impl Config {
         connect_lazy_with_config(addr, tls_config, self)
     }
 
-    pub(crate) fn http_config(&self) -> sui_http::Config {
-        sui_http::Config::default()
+    pub(crate) fn http_config(&self) -> iota_http::Config {
+        iota_http::Config::default()
             .initial_stream_window_size(self.http2_initial_stream_window_size)
             .initial_connection_window_size(self.http2_initial_connection_window_size)
             .max_concurrent_streams(self.http2_max_concurrent_streams)

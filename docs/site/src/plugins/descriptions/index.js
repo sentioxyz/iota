@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 // This plugin gets the descriptions from yaml header and
@@ -12,7 +13,7 @@ import TurndownService from "turndown";
 
 const descriptionPlugin = (context, options) => {
   return {
-    name: "sui-description-plugin",
+    name: "iota-description-plugin",
 
     async loadContent() {
       const c = context.siteConfig.presets.filter((s) => s[0] === "classic");
@@ -28,7 +29,7 @@ const descriptionPlugin = (context, options) => {
           if (file.isDirectory()) {
             recurseFiles(fp, files);
           } else if (file.isFile() && path.extname(file.name) === ".mdx") {
-            if (!fp.match(/\/sui-api\/sui-graphql\//) && !fp.match(/snippets/))
+            if (!fp.match(/\/iota-api\/iota-graphql\//) && !fp.match(/snippets/))
               files.push(fp);
           }
         });
@@ -127,7 +128,7 @@ const descriptionPlugin = (context, options) => {
 
       // Build a doc that puts all site content into a text file
       // Array of pages that don't need to be included in the llm file
-      const skips = ["/404.html", "/search", "/sui-api-ref", "/"];
+      const skips = ["/404.html", "/search", "/iota-api-ref", "/"];
       let llmsFull = [`# ${siteConfig.title}\n`, `${siteConfig.tagline}`];
       var turndownService = new TurndownService({
         headingStyle: "atx",

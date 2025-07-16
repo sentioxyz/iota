@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::drivers::Interval;
@@ -15,13 +16,13 @@ use futures::future::join_all;
 use rand::Rng;
 use std::sync::Arc;
 use std::time::Duration;
-use sui_test_transaction_builder::TestTransactionBuilder;
-use sui_types::base_types::{ObjectID, ObjectRef, SequenceNumber, SuiAddress};
-use sui_types::crypto::{get_key_pair, AccountKeyPair};
-use sui_types::object::Owner;
-use sui_types::programmable_transaction_builder::ProgrammableTransactionBuilder;
-use sui_types::transaction::{CallArg, ObjectArg, Transaction};
-use sui_types::{Identifier, SUI_RANDOMNESS_STATE_OBJECT_ID};
+use iota_test_transaction_builder::TestTransactionBuilder;
+use iota_types::base_types::{ObjectID, ObjectRef, SequenceNumber, IotaAddress};
+use iota_types::crypto::{get_key_pair, AccountKeyPair};
+use iota_types::object::Owner;
+use iota_types::programmable_transaction_builder::ProgrammableTransactionBuilder;
+use iota_types::transaction::{CallArg, ObjectArg, Transaction};
+use iota_types::{Identifier, IOTA_RANDOMNESS_STATE_OBJECT_ID};
 use tracing::{error, info};
 
 use super::STORAGE_COST_PER_COUNTER;
@@ -47,7 +48,7 @@ pub struct RandomizedTransactionPayload {
     shared_objects: Vec<ObjectRef>,
     owned_object: ObjectRef,
     randomness_initial_shared_version: SequenceNumber,
-    transfer_to: SuiAddress,
+    transfer_to: IotaAddress,
     gas: Gas,
     system_state_observer: Arc<SystemStateObserver>,
 }
@@ -175,7 +176,7 @@ impl RandomizedTransactionPayload {
                 Identifier::new("new").unwrap(),
                 vec![],
                 vec![CallArg::Object(ObjectArg::SharedObject {
-                    id: SUI_RANDOMNESS_STATE_OBJECT_ID,
+                    id: IOTA_RANDOMNESS_STATE_OBJECT_ID,
                     initial_shared_version: self.randomness_initial_shared_version,
                     mutable: false,
                 })],
@@ -185,7 +186,7 @@ impl RandomizedTransactionPayload {
 
     fn make_native_move_call(&mut self, builder: &mut ProgrammableTransactionBuilder) {
         builder
-            .pay_sui(
+            .pay_iota(
                 vec![self.transfer_to],
                 vec![rand::thread_rng().gen_range(0..=1)],
             )
@@ -394,7 +395,7 @@ pub struct RandomizedTransactionWorkload {
     pub basics_package_id: Option<ObjectID>,
     pub shared_objects: Vec<ObjectRef>,
     pub owned_objects: Vec<ObjectRef>,
-    pub transfer_to: Option<SuiAddress>,
+    pub transfer_to: Option<IotaAddress>,
     pub init_gas: Vec<Gas>,
     pub payload_gas: Vec<Gas>,
     pub randomness_initial_shared_version: Option<SequenceNumber>,
@@ -489,7 +490,7 @@ impl Workload<dyn Payload> for RandomizedTransactionWorkload {
         // Get randomness shared object initial version
         if self.randomness_initial_shared_version.is_none() {
             let obj = proxy
-                .get_object(SUI_RANDOMNESS_STATE_OBJECT_ID)
+                .get_object(IOTA_RANDOMNESS_STATE_OBJECT_ID)
                 .await
                 .expect("Failed to get randomness object");
             let Owner::Shared {

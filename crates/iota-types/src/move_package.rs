@@ -1,14 +1,15 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::execution_status::PackageUpgradeError;
 use crate::{
     base_types::{ObjectID, SequenceNumber},
     crypto::DefaultHash,
-    error::{ExecutionError, ExecutionErrorKind, SuiError, SuiResult},
+    error::{ExecutionError, ExecutionErrorKind, IotaError, IotaResult},
     id::{ID, UID},
     object::OBJECT_START_VERSION,
-    SUI_FRAMEWORK_ADDRESS,
+    IOTA_FRAMEWORK_ADDRESS,
 };
 use fastcrypto::hash::HashFunction;
 use move_binary_format::binary_config::BinaryConfig;
@@ -28,7 +29,7 @@ use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
 use serde_with::Bytes;
 use std::collections::{BTreeMap, BTreeSet};
-use sui_protocol_config::ProtocolConfig;
+use iota_protocol_config::ProtocolConfig;
 
 // TODO: robust MovePackage tests
 // #[cfg(test)]
@@ -124,7 +125,7 @@ pub struct MovePackage {
 
 // NB: do _not_ add `Serialize` or `Deserialize` to this enum. Convert to u8 first  or use the
 // associated constants before storing in any serialization setting.
-/// Rust representation of upgrade policy constants in `sui::package`.
+/// Rust representation of upgrade policy constants in `iota::package`.
 #[repr(u8)]
 #[derive(derive_more::Display, Debug, Clone, Copy)]
 pub enum UpgradePolicy {
@@ -159,7 +160,7 @@ impl TryFrom<u8> for UpgradePolicy {
     }
 }
 
-/// Rust representation of `sui::package::UpgradeCap`.
+/// Rust representation of `iota::package::UpgradeCap`.
 #[derive(Debug, Serialize, Deserialize)]
 pub struct UpgradeCap {
     pub id: UID,
@@ -168,7 +169,7 @@ pub struct UpgradeCap {
     pub policy: u8,
 }
 
-/// Rust representation of `sui::package::UpgradeTicket`.
+/// Rust representation of `iota::package::UpgradeTicket`.
 #[derive(Debug, Serialize, Deserialize)]
 pub struct UpgradeTicket {
     pub cap: ID,
@@ -177,7 +178,7 @@ pub struct UpgradeTicket {
     pub digest: Vec<u8>,
 }
 
-/// Rust representation of `sui::package::UpgradeReceipt`.
+/// Rust representation of `iota::package::UpgradeReceipt`.
 #[derive(Debug, Serialize, Deserialize)]
 pub struct UpgradeReceipt {
     pub cap: ID,
@@ -509,16 +510,16 @@ impl MovePackage {
         &self,
         module: &Identifier,
         binary_config: &BinaryConfig,
-    ) -> SuiResult<CompiledModule> {
+    ) -> IotaResult<CompiledModule> {
         // TODO use the session's cache
         let bytes = self
             .serialized_module_map()
             .get(module.as_str())
-            .ok_or_else(|| SuiError::ModuleNotFound {
+            .ok_or_else(|| IotaError::ModuleNotFound {
                 module_name: module.to_string(),
             })?;
         CompiledModule::deserialize_with_config(bytes, binary_config).map_err(|error| {
-            SuiError::ModuleDeserializationFailure {
+            IotaError::ModuleDeserializationFailure {
                 error: error.to_string(),
             }
         })
@@ -527,7 +528,7 @@ impl MovePackage {
     pub fn normalize(
         &self,
         binary_config: &BinaryConfig,
-    ) -> SuiResult<BTreeMap<String, normalized::Module>> {
+    ) -> IotaResult<BTreeMap<String, normalized::Module>> {
         normalize_modules(self.module_map.values(), binary_config)
     }
 }
@@ -535,7 +536,7 @@ impl MovePackage {
 impl UpgradeCap {
     pub fn type_() -> StructTag {
         StructTag {
-            address: SUI_FRAMEWORK_ADDRESS,
+            address: IOTA_FRAMEWORK_ADDRESS,
             module: PACKAGE_MODULE_NAME.to_owned(),
             name: UPGRADECAP_STRUCT_NAME.to_owned(),
             type_params: vec![],
@@ -557,7 +558,7 @@ impl UpgradeCap {
 impl UpgradeTicket {
     pub fn type_() -> StructTag {
         StructTag {
-            address: SUI_FRAMEWORK_ADDRESS,
+            address: IOTA_FRAMEWORK_ADDRESS,
             module: PACKAGE_MODULE_NAME.to_owned(),
             name: UPGRADETICKET_STRUCT_NAME.to_owned(),
             type_params: vec![],
@@ -568,7 +569,7 @@ impl UpgradeTicket {
 impl UpgradeReceipt {
     pub fn type_() -> StructTag {
         StructTag {
-            address: SUI_FRAMEWORK_ADDRESS,
+            address: IOTA_FRAMEWORK_ADDRESS,
             module: PACKAGE_MODULE_NAME.to_owned(),
             name: UPGRADERECEIPT_STRUCT_NAME.to_owned(),
             type_params: vec![],
@@ -600,7 +601,7 @@ pub fn is_test_fun(name: &IdentStr, module: &CompiledModule, fn_info_map: &FnInf
 pub fn normalize_modules<'a, I>(
     modules: I,
     binary_config: &BinaryConfig,
-) -> SuiResult<BTreeMap<String, normalized::Module>>
+) -> IotaResult<BTreeMap<String, normalized::Module>>
 where
     I: Iterator<Item = &'a Vec<u8>>,
 {
@@ -608,7 +609,7 @@ where
     for bytecode in modules {
         let module =
             CompiledModule::deserialize_with_config(bytecode, binary_config).map_err(|error| {
-                SuiError::ModuleDeserializationFailure {
+                IotaError::ModuleDeserializationFailure {
                     error: error.to_string(),
                 }
             })?;

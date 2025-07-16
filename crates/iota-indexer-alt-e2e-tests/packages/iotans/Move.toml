@@ -1,9 +1,9 @@
 [package]
-name = "suins"
+name = "iotans"
 edition = "2024.beta"
 
 [dependencies]
-Sui = { local = "../../../sui-framework/packages/sui-framework" }
+Iota = { local = "../../../iota-framework/packages/iota-framework" }
 
 [addresses]
-suins = "0x0"
+iotans = "0x0"

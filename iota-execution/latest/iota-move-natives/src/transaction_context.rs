@@ -1,12 +1,13 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use better_any::{Tid, TidAble};
 use move_binary_format::errors::{PartialVMError, PartialVMResult};
 use move_core_types::{account_address::AccountAddress, vm_status::StatusCode};
 use std::{cell::RefCell, rc::Rc};
-use sui_types::{
-    base_types::{ObjectID, SuiAddress, TxContext},
+use iota_types::{
+    base_types::{ObjectID, IotaAddress, TxContext},
     committee::EpochId,
     digests::TransactionDigest,
 };
@@ -35,7 +36,7 @@ impl TransactionContext {
         }
     }
 
-    pub fn sender(&self) -> SuiAddress {
+    pub fn sender(&self) -> IotaAddress {
         self.tx_context.borrow().sender()
     }
 
@@ -51,7 +52,7 @@ impl TransactionContext {
         self.tx_context.borrow().digest()
     }
 
-    pub fn sponsor(&self) -> Option<SuiAddress> {
+    pub fn sponsor(&self) -> Option<IotaAddress> {
         self.tx_context.borrow().sponsor()
     }
 

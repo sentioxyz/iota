@@ -1,13 +1,13 @@
 [package]
-name = "sui-indexer-alt"
+name = "iota-indexer-alt"
 version.workspace = true
-authors = ["Mysten Labs <build@mystenlabs.com>"]
+authors = ["IOTA Foundation <info@iota.org>"]
 license = "Apache-2.0"
 publish = false
 edition = "2021"
 
 [[bin]]
-name = "sui-indexer-alt"
+name = "iota-indexer-alt"
 path = "src/main.rs"
 
 [dependencies]
@@ -31,12 +31,12 @@ toml.workspace = true
 tracing.workspace = true
 url.workspace = true
 
-sui-default-config.workspace = true
-sui-indexer-alt-framework.workspace = true
-sui-indexer-alt-metrics.workspace = true
-sui-indexer-alt-schema.workspace = true
-sui-protocol-config.workspace = true
-sui-synthetic-ingestion = { workspace = true, optional = true }
+iota-default-config.workspace = true
+iota-indexer-alt-framework.workspace = true
+iota-indexer-alt-metrics.workspace = true
+iota-indexer-alt-schema.workspace = true
+iota-protocol-config.workspace = true
+iota-synthetic-ingestion = { workspace = true, optional = true }
 
 [dev-dependencies]
 rand.workspace = true
@@ -45,5 +45,5 @@ wiremock.workspace = true
 
 [features]
 default = []
-benchmark = ["sui-synthetic-ingestion"]  # This will be used to enable benchmark mode
+benchmark = ["iota-synthetic-ingestion"]  # This will be used to enable benchmark mode
 

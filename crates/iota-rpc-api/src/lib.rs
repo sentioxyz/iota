@@ -1,13 +1,14 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-use mysten_network::callback::CallbackLayer;
+use iota_network_stack::callback::CallbackLayer;
 use proto::node::v2alpha::subscription_service_server::SubscriptionServiceServer;
 use reader::StateReader;
 use std::sync::Arc;
 use subscription::SubscriptionServiceHandle;
-use sui_types::storage::RpcStateReader;
-use sui_types::transaction_executor::TransactionExecutor;
+use iota_types::storage::RpcStateReader;
+use iota_types::transaction_executor::TransactionExecutor;
 use tap::Pipe;
 
 pub mod client;
@@ -33,7 +34,7 @@ pub struct RpcService {
     reader: StateReader,
     executor: Option<Arc<dyn TransactionExecutor>>,
     subscription_service_handle: Option<SubscriptionServiceHandle>,
-    chain_id: sui_types::digests::ChainIdentifier,
+    chain_id: iota_types::digests::ChainIdentifier,
     software_version: &'static str,
     metrics: Option<Arc<RpcMetrics>>,
     config: Config,
@@ -76,7 +77,7 @@ impl RpcService {
         self.metrics = Some(Arc::new(metrics));
     }
 
-    pub fn chain_id(&self) -> sui_types::digests::ChainIdentifier {
+    pub fn chain_id(&self) -> iota_types::digests::ChainIdentifier {
         self.chain_id
     }
 

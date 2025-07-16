@@ -1,10 +1,11 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::sync::Arc;
 
-use mysten_metrics::monitored_scope;
-use sui_types::messages_checkpoint::CheckpointSequenceNumber;
+use iota_metrics::monitored_scope;
+use iota_types::messages_checkpoint::CheckpointSequenceNumber;
 use tokio::sync::watch;
 use tracing::{debug, info};
 

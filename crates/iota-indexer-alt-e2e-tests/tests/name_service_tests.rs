@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::{path::PathBuf, time::Duration};
@@ -9,26 +10,26 @@ use move_core_types::ident_str;
 use reqwest::Client;
 use serde_json::{json, Value};
 use simulacrum::Simulacrum;
-use sui_indexer_alt::config::IndexerConfig;
-use sui_indexer_alt_e2e_tests::{find_immutable, find_shared, FullCluster};
-use sui_indexer_alt_framework::IndexerArgs;
-use sui_indexer_alt_jsonrpc::{
+use iota_indexer_alt::config::IndexerConfig;
+use iota_indexer_alt_e2e_tests::{find_immutable, find_shared, FullCluster};
+use iota_indexer_alt_framework::IndexerArgs;
+use iota_indexer_alt_jsonrpc::{
     config::{NameServiceConfig, RpcConfig},
     data::system_package_task::SystemPackageTaskArgs,
 };
-use sui_move_build::BuildConfig;
-use sui_types::{
-    base_types::{ObjectID, SuiAddress},
+use iota_move_build::BuildConfig;
+use iota_types::{
+    base_types::{ObjectID, IotaAddress},
     effects::TransactionEffectsAPI,
     programmable_transaction_builder::ProgrammableTransactionBuilder,
     transaction::{ObjectArg, Transaction, TransactionData},
 };
 use tokio_util::sync::CancellationToken;
 
-/// 5 SUI gas budget
+/// 5 IOTA gas budget
 const DEFAULT_GAS_BUDGET: u64 = 5_000_000_000;
 
-/// Tests happy path for SuiNS resolution.
+/// Tests happy path for IotaNS resolution.
 macro_rules! assert_resolved {
     ($target:expr, $resp:expr) => {
         let resp = $resp;
@@ -44,7 +45,7 @@ macro_rules! assert_resolved {
     };
 }
 
-/// Tests SuiNS resolution response when the domain has expired.
+/// Tests IotaNS resolution response when the domain has expired.
 macro_rules! assert_invalid_params {
     ($resp:expr) => {
         let resp = $resp;
@@ -67,17 +68,17 @@ macro_rules! assert_invalid_params {
 /// Test resolving a simple domain name, using both formats.
 #[tokio::test]
 async fn test_resolve_domain() {
-    let mut c = SuiNSCluster::new().await;
+    let mut c = IotaNSCluster::new().await;
 
     let nft = ObjectID::random();
-    let target = SuiAddress::random_for_testing_only();
-    c.add_domain(nft, &["sui", "foo"], Some(target), 1000)
+    let target = IotaAddress::random_for_testing_only();
+    c.add_domain(nft, &["iota", "foo"], Some(target), 1000)
         .await
         .expect("Failed to add domain");
 
     c.cluster.create_checkpoint().await;
 
-    assert_resolved!(target, c.resolve_address("foo.sui").await.unwrap());
+    assert_resolved!(target, c.resolve_address("foo.iota").await.unwrap());
     assert_resolved!(target, c.resolve_address("@foo").await.unwrap());
 
     c.cluster.stopped().await;
@@ -86,16 +87,16 @@ async fn test_resolve_domain() {
 /// If a domain name exists but has no target, we can't resolve it, but it's not an error.
 #[tokio::test]
 async fn test_resolve_domain_no_target() {
-    let mut c = SuiNSCluster::new().await;
+    let mut c = IotaNSCluster::new().await;
 
     let nft = ObjectID::random();
-    c.add_domain(nft, &["sui", "foo"], None, 1000)
+    c.add_domain(nft, &["iota", "foo"], None, 1000)
         .await
         .expect("Failed to add domain");
 
     c.cluster.create_checkpoint().await;
 
-    let resp = c.resolve_address("foo.sui").await.unwrap();
+    let resp = c.resolve_address("foo.iota").await.unwrap();
     assert!(resp["result"].is_null());
     assert!(resp["error"].is_null());
 
@@ -106,34 +107,34 @@ async fn test_resolve_domain_no_target() {
 /// expires and confirm that the RPC no longer resolves the domain.
 #[tokio::test]
 async fn test_resolve_domain_expiry() {
-    let mut c = SuiNSCluster::new().await;
+    let mut c = IotaNSCluster::new().await;
 
     let nft = ObjectID::random();
-    let target = SuiAddress::random_for_testing_only();
+    let target = IotaAddress::random_for_testing_only();
     let expiry_ms = 1000;
-    c.add_domain(nft, &["sui", "foo"], Some(target), expiry_ms)
+    c.add_domain(nft, &["iota", "foo"], Some(target), expiry_ms)
         .await
         .expect("Failed to add domain");
 
     c.cluster.create_checkpoint().await;
 
-    assert_resolved!(target, c.resolve_address("foo.sui").await.unwrap());
+    assert_resolved!(target, c.resolve_address("foo.iota").await.unwrap());
 
     // Simulacrum's clock starts at 1, so if we advance by the expiry time, we will go past it.
     c.cluster.advance_clock(Duration::from_millis(expiry_ms));
     c.cluster.create_checkpoint().await;
 
-    assert_invalid_params!(c.resolve_address("foo.sui").await.unwrap());
+    assert_invalid_params!(c.resolve_address("foo.iota").await.unwrap());
 
     c.cluster.stopped().await;
 }
 
 #[tokio::test]
 async fn test_resolve_nonexistent_domain() {
-    let mut c = SuiNSCluster::new().await;
+    let mut c = IotaNSCluster::new().await;
     c.cluster.create_checkpoint().await;
 
-    assert_invalid_params!(c.resolve_address("foo.sui").await.unwrap());
+    assert_invalid_params!(c.resolve_address("foo.iota").await.unwrap());
 
     c.cluster.stopped().await;
 }
@@ -142,22 +143,22 @@ async fn test_resolve_nonexistent_domain() {
 /// in the registry).
 #[tokio::test]
 async fn test_resolve_subdomain() {
-    let mut c = SuiNSCluster::new().await;
+    let mut c = IotaNSCluster::new().await;
 
     let nft = ObjectID::random();
-    let target = SuiAddress::random_for_testing_only();
+    let target = IotaAddress::random_for_testing_only();
 
-    c.add_domain(nft, &["sui", "foo"], None, 1000)
+    c.add_domain(nft, &["iota", "foo"], None, 1000)
         .await
         .expect("Failed to add parent domain");
 
-    c.add_domain(nft, &["sui", "foo", "bar"], Some(target), 0)
+    c.add_domain(nft, &["iota", "foo", "bar"], Some(target), 0)
         .await
         .expect("Failed to add subdomain");
 
     c.cluster.create_checkpoint().await;
 
-    assert_resolved!(target, c.resolve_address("bar.foo.sui").await.unwrap());
+    assert_resolved!(target, c.resolve_address("bar.foo.iota").await.unwrap());
     assert_resolved!(target, c.resolve_address("bar@foo").await.unwrap());
 
     c.cluster.stopped().await;
@@ -166,28 +167,28 @@ async fn test_resolve_subdomain() {
 /// Like the parent domain case, but a sub-domain's expiry is controlled by its parent's expiry
 #[tokio::test]
 async fn test_resolve_subdomain_parent_expiry() {
-    let mut c = SuiNSCluster::new().await;
+    let mut c = IotaNSCluster::new().await;
 
     let nft = ObjectID::random();
-    let target = SuiAddress::random_for_testing_only();
+    let target = IotaAddress::random_for_testing_only();
     let expiry_ms = 1000;
 
-    c.add_domain(nft, &["sui", "foo"], None, expiry_ms)
+    c.add_domain(nft, &["iota", "foo"], None, expiry_ms)
         .await
         .expect("Failed to add parent domain");
 
-    c.add_domain(nft, &["sui", "foo", "bar"], Some(target), 0)
+    c.add_domain(nft, &["iota", "foo", "bar"], Some(target), 0)
         .await
         .expect("Failed to add subdomain");
 
     c.cluster.create_checkpoint().await;
 
-    assert_resolved!(target, c.resolve_address("bar.foo.sui").await.unwrap());
+    assert_resolved!(target, c.resolve_address("bar.foo.iota").await.unwrap());
 
     c.cluster.advance_clock(Duration::from_millis(expiry_ms));
     c.cluster.create_checkpoint().await;
 
-    assert_invalid_params!(c.resolve_address("bar.foo.sui").await.unwrap());
+    assert_invalid_params!(c.resolve_address("bar.foo.iota").await.unwrap());
 
     c.cluster.stopped().await;
 }
@@ -195,30 +196,30 @@ async fn test_resolve_subdomain_parent_expiry() {
 /// A sub-domain that has its own expiry, in addition to (and before) the parent's expiry.
 #[tokio::test]
 async fn test_resolve_subdomain_expiry() {
-    let mut c = SuiNSCluster::new().await;
+    let mut c = IotaNSCluster::new().await;
 
     let parent_nft = ObjectID::random();
     let nft = ObjectID::random();
-    let target = SuiAddress::random_for_testing_only();
+    let target = IotaAddress::random_for_testing_only();
     let parent_expiry_ms = 10000;
     let expiry_ms = 1000;
 
-    c.add_domain(parent_nft, &["sui", "foo"], None, parent_expiry_ms)
+    c.add_domain(parent_nft, &["iota", "foo"], None, parent_expiry_ms)
         .await
         .expect("Failed to add parent domain");
 
-    c.add_domain(nft, &["sui", "foo", "bar"], Some(target), expiry_ms)
+    c.add_domain(nft, &["iota", "foo", "bar"], Some(target), expiry_ms)
         .await
         .expect("Failed to add subdomain");
 
     c.cluster.create_checkpoint().await;
 
-    assert_resolved!(target, c.resolve_address("bar.foo.sui").await.unwrap());
+    assert_resolved!(target, c.resolve_address("bar.foo.iota").await.unwrap());
 
     c.cluster.advance_clock(Duration::from_millis(expiry_ms));
     c.cluster.create_checkpoint().await;
 
-    assert_invalid_params!(c.resolve_address("bar.foo.sui").await.unwrap());
+    assert_invalid_params!(c.resolve_address("bar.foo.iota").await.unwrap());
 
     c.cluster.stopped().await;
 }
@@ -227,25 +228,25 @@ async fn test_resolve_subdomain_expiry() {
 /// considered expired -- its parent has been bought by someone else.
 #[tokio::test]
 async fn test_resolve_subdomain_bad_parent() {
-    let mut c = SuiNSCluster::new().await;
+    let mut c = IotaNSCluster::new().await;
 
     let nft0 = ObjectID::random();
     let nft1 = ObjectID::random();
     assert_ne!(nft0, nft1, "NFTs should be different");
 
-    let target = SuiAddress::random_for_testing_only();
+    let target = IotaAddress::random_for_testing_only();
 
-    c.add_domain(nft0, &["sui", "foo"], None, 1000)
+    c.add_domain(nft0, &["iota", "foo"], None, 1000)
         .await
         .expect("Failed to add parent domain");
 
-    c.add_domain(nft1, &["sui", "foo", "bar"], Some(target), 0)
+    c.add_domain(nft1, &["iota", "foo", "bar"], Some(target), 0)
         .await
         .expect("Failed to add subdomain");
 
     c.cluster.create_checkpoint().await;
 
-    assert_invalid_params!(c.resolve_address("bar.foo.sui").await.unwrap());
+    assert_invalid_params!(c.resolve_address("bar.foo.iota").await.unwrap());
 
     c.cluster.stopped().await;
 }
@@ -253,23 +254,23 @@ async fn test_resolve_subdomain_bad_parent() {
 /// The parent domain record does not exist, so the sub-domain is considered expired.
 #[tokio::test]
 async fn test_resolve_subdomain_no_parent() {
-    let mut c = SuiNSCluster::new().await;
+    let mut c = IotaNSCluster::new().await;
 
     let nft = ObjectID::random();
-    let target = SuiAddress::random_for_testing_only();
+    let target = IotaAddress::random_for_testing_only();
 
-    c.add_domain(nft, &["sui", "foo", "bar"], Some(target), 0)
+    c.add_domain(nft, &["iota", "foo", "bar"], Some(target), 0)
         .await
         .expect("Failed to add subdomain");
 
     c.cluster.create_checkpoint().await;
 
-    assert_invalid_params!(c.resolve_address("bar.foo.sui").await.unwrap());
+    assert_invalid_params!(c.resolve_address("bar.foo.iota").await.unwrap());
 
     c.cluster.stopped().await;
 }
 
-struct SuiNSCluster {
+struct IotaNSCluster {
     cluster: FullCluster,
     config: NameServiceConfig,
     forward_registry: ObjectArg,
@@ -277,9 +278,9 @@ struct SuiNSCluster {
     client: Client,
 }
 
-impl SuiNSCluster {
-    /// Sets up a full cluster with a mock SuiNS package and registries. RPC is configured to read
-    /// from these packages and registries to resolve SuiNS names.
+impl IotaNSCluster {
+    /// Sets up a full cluster with a mock IotaNS package and registries. RPC is configured to read
+    /// from these packages and registries to resolve IotaNS names.
     ///
     /// Set-up transactions are run using a burner address that is funded by requesting gas from
     /// the executor.
@@ -287,9 +288,9 @@ impl SuiNSCluster {
         // (1) Spin up the simulator to run transactions.
         let mut sim = Simulacrum::new();
 
-        // (2) Compile the mock SuiNS package.
+        // (2) Compile the mock IotaNS package.
         let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-        path.extend(["packages", "suins"]);
+        path.extend(["packages", "iotans"]);
 
         let pkg = BuildConfig::new_for_testing()
             .build(&path)
@@ -300,7 +301,7 @@ impl SuiNSCluster {
             .funded_account(DEFAULT_GAS_BUDGET * 3)
             .expect("Failed to get account");
 
-        // (4) Publish the mock SuiNS package.
+        // (4) Publish the mock IotaNS package.
         let mut builder = ProgrammableTransactionBuilder::new();
         let with_unpublished_deps = false;
         builder.publish_immutable(
@@ -327,7 +328,7 @@ impl SuiNSCluster {
         builder
             .move_call(
                 package_address,
-                ident_str!("suins").to_owned(),
+                ident_str!("iotans").to_owned(),
                 ident_str!("share_forward_registry").to_owned(),
                 vec![],
                 vec![],
@@ -358,7 +359,7 @@ impl SuiNSCluster {
         builder
             .move_call(
                 package_address,
-                ident_str!("suins").to_owned(),
+                ident_str!("iotans").to_owned(),
                 ident_str!("share_reverse_registry").to_owned(),
                 vec![],
                 vec![],
@@ -384,7 +385,7 @@ impl SuiNSCluster {
             mutable: true,
         };
 
-        // (7) Configure the RPC to read from the mock SuiNS package. Everything else is configured
+        // (7) Configure the RPC to read from the mock IotaNS package. Everything else is configured
         // according to defaults.
         let config = NameServiceConfig {
             package_address: package_address.into(),
@@ -428,7 +429,7 @@ impl SuiNSCluster {
         &mut self,
         nft: ObjectID,
         labels: &[&str],
-        target: Option<SuiAddress>,
+        target: Option<IotaAddress>,
         expiration_timestamp_ms: u64,
     ) -> anyhow::Result<()> {
         let (sender, kp, gas) = self
@@ -447,7 +448,7 @@ impl SuiNSCluster {
 
         builder.programmable_move_call(
             self.config.package_address.into(),
-            ident_str!("suins").to_owned(),
+            ident_str!("iotans").to_owned(),
             ident_str!("add_domain").to_owned(),
             vec![],
             vec![
@@ -478,12 +479,12 @@ impl SuiNSCluster {
         Ok(())
     }
 
-    /// Send a JSON-RPC request to the cluster to resolve the given SuiNS name.
+    /// Send a JSON-RPC request to the cluster to resolve the given IotaNS name.
     async fn resolve_address(&self, name: &str) -> anyhow::Result<Value> {
         let query = json!({
             "jsonrpc": "2.0",
             "id": 1,
-            "method": "suix_resolveNameServiceAddress",
+            "method": "iotax_resolveNameServiceAddress",
             "params": [name],
         });
 

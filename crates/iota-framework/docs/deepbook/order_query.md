@@ -28,26 +28,26 @@ title: Module `deepbook::order_query`
 <b>use</b> <a href="../std/string.md#std_string">std::string</a>;
 <b>use</b> <a href="../std/type_name.md#std_type_name">std::type_name</a>;
 <b>use</b> <a href="../std/vector.md#std_vector">std::vector</a>;
-<b>use</b> <a href="../sui/address.md#sui_address">sui::address</a>;
-<b>use</b> <a href="../sui/bag.md#sui_bag">sui::bag</a>;
-<b>use</b> <a href="../sui/balance.md#sui_balance">sui::balance</a>;
-<b>use</b> <a href="../sui/clock.md#sui_clock">sui::clock</a>;
-<b>use</b> <a href="../sui/coin.md#sui_coin">sui::coin</a>;
-<b>use</b> <a href="../sui/config.md#sui_config">sui::config</a>;
-<b>use</b> <a href="../sui/deny_list.md#sui_deny_list">sui::deny_list</a>;
-<b>use</b> <a href="../sui/dynamic_field.md#sui_dynamic_field">sui::dynamic_field</a>;
-<b>use</b> <a href="../sui/dynamic_object_field.md#sui_dynamic_object_field">sui::dynamic_object_field</a>;
-<b>use</b> <a href="../sui/event.md#sui_event">sui::event</a>;
-<b>use</b> <a href="../sui/hex.md#sui_hex">sui::hex</a>;
-<b>use</b> <a href="../sui/linked_table.md#sui_linked_table">sui::linked_table</a>;
-<b>use</b> <a href="../sui/object.md#sui_object">sui::object</a>;
-<b>use</b> <a href="../sui/sui.md#sui_sui">sui::sui</a>;
-<b>use</b> <a href="../sui/table.md#sui_table">sui::table</a>;
-<b>use</b> <a href="../sui/transfer.md#sui_transfer">sui::transfer</a>;
-<b>use</b> <a href="../sui/tx_context.md#sui_tx_context">sui::tx_context</a>;
-<b>use</b> <a href="../sui/types.md#sui_types">sui::types</a>;
-<b>use</b> <a href="../sui/url.md#sui_url">sui::url</a>;
-<b>use</b> <a href="../sui/vec_set.md#sui_vec_set">sui::vec_set</a>;
+<b>use</b> <a href="../iota/address.md#iota_address">iota::address</a>;
+<b>use</b> <a href="../iota/bag.md#iota_bag">iota::bag</a>;
+<b>use</b> <a href="../iota/balance.md#iota_balance">iota::balance</a>;
+<b>use</b> <a href="../iota/clock.md#iota_clock">iota::clock</a>;
+<b>use</b> <a href="../iota/coin.md#iota_coin">iota::coin</a>;
+<b>use</b> <a href="../iota/config.md#iota_config">iota::config</a>;
+<b>use</b> <a href="../iota/deny_list.md#iota_deny_list">iota::deny_list</a>;
+<b>use</b> <a href="../iota/dynamic_field.md#iota_dynamic_field">iota::dynamic_field</a>;
+<b>use</b> <a href="../iota/dynamic_object_field.md#iota_dynamic_object_field">iota::dynamic_object_field</a>;
+<b>use</b> <a href="../iota/event.md#iota_event">iota::event</a>;
+<b>use</b> <a href="../iota/hex.md#iota_hex">iota::hex</a>;
+<b>use</b> <a href="../iota/linked_table.md#iota_linked_table">iota::linked_table</a>;
+<b>use</b> <a href="../iota/object.md#iota_object">iota::object</a>;
+<b>use</b> <a href="../iota/iota.md#iota_iota">iota::iota</a>;
+<b>use</b> <a href="../iota/table.md#iota_table">iota::table</a>;
+<b>use</b> <a href="../iota/transfer.md#iota_transfer">iota::transfer</a>;
+<b>use</b> <a href="../iota/tx_context.md#iota_tx_context">iota::tx_context</a>;
+<b>use</b> <a href="../iota/types.md#iota_types">iota::types</a>;
+<b>use</b> <a href="../iota/url.md#iota_url">iota::url</a>;
+<b>use</b> <a href="../iota/vec_set.md#iota_vec_set">iota::vec_set</a>;
 </code></pre>
 
 

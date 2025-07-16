@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 import React from "react";
@@ -55,7 +56,7 @@ export default function CodeBlockString({
   const showLineNumbers =
     showLineNumbersProp ?? containsLineNumbers(metastring);
 
-  // Sui added code.
+  // IOTA added code.
   // Change component to render title as anchor.
   let sourceLink;
   if (title) {
@@ -67,7 +68,7 @@ export default function CodeBlockString({
       const githubRepoName = parts[1];
       sourceLink = `${GITHUB}/${githubOrgName}/${githubRepoName}/${GITHUB_BLOB}/${parts.slice(2).join("/")}`;
     } else {
-      sourceLink = `https://github.com/MystenLabs/sui/tree/main/${title}`;
+      sourceLink = `https://github.com/iotaledger/iota/tree/main/${title}`;
     }
   }
 

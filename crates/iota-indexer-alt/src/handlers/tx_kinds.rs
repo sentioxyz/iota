@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::ops::Range;
@@ -7,13 +8,13 @@ use std::sync::Arc;
 use anyhow::Result;
 use diesel::{ExpressionMethods, QueryDsl};
 use diesel_async::RunQueryDsl;
-use sui_indexer_alt_framework::{
+use iota_indexer_alt_framework::{
     db,
     models::cp_sequence_numbers::tx_interval,
     pipeline::{concurrent::Handler, Processor},
     types::full_checkpoint_content::CheckpointData,
 };
-use sui_indexer_alt_schema::{
+use iota_indexer_alt_schema::{
     schema::tx_kinds,
     transactions::{StoredKind, StoredTxKind},
 };
@@ -87,11 +88,11 @@ impl Handler for TxKinds {
 mod tests {
     use super::*;
     use diesel_async::RunQueryDsl;
-    use sui_indexer_alt_framework::{
+    use iota_indexer_alt_framework::{
         handlers::cp_sequence_numbers::CpSequenceNumbers,
         types::test_checkpoint_data_builder::TestCheckpointDataBuilder, Indexer,
     };
-    use sui_indexer_alt_schema::MIGRATIONS;
+    use iota_indexer_alt_schema::MIGRATIONS;
 
     async fn get_all_tx_kinds(conn: &mut db::Connection<'_>) -> Result<Vec<i64>> {
         Ok(tx_kinds::table

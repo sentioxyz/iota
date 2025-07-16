@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 pub mod errors;
 pub(crate) mod safe_iter;
@@ -36,7 +37,7 @@ use std::{
     time::Duration,
 };
 use std::{collections::HashSet, ffi::CStr};
-use sui_macros::{fail_point, nondeterministic};
+use iota_macros::{fail_point, nondeterministic};
 use tap::TapFallible;
 use tokio::sync::oneshot;
 use tracing::{debug, error, info, instrument, warn};
@@ -1660,7 +1661,7 @@ impl Default for ReadWriteOptions {
     fn default() -> Self {
         Self {
             ignore_range_deletions: true,
-            sync_to_disk: std::env::var("SUI_DB_SYNC_TO_DISK").is_ok_and(|v| v != "0"),
+            sync_to_disk: std::env::var("IOTA_DB_SYNC_TO_DISK").is_ok_and(|v| v != "0"),
         }
     }
 }
@@ -1876,7 +1877,7 @@ pub fn default_db_options() -> DBOptions {
     opt.set_bottommost_compression_type(rocksdb::DBCompressionType::Zstd);
     opt.set_bottommost_zstd_max_train_bytes(1024 * 1024, true);
 
-    // Sui uses multiple RocksDB in a node, so total sizes of write buffers and WAL can be higher
+    // IOTA uses multiple RocksDB in a node, so total sizes of write buffers and WAL can be higher
     // than the limits below.
     //
     // RocksDB also exposes the option to configure total write buffer size across multiple instances

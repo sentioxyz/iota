@@ -4,7 +4,7 @@ edition = "2024.beta"
 
 [dependencies]
 # this is relative to the temp directory where this whole tree shaking dir is copied to
-Sui = { local = "../../system-packages/sui-framework", override = true }
+Iota = { local = "../../system-packages/iota-framework", override = true }
 
 [addresses]
 j_system_deps = "0x0"

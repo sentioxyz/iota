@@ -10,7 +10,7 @@ title: Module `bridge::message_types`
 -  [Function `emergency_op`](#bridge_message_types_emergency_op)
 -  [Function `update_bridge_limit`](#bridge_message_types_update_bridge_limit)
 -  [Function `update_asset_price`](#bridge_message_types_update_asset_price)
--  [Function `add_tokens_on_sui`](#bridge_message_types_add_tokens_on_sui)
+-  [Function `add_tokens_on_iota`](#bridge_message_types_add_tokens_on_iota)
 
 
 <pre><code></code></pre>
@@ -22,11 +22,11 @@ title: Module `bridge::message_types`
 ## Constants
 
 
-<a name="bridge_message_types_ADD_TOKENS_ON_SUI"></a>
+<a name="bridge_message_types_ADD_TOKENS_ON_IOTA"></a>
 
 
 
-<pre><code><b>const</b> <a href="../bridge/message_types.md#bridge_message_types_ADD_TOKENS_ON_SUI">ADD_TOKENS_ON_SUI</a>: u8 = 6;
+<pre><code><b>const</b> <a href="../bridge/message_types.md#bridge_message_types_ADD_TOKENS_ON_IOTA">ADD_TOKENS_ON_IOTA</a>: u8 = 6;
 </code></pre>
 
 
@@ -186,13 +186,13 @@ title: Module `bridge::message_types`
 
 </details>
 
-<a name="bridge_message_types_add_tokens_on_sui"></a>
+<a name="bridge_message_types_add_tokens_on_iota"></a>
 
-## Function `add_tokens_on_sui`
+## Function `add_tokens_on_iota`
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../bridge/message_types.md#bridge_message_types_add_tokens_on_sui">add_tokens_on_sui</a>(): u8
+<pre><code><b>public</b> <b>fun</b> <a href="../bridge/message_types.md#bridge_message_types_add_tokens_on_iota">add_tokens_on_iota</a>(): u8
 </code></pre>
 
 
@@ -201,7 +201,7 @@ title: Module `bridge::message_types`
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../bridge/message_types.md#bridge_message_types_add_tokens_on_sui">add_tokens_on_sui</a>(): u8 { <a href="../bridge/message_types.md#bridge_message_types_ADD_TOKENS_ON_SUI">ADD_TOKENS_ON_SUI</a> }
+<pre><code><b>public</b> <b>fun</b> <a href="../bridge/message_types.md#bridge_message_types_add_tokens_on_iota">add_tokens_on_iota</a>(): u8 { <a href="../bridge/message_types.md#bridge_message_types_ADD_TOKENS_ON_IOTA">ADD_TOKENS_ON_IOTA</a> }
 </code></pre>
 
 

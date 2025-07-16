@@ -1,11 +1,12 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::collections::BTreeMap;
 
 use anyhow::bail;
 use dashmap::DashMap;
-use sui_indexer_alt_framework::types::base_types::ObjectID;
+use iota_indexer_alt_framework::types::base_types::ObjectID;
 
 #[derive(Default)]
 pub(crate) struct PruningLookupTable {

@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::ops::Range;
@@ -7,17 +8,17 @@ use std::sync::Arc;
 use anyhow::{bail, Context, Result};
 use diesel::{ExpressionMethods, QueryDsl};
 use diesel_async::RunQueryDsl;
-use sui_indexer_alt_framework::{
+use iota_indexer_alt_framework::{
     db,
     models::cp_sequence_numbers::epoch_interval,
     pipeline::{concurrent::Handler, Processor},
     types::{
         full_checkpoint_content::CheckpointData,
-        sui_system_state::{get_sui_system_state, SuiSystemStateTrait},
+        iota_system_state::{get_iota_system_state, IotaSystemStateTrait},
         transaction::{TransactionDataAPI, TransactionKind},
     },
 };
-use sui_indexer_alt_schema::{epochs::StoredEpochStart, schema::kv_epoch_starts};
+use iota_indexer_alt_schema::{epochs::StoredEpochStart, schema::kv_epoch_starts};
 
 pub(crate) struct KvEpochStarts;
 
@@ -51,7 +52,7 @@ impl Processor for KvEpochStarts {
             );
         };
 
-        let system_state = get_sui_system_state(&transaction.output_objects.as_slice())
+        let system_state = get_iota_system_state(&transaction.output_objects.as_slice())
             .context("Failed to find system state object output from end of epoch transaction")?;
 
         Ok(vec![StoredEpochStart {

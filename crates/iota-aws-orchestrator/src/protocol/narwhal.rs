@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::{
@@ -246,7 +247,7 @@ impl ProtocolMetrics for NarwhalProtocol {
                     "{}:{}{}",
                     instance.main_ip,
                     DEFAULT_PORT,
-                    mysten_metrics::METRICS_ROUTE
+                    iota_metrics::METRICS_ROUTE
                 );
                 (instance, path)
             })

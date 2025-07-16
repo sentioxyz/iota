@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::{
@@ -14,7 +15,7 @@ use axum::{
     BoxError, Extension, Json, Router,
 };
 use http::Method;
-use mysten_metrics::spawn_monitored_task;
+use iota_metrics::spawn_monitored_task;
 use prometheus::Registry;
 use std::{
     borrow::Cow,
@@ -23,8 +24,8 @@ use std::{
     sync::Arc,
     time::{Duration, Instant},
 };
-use sui_config::SUI_CLIENT_CONFIG;
-use sui_sdk::wallet_context::WalletContext;
+use iota_config::IOTA_CLIENT_CONFIG;
+use iota_sdk::wallet_context::WalletContext;
 use tower::ServiceBuilder;
 use tower_governor::{
     governor::GovernorConfigBuilder, key_extractor::GlobalKeyExtractor, GovernorLayer,
@@ -40,7 +41,7 @@ use serde::Deserialize;
 use anyhow::ensure;
 use once_cell::sync::Lazy;
 
-const DEFAULT_FAUCET_WEB_APP_URL: &str = "https://faucet.sui.io";
+const DEFAULT_FAUCET_WEB_APP_URL: &str = "https://faucet.iota.io";
 
 static FAUCET_WEB_APP_URL: Lazy<String> = Lazy::new(|| {
     std::env::var("FAUCET_WEB_APP_URL")
@@ -322,7 +323,7 @@ async fn health() -> &'static str {
     "OK"
 }
 
-/// Redirect to faucet.sui.io/?network if it's testnet/devnet network. For local network, keep the
+/// Redirect to faucet.iota.io/?network if it's testnet/devnet network. For local network, keep the
 /// previous behavior to return health status.
 async fn redirect(Host(host): Host) -> Response {
     let url = FAUCET_WEB_APP_URL.to_string();
@@ -578,7 +579,7 @@ pub fn create_wallet_context(
     timeout_secs: u64,
     config_dir: PathBuf,
 ) -> Result<WalletContext, anyhow::Error> {
-    let wallet_conf = config_dir.join(SUI_CLIENT_CONFIG);
+    let wallet_conf = config_dir.join(IOTA_CLIENT_CONFIG);
     info!("Initialize wallet from config path: {:?}", wallet_conf);
     WalletContext::new(
         &wallet_conf,

@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use serde::de::{MapAccess, Visitor};
@@ -8,7 +9,7 @@ use x509_parser::public_key::PublicKey;
 use x509_parser::time::ASN1Time;
 use x509_parser::x509::SubjectPublicKeyInfo;
 
-use crate::error::{SuiError, SuiResult};
+use crate::error::{IotaError, IotaResult};
 
 use ciborium::value::{Integer, Value};
 use once_cell::sync::Lazy;
@@ -78,16 +79,16 @@ impl fmt::Display for NitroAttestationVerifyError {
     }
 }
 
-impl From<NitroAttestationVerifyError> for SuiError {
+impl From<NitroAttestationVerifyError> for IotaError {
     fn from(err: NitroAttestationVerifyError) -> Self {
-        SuiError::AttestationFailedToVerify(err.to_string())
+        IotaError::AttestationFailedToVerify(err.to_string())
     }
 }
 
 /// Given an attestation in bytes, parse it into signature, signed message and a parsed payload.
 pub fn parse_nitro_attestation(
     attestation_bytes: &[u8],
-) -> SuiResult<(Vec<u8>, Vec<u8>, AttestationDocument)> {
+) -> IotaResult<(Vec<u8>, Vec<u8>, AttestationDocument)> {
     let cose_sign1 = CoseSign1::parse_and_validate(attestation_bytes)?;
     let doc = AttestationDocument::parse_payload(&cose_sign1.payload)?;
     let signature = cose_sign1.clone().signature;
@@ -102,7 +103,7 @@ pub fn verify_nitro_attestation(
     signed_message: &[u8],
     payload: &AttestationDocument,
     timestamp: u64,
-) -> SuiResult<()> {
+) -> IotaResult<()> {
     // Extract public key from cert and signature as P384.
     let signature = Signature::from_slice(signature)
         .map_err(|_| NitroAttestationVerifyError::InvalidSignature)?;

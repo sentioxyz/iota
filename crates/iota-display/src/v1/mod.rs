@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::{collections::BTreeMap, fmt::Write};
@@ -9,8 +10,8 @@ use move_core_types::{
     annotated_value::{MoveTypeLayout, MoveValue},
 };
 use parser::{Parser, Strand};
-use sui_json_rpc_types::SuiMoveValue;
-use sui_types::{
+use iota_json_rpc_types::IotaMoveValue;
+use iota_types::{
     collection_types::{Entry, VecMap},
     object::bounded_visitor::BoundedVisitor,
 };
@@ -119,20 +120,20 @@ fn interpolate(
             Strand::Expr(path) => {
                 let mut visitor = BoundedVisitor::default();
                 let mut extractor = Extractor::new(&mut visitor, path);
-                let extracted: SuiMoveValue =
+                let extracted: IotaMoveValue =
                     MoveValue::visit_deserialize(bytes, layout, &mut extractor)
                         .with_context(|| format!("Failed to extract '{strand}'"))?
                         .with_context(|| format!("'{strand}' not found in object"))?
                         .into();
 
                 match extracted {
-                    SuiMoveValue::Vector(_) => {
+                    IotaMoveValue::Vector(_) => {
                         return Err(Error::Error(anyhow!(
                             "'{strand}' is a vector, and is not supported in Display"
                         )));
                     }
 
-                    SuiMoveValue::Option(opt) => match opt.as_ref() {
+                    IotaMoveValue::Option(opt) => match opt.as_ref() {
                         Some(v) => write!(writer, "{v}"),
                         None => Ok(()),
                     },

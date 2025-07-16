@@ -1,12 +1,13 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use anyhow::Result;
 use clap::Parser;
 use tracing::info;
 
-use sui_indexer_alt_restorer::restore;
-use sui_indexer_alt_restorer::Args;
+use iota_indexer_alt_restorer::restore;
+use iota_indexer_alt_restorer::Args;
 
 #[tokio::main]
 async fn main() -> Result<()> {

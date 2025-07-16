@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 /// This module implements the JSON RPC benchmark runner.
@@ -10,7 +11,7 @@ use std::{
     sync::{Arc, Mutex},
     time::Instant,
 };
-use sui_indexer_alt_framework::task::TrySpawnStreamExt;
+use iota_indexer_alt_framework::task::TrySpawnStreamExt;
 use tokio::time::timeout;
 
 use super::request_loader::JsonRpcRequestLine;

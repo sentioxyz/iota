@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::ingestion::client::{FetchData, FetchError, FetchResult, IngestionClientTrait};
@@ -40,7 +41,7 @@ pub(crate) mod tests {
     use crate::ingestion::client::IngestionClient;
     use crate::ingestion::test_utils::test_checkpoint_data;
     use crate::metrics::tests::test_metrics;
-    use sui_storage::blob::{Blob, BlobEncoding};
+    use iota_storage::blob::{Blob, BlobEncoding};
     use tokio_util::sync::CancellationToken;
 
     #[tokio::test]

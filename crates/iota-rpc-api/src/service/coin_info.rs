@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::proto::node::v2alpha::CoinMetadata;
@@ -8,13 +9,13 @@ use crate::proto::node::v2alpha::GetCoinInfoResponse;
 use crate::Result;
 use crate::RpcError;
 use crate::RpcService;
-use sui_sdk_types::TypeTag;
-use sui_sdk_types::{ObjectId, StructTag};
-use sui_types::sui_sdk_types_conversions::struct_tag_sdk_to_core;
+use iota_sdk_types::TypeTag;
+use iota_sdk_types::{ObjectId, StructTag};
+use iota_types::iota_sdk_types_conversions::struct_tag_sdk_to_core;
 
-const SUI_COIN_TREASURY: CoinTreasury = CoinTreasury {
+const IOTA_COIN_TREASURY: CoinTreasury = CoinTreasury {
     id: None,
-    total_supply: Some(sui_types::gas_coin::TOTAL_SUPPLY_MIST),
+    total_supply: Some(iota_types::gas_coin::TOTAL_SUPPLY_NANOS),
 };
 
 impl RpcService {
@@ -46,7 +47,7 @@ impl RpcService {
 
         let core_coin_type = struct_tag_sdk_to_core(coin_type.clone())?;
 
-        let sui_types::storage::CoinInfo {
+        let iota_types::storage::CoinInfo {
             coin_metadata_object_id,
             treasury_object_id,
         } = indexes
@@ -57,7 +58,7 @@ impl RpcService {
             self.reader
             .inner()
             .get_object(&coin_metadata_object_id)
-            .map(sui_types::coin::CoinMetadata::try_from)
+            .map(iota_types::coin::CoinMetadata::try_from)
             .transpose()
             .map_err(|_| {
                 RpcError::new(
@@ -81,7 +82,7 @@ impl RpcService {
             self.reader
             .inner()
             .get_object(&treasury_object_id)
-            .map(sui_types::coin::TreasuryCap::try_from)
+            .map(iota_types::coin::TreasuryCap::try_from)
             .transpose()
             .map_err(|_| {
                 RpcError::new(
@@ -93,8 +94,8 @@ impl RpcService {
                 id: Some(ObjectId::from(treasury.id.id.bytes).into()),
                 total_supply: Some(treasury.total_supply.value),
             })
-        } else if sui_types::gas_coin::GAS::is_gas(&core_coin_type) {
-            Some(SUI_COIN_TREASURY)
+        } else if iota_types::gas_coin::GAS::is_gas(&core_coin_type) {
+            Some(IOTA_COIN_TREASURY)
         } else {
             None
         };

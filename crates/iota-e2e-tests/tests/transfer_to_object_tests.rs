@@ -1,23 +1,24 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::collections::HashSet;
 use std::net::SocketAddr;
 use std::path::PathBuf;
-use sui_core::authority_client::AuthorityAPI;
-use sui_macros::*;
-use sui_test_transaction_builder::publish_package;
-use sui_types::base_types::{ObjectID, ObjectRef};
-use sui_types::effects::TransactionEffectsAPI;
-use sui_types::effects::{TransactionEffects, TransactionEvents};
-use sui_types::error::{SuiError, UserInputError};
-use sui_types::object::Owner;
-use sui_types::transaction::{CallArg, ObjectArg, Transaction};
+use iota_core::authority_client::AuthorityAPI;
+use iota_macros::*;
+use iota_test_transaction_builder::publish_package;
+use iota_types::base_types::{ObjectID, ObjectRef};
+use iota_types::effects::TransactionEffectsAPI;
+use iota_types::effects::{TransactionEffects, TransactionEvents};
+use iota_types::error::{IotaError, UserInputError};
+use iota_types::object::Owner;
+use iota_types::transaction::{CallArg, ObjectArg, Transaction};
 use test_cluster::{TestCluster, TestClusterBuilder};
 
 #[sim_test]
 async fn receive_object_feature_deny() {
-    use sui_protocol_config::ProtocolConfig;
+    use iota_protocol_config::ProtocolConfig;
 
     let _guard = ProtocolConfig::apply_overrides_for_testing(|_, mut config| {
         config.set_receive_object_for_testing(false);
@@ -46,7 +47,7 @@ async fn receive_object_feature_deny() {
 
     assert!(matches!(
         err,
-        SuiError::UserInputError {
+        IotaError::UserInputError {
             error: UserInputError::Unsupported(..)
         }
     ));
@@ -64,7 +65,7 @@ async fn receive_of_object_with_reconfiguration() {
     let env = TestEnvironment::new().await;
     let (parent, child) = env.start().await;
     env.receive(parent, child).await.unwrap();
-    env.test_cluster.trigger_reconfiguration().await;
+    env.test_cluster.force_new_epoch().await;
 }
 
 #[sim_test]
@@ -72,7 +73,7 @@ async fn receive_of_object_with_reconfiguration_receive_after_reconfig() {
     let env = TestEnvironment::new().await;
     let (parent, child) = env.start().await;
     let (new_parent, new_child) = env.receive(parent, child).await.unwrap();
-    env.test_cluster.trigger_reconfiguration().await;
+    env.test_cluster.force_new_epoch().await;
     assert!(env.receive(new_parent, new_child).await.is_ok());
 }
 
@@ -81,7 +82,7 @@ async fn receive_of_object_with_reconfiguration_receive_of_old_child_after_recon
     let env = TestEnvironment::new().await;
     let (parent, child) = env.start().await;
     let (new_parent, _) = env.receive(parent, child).await.unwrap();
-    env.test_cluster.trigger_reconfiguration().await;
+    env.test_cluster.force_new_epoch().await;
     assert!(env.receive(new_parent, child).await.is_err());
 }
 
@@ -90,7 +91,7 @@ async fn receive_of_object_with_reconfiguration_receive_of_old_parent_after_reco
     let env = TestEnvironment::new().await;
     let (parent, child) = env.start().await;
     let (_, new_child) = env.receive(parent, child).await.unwrap();
-    env.test_cluster.trigger_reconfiguration().await;
+    env.test_cluster.force_new_epoch().await;
     assert!(env.receive(parent, new_child).await.is_err());
 }
 
@@ -99,7 +100,7 @@ async fn receive_of_object_with_reconfiguration_receive_of_old_parent_and_child_
     let env = TestEnvironment::new().await;
     let (parent, child) = env.start().await;
     env.receive(parent, child).await.unwrap();
-    env.test_cluster.trigger_reconfiguration().await;
+    env.test_cluster.force_new_epoch().await;
     assert!(env.receive(parent, child).await.is_err());
 }
 
@@ -108,7 +109,7 @@ async fn receive_of_object_with_reconfiguration_receive_after_reconfig_with_inva
     let env = TestEnvironment::new().await;
     let (parent, child) = env.start().await;
     let (new_parent, new_child) = env.receive(parent, child).await.unwrap();
-    env.test_cluster.trigger_reconfiguration().await;
+    env.test_cluster.force_new_epoch().await;
     assert!(env.receive(new_child, new_parent).await.is_err());
 }
 
@@ -117,7 +118,7 @@ async fn delete_of_object_with_reconfiguration_receive_of_old_parent_and_child_a
     let env = TestEnvironment::new().await;
     let (parent, child) = env.start().await;
     env.delete(parent, child).await;
-    env.test_cluster.trigger_reconfiguration().await;
+    env.test_cluster.force_new_epoch().await;
     assert!(env.receive(parent, child).await.is_err());
 }
 
@@ -127,7 +128,7 @@ async fn delete_of_object_with_reconfiguration_receive_of_new_parent_and_old_chi
     let env = TestEnvironment::new().await;
     let (parent, child) = env.start().await;
     let new_parent = env.delete(parent, child).await;
-    env.test_cluster.trigger_reconfiguration().await;
+    env.test_cluster.force_new_epoch().await;
     assert!(env.receive(new_parent, child).await.is_err());
 }
 

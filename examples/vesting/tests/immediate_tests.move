@@ -1,14 +1,15 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 #[test_only]
 module vesting::immediate_tests;
 
 use vesting::linear::{new_wallet, Wallet};
-use sui::clock::{Self};
-use sui::coin::{Self};
-use sui::test_scenario as ts;
-use sui::sui::SUI;
+use iota::clock::{Self};
+use iota::coin::{Self};
+use iota::test_scenario as ts;
+use iota::iota::IOTA;
 
 public struct Token has key, store { id: UID }
 
@@ -20,7 +21,7 @@ const START_TIME: u64 = 1;
 
 fun test_setup(): ts::Scenario {
     let mut ts = ts::begin(CONTROLLER_ADDR);
-    let coins = coin::mint_for_testing<SUI>(FULLY_VESTED_AMOUNT, ts.ctx());
+    let coins = coin::mint_for_testing<IOTA>(FULLY_VESTED_AMOUNT, ts.ctx());
     let now = clock::create_for_testing(ts.ctx());
     let wallet = new_wallet(coins, &now, START_TIME, VESTING_DURATION, ts.ctx());
     transfer::public_transfer(wallet, OWNER_ADDR);
@@ -33,7 +34,7 @@ fun test_immediate_vesting() {
     let mut ts = test_setup();
     ts.next_tx(OWNER_ADDR);
     let mut now = clock::create_for_testing(ts.ctx());
-    let mut wallet = ts.take_from_sender<Wallet<SUI>>();
+    let mut wallet = ts.take_from_sender<Wallet<IOTA>>();
 
     // vest immediately
     now.set_for_testing(START_TIME);

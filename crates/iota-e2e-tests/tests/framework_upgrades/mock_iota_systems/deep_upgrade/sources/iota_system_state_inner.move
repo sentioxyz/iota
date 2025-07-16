@@ -1,21 +1,22 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-module sui_system::sui_system_state_inner {
+module iota_system::iota_system_state_inner {
     use std::vector;
 
-    use sui::balance::{Self, Balance};
-    use sui::sui::SUI;
-    use sui::tx_context::TxContext;
-    use sui::bag::{Self, Bag};
-    use sui::table::{Self, Table};
-    use sui::object::ID;
+    use iota::balance::{Self, Balance};
+    use iota::iota::IOTA;
+    use iota::tx_context::TxContext;
+    use iota::bag::{Self, Bag};
+    use iota::table::{Self, Table};
+    use iota::object::ID;
 
-    use sui_system::validator::{Validator, ValidatorV2};
-    use sui_system::validator_wrapper::ValidatorWrapper;
-    use sui_system::validator_wrapper;
-    use sui::object;
-    use sui_system::validator;
+    use iota_system::validator::{Validator, ValidatorV2};
+    use iota_system::validator_wrapper::ValidatorWrapper;
+    use iota_system::validator_wrapper;
+    use iota::object;
+    use iota_system::validator;
 
     const SYSTEM_STATE_VERSION_V1: u64 = 18446744073709551605;  // u64::MAX - 10
     // Not using MAX - 9 since it's already used in the shallow upgrade test.
@@ -40,12 +41,12 @@ module sui_system::sui_system_state_inner {
         extra_fields: Bag,
     }
 
-    public struct SuiSystemStateInner has store {
+    public struct IotaSystemStateInner has store {
         epoch: u64,
         protocol_version: u64,
         system_state_version: u64,
         validators: ValidatorSet,
-        storage_fund: Balance<SUI>,
+        storage_fund: Balance<IOTA>,
         parameters: SystemParameters,
         reference_gas_price: u64,
         safe_mode: bool,
@@ -53,13 +54,13 @@ module sui_system::sui_system_state_inner {
         extra_fields: Bag,
     }
 
-    public struct SuiSystemStateInnerV2 has store {
+    public struct IotaSystemStateInnerV2 has store {
         new_dummy_field: u64,
         epoch: u64,
         protocol_version: u64,
         system_state_version: u64,
         validators: ValidatorSetV2,
-        storage_fund: Balance<SUI>,
+        storage_fund: Balance<IOTA>,
         parameters: SystemParameters,
         reference_gas_price: u64,
         safe_mode: bool,
@@ -69,14 +70,14 @@ module sui_system::sui_system_state_inner {
 
     public(package) fun create(
         validators: vector<Validator>,
-        storage_fund: Balance<SUI>,
+        storage_fund: Balance<IOTA>,
         protocol_version: u64,
         epoch_start_timestamp_ms: u64,
         epoch_duration_ms: u64,
         ctx: &mut TxContext,
-    ): SuiSystemStateInner {
+    ): IotaSystemStateInner {
         let validators = new_validator_set(validators, ctx);
-        let system_state = SuiSystemStateInner {
+        let system_state = IotaSystemStateInner {
             epoch: 0,
             protocol_version,
             system_state_version: genesis_system_state_version(),
@@ -95,14 +96,14 @@ module sui_system::sui_system_state_inner {
     }
 
     public(package) fun advance_epoch(
-        self: &mut SuiSystemStateInnerV2,
+        self: &mut IotaSystemStateInnerV2,
         new_epoch: u64,
         next_protocol_version: u64,
-        storage_reward: Balance<SUI>,
-        computation_reward: Balance<SUI>,
+        storage_reward: Balance<IOTA>,
+        computation_reward: Balance<IOTA>,
         storage_rebate_amount: u64,
         epoch_start_timestamp_ms: u64,
-    ) : Balance<SUI> {
+    ) : Balance<IOTA> {
         touch_dummy_inactive_validator(self);
 
         self.epoch_start_timestamp_ms = epoch_start_timestamp_ms;
@@ -117,8 +118,8 @@ module sui_system::sui_system_state_inner {
         storage_rebate
     }
 
-    public(package) fun protocol_version(self: &SuiSystemStateInnerV2): u64 { self.protocol_version }
-    public(package) fun system_state_version(self: &SuiSystemStateInnerV2): u64 { self.system_state_version }
+    public(package) fun protocol_version(self: &IotaSystemStateInnerV2): u64 { self.protocol_version }
+    public(package) fun system_state_version(self: &IotaSystemStateInnerV2): u64 { self.system_state_version }
     public(package) fun genesis_system_state_version(): u64 {
         SYSTEM_STATE_VERSION_V1
     }
@@ -131,8 +132,8 @@ module sui_system::sui_system_state_inner {
         }
     }
 
-    public(package) fun v1_to_v2(v1: SuiSystemStateInner): SuiSystemStateInnerV2 {
-        let SuiSystemStateInner {
+    public(package) fun v1_to_v2(v1: IotaSystemStateInner): IotaSystemStateInnerV2 {
+        let IotaSystemStateInner {
             epoch,
             protocol_version,
             system_state_version: old_system_state_version,
@@ -146,7 +147,7 @@ module sui_system::sui_system_state_inner {
         } = v1;
         let new_validator_set = validator_set_v1_to_v2(validators);
         assert!(old_system_state_version == SYSTEM_STATE_VERSION_V1, 0);
-        SuiSystemStateInnerV2 {
+        IotaSystemStateInnerV2 {
             new_dummy_field: 100,
             epoch,
             protocol_version,
@@ -162,7 +163,7 @@ module sui_system::sui_system_state_inner {
     }
 
     /// Load the dummy inactive validator added in the base version, trigger it to be upgraded.
-    fun touch_dummy_inactive_validator(self: &mut SuiSystemStateInnerV2) {
+    fun touch_dummy_inactive_validator(self: &mut IotaSystemStateInnerV2) {
         let validator_wrapper = table::borrow_mut(&mut self.validators.inactive_validators, object::id_from_address(@0x0));
         let _ = validator_wrapper::load_validator_maybe_upgrade(validator_wrapper);
     }
@@ -188,7 +189,7 @@ module sui_system::sui_system_state_inner {
         }
     }
 
-    public(package) fun store_execution_time_estimates(self: &mut SuiSystemStateInnerV2, estimates: vector<u8>) {
+    public(package) fun store_execution_time_estimates(self: &mut IotaSystemStateInnerV2, estimates: vector<u8>) {
         if (bag::contains(&self.extra_fields, EXTRA_FIELD_EXECUTION_TIME_ESTIMATES_KEY)) {
             let _: vector<u8> = bag::remove(&mut self.extra_fields, EXTRA_FIELD_EXECUTION_TIME_ESTIMATES_KEY);
         };

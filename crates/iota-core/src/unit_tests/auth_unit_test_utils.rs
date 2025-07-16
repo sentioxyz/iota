@@ -1,13 +1,14 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use move_core_types::account_address::AccountAddress;
 use move_symbol_pool::Symbol;
-use sui_move_build::{BuildConfig, CompiledPackage};
-use sui_types::crypto::Signature;
-use sui_types::move_package::UpgradePolicy;
-use sui_types::programmable_transaction_builder::ProgrammableTransactionBuilder;
-use sui_types::utils::to_sender_signed_transaction;
+use iota_move_build::{BuildConfig, CompiledPackage};
+use iota_types::crypto::Signature;
+use iota_types::move_package::UpgradePolicy;
+use iota_types::programmable_transaction_builder::ProgrammableTransactionBuilder;
+use iota_types::utils::to_sender_signed_transaction;
 
 use super::authority_test_utils::*;
 use super::*;
@@ -56,13 +57,13 @@ pub fn build_test_modules_with_dep_addr(
 /// dep_ids are the IDs of the dependencies of the package, in the latest version (if there were upgrades).
 pub async fn publish_package_on_single_authority(
     path: &Path,
-    sender: SuiAddress,
+    sender: IotaAddress,
     sender_key: &dyn Signer<Signature>,
     gas_payment: ObjectRef,
     dep_original_addresses: impl IntoIterator<Item = (&'static str, ObjectID)>,
     dep_ids: Vec<ObjectID>,
     state: &Arc<AuthorityState>,
-) -> SuiResult<(TransactionDigest, (ObjectID, ObjectRef))> {
+) -> IotaResult<(TransactionDigest, (ObjectID, ObjectRef))> {
     let mut build_config = BuildConfig::new_for_testing();
     for (addr_name, obj_id) in dep_original_addresses {
         build_config
@@ -109,7 +110,7 @@ pub async fn publish_package_on_single_authority(
 
 pub async fn upgrade_package_on_single_authority(
     path: &Path,
-    sender: SuiAddress,
+    sender: IotaAddress,
     sender_key: &dyn Signer<Signature>,
     gas_payment: ObjectRef,
     package_id: ObjectID,
@@ -117,7 +118,7 @@ pub async fn upgrade_package_on_single_authority(
     dep_original_addresses: impl IntoIterator<Item = (&'static str, ObjectID)>,
     dep_id_mapping: impl IntoIterator<Item = (&'static str, ObjectID)>,
     state: &Arc<AuthorityState>,
-) -> SuiResult<(TransactionDigest, ObjectID)> {
+) -> IotaResult<(TransactionDigest, ObjectID)> {
     let package = build_test_modules_with_dep_addr(path, dep_original_addresses, dep_id_mapping);
 
     let with_unpublished_deps = false;

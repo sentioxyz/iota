@@ -1,10 +1,11 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 module deepbook::custodian_v2 {
-    use sui::balance::{Self, Balance, split};
-    use sui::coin::{Self, Coin};
-    use sui::table::{Self, Table};
+    use iota::balance::{Self, Balance, split};
+    use iota::coin::{Self, Coin};
+    use iota::table::{Self, Table};
 
     // <<<<<<<<<<<<<<<<<<<<<<<< Error codes <<<<<<<<<<<<<<<<<<<<<<<<
     const EAdminAccountCapRequired: u64 = 2;

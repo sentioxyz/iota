@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::{collections::BTreeSet, str::FromStr};
@@ -8,28 +9,28 @@ use reqwest::Client;
 use serde::Deserialize;
 use serde_json::{json, Value};
 use simulacrum::Simulacrum;
-use sui_indexer_alt::config::IndexerConfig;
-use sui_indexer_alt_e2e_tests::{find_address_owned, FullCluster};
-use sui_indexer_alt_framework::IndexerArgs;
-use sui_indexer_alt_jsonrpc::{
+use iota_indexer_alt::config::IndexerConfig;
+use iota_indexer_alt_e2e_tests::{find_address_owned, FullCluster};
+use iota_indexer_alt_framework::IndexerArgs;
+use iota_indexer_alt_jsonrpc::{
     config::{ObjectsConfig, RpcConfig},
     data::system_package_task::SystemPackageTaskArgs,
 };
-use sui_json_rpc_types::Page;
-use sui_types::{
-    base_types::{ObjectID, SuiAddress},
+use iota_json_rpc_types::Page;
+use iota_types::{
+    base_types::{ObjectID, IotaAddress},
     crypto::get_account_key_pair,
     effects::TransactionEffectsAPI,
     programmable_transaction_builder::ProgrammableTransactionBuilder,
     transaction::{Transaction, TransactionData},
-    TypeTag, SUI_FRAMEWORK_PACKAGE_ID,
+    TypeTag, IOTA_FRAMEWORK_PACKAGE_ID,
 };
 use tokio_util::sync::CancellationToken;
 
-/// 5 SUI gas budget
+/// 5 IOTA gas budget
 const DEFAULT_GAS_BUDGET: u64 = 5_000_000_000;
 
-/// Deserialized successful JSON-RPC response for `suix_getOwnedObjects`.
+/// Deserialized successful JSON-RPC response for `iotax_getOwnedObjects`.
 #[derive(Deserialize)]
 struct Response {
     result: Page<Object, String>,
@@ -342,14 +343,14 @@ async fn setup_cluster(config: ObjectsConfig) -> FullCluster {
 
 /// Run a transaction on `cluster` signed by a fresh funded account that sends a coin with value
 /// `amount` to `owner`.
-fn create_coin(cluster: &mut FullCluster, owner: SuiAddress, amount: u64) -> ObjectID {
+fn create_coin(cluster: &mut FullCluster, owner: IotaAddress, amount: u64) -> ObjectID {
     let (sender, kp, gas) = cluster
         .funded_account(DEFAULT_GAS_BUDGET + amount)
         .expect("Failed to fund account");
 
     let mut builder = ProgrammableTransactionBuilder::new();
 
-    builder.transfer_sui(owner, Some(amount));
+    builder.transfer_iota(owner, Some(amount));
 
     let data = TransactionData::new_programmable(
         sender,
@@ -373,7 +374,7 @@ fn create_coin(cluster: &mut FullCluster, owner: SuiAddress, amount: u64) -> Obj
 /// Run a transaction on `cluster` signed by a fresh funded account that creates a `Bag<u64, u64>`
 /// owned by `owner` with `size` many elements. The purpose of this is to create an object that
 /// isn't a coin.
-fn create_bag(cluster: &mut FullCluster, owner: SuiAddress, size: u64) -> ObjectID {
+fn create_bag(cluster: &mut FullCluster, owner: IotaAddress, size: u64) -> ObjectID {
     let (sender, kp, gas) = cluster
         .funded_account(DEFAULT_GAS_BUDGET)
         .expect("Failed to fund account");
@@ -381,7 +382,7 @@ fn create_bag(cluster: &mut FullCluster, owner: SuiAddress, size: u64) -> Object
     let mut builder = ProgrammableTransactionBuilder::new();
 
     let bag = builder.programmable_move_call(
-        SUI_FRAMEWORK_PACKAGE_ID,
+        IOTA_FRAMEWORK_PACKAGE_ID,
         ident_str!("bag").to_owned(),
         ident_str!("new").to_owned(),
         vec![],
@@ -391,7 +392,7 @@ fn create_bag(cluster: &mut FullCluster, owner: SuiAddress, size: u64) -> Object
     for i in 0..size {
         let kv = builder.pure(i).expect("Failed to create pure value");
         builder.programmable_move_call(
-            SUI_FRAMEWORK_PACKAGE_ID,
+            IOTA_FRAMEWORK_PACKAGE_ID,
             ident_str!("bag").to_owned(),
             ident_str!("add").to_owned(),
             vec![TypeTag::U64, TypeTag::U64],
@@ -420,10 +421,10 @@ fn create_bag(cluster: &mut FullCluster, owner: SuiAddress, size: u64) -> Object
         .0
 }
 
-/// Make a call to `suix_getOwnedObjects` to the RPC server running on `cluster`.
+/// Make a call to `iotax_getOwnedObjects` to the RPC server running on `cluster`.
 async fn owned_objects(
     cluster: &FullCluster,
-    owner: SuiAddress,
+    owner: IotaAddress,
     filter: Value,
     cursor: Option<String>,
     limit: usize,
@@ -431,7 +432,7 @@ async fn owned_objects(
     let query = json!({
         "jsonrpc": "2.0",
         "id": 1,
-        "method": "suix_getOwnedObjects",
+        "method": "iotax_getOwnedObjects",
         "params": [
             owner.to_string(),
             {

@@ -1,9 +1,10 @@
 # Copyright (c) Mysten Labs, Inc.
+# Modifications Copyright (c) 2025 IOTA Stiftung
 # SPDX-License-Identifier: Apache-2.0
 
-sui client --client.config $CONFIG \
+iota client --client.config $CONFIG \
   publish simple --verify-deps \
   --json | jq '.effects.status'
 
-sui move --client.config $CONFIG \
+iota move --client.config $CONFIG \
   build --path depends_on_simple

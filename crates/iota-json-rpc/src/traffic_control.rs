@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use axum::extract::ConnectInfo;
@@ -9,10 +10,10 @@ use jsonrpsee::MethodResponse;
 use std::net::IpAddr;
 use std::time::SystemTime;
 use std::{net::SocketAddr, sync::Arc};
-use sui_core::traffic_controller::{parse_ip, policies::TrafficTally, TrafficController};
-use sui_json_rpc_api::TRANSACTION_EXECUTION_CLIENT_ERROR_CODE;
-use sui_types::traffic_control::ClientIdSource;
-use sui_types::traffic_control::Weight;
+use iota_core::traffic_controller::{parse_ip, policies::TrafficTally, TrafficController};
+use iota_json_rpc_api::TRANSACTION_EXECUTION_CLIENT_ERROR_CODE;
+use iota_types::traffic_control::ClientIdSource;
+use iota_types::traffic_control::Weight;
 use tracing::error;
 
 const TOO_MANY_REQUESTS_MSG: &str = "Too many requests";
@@ -91,7 +92,7 @@ fn handle_traffic_resp(
         }),
         // For now, count everything as spam with equal weight
         // on the rpc node side, including gas-charging endpoints
-        // such as `sui_executeTransactionBlock`, as this can enable
+        // such as `iota_executeTransactionBlock`, as this can enable
         // node operators who wish to rate limit their transcation
         // traffic and incentivize high volume clients to choose a
         // suitable rpc provider (or run their own). Later we may want

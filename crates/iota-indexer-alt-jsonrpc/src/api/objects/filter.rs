@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use anyhow::Context as _;
@@ -7,15 +8,15 @@ use move_core_types::language_storage::StructTag;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
-use sui_indexer_alt_schema::{
+use iota_indexer_alt_schema::{
     objects::{StoredObjInfo, StoredOwnerKind},
     schema::obj_info,
 };
-use sui_json_rpc_types::{Page as PageResponse, SuiObjectDataOptions};
-use sui_sql_macro::sql;
-use sui_types::{
-    base_types::{ObjectID, SuiAddress},
-    sui_serde::SuiStructTag,
+use iota_json_rpc_types::{Page as PageResponse, IotaObjectDataOptions};
+use iota_sql_macro::sql;
+use iota_types::{
+    base_types::{ObjectID, IotaAddress},
+    iota_serde::IotaStructTag,
     Identifier, TypeTag,
 };
 
@@ -29,18 +30,18 @@ use super::error::Error;
 
 #[derive(Debug, Clone, Deserialize, Serialize, JsonSchema, Default)]
 #[serde(rename_all = "camelCase", rename = "ObjectResponseQuery", default)]
-pub(crate) struct SuiObjectResponseQuery {
+pub(crate) struct IotaObjectResponseQuery {
     /// If None, no filter will be applied
-    pub filter: Option<SuiObjectDataFilter>,
+    pub filter: Option<IotaObjectDataFilter>,
     /// config which fields to include in the response, by default only digest is included
-    pub options: Option<SuiObjectDataOptions>,
+    pub options: Option<IotaObjectDataOptions>,
 }
 
 #[serde_as]
 #[derive(Clone, Debug, Serialize, Deserialize, JsonSchema)]
-pub(crate) enum SuiObjectDataFilter {
+pub(crate) enum IotaObjectDataFilter {
     /// Query for object's that don't match any of these filters.
-    MatchNone(Vec<SuiObjectDataFilter>),
+    MatchNone(Vec<IotaObjectDataFilter>),
 
     /// Query by the object type's package.
     Package(ObjectID),
@@ -54,13 +55,13 @@ pub(crate) enum SuiObjectDataFilter {
     },
     /// Query by the object's type.
     StructType(
-        #[serde_as(as = "SuiStructTag")]
+        #[serde_as(as = "IotaStructTag")]
         #[schemars(with = "String")]
         StructTag,
     ),
 }
 
-/// [SuiObjectDataFilter] converted into fields that can be compared directly with values coming
+/// [IotaObjectDataFilter] converted into fields that can be compared directly with values coming
 /// from the database.
 enum RawFilter {
     MatchNone(Vec<RawFilter>),
@@ -81,16 +82,16 @@ struct ObjectCursor {
 type Cursor = BcsCursor<ObjectCursor>;
 type ObjectIDs = PageResponse<ObjectID, String>;
 
-impl SuiObjectDataFilter {
+impl IotaObjectDataFilter {
     /// Whether this is a compound filter (which is implemented using sequential scan), or a simple
     /// type filter, which can leverage indices on the database.
     fn is_compound(&self) -> bool {
-        use SuiObjectDataFilter as F;
+        use IotaObjectDataFilter as F;
         matches!(self, F::MatchNone(_))
     }
 
     fn package(&self) -> Option<ObjectID> {
-        use SuiObjectDataFilter as F;
+        use IotaObjectDataFilter as F;
         match self {
             F::MatchNone(_) => None,
             F::Package(p) => Some(*p),
@@ -100,7 +101,7 @@ impl SuiObjectDataFilter {
     }
 
     fn module(&self) -> Option<&str> {
-        use SuiObjectDataFilter as F;
+        use IotaObjectDataFilter as F;
         match self {
             F::MatchNone(_) => None,
             F::Package(_) => None,
@@ -110,7 +111,7 @@ impl SuiObjectDataFilter {
     }
 
     fn name(&self) -> Option<&str> {
-        use SuiObjectDataFilter as F;
+        use IotaObjectDataFilter as F;
         match self {
             F::MatchNone(_) => None,
             F::Package(_) => None,
@@ -120,7 +121,7 @@ impl SuiObjectDataFilter {
     }
 
     fn type_params(&self) -> Option<&[TypeTag]> {
-        use SuiObjectDataFilter as F;
+        use IotaObjectDataFilter as F;
         match self {
             F::MatchNone(_) => None,
             F::Package(_) => None,
@@ -135,7 +136,7 @@ impl SuiObjectDataFilter {
         let config = &ctx.config().objects;
 
         fn convert(
-            filter: &SuiObjectDataFilter,
+            filter: &IotaObjectDataFilter,
             max_depth: usize,
             mut depth: usize,
             max_type_filters: usize,
@@ -158,7 +159,7 @@ impl SuiObjectDataFilter {
             }
 
             use RawFilter as R;
-            use SuiObjectDataFilter as F;
+            use IotaObjectDataFilter as F;
             Ok(match filter {
                 F::MatchNone(filters) => R::MatchNone(
                     filters
@@ -252,8 +253,8 @@ impl RawFilter {
 /// any results).
 pub(super) async fn owned_objects(
     ctx: &Context,
-    owner: SuiAddress,
-    filter: &Option<SuiObjectDataFilter>,
+    owner: IotaAddress,
+    filter: &Option<IotaObjectDataFilter>,
     cursor: Option<String>,
     limit: Option<usize>,
 ) -> Result<ObjectIDs, RpcError<Error>> {
@@ -270,7 +271,7 @@ pub(super) async fn owned_objects(
 /// matching entries until the limit is met.
 async fn by_sequential_scan(
     ctx: &Context,
-    owner: SuiAddress,
+    owner: IotaAddress,
     filter: &RawFilter,
     cursor: Option<String>,
     limit: Option<usize>,
@@ -360,7 +361,7 @@ async fn by_sequential_scan(
 /// Fetch a page of `StoredObjInfo` corresponding to objects owned by `owner`.
 async fn owned_obj_info(
     ctx: &Context,
-    owner: SuiAddress,
+    owner: IotaAddress,
     cursor: &Option<ObjectCursor>,
     limit: i64,
 ) -> Result<Vec<StoredObjInfo>, RpcError<Error>> {
@@ -428,8 +429,8 @@ async fn owned_obj_info(
 /// there are any results).
 async fn by_type_indices(
     ctx: &Context,
-    owner: SuiAddress,
-    filter: &Option<SuiObjectDataFilter>,
+    owner: IotaAddress,
+    filter: &Option<IotaObjectDataFilter>,
     cursor: Option<String>,
     limit: Option<usize>,
 ) -> Result<ObjectIDs, RpcError<Error>> {

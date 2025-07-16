@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use move_binary_format::errors::PartialVMResult;
@@ -9,7 +10,7 @@ use move_vm_types::{
 };
 use smallvec::smallvec;
 use std::collections::VecDeque;
-use sui_types::{base_types::ObjectID, digests::TransactionDigest};
+use iota_types::{base_types::ObjectID, digests::TransactionDigest};
 
 use crate::{
     object_runtime::ObjectRuntime, transaction_context::TransactionContext, NativesCostTable,

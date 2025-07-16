@@ -1,19 +1,19 @@
 ---
-title: Module `sui::versioned`
+title: Module `iota::versioned`
 ---
 
 
 
--  [Struct `Versioned`](#sui_versioned_Versioned)
--  [Struct `VersionChangeCap`](#sui_versioned_VersionChangeCap)
+-  [Struct `Versioned`](#iota_versioned_Versioned)
+-  [Struct `VersionChangeCap`](#iota_versioned_VersionChangeCap)
 -  [Constants](#@Constants_0)
--  [Function `create`](#sui_versioned_create)
--  [Function `version`](#sui_versioned_version)
--  [Function `load_value`](#sui_versioned_load_value)
--  [Function `load_value_mut`](#sui_versioned_load_value_mut)
--  [Function `remove_value_for_upgrade`](#sui_versioned_remove_value_for_upgrade)
--  [Function `upgrade`](#sui_versioned_upgrade)
--  [Function `destroy`](#sui_versioned_destroy)
+-  [Function `create`](#iota_versioned_create)
+-  [Function `version`](#iota_versioned_version)
+-  [Function `load_value`](#iota_versioned_load_value)
+-  [Function `load_value_mut`](#iota_versioned_load_value_mut)
+-  [Function `remove_value_for_upgrade`](#iota_versioned_remove_value_for_upgrade)
+-  [Function `upgrade`](#iota_versioned_upgrade)
+-  [Function `destroy`](#iota_versioned_destroy)
 
 
 <pre><code><b>use</b> <a href="../std/ascii.md#std_ascii">std::ascii</a>;
@@ -21,16 +21,16 @@ title: Module `sui::versioned`
 <b>use</b> <a href="../std/option.md#std_option">std::option</a>;
 <b>use</b> <a href="../std/string.md#std_string">std::string</a>;
 <b>use</b> <a href="../std/vector.md#std_vector">std::vector</a>;
-<b>use</b> <a href="../sui/address.md#sui_address">sui::address</a>;
-<b>use</b> <a href="../sui/dynamic_field.md#sui_dynamic_field">sui::dynamic_field</a>;
-<b>use</b> <a href="../sui/hex.md#sui_hex">sui::hex</a>;
-<b>use</b> <a href="../sui/object.md#sui_object">sui::object</a>;
-<b>use</b> <a href="../sui/tx_context.md#sui_tx_context">sui::tx_context</a>;
+<b>use</b> <a href="../iota/address.md#iota_address">iota::address</a>;
+<b>use</b> <a href="../iota/dynamic_field.md#iota_dynamic_field">iota::dynamic_field</a>;
+<b>use</b> <a href="../iota/hex.md#iota_hex">iota::hex</a>;
+<b>use</b> <a href="../iota/object.md#iota_object">iota::object</a>;
+<b>use</b> <a href="../iota/tx_context.md#iota_tx_context">iota::tx_context</a>;
 </code></pre>
 
 
 
-<a name="sui_versioned_Versioned"></a>
+<a name="iota_versioned_Versioned"></a>
 
 ## Struct `Versioned`
 
@@ -42,7 +42,7 @@ If you want to support lazy upgrade of the inner type, one caveat is that all AP
 to use mutable reference even if it's a read-only API.
 
 
-<pre><code><b>public</b> <b>struct</b> <a href="../sui/versioned.md#sui_versioned_Versioned">Versioned</a> <b>has</b> key, store
+<pre><code><b>public</b> <b>struct</b> <a href="../iota/versioned.md#iota_versioned_Versioned">Versioned</a> <b>has</b> key, store
 </code></pre>
 
 
@@ -53,12 +53,12 @@ to use mutable reference even if it's a read-only API.
 
 <dl>
 <dt>
-<code>id: <a href="../sui/object.md#sui_object_UID">sui::object::UID</a></code>
+<code>id: <a href="../iota/object.md#iota_object_UID">iota::object::UID</a></code>
 </dt>
 <dd>
 </dd>
 <dt>
-<code><a href="../sui/versioned.md#sui_versioned_version">version</a>: u64</code>
+<code><a href="../iota/versioned.md#iota_versioned_version">version</a>: u64</code>
 </dt>
 <dd>
 </dd>
@@ -67,7 +67,7 @@ to use mutable reference even if it's a read-only API.
 
 </details>
 
-<a name="sui_versioned_VersionChangeCap"></a>
+<a name="iota_versioned_VersionChangeCap"></a>
 
 ## Struct `VersionChangeCap`
 
@@ -75,7 +75,7 @@ Represents a hot potato object generated when we take out the dynamic field.
 This is to make sure that we always put a new value back.
 
 
-<pre><code><b>public</b> <b>struct</b> <a href="../sui/versioned.md#sui_versioned_VersionChangeCap">VersionChangeCap</a>
+<pre><code><b>public</b> <b>struct</b> <a href="../iota/versioned.md#iota_versioned_VersionChangeCap">VersionChangeCap</a>
 </code></pre>
 
 
@@ -86,7 +86,7 @@ This is to make sure that we always put a new value back.
 
 <dl>
 <dt>
-<code>versioned_id: <a href="../sui/object.md#sui_object_ID">sui::object::ID</a></code>
+<code>versioned_id: <a href="../iota/object.md#iota_object_ID">iota::object::ID</a></code>
 </dt>
 <dd>
 </dd>
@@ -105,24 +105,24 @@ This is to make sure that we always put a new value back.
 ## Constants
 
 
-<a name="sui_versioned_EInvalidUpgrade"></a>
+<a name="iota_versioned_EInvalidUpgrade"></a>
 
 Failed to upgrade the inner object due to invalid capability or new version.
 
 
-<pre><code><b>const</b> <a href="../sui/versioned.md#sui_versioned_EInvalidUpgrade">EInvalidUpgrade</a>: u64 = 0;
+<pre><code><b>const</b> <a href="../iota/versioned.md#iota_versioned_EInvalidUpgrade">EInvalidUpgrade</a>: u64 = 0;
 </code></pre>
 
 
 
-<a name="sui_versioned_create"></a>
+<a name="iota_versioned_create"></a>
 
 ## Function `create`
 
 Create a new Versioned object that contains a initial value of type <code>T</code> with an initial version.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../sui/versioned.md#sui_versioned_create">create</a>&lt;T: store&gt;(init_version: u64, init_value: T, ctx: &<b>mut</b> <a href="../sui/tx_context.md#sui_tx_context_TxContext">sui::tx_context::TxContext</a>): <a href="../sui/versioned.md#sui_versioned_Versioned">sui::versioned::Versioned</a>
+<pre><code><b>public</b> <b>fun</b> <a href="../iota/versioned.md#iota_versioned_create">create</a>&lt;T: store&gt;(init_version: u64, init_value: T, ctx: &<b>mut</b> <a href="../iota/tx_context.md#iota_tx_context_TxContext">iota::tx_context::TxContext</a>): <a href="../iota/versioned.md#iota_versioned_Versioned">iota::versioned::Versioned</a>
 </code></pre>
 
 
@@ -131,12 +131,12 @@ Create a new Versioned object that contains a initial value of type <code>T</cod
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../sui/versioned.md#sui_versioned_create">create</a>&lt;T: store&gt;(init_version: u64, init_value: T, ctx: &<b>mut</b> TxContext): <a href="../sui/versioned.md#sui_versioned_Versioned">Versioned</a> {
-    <b>let</b> <b>mut</b> self = <a href="../sui/versioned.md#sui_versioned_Versioned">Versioned</a> {
-        id: <a href="../sui/object.md#sui_object_new">object::new</a>(ctx),
-        <a href="../sui/versioned.md#sui_versioned_version">version</a>: init_version,
+<pre><code><b>public</b> <b>fun</b> <a href="../iota/versioned.md#iota_versioned_create">create</a>&lt;T: store&gt;(init_version: u64, init_value: T, ctx: &<b>mut</b> TxContext): <a href="../iota/versioned.md#iota_versioned_Versioned">Versioned</a> {
+    <b>let</b> <b>mut</b> self = <a href="../iota/versioned.md#iota_versioned_Versioned">Versioned</a> {
+        id: <a href="../iota/object.md#iota_object_new">object::new</a>(ctx),
+        <a href="../iota/versioned.md#iota_versioned_version">version</a>: init_version,
     };
-    <a href="../sui/dynamic_field.md#sui_dynamic_field_add">dynamic_field::add</a>(&<b>mut</b> self.id, init_version, init_value);
+    <a href="../iota/dynamic_field.md#iota_dynamic_field_add">dynamic_field::add</a>(&<b>mut</b> self.id, init_version, init_value);
     self
 }
 </code></pre>
@@ -145,14 +145,14 @@ Create a new Versioned object that contains a initial value of type <code>T</cod
 
 </details>
 
-<a name="sui_versioned_version"></a>
+<a name="iota_versioned_version"></a>
 
 ## Function `version`
 
 Get the current version of the inner type.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../sui/versioned.md#sui_versioned_version">version</a>(self: &<a href="../sui/versioned.md#sui_versioned_Versioned">sui::versioned::Versioned</a>): u64
+<pre><code><b>public</b> <b>fun</b> <a href="../iota/versioned.md#iota_versioned_version">version</a>(self: &<a href="../iota/versioned.md#iota_versioned_Versioned">iota::versioned::Versioned</a>): u64
 </code></pre>
 
 
@@ -161,8 +161,8 @@ Get the current version of the inner type.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../sui/versioned.md#sui_versioned_version">version</a>(self: &<a href="../sui/versioned.md#sui_versioned_Versioned">Versioned</a>): u64 {
-    self.<a href="../sui/versioned.md#sui_versioned_version">version</a>
+<pre><code><b>public</b> <b>fun</b> <a href="../iota/versioned.md#iota_versioned_version">version</a>(self: &<a href="../iota/versioned.md#iota_versioned_Versioned">Versioned</a>): u64 {
+    self.<a href="../iota/versioned.md#iota_versioned_version">version</a>
 }
 </code></pre>
 
@@ -170,7 +170,7 @@ Get the current version of the inner type.
 
 </details>
 
-<a name="sui_versioned_load_value"></a>
+<a name="iota_versioned_load_value"></a>
 
 ## Function `load_value`
 
@@ -178,7 +178,7 @@ Load the inner value based on the current version. Caller specifies an expected 
 If the type mismatch, the load will fail.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../sui/versioned.md#sui_versioned_load_value">load_value</a>&lt;T: store&gt;(self: &<a href="../sui/versioned.md#sui_versioned_Versioned">sui::versioned::Versioned</a>): &T
+<pre><code><b>public</b> <b>fun</b> <a href="../iota/versioned.md#iota_versioned_load_value">load_value</a>&lt;T: store&gt;(self: &<a href="../iota/versioned.md#iota_versioned_Versioned">iota::versioned::Versioned</a>): &T
 </code></pre>
 
 
@@ -187,8 +187,8 @@ If the type mismatch, the load will fail.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../sui/versioned.md#sui_versioned_load_value">load_value</a>&lt;T: store&gt;(self: &<a href="../sui/versioned.md#sui_versioned_Versioned">Versioned</a>): &T {
-    <a href="../sui/dynamic_field.md#sui_dynamic_field_borrow">dynamic_field::borrow</a>(&self.id, self.<a href="../sui/versioned.md#sui_versioned_version">version</a>)
+<pre><code><b>public</b> <b>fun</b> <a href="../iota/versioned.md#iota_versioned_load_value">load_value</a>&lt;T: store&gt;(self: &<a href="../iota/versioned.md#iota_versioned_Versioned">Versioned</a>): &T {
+    <a href="../iota/dynamic_field.md#iota_dynamic_field_borrow">dynamic_field::borrow</a>(&self.id, self.<a href="../iota/versioned.md#iota_versioned_version">version</a>)
 }
 </code></pre>
 
@@ -196,14 +196,14 @@ If the type mismatch, the load will fail.
 
 </details>
 
-<a name="sui_versioned_load_value_mut"></a>
+<a name="iota_versioned_load_value_mut"></a>
 
 ## Function `load_value_mut`
 
 Similar to load_value, but return a mutable reference.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../sui/versioned.md#sui_versioned_load_value_mut">load_value_mut</a>&lt;T: store&gt;(self: &<b>mut</b> <a href="../sui/versioned.md#sui_versioned_Versioned">sui::versioned::Versioned</a>): &<b>mut</b> T
+<pre><code><b>public</b> <b>fun</b> <a href="../iota/versioned.md#iota_versioned_load_value_mut">load_value_mut</a>&lt;T: store&gt;(self: &<b>mut</b> <a href="../iota/versioned.md#iota_versioned_Versioned">iota::versioned::Versioned</a>): &<b>mut</b> T
 </code></pre>
 
 
@@ -212,8 +212,8 @@ Similar to load_value, but return a mutable reference.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../sui/versioned.md#sui_versioned_load_value_mut">load_value_mut</a>&lt;T: store&gt;(self: &<b>mut</b> <a href="../sui/versioned.md#sui_versioned_Versioned">Versioned</a>): &<b>mut</b> T {
-    <a href="../sui/dynamic_field.md#sui_dynamic_field_borrow_mut">dynamic_field::borrow_mut</a>(&<b>mut</b> self.id, self.<a href="../sui/versioned.md#sui_versioned_version">version</a>)
+<pre><code><b>public</b> <b>fun</b> <a href="../iota/versioned.md#iota_versioned_load_value_mut">load_value_mut</a>&lt;T: store&gt;(self: &<b>mut</b> <a href="../iota/versioned.md#iota_versioned_Versioned">Versioned</a>): &<b>mut</b> T {
+    <a href="../iota/dynamic_field.md#iota_dynamic_field_borrow_mut">dynamic_field::borrow_mut</a>(&<b>mut</b> self.id, self.<a href="../iota/versioned.md#iota_versioned_version">version</a>)
 }
 </code></pre>
 
@@ -221,7 +221,7 @@ Similar to load_value, but return a mutable reference.
 
 </details>
 
-<a name="sui_versioned_remove_value_for_upgrade"></a>
+<a name="iota_versioned_remove_value_for_upgrade"></a>
 
 ## Function `remove_value_for_upgrade`
 
@@ -229,7 +229,7 @@ Take the inner object out for upgrade. To ensure we always upgrade properly, a c
 and must be used when we upgrade.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../sui/versioned.md#sui_versioned_remove_value_for_upgrade">remove_value_for_upgrade</a>&lt;T: store&gt;(self: &<b>mut</b> <a href="../sui/versioned.md#sui_versioned_Versioned">sui::versioned::Versioned</a>): (T, <a href="../sui/versioned.md#sui_versioned_VersionChangeCap">sui::versioned::VersionChangeCap</a>)
+<pre><code><b>public</b> <b>fun</b> <a href="../iota/versioned.md#iota_versioned_remove_value_for_upgrade">remove_value_for_upgrade</a>&lt;T: store&gt;(self: &<b>mut</b> <a href="../iota/versioned.md#iota_versioned_Versioned">iota::versioned::Versioned</a>): (T, <a href="../iota/versioned.md#iota_versioned_VersionChangeCap">iota::versioned::VersionChangeCap</a>)
 </code></pre>
 
 
@@ -238,12 +238,12 @@ and must be used when we upgrade.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../sui/versioned.md#sui_versioned_remove_value_for_upgrade">remove_value_for_upgrade</a>&lt;T: store&gt;(self: &<b>mut</b> <a href="../sui/versioned.md#sui_versioned_Versioned">Versioned</a>): (T, <a href="../sui/versioned.md#sui_versioned_VersionChangeCap">VersionChangeCap</a>) {
+<pre><code><b>public</b> <b>fun</b> <a href="../iota/versioned.md#iota_versioned_remove_value_for_upgrade">remove_value_for_upgrade</a>&lt;T: store&gt;(self: &<b>mut</b> <a href="../iota/versioned.md#iota_versioned_Versioned">Versioned</a>): (T, <a href="../iota/versioned.md#iota_versioned_VersionChangeCap">VersionChangeCap</a>) {
     (
-        <a href="../sui/dynamic_field.md#sui_dynamic_field_remove">dynamic_field::remove</a>(&<b>mut</b> self.id, self.<a href="../sui/versioned.md#sui_versioned_version">version</a>),
-        <a href="../sui/versioned.md#sui_versioned_VersionChangeCap">VersionChangeCap</a> {
-            versioned_id: <a href="../sui/object.md#sui_object_id">object::id</a>(self),
-            old_version: self.<a href="../sui/versioned.md#sui_versioned_version">version</a>,
+        <a href="../iota/dynamic_field.md#iota_dynamic_field_remove">dynamic_field::remove</a>(&<b>mut</b> self.id, self.<a href="../iota/versioned.md#iota_versioned_version">version</a>),
+        <a href="../iota/versioned.md#iota_versioned_VersionChangeCap">VersionChangeCap</a> {
+            versioned_id: <a href="../iota/object.md#iota_object_id">object::id</a>(self),
+            old_version: self.<a href="../iota/versioned.md#iota_versioned_version">version</a>,
         },
     )
 }
@@ -253,7 +253,7 @@ and must be used when we upgrade.
 
 </details>
 
-<a name="sui_versioned_upgrade"></a>
+<a name="iota_versioned_upgrade"></a>
 
 ## Function `upgrade`
 
@@ -261,7 +261,7 @@ Upgrade the inner object with a new version and new value. Must use the capabili
 by calling remove_value_for_upgrade.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../sui/versioned.md#sui_versioned_upgrade">upgrade</a>&lt;T: store&gt;(self: &<b>mut</b> <a href="../sui/versioned.md#sui_versioned_Versioned">sui::versioned::Versioned</a>, new_version: u64, new_value: T, cap: <a href="../sui/versioned.md#sui_versioned_VersionChangeCap">sui::versioned::VersionChangeCap</a>)
+<pre><code><b>public</b> <b>fun</b> <a href="../iota/versioned.md#iota_versioned_upgrade">upgrade</a>&lt;T: store&gt;(self: &<b>mut</b> <a href="../iota/versioned.md#iota_versioned_Versioned">iota::versioned::Versioned</a>, new_version: u64, new_value: T, cap: <a href="../iota/versioned.md#iota_versioned_VersionChangeCap">iota::versioned::VersionChangeCap</a>)
 </code></pre>
 
 
@@ -270,17 +270,17 @@ by calling remove_value_for_upgrade.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../sui/versioned.md#sui_versioned_upgrade">upgrade</a>&lt;T: store&gt;(
-    self: &<b>mut</b> <a href="../sui/versioned.md#sui_versioned_Versioned">Versioned</a>,
+<pre><code><b>public</b> <b>fun</b> <a href="../iota/versioned.md#iota_versioned_upgrade">upgrade</a>&lt;T: store&gt;(
+    self: &<b>mut</b> <a href="../iota/versioned.md#iota_versioned_Versioned">Versioned</a>,
     new_version: u64,
     new_value: T,
-    cap: <a href="../sui/versioned.md#sui_versioned_VersionChangeCap">VersionChangeCap</a>,
+    cap: <a href="../iota/versioned.md#iota_versioned_VersionChangeCap">VersionChangeCap</a>,
 ) {
-    <b>let</b> <a href="../sui/versioned.md#sui_versioned_VersionChangeCap">VersionChangeCap</a> { versioned_id, old_version } = cap;
-    <b>assert</b>!(versioned_id == <a href="../sui/object.md#sui_object_id">object::id</a>(self), <a href="../sui/versioned.md#sui_versioned_EInvalidUpgrade">EInvalidUpgrade</a>);
-    <b>assert</b>!(old_version &lt; new_version, <a href="../sui/versioned.md#sui_versioned_EInvalidUpgrade">EInvalidUpgrade</a>);
-    <a href="../sui/dynamic_field.md#sui_dynamic_field_add">dynamic_field::add</a>(&<b>mut</b> self.id, new_version, new_value);
-    self.<a href="../sui/versioned.md#sui_versioned_version">version</a> = new_version;
+    <b>let</b> <a href="../iota/versioned.md#iota_versioned_VersionChangeCap">VersionChangeCap</a> { versioned_id, old_version } = cap;
+    <b>assert</b>!(versioned_id == <a href="../iota/object.md#iota_object_id">object::id</a>(self), <a href="../iota/versioned.md#iota_versioned_EInvalidUpgrade">EInvalidUpgrade</a>);
+    <b>assert</b>!(old_version &lt; new_version, <a href="../iota/versioned.md#iota_versioned_EInvalidUpgrade">EInvalidUpgrade</a>);
+    <a href="../iota/dynamic_field.md#iota_dynamic_field_add">dynamic_field::add</a>(&<b>mut</b> self.id, new_version, new_value);
+    self.<a href="../iota/versioned.md#iota_versioned_version">version</a> = new_version;
 }
 </code></pre>
 
@@ -288,14 +288,14 @@ by calling remove_value_for_upgrade.
 
 </details>
 
-<a name="sui_versioned_destroy"></a>
+<a name="iota_versioned_destroy"></a>
 
 ## Function `destroy`
 
 Destroy this Versioned container, and return the inner object.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../sui/versioned.md#sui_versioned_destroy">destroy</a>&lt;T: store&gt;(self: <a href="../sui/versioned.md#sui_versioned_Versioned">sui::versioned::Versioned</a>): T
+<pre><code><b>public</b> <b>fun</b> <a href="../iota/versioned.md#iota_versioned_destroy">destroy</a>&lt;T: store&gt;(self: <a href="../iota/versioned.md#iota_versioned_Versioned">iota::versioned::Versioned</a>): T
 </code></pre>
 
 
@@ -304,9 +304,9 @@ Destroy this Versioned container, and return the inner object.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../sui/versioned.md#sui_versioned_destroy">destroy</a>&lt;T: store&gt;(self: <a href="../sui/versioned.md#sui_versioned_Versioned">Versioned</a>): T {
-    <b>let</b> <a href="../sui/versioned.md#sui_versioned_Versioned">Versioned</a> { <b>mut</b> id, <a href="../sui/versioned.md#sui_versioned_version">version</a> } = self;
-    <b>let</b> ret = <a href="../sui/dynamic_field.md#sui_dynamic_field_remove">dynamic_field::remove</a>(&<b>mut</b> id, <a href="../sui/versioned.md#sui_versioned_version">version</a>);
+<pre><code><b>public</b> <b>fun</b> <a href="../iota/versioned.md#iota_versioned_destroy">destroy</a>&lt;T: store&gt;(self: <a href="../iota/versioned.md#iota_versioned_Versioned">Versioned</a>): T {
+    <b>let</b> <a href="../iota/versioned.md#iota_versioned_Versioned">Versioned</a> { <b>mut</b> id, <a href="../iota/versioned.md#iota_versioned_version">version</a> } = self;
+    <b>let</b> ret = <a href="../iota/dynamic_field.md#iota_dynamic_field_remove">dynamic_field::remove</a>(&<b>mut</b> id, <a href="../iota/versioned.md#iota_versioned_version">version</a>);
     id.delete();
     ret
 }

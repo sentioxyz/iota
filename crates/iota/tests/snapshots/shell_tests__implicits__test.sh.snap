@@ -1,13 +1,14 @@
 ---
-source: crates/sui/tests/shell_tests.rs
+source: crates/iota/tests/shell_tests.rs
 description: tests/shell_tests/implicits/test.sh
 ---
 ----- script -----
 # Copyright (c) Mysten Labs, Inc.
+# Modifications Copyright (c) 2025 IOTA Stiftung
 # SPDX-License-Identifier: Apache-2.0
 
 # checks that testing a package that implicitly depends on `Bridge` works
-sui move test -p example 2> /dev/null
+iota move test -p example 2> /dev/null
 
 ----- results -----
 success: true
@@ -15,8 +16,8 @@ exit_code: 0
 ----- stdout -----
 INCLUDING DEPENDENCY Bridge
 INCLUDING DEPENDENCY DeepBook
-INCLUDING DEPENDENCY SuiSystem
-INCLUDING DEPENDENCY Sui
+INCLUDING DEPENDENCY IotaSystem
+INCLUDING DEPENDENCY IOTA
 INCLUDING DEPENDENCY MoveStdlib
 BUILDING example
 Running Move unit tests

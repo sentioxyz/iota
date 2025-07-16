@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use super::TryFromProtoError;
@@ -6,10 +7,10 @@ use prost_types::FieldMask;
 use tap::Pipe;
 
 pub mod v2 {
-    include!("generated/sui.node.v2.rs");
+    include!("generated/iota.node.v2.rs");
 
     /// Byte encoded FILE_DESCRIPTOR_SET.
-    pub const FILE_DESCRIPTOR_SET: &[u8] = include_bytes!("generated/sui.node.v2.fds.bin");
+    pub const FILE_DESCRIPTOR_SET: &[u8] = include_bytes!("generated/iota.node.v2.fds.bin");
 
     #[cfg(test)]
     mod tests {
@@ -24,10 +25,10 @@ pub mod v2 {
 }
 
 pub mod v2alpha {
-    include!("generated/sui.node.v2alpha.rs");
+    include!("generated/iota.node.v2alpha.rs");
 
     /// Byte encoded FILE_DESCRIPTOR_SET.
-    pub const FILE_DESCRIPTOR_SET: &[u8] = include_bytes!("generated/sui.node.v2alpha.fds.bin");
+    pub const FILE_DESCRIPTOR_SET: &[u8] = include_bytes!("generated/iota.node.v2alpha.fds.bin");
 
     #[cfg(test)]
     mod tests {
@@ -47,8 +48,8 @@ use v2::*;
 // BalanceChange
 //
 
-impl From<sui_sdk_types::BalanceChange> for BalanceChange {
-    fn from(value: sui_sdk_types::BalanceChange) -> Self {
+impl From<iota_sdk_types::BalanceChange> for BalanceChange {
+    fn from(value: iota_sdk_types::BalanceChange) -> Self {
         Self {
             address: Some(value.address.into()),
             coin_type: Some(value.coin_type.into()),
@@ -57,7 +58,7 @@ impl From<sui_sdk_types::BalanceChange> for BalanceChange {
     }
 }
 
-impl TryFrom<&BalanceChange> for sui_sdk_types::BalanceChange {
+impl TryFrom<&BalanceChange> for iota_sdk_types::BalanceChange {
     type Error = TryFromProtoError;
 
     fn try_from(value: &BalanceChange) -> Result<Self, Self::Error> {

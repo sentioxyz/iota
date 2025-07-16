@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use clap::*;
@@ -8,8 +9,8 @@ use crate::config::{ConnectionConfig, Ide, TxExecFullNodeConfig};
 
 #[derive(Parser)]
 #[clap(
-    name = "sui-mvr-graphql-rpc",
-    about = "Sui MVR GraphQL RPC",
+    name = "iota-mvr-graphql-rpc",
+    about = "IOTA MVR GraphQL RPC",
     rename_all = "kebab-case",
     author,
     version

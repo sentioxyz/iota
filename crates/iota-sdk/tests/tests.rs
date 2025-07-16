@@ -1,17 +1,18 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 use tempfile::TempDir;
 
 use fastcrypto::ed25519::Ed25519KeyPair;
 use shared_crypto::intent::{Intent, IntentMessage, PersonalMessage};
-use sui_keys::keystore::{AccountKeystore, FileBasedKeystore, Keystore};
-use sui_macros::sim_test;
-use sui_sdk::verify_personal_message_signature::verify_personal_message_signature;
-use sui_types::base_types::SuiAddress;
-use sui_types::crypto::{Ed25519SuiSignature, SuiKeyPair};
-use sui_types::crypto::{SignatureScheme, SuiSignatureInner};
-use sui_types::multisig::{MultiSig, MultiSigPublicKey};
-use sui_types::{
+use iota_keys::keystore::{AccountKeystore, FileBasedKeystore, Keystore};
+use iota_macros::sim_test;
+use iota_sdk::verify_personal_message_signature::verify_personal_message_signature;
+use iota_types::base_types::IotaAddress;
+use iota_types::crypto::{Ed25519IotaSignature, IotaKeyPair};
+use iota_types::crypto::{SignatureScheme, IotaSignatureInner};
+use iota_types::multisig::{MultiSig, MultiSigPublicKey};
+use iota_types::{
     crypto::{get_key_pair, Signature},
     signature::GenericSignature,
     utils::sign_zklogin_personal_msg,
@@ -20,27 +21,27 @@ use sui_types::{
 #[test]
 fn mnemonic_test() {
     let temp_dir = TempDir::new().unwrap();
-    let keystore_path = temp_dir.path().join("sui.keystore");
+    let keystore_path = temp_dir.path().join("iota.keystore");
     let mut keystore = Keystore::from(FileBasedKeystore::new(&keystore_path).unwrap());
     let (address, phrase, scheme) = keystore
         .generate_and_add_new_key(SignatureScheme::ED25519, None, None, None)
         .unwrap();
 
-    let keystore_path_2 = temp_dir.path().join("sui2.keystore");
+    let keystore_path_2 = temp_dir.path().join("iota2.keystore");
     let mut keystore2 = Keystore::from(FileBasedKeystore::new(&keystore_path_2).unwrap());
     let imported_address = keystore2
         .import_from_mnemonic(&phrase, SignatureScheme::ED25519, None, None)
         .unwrap();
-    assert_eq!(scheme.flag(), Ed25519SuiSignature::SCHEME.flag());
+    assert_eq!(scheme.flag(), Ed25519IotaSignature::SCHEME.flag());
     assert_eq!(address, imported_address);
 }
 
 #[test]
 fn keystore_display_test() -> Result<(), anyhow::Error> {
     let temp_dir = TempDir::new().unwrap();
-    let keystore_path = temp_dir.path().join("sui.keystore");
+    let keystore_path = temp_dir.path().join("iota.keystore");
     let keystore = Keystore::from(FileBasedKeystore::new(&keystore_path).unwrap());
-    assert!(keystore.to_string().contains("sui.keystore"));
+    assert!(keystore.to_string().contains("iota.keystore"));
     assert!(!keystore.to_string().contains("keys:"));
     Ok(())
 }
@@ -83,7 +84,7 @@ async fn test_verify_signature_zklogin() {
         .await;
     test_cluster.wait_for_epoch(Some(1)).await;
     test_cluster.wait_for_authenticator_state_update().await;
-    let client = test_cluster.sui_client();
+    let client = test_cluster.iota_client();
     let res = verify_personal_message_signature(
         signature.clone(),
         message,
@@ -105,8 +106,8 @@ async fn test_verify_signature_zklogin() {
 
 #[tokio::test]
 async fn test_verify_signature_multisig() {
-    let kp1: SuiKeyPair = SuiKeyPair::Ed25519(get_key_pair().1);
-    let kp2: SuiKeyPair = SuiKeyPair::Secp256k1(get_key_pair().1);
+    let kp1: IotaKeyPair = IotaKeyPair::Ed25519(get_key_pair().1);
+    let kp2: IotaKeyPair = IotaKeyPair::Secp256k1(get_key_pair().1);
 
     let message = b"hello";
     let intent_message = IntentMessage::new(
@@ -119,7 +120,7 @@ async fn test_verify_signature_multisig() {
     let sig2: GenericSignature = Signature::new_secure(&intent_message, &kp2).into();
     let multisig_pk =
         MultiSigPublicKey::new(vec![kp1.public(), kp2.public()], vec![1, 1], 2).unwrap();
-    let address: SuiAddress = (&multisig_pk).into();
+    let address: IotaAddress = (&multisig_pk).into();
     let multisig = MultiSig::combine(vec![sig1, sig2], multisig_pk).unwrap();
     let generic_sig = GenericSignature::MultiSig(multisig);
 

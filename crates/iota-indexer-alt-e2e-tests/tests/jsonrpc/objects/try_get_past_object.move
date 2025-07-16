@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 //# init --protocol-version 70 --accounts A B --addresses test=0x0 --simulator
@@ -26,31 +27,31 @@
 
 //# run-jsonrpc
 {
-  "method": "sui_tryGetPastObject",
+  "method": "iota_tryGetPastObject",
   "params": ["@{obj_1_0}", 1]
 }
 
 //# run-jsonrpc
 {
-  "method": "sui_tryGetPastObject",
+  "method": "iota_tryGetPastObject",
   "params": ["@{obj_1_0}", 2]
 }
 
 //# run-jsonrpc
 {
-  "method": "sui_tryGetPastObject",
+  "method": "iota_tryGetPastObject",
   "params": ["@{obj_1_0}", 3]
 }
 
 //# run-jsonrpc
 {
-  "method": "sui_tryGetPastObject",
+  "method": "iota_tryGetPastObject",
   "params": ["@{obj_1_0}", 4]
 }
 
 //# run-jsonrpc
 {
-  "method": "sui_tryGetPastObject",
+  "method": "iota_tryGetPastObject",
   "params": [
     "@{obj_1_0}",
     1,
@@ -65,7 +66,7 @@
 
 //# run-jsonrpc
 {
-  "method": "sui_tryGetPastObject",
+  "method": "iota_tryGetPastObject",
   "params": [
     "@{obj_1_0}",
     2,
@@ -80,7 +81,7 @@
 
 //# run-jsonrpc
 {
-  "method": "sui_tryGetPastObject",
+  "method": "iota_tryGetPastObject",
   "params": [
     "@{obj_1_0}",
     4,

@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::field_mask::FieldMaskTree;
@@ -16,15 +17,15 @@ use crate::Result;
 use crate::RpcError;
 use crate::RpcService;
 use prost_types::FieldMask;
-use sui_sdk_types::framework::Coin;
-use sui_sdk_types::Address;
-use sui_sdk_types::BalanceChange;
-use sui_sdk_types::Object;
-use sui_sdk_types::Owner;
-use sui_sdk_types::SignedTransaction;
-use sui_sdk_types::Transaction;
-use sui_sdk_types::TransactionEffects;
-use sui_types::transaction_executor::SimulateTransactionResult;
+use iota_sdk_types::framework::Coin;
+use iota_sdk_types::Address;
+use iota_sdk_types::BalanceChange;
+use iota_sdk_types::Object;
+use iota_sdk_types::Owner;
+use iota_sdk_types::SignedTransaction;
+use iota_sdk_types::Transaction;
+use iota_sdk_types::TransactionEffects;
+use iota_types::transaction_executor::SimulateTransactionResult;
 use tap::Pipe;
 
 impl RpcService {
@@ -81,7 +82,7 @@ impl RpcService {
             }
         };
 
-        let mut signatures: Vec<sui_sdk_types::UserSignature> = Vec::new();
+        let mut signatures: Vec<iota_sdk_types::UserSignature> = Vec::new();
 
         if !request.signatures.is_empty() {
             let from_proto_signatures = request
@@ -106,7 +107,7 @@ impl RpcService {
                 .iter()
                 .enumerate()
                 .map(|(i, bytes)| {
-                    sui_sdk_types::UserSignature::from_bytes(bytes).map_err(|e| {
+                    iota_sdk_types::UserSignature::from_bytes(bytes).map_err(|e| {
                         FieldViolation::new_at("signatures_bcs", i)
                             .with_description(format!("invalid signature: {e}"))
                             .with_reason(ErrorReason::FieldInvalid)
@@ -132,7 +133,7 @@ impl RpcService {
         })?;
         let read_mask = FieldMaskTree::from(read_mask);
 
-        let request = sui_types::quorum_driver_types::ExecuteTransactionRequestV3 {
+        let request = iota_types::quorum_driver_types::ExecuteTransactionRequestV3 {
             transaction: signed_transaction.try_into()?,
             include_events: read_mask.contains("events") || read_mask.contains("events_bcs"),
             include_input_objects: read_mask.contains("balance_changes"),
@@ -140,7 +141,7 @@ impl RpcService {
             include_auxiliary_data: false,
         };
 
-        let sui_types::quorum_driver_types::ExecuteTransactionResponseV3 {
+        let iota_types::quorum_driver_types::ExecuteTransactionResponseV3 {
             effects,
             events,
             input_objects,
@@ -149,21 +150,21 @@ impl RpcService {
         } = executor.execute_transaction(request, None).await?;
 
         let (effects, finality) = {
-            let sui_types::quorum_driver_types::FinalizedEffects {
+            let iota_types::quorum_driver_types::FinalizedEffects {
                 effects,
                 finality_info,
             } = effects;
             let finality = match finality_info {
-                sui_types::quorum_driver_types::EffectsFinalityInfo::Certified(sig) => {
+                iota_types::quorum_driver_types::EffectsFinalityInfo::Certified(sig) => {
                     Finality::Certified(
-                        sui_sdk_types::ValidatorAggregatedSignature::from(sig).into(),
+                        iota_sdk_types::ValidatorAggregatedSignature::from(sig).into(),
                     )
                 }
-                sui_types::quorum_driver_types::EffectsFinalityInfo::Checkpointed(
+                iota_types::quorum_driver_types::EffectsFinalityInfo::Checkpointed(
                     _epoch,
                     checkpoint,
                 ) => Finality::Checkpointed(checkpoint),
-                sui_types::quorum_driver_types::EffectsFinalityInfo::QuorumExecuted(_) => {
+                iota_types::quorum_driver_types::EffectsFinalityInfo::QuorumExecuted(_) => {
                     Finality::QuorumExecuted(())
                 }
             };
@@ -183,7 +184,7 @@ impl RpcService {
             .map(Into::into);
 
         let events = events
-            .map(sui_sdk_types::TransactionEvents::try_from)
+            .map(iota_sdk_types::TransactionEvents::try_from)
             .transpose()?;
         let events_bcs = read_mask
             .contains("events_bcs")

@@ -1,11 +1,12 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::proof::{Proof, ProofTarget, TransactionProof};
 
 use anyhow::anyhow;
-use sui_types::effects::TransactionEffectsAPI;
-use sui_types::full_checkpoint_content::{CheckpointData, CheckpointTransaction};
+use iota_types::effects::TransactionEffectsAPI;
+use iota_types::full_checkpoint_content::{CheckpointData, CheckpointTransaction};
 
 /// Construct a proof from the given checkpoint data and proof targets.
 ///

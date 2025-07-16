@@ -1,15 +1,16 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
 use std::{fs, io::Read, path::PathBuf};
-use sui_framework::{SystemPackage, SystemPackageMetadata};
-use sui_protocol_config::ProtocolVersion;
-use sui_types::base_types::ObjectID;
-use sui_types::{
-    BRIDGE_PACKAGE_ID, DEEPBOOK_PACKAGE_ID, MOVE_STDLIB_PACKAGE_ID, SUI_FRAMEWORK_PACKAGE_ID,
-    SUI_SYSTEM_PACKAGE_ID,
+use iota_framework::{SystemPackage, SystemPackageMetadata};
+use iota_protocol_config::ProtocolVersion;
+use iota_types::base_types::ObjectID;
+use iota_types::{
+    BRIDGE_PACKAGE_ID, DEEPBOOK_PACKAGE_ID, MOVE_STDLIB_PACKAGE_ID, IOTA_FRAMEWORK_PACKAGE_ID,
+    IOTA_SYSTEM_PACKAGE_ID,
 };
 
 pub type SnapshotManifest = BTreeMap<u64, Snapshot>;
@@ -18,15 +19,15 @@ pub type SnapshotManifest = BTreeMap<u64, Snapshot>;
 /// packages.
 ///
 // Note: the [Snapshot] and [SnapshotPackage] types are similar to the
-// [sui_framework::{SystemPackageMetadata, SystemPackage}] types,
-// and also to the [sui::framework_versions::{FrameworkVersion, FrameworkPackage}] types.
-// They are sort of a stepping stone from one to the other - the [sui_framework] types contain
+// [iota_framework::{SystemPackageMetadata, SystemPackage}] types,
+// and also to the [iota::framework_versions::{FrameworkVersion, FrameworkPackage}] types.
+// They are sort of a stepping stone from one to the other - the [iota_framework] types contain
 // additional information about the compiled bytecode of the package, while the
 // [framework_versions] types do not contain information about the object IDs of the packages.
 //
-// These types serve as a kind of stepping stone; they are constructed from the [sui_framework]
-// types and serialized in the manifest, and then the build script for the [sui] crate reads them
-// from the manifest file and encodes them in the `sui` binary. A little information is dropped in
+// These types serve as a kind of stepping stone; they are constructed from the [iota_framework]
+// types and serialized in the manifest, and then the build script for the [iota] crate reads them
+// from the manifest file and encodes them in the `iota` binary. A little information is dropped in
 // each of these steps.
 #[derive(Serialize, Deserialize)]
 pub struct Snapshot {
@@ -42,7 +43,7 @@ pub struct Snapshot {
 pub struct SnapshotPackage {
     /// Name of the package (e.g. "MoveStdLib")
     pub name: String,
-    /// Path to the package in the monorepo (e.g. "crates/sui-framework/packages/move-stdlib")
+    /// Path to the package in the monorepo (e.g. "crates/iota-framework/packages/move-stdlib")
     pub path: String,
     /// Object ID of the published package
     pub id: ObjectID,
@@ -66,8 +67,8 @@ impl SnapshotPackage {
 
 const SYSTEM_PACKAGE_PUBLISH_ORDER: &[ObjectID] = &[
     MOVE_STDLIB_PACKAGE_ID,
-    SUI_FRAMEWORK_PACKAGE_ID,
-    SUI_SYSTEM_PACKAGE_ID,
+    IOTA_FRAMEWORK_PACKAGE_ID,
+    IOTA_SYSTEM_PACKAGE_ID,
     DEEPBOOK_PACKAGE_ID,
     BRIDGE_PACKAGE_ID,
 ];

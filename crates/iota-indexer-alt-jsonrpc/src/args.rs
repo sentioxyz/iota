@@ -1,10 +1,11 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::path::PathBuf;
 
-use sui_indexer_alt_metrics::MetricsArgs;
-use sui_pg_db::DbArgs;
+use iota_indexer_alt_metrics::MetricsArgs;
+use iota_pg_db::DbArgs;
 use url::Url;
 
 use crate::{api::write::WriteArgs, data::system_package_task::SystemPackageTaskArgs, RpcArgs};
@@ -23,7 +24,7 @@ pub enum Command {
         /// The URL of the database to connect to.
         #[clap(
             long,
-            default_value = "postgres://postgres:postgrespw@localhost:5432/sui_indexer_alt"
+            default_value = "postgres://postgres:postgrespw@localhost:5432/iota_indexer_alt"
         )]
         database_url: Url,
 

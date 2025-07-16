@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::error::{AggregateError, Error};
@@ -8,11 +9,11 @@ use move_compiler::compiled_unit::NamedCompiledModule;
 use move_core_types::account_address::AccountAddress;
 use move_symbol_pool::Symbol;
 use std::collections::{HashMap, HashSet};
-use sui_move_build::CompiledPackage;
-use sui_sdk::apis::ReadApi;
-use sui_sdk::error::Error as SdkError;
-use sui_sdk::rpc_types::{SuiObjectDataOptions, SuiRawData, SuiRawMovePackage};
-use sui_types::base_types::ObjectID;
+use iota_move_build::CompiledPackage;
+use iota_sdk::apis::ReadApi;
+use iota_sdk::error::Error as SdkError;
+use iota_sdk::rpc_types::{IotaObjectDataOptions, IotaRawData, IotaRawMovePackage};
+use iota_types::base_types::ObjectID;
 use toolchain::units_for_toolchain;
 
 pub mod error;
@@ -147,7 +148,7 @@ impl ValidationMode {
             future::join_all(addrs.iter().copied().map(|a| verifier.pkg_for_address(a))).await;
 
         for (storage_id, pkg) in addrs.into_iter().zip(resps) {
-            let SuiRawMovePackage {
+            let IotaRawMovePackage {
                 module_map,
                 linkage_table,
                 ..
@@ -220,7 +221,7 @@ impl ValidationMode {
     /// substituted with the specified address.
     #[allow(clippy::result_large_err)]
     fn local(&self, package: &CompiledPackage) -> Result<LocalModules, Error> {
-        let sui_package = package;
+        let iota_package = package;
         let package = &package.package;
         let root_package = package.compiled_package_info.package_name;
         let mut map = LocalModules::new();
@@ -237,7 +238,7 @@ impl ValidationMode {
             // only keep modules that are actually used
             let deps_compiled_units: Vec<_> = deps_compiled_units
                 .into_iter()
-                .filter(|pkg| sui_package.dependency_ids.published.contains_key(&pkg.0))
+                .filter(|pkg| iota_package.dependency_ids.published.contains_key(&pkg.0))
                 .collect();
 
             for (package, local_unit) in deps_compiled_units {
@@ -255,7 +256,7 @@ impl ValidationMode {
             }
 
             // Include bytecode dependencies.
-            for (package, module) in sui_package.bytecode_deps.iter() {
+            for (package, module) in iota_package.bytecode_deps.iter() {
                 let address = *module.address();
                 if address == AccountAddress::ZERO {
                     continue;
@@ -398,23 +399,23 @@ impl<'a> BytecodeSourceVerifier<'a> {
         Ok(())
     }
 
-    async fn pkg_for_address(&self, addr: AccountAddress) -> Result<SuiRawMovePackage, Error> {
+    async fn pkg_for_address(&self, addr: AccountAddress) -> Result<IotaRawMovePackage, Error> {
         // Move packages are specified with an AccountAddress, but are
-        // fetched from a sui network via sui_getObject, which takes an object ID
+        // fetched from a iota network via iota_getObject, which takes an object ID
         let obj_id = ObjectID::from(addr);
 
-        // fetch the Sui object at the address specified for the package in the local resolution table
+        // fetch the IOTA object at the address specified for the package in the local resolution table
         // if future packages with a large set of dependency packages prove too slow to verify,
         // batched object fetching should be added to the ReadApi & used here
         let obj_read = self
             .rpc_client
-            .get_object_with_options(obj_id, SuiObjectDataOptions::new().with_bcs())
+            .get_object_with_options(obj_id, IotaObjectDataOptions::new().with_bcs())
             .await
             .map_err(Error::DependencyObjectReadFailure)?;
 
         let obj = obj_read
             .into_object()
-            .map_err(Error::SuiObjectRefFailure)?
+            .map_err(Error::IotaObjectRefFailure)?
             .bcs
             .ok_or_else(|| {
                 Error::DependencyObjectReadFailure(SdkError::DataError(
@@ -423,8 +424,8 @@ impl<'a> BytecodeSourceVerifier<'a> {
             })?;
 
         match obj {
-            SuiRawData::Package(pkg) => Ok(pkg),
-            SuiRawData::MoveObject(move_obj) => {
+            IotaRawData::Package(pkg) => Ok(pkg),
+            IotaRawData::MoveObject(move_obj) => {
                 Err(Error::ObjectFoundWhenPackageExpected(obj_id, move_obj))
             }
         }

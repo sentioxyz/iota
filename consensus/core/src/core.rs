@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::{
@@ -14,10 +15,10 @@ use consensus_config::{local_committee_and_keys, Stake};
 use consensus_config::{AuthorityIndex, ProtocolKeyPair};
 use itertools::Itertools as _;
 #[cfg(test)]
-use mysten_metrics::monitored_mpsc::UnboundedReceiver;
-use mysten_metrics::monitored_scope;
+use iota_metrics::monitored_mpsc::UnboundedReceiver;
+use iota_metrics::monitored_scope;
 use parking_lot::RwLock;
-use sui_macros::fail_point;
+use iota_macros::fail_point;
 use tokio::{
     sync::{broadcast, watch},
     time::Instant,
@@ -1438,7 +1439,7 @@ mod test {
     use consensus_config::{AuthorityIndex, Parameters};
     use futures::{stream::FuturesUnordered, StreamExt};
     use rstest::rstest;
-    use sui_protocol_config::ProtocolConfig;
+    use iota_protocol_config::ProtocolConfig;
     use tokio::time::sleep;
 
     use super::*;

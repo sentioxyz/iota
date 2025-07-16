@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::sync::Arc;
@@ -6,12 +7,12 @@ use std::sync::Arc;
 use anyhow::{Context, Result};
 use diesel::{ExpressionMethods, QueryDsl};
 use diesel_async::RunQueryDsl;
-use sui_indexer_alt_framework::{
+use iota_indexer_alt_framework::{
     db,
     pipeline::{concurrent::Handler, Processor},
     types::full_checkpoint_content::CheckpointData,
 };
-use sui_indexer_alt_schema::{schema::kv_transactions, transactions::StoredTransaction};
+use iota_indexer_alt_schema::{schema::kv_transactions, transactions::StoredTransaction};
 
 pub(crate) struct KvTransactions;
 
@@ -92,10 +93,10 @@ impl Handler for KvTransactions {
 mod tests {
     use super::*;
     use diesel_async::RunQueryDsl;
-    use sui_indexer_alt_framework::{
+    use iota_indexer_alt_framework::{
         types::test_checkpoint_data_builder::TestCheckpointDataBuilder, Indexer,
     };
-    use sui_indexer_alt_schema::MIGRATIONS;
+    use iota_indexer_alt_schema::MIGRATIONS;
 
     async fn get_all_kv_transactions(
         conn: &mut db::Connection<'_>,

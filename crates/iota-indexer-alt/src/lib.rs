@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use bootstrap::bootstrap;
@@ -14,7 +15,7 @@ use handlers::{
     tx_kinds::TxKinds,
 };
 use prometheus::Registry;
-use sui_indexer_alt_framework::{
+use iota_indexer_alt_framework::{
     db::DbArgs,
     handlers::cp_sequence_numbers::CpSequenceNumbers,
     ingestion::{ClientArgs, IngestionConfig},
@@ -25,7 +26,7 @@ use sui_indexer_alt_framework::{
     },
     Indexer, IndexerArgs,
 };
-use sui_indexer_alt_schema::MIGRATIONS;
+use iota_indexer_alt_schema::MIGRATIONS;
 use tokio_util::sync::CancellationToken;
 use url::Url;
 

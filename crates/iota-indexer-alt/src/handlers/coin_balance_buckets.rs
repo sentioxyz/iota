@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::{collections::BTreeMap, sync::Arc};
@@ -6,18 +7,18 @@ use std::{collections::BTreeMap, sync::Arc};
 use anyhow::{anyhow, bail, Result};
 use diesel::sql_query;
 use diesel_async::RunQueryDsl;
-use sui_indexer_alt_framework::{
+use iota_indexer_alt_framework::{
     db,
     pipeline::{concurrent::Handler, Processor},
     types::{
-        base_types::{ObjectID, SuiAddress},
+        base_types::{ObjectID, IotaAddress},
         full_checkpoint_content::CheckpointData,
         object::{Object, Owner},
         TypeTag,
     },
     FieldCount,
 };
-use sui_indexer_alt_schema::{
+use iota_indexer_alt_schema::{
     objects::{StoredCoinBalanceBucket, StoredCoinOwnerKind},
     schema::coin_balance_buckets,
 };
@@ -45,7 +46,7 @@ pub(crate) struct ProcessedCoinBalanceBucket {
 pub(crate) enum CoinBalanceBucketChangeKind {
     Insert {
         owner_kind: StoredCoinOwnerKind,
-        owner_id: SuiAddress,
+        owner_id: IotaAddress,
         coin_type: TypeTag,
         balance_bucket: i16,
     },
@@ -180,7 +181,7 @@ impl Handler for CoinBalanceBuckets {
         to_exclusive: u64,
         conn: &mut db::Connection<'_>,
     ) -> anyhow::Result<usize> {
-        use sui_indexer_alt_schema::schema::coin_balance_buckets::dsl;
+        use iota_indexer_alt_schema::schema::coin_balance_buckets::dsl;
 
         let to_prune = self
             .pruning_lookup_table
@@ -271,7 +272,7 @@ impl TryInto<StoredCoinBalanceBucket> for &ProcessedCoinBalanceBucket {
 
 /// Get the owner kind and address of a coin, if it is owned by a single address,
 /// either through fast-path ownership or ConsensusV2 ownership.
-pub(crate) fn get_coin_owner(object: &Object) -> Option<(StoredCoinOwnerKind, SuiAddress)> {
+pub(crate) fn get_coin_owner(object: &Object) -> Option<(StoredCoinOwnerKind, IotaAddress)> {
     match object.owner() {
         Owner::AddressOwner(owner_id) => Some((StoredCoinOwnerKind::Fastpath, *owner_id)),
         Owner::ConsensusV2 { authenticator, .. } => Some((
@@ -301,9 +302,9 @@ mod tests {
 
     use super::*;
     use diesel::QueryDsl;
-    use sui_indexer_alt_framework::{
+    use iota_indexer_alt_framework::{
         types::{
-            base_types::{dbg_addr, MoveObjectType, ObjectID, SequenceNumber, SuiAddress},
+            base_types::{dbg_addr, MoveObjectType, ObjectID, SequenceNumber, IotaAddress},
             digests::TransactionDigest,
             gas_coin::GAS,
             object::{Authenticator, MoveObject, Object},
@@ -311,8 +312,8 @@ mod tests {
         },
         Indexer,
     };
-    use sui_indexer_alt_schema::MIGRATIONS;
-    use sui_protocol_config::ProtocolConfig;
+    use iota_indexer_alt_schema::MIGRATIONS;
+    use iota_protocol_config::ProtocolConfig;
 
     // Get all balance buckets from the database, sorted by object_id and cp_sequence_number.
     async fn get_all_balance_buckets(
@@ -333,33 +334,33 @@ mod tests {
         let id = ObjectID::random();
 
         // Test coin with 0 balance
-        let zero_coin = Object::with_id_owner_gas_for_testing(id, SuiAddress::ZERO, 0);
+        let zero_coin = Object::with_id_owner_gas_for_testing(id, IotaAddress::ZERO, 0);
         assert_eq!(get_coin_balance_bucket(&zero_coin).unwrap(), 0);
 
         // Test coin with balance 1 (10^0)
-        let one_coin = Object::with_id_owner_gas_for_testing(id, SuiAddress::ZERO, 1);
+        let one_coin = Object::with_id_owner_gas_for_testing(id, IotaAddress::ZERO, 1);
         assert_eq!(get_coin_balance_bucket(&one_coin).unwrap(), 0);
 
         // Test coin with balance 100 (10^2)
-        let hundred_coin = Object::with_id_owner_gas_for_testing(id, SuiAddress::ZERO, 100);
+        let hundred_coin = Object::with_id_owner_gas_for_testing(id, IotaAddress::ZERO, 100);
         assert_eq!(get_coin_balance_bucket(&hundred_coin).unwrap(), 2);
 
         // Test coin with balance 1000000 (10^6)
-        let million_coin = Object::with_id_owner_gas_for_testing(id, SuiAddress::ZERO, 1000000);
+        let million_coin = Object::with_id_owner_gas_for_testing(id, IotaAddress::ZERO, 1000000);
         assert_eq!(get_coin_balance_bucket(&million_coin).unwrap(), 6);
 
-        // The type of this object is a staked SUI, not a coin.
+        // The type of this object is a staked IOTA, not a coin.
         let invalid_coin = unsafe {
             Object::new_move(
                 MoveObject::new_from_execution(
-                    MoveObjectType::staked_sui(),
+                    MoveObjectType::staked_iota(),
                     false,
                     SequenceNumber::new(),
                     bcs::to_bytes(&Object::new_gas_for_testing()).unwrap(),
                     &ProtocolConfig::get_for_max_version_UNSAFE(),
                 )
                 .unwrap(),
-                Owner::AddressOwner(SuiAddress::ZERO),
+                Owner::AddressOwner(IotaAddress::ZERO),
                 TransactionDigest::ZERO,
             )
         };
@@ -369,7 +370,7 @@ mod tests {
     #[test]
     fn test_get_coin_owner() {
         let id = ObjectID::random();
-        let addr1 = SuiAddress::random_for_testing_only();
+        let addr1 = IotaAddress::random_for_testing_only();
         let addr_owned = Object::with_id_owner_for_testing(id, addr1);
         assert_eq!(
             get_coin_owner(&addr_owned),
@@ -403,15 +404,15 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn test_process_coin_balance_buckets_new_sui_coin() {
+    async fn test_process_coin_balance_buckets_new_iota_coin() {
         let (indexer, _db) = Indexer::new_for_testing(&MIGRATIONS).await;
         let mut conn = indexer.db().connect().await.unwrap();
         let handler = CoinBalanceBuckets::default();
         let mut builder = TestCheckpointDataBuilder::new(0);
         builder = builder
             .start_transaction(0)
-            .create_sui_object(0, 0)
-            .create_sui_object(1, 100)
+            .create_iota_object(0, 0)
+            .create_iota_object(1, 100)
             .finish_transaction();
         let checkpoint = builder.build_checkpoint();
         let values = handler.process(&Arc::new(checkpoint)).unwrap();
@@ -483,7 +484,7 @@ mod tests {
         let mut builder = TestCheckpointDataBuilder::new(0);
         builder = builder
             .start_transaction(0)
-            .create_sui_object(0, 10010)
+            .create_iota_object(0, 10010)
             .finish_transaction();
         let checkpoint = builder.build_checkpoint();
         let values = handler.process(&Arc::new(checkpoint)).unwrap();
@@ -505,7 +506,7 @@ mod tests {
         let all_balance_buckets = get_all_balance_buckets(&mut conn).await;
         assert_eq!(all_balance_buckets.len(), 1);
 
-        // Transfer 10 MIST, balance goes from 10010 to 10000.
+        // Transfer 10 NANOS, balance goes from 10010 to 10000.
         // The balance bucket for the original coin does not change.
         // We should only see the creation of the new coin in the processed results.
         builder = builder
@@ -536,7 +537,7 @@ mod tests {
         let rows_pruned = handler.prune(0, 2, &mut conn).await.unwrap();
         assert_eq!(rows_pruned, 0);
 
-        // Transfer 1 MIST, balance goes from 10000 to 9999.
+        // Transfer 1 NANOS, balance goes from 10000 to 9999.
         // The balance bucket changes, we should see a change, both for the old owner and the new owner.
         builder = builder
             .start_transaction(0)
@@ -663,7 +664,7 @@ mod tests {
         let mut builder = TestCheckpointDataBuilder::new(0);
         builder = builder
             .start_transaction(0)
-            .create_sui_object(0, 100)
+            .create_iota_object(0, 100)
             .finish_transaction();
         let checkpoint = builder.build_checkpoint();
         let values = handler.process(&Arc::new(checkpoint)).unwrap();

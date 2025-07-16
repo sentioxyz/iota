@@ -1,7 +1,7 @@
 [package]
-name = "sui-indexer-alt-framework"
+name = "iota-indexer-alt-framework"
 version.workspace = true
-authors = ["Mysten Labs <build@mystenlabs.com>"]
+authors = ["IOTA Foundation <info@iota.org>"]
 license = "Apache-2.0"
 publish = false
 edition = "2021"
@@ -30,13 +30,13 @@ tracing.workspace = true
 tracing-subscriber = { workspace = true, optional = true }
 url.workspace = true
 
-sui-field-count.workspace = true
-sui-indexer-alt-metrics.workspace = true
-sui-pg-db.workspace = true
-sui-sql-macro.workspace = true
-sui-storage.workspace = true
-sui-types.workspace = true
-sui-rpc-api.workspace = true
+iota-field-count.workspace = true
+iota-indexer-alt-metrics.workspace = true
+iota-pg-db.workspace = true
+iota-sql-macro.workspace = true
+iota-storage.workspace = true
+iota-types.workspace = true
+iota-rpc-api.workspace = true
 tonic.workspace = true
 
 [dev-dependencies]
@@ -44,7 +44,7 @@ rand.workspace = true
 telemetry-subscribers.workspace = true
 wiremock.workspace = true
 
-sui-synthetic-ingestion.workspace = true
+iota-synthetic-ingestion.workspace = true
 
 [features]
 default = ["cluster"]

@@ -1,13 +1,13 @@
-# sui-indexer-alt
+# iota-indexer-alt
 
 ## Running
 A source of checkpoints is required (exactly one of `--remote-store-url` or
 `--local-ingestion-path`), and a `--config` much be supplied.
 
 ```
-cargo run --bin sui-indexer-alt -- indexer               \
+cargo run --bin iota-indexer-alt -- indexer               \
   --database-url {url}                                   \
-  --remote-store-url https://checkpoints.mainnet.sui.io  \
+  --remote-store-url https://checkpoints.mainnet.iota.io  \
   --skip-watermark                                       \
   --first-checkpoint 68918060 --last-checkpoint 68919060 \
   --config indexer_alt_config.toml

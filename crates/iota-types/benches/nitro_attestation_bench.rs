@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use criterion::*;
@@ -8,7 +9,7 @@ use p384::ecdsa::signature::Signer;
 use p384::ecdsa::signature::Verifier;
 use p384::ecdsa::{Signature, SigningKey, VerifyingKey};
 use rand::rngs::OsRng;
-use sui_types::nitro_attestation::{parse_nitro_attestation, verify_nitro_attestation};
+use iota_types::nitro_attestation::{parse_nitro_attestation, verify_nitro_attestation};
 
 fn nitro_attestation_benchmark(c: &mut Criterion) {
     let mut group = c.benchmark_group("attestation");

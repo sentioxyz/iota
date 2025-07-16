@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 // This test tests that objects that are borrowed mutably or added/removed, but not modified, do not
@@ -10,7 +11,7 @@
 
 module test::m1;
 
-use sui::dynamic_field;
+use iota::dynamic_field;
 
 public struct Object has key, store {
     id: UID,
@@ -26,7 +27,7 @@ public struct ObjValue has key, store {
 }
 
 public fun create(ctx: &mut TxContext) {
-    let data = sui::address::to_bytes(ctx.sender());
+    let data = iota::address::to_bytes(ctx.sender());
     let mut o1 = Object { id: object::new(ctx) };
     let mut o2 = Object { id: object::new(ctx) };
     dynamic_field::add(&mut o1.id, b"value", Value { data });
@@ -55,11 +56,11 @@ public fun add_remove(obj: &mut Object) {
 public fun write_back(obj: &mut Object, ctx: &mut TxContext) {
     let v: &mut Value = dynamic_field::borrow_mut(&mut obj.id, b"value");
     v.data = vector[];
-    v.data = sui::address::to_bytes(ctx.sender());
+    v.data = iota::address::to_bytes(ctx.sender());
 
     let o: &mut ObjValue = dynamic_field::borrow_mut(&mut obj.id, b"obj");
     o.data = vector[];
-    o.data = sui::address::to_bytes(ctx.sender());
+    o.data = iota::address::to_bytes(ctx.sender());
 }
 
 //# run test::m1::create --sender A

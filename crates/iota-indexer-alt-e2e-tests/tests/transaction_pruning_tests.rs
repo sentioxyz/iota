@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 //! These tests check that transaction queries respond correctly to pruning, especially given that
@@ -10,14 +11,14 @@ use std::{str::FromStr, time::Duration};
 use reqwest::Client;
 use serde_json::{json, Value};
 use simulacrum::Simulacrum;
-use sui_indexer_alt::config::{ConcurrentLayer, IndexerConfig, PipelineLayer, PrunerLayer};
-use sui_indexer_alt_e2e_tests::{find_address_owned, FullCluster};
-use sui_indexer_alt_framework::IndexerArgs;
-use sui_indexer_alt_jsonrpc::{
+use iota_indexer_alt::config::{ConcurrentLayer, IndexerConfig, PipelineLayer, PrunerLayer};
+use iota_indexer_alt_e2e_tests::{find_address_owned, FullCluster};
+use iota_indexer_alt_framework::IndexerArgs;
+use iota_indexer_alt_jsonrpc::{
     config::RpcConfig, data::system_package_task::SystemPackageTaskArgs,
 };
-use sui_types::{
-    base_types::SuiAddress,
+use iota_types::{
+    base_types::IotaAddress,
     crypto::{get_account_key_pair, Signature, Signer},
     digests::TransactionDigest,
     effects::TransactionEffectsAPI,
@@ -26,7 +27,7 @@ use sui_types::{
 };
 use tokio_util::sync::CancellationToken;
 
-/// 5 SUI gas budget
+/// 5 IOTA gas budget
 const DEFAULT_GAS_BUDGET: u64 = 5_000_000_000;
 
 // Check that querying transactions by sender works when fetchings transactions all in one go, and
@@ -239,14 +240,14 @@ fn concurrent_pipeline(retention: u64) -> ConcurrentLayer {
     }
 }
 
-/// Request gas from the "faucet" in `cluster`, and craft a transaction transferring 1 MIST from
+/// Request gas from the "faucet" in `cluster`, and craft a transaction transferring 1 NANOS from
 /// `sender` (signed for with `signer`) to `recipient`, and returns the digest of the transaction as
 /// long as it succeeded.
 fn transfer_dust(
     cluster: &mut FullCluster,
-    sender: SuiAddress,
+    sender: IotaAddress,
     signer: &dyn Signer<Signature>,
-    recipient: SuiAddress,
+    recipient: IotaAddress,
 ) -> TransactionDigest {
     let fx = cluster
         .request_gas(sender, DEFAULT_GAS_BUDGET + 1)
@@ -255,7 +256,7 @@ fn transfer_dust(
     let gas = find_address_owned(&fx).expect("Failed to find gas object");
 
     let mut builder = ProgrammableTransactionBuilder::new();
-    builder.transfer_sui(recipient, Some(1));
+    builder.transfer_iota(recipient, Some(1));
 
     let data = TransactionData::new_programmable(
         sender,
@@ -279,7 +280,7 @@ fn transfer_dust(
 /// a next page exists and there is a cursor.
 async fn query_transactions(
     cluster: &FullCluster,
-    sender: SuiAddress,
+    sender: IotaAddress,
     cursor: Option<String>,
     limit: usize,
     descending: bool,
@@ -287,7 +288,7 @@ async fn query_transactions(
     let query = json!({
         "jsonrpc": "2.0",
         "id": 1,
-        "method": "suix_queryTransactionBlocks",
+        "method": "iotax_queryTransactionBlocks",
         "params": [
             {
                 "filter": {

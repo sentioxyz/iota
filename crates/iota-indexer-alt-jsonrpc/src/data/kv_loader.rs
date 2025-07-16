@@ -1,17 +1,18 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use async_graphql::dataloader::DataLoader;
 use std::collections::HashMap;
 use std::sync::Arc;
-use sui_indexer_alt_schema::transactions::StoredTransaction;
-use sui_kvstore::TransactionData as KVTransactionData;
-use sui_types::base_types::ObjectID;
-use sui_types::digests::TransactionDigest;
-use sui_types::effects::TransactionEffects;
-use sui_types::signature::GenericSignature;
-use sui_types::transaction::TransactionData;
-use sui_types::{
+use iota_indexer_alt_schema::transactions::StoredTransaction;
+use iota_kvstore::TransactionData as KVTransactionData;
+use iota_types::base_types::ObjectID;
+use iota_types::digests::TransactionDigest;
+use iota_types::effects::TransactionEffects;
+use iota_types::signature::GenericSignature;
+use iota_types::transaction::TransactionData;
+use iota_types::{
     crypto::AuthorityQuorumSignInfo,
     event::Event,
     messages_checkpoint::{CheckpointContents, CheckpointSummary},

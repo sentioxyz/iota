@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::collections::HashMap;
@@ -7,17 +8,17 @@ use super::NormalizedPackage;
 use crate::Result;
 use crate::RpcError;
 use move_binary_format::normalized::Type;
-use sui_sdk_transaction_builder::unresolved::Value;
-use sui_sdk_types::Command;
-use sui_sdk_types::ObjectId;
-use sui_types::base_types::ObjectID;
-use sui_types::base_types::STD_ASCII_MODULE_NAME;
-use sui_types::base_types::STD_ASCII_STRUCT_NAME;
-use sui_types::base_types::STD_OPTION_MODULE_NAME;
-use sui_types::base_types::STD_OPTION_STRUCT_NAME;
-use sui_types::base_types::STD_UTF8_MODULE_NAME;
-use sui_types::base_types::STD_UTF8_STRUCT_NAME;
-use sui_types::MOVE_STDLIB_ADDRESS;
+use iota_sdk_transaction_builder::unresolved::Value;
+use iota_sdk_types::Command;
+use iota_sdk_types::ObjectId;
+use iota_types::base_types::ObjectID;
+use iota_types::base_types::STD_ASCII_MODULE_NAME;
+use iota_types::base_types::STD_ASCII_STRUCT_NAME;
+use iota_types::base_types::STD_OPTION_MODULE_NAME;
+use iota_types::base_types::STD_OPTION_STRUCT_NAME;
+use iota_types::base_types::STD_UTF8_MODULE_NAME;
+use iota_types::base_types::STD_UTF8_STRUCT_NAME;
+use iota_types::MOVE_STDLIB_ADDRESS;
 
 pub(super) fn resolve_literal(
     called_packages: &HashMap<ObjectId, NormalizedPackage>,
@@ -73,7 +74,7 @@ fn determine_literal_type(
             (Command::MakeMoveVector(make_move_vector), Some(_)) => {
                 if let Some(ty) = &make_move_vector.type_ {
                     let ty =
-                        sui_types::sui_sdk_types_conversions::type_tag_sdk_to_core(ty.clone())?;
+                        iota_types::iota_sdk_types_conversions::type_tag_sdk_to_core(ty.clone())?;
                     set_type(&mut literal_type, ty.into())?;
                 } else {
                     return Err(RpcError::new(

@@ -1,23 +1,23 @@
 ---
-title: Module `sui::nitro_attestation`
+title: Module `iota::nitro_attestation`
 ---
 
 
 
--  [Struct `PCREntry`](#sui_nitro_attestation_PCREntry)
--  [Struct `NitroAttestationDocument`](#sui_nitro_attestation_NitroAttestationDocument)
+-  [Struct `PCREntry`](#iota_nitro_attestation_PCREntry)
+-  [Struct `NitroAttestationDocument`](#iota_nitro_attestation_NitroAttestationDocument)
 -  [Constants](#@Constants_0)
--  [Function `load_nitro_attestation`](#sui_nitro_attestation_load_nitro_attestation)
--  [Function `module_id`](#sui_nitro_attestation_module_id)
--  [Function `timestamp`](#sui_nitro_attestation_timestamp)
--  [Function `digest`](#sui_nitro_attestation_digest)
--  [Function `pcrs`](#sui_nitro_attestation_pcrs)
--  [Function `public_key`](#sui_nitro_attestation_public_key)
--  [Function `user_data`](#sui_nitro_attestation_user_data)
--  [Function `nonce`](#sui_nitro_attestation_nonce)
--  [Function `index`](#sui_nitro_attestation_index)
--  [Function `value`](#sui_nitro_attestation_value)
--  [Function `load_nitro_attestation_internal`](#sui_nitro_attestation_load_nitro_attestation_internal)
+-  [Function `load_nitro_attestation`](#iota_nitro_attestation_load_nitro_attestation)
+-  [Function `module_id`](#iota_nitro_attestation_module_id)
+-  [Function `timestamp`](#iota_nitro_attestation_timestamp)
+-  [Function `digest`](#iota_nitro_attestation_digest)
+-  [Function `pcrs`](#iota_nitro_attestation_pcrs)
+-  [Function `public_key`](#iota_nitro_attestation_public_key)
+-  [Function `user_data`](#iota_nitro_attestation_user_data)
+-  [Function `nonce`](#iota_nitro_attestation_nonce)
+-  [Function `index`](#iota_nitro_attestation_index)
+-  [Function `value`](#iota_nitro_attestation_value)
+-  [Function `load_nitro_attestation_internal`](#iota_nitro_attestation_load_nitro_attestation_internal)
 
 
 <pre><code><b>use</b> <a href="../std/ascii.md#std_ascii">std::ascii</a>;
@@ -25,24 +25,24 @@ title: Module `sui::nitro_attestation`
 <b>use</b> <a href="../std/option.md#std_option">std::option</a>;
 <b>use</b> <a href="../std/string.md#std_string">std::string</a>;
 <b>use</b> <a href="../std/vector.md#std_vector">std::vector</a>;
-<b>use</b> <a href="../sui/address.md#sui_address">sui::address</a>;
-<b>use</b> <a href="../sui/clock.md#sui_clock">sui::clock</a>;
-<b>use</b> <a href="../sui/hex.md#sui_hex">sui::hex</a>;
-<b>use</b> <a href="../sui/object.md#sui_object">sui::object</a>;
-<b>use</b> <a href="../sui/transfer.md#sui_transfer">sui::transfer</a>;
-<b>use</b> <a href="../sui/tx_context.md#sui_tx_context">sui::tx_context</a>;
+<b>use</b> <a href="../iota/address.md#iota_address">iota::address</a>;
+<b>use</b> <a href="../iota/clock.md#iota_clock">iota::clock</a>;
+<b>use</b> <a href="../iota/hex.md#iota_hex">iota::hex</a>;
+<b>use</b> <a href="../iota/object.md#iota_object">iota::object</a>;
+<b>use</b> <a href="../iota/transfer.md#iota_transfer">iota::transfer</a>;
+<b>use</b> <a href="../iota/tx_context.md#iota_tx_context">iota::tx_context</a>;
 </code></pre>
 
 
 
-<a name="sui_nitro_attestation_PCREntry"></a>
+<a name="iota_nitro_attestation_PCREntry"></a>
 
 ## Struct `PCREntry`
 
 Represents a PCR entry with an index and value.
 
 
-<pre><code><b>public</b> <b>struct</b> <a href="../sui/nitro_attestation.md#sui_nitro_attestation_PCREntry">PCREntry</a> <b>has</b> drop
+<pre><code><b>public</b> <b>struct</b> <a href="../iota/nitro_attestation.md#iota_nitro_attestation_PCREntry">PCREntry</a> <b>has</b> drop
 </code></pre>
 
 
@@ -53,12 +53,12 @@ Represents a PCR entry with an index and value.
 
 <dl>
 <dt>
-<code><a href="../sui/nitro_attestation.md#sui_nitro_attestation_index">index</a>: u8</code>
+<code><a href="../iota/nitro_attestation.md#iota_nitro_attestation_index">index</a>: u8</code>
 </dt>
 <dd>
 </dd>
 <dt>
-<code><a href="../sui/nitro_attestation.md#sui_nitro_attestation_value">value</a>: vector&lt;u8&gt;</code>
+<code><a href="../iota/nitro_attestation.md#iota_nitro_attestation_value">value</a>: vector&lt;u8&gt;</code>
 </dt>
 <dd>
 </dd>
@@ -67,14 +67,14 @@ Represents a PCR entry with an index and value.
 
 </details>
 
-<a name="sui_nitro_attestation_NitroAttestationDocument"></a>
+<a name="iota_nitro_attestation_NitroAttestationDocument"></a>
 
 ## Struct `NitroAttestationDocument`
 
 Nitro Attestation Document defined for AWS.
 
 
-<pre><code><b>public</b> <b>struct</b> <a href="../sui/nitro_attestation.md#sui_nitro_attestation_NitroAttestationDocument">NitroAttestationDocument</a> <b>has</b> drop
+<pre><code><b>public</b> <b>struct</b> <a href="../iota/nitro_attestation.md#iota_nitro_attestation_NitroAttestationDocument">NitroAttestationDocument</a> <b>has</b> drop
 </code></pre>
 
 
@@ -85,44 +85,44 @@ Nitro Attestation Document defined for AWS.
 
 <dl>
 <dt>
-<code><a href="../sui/nitro_attestation.md#sui_nitro_attestation_module_id">module_id</a>: vector&lt;u8&gt;</code>
+<code><a href="../iota/nitro_attestation.md#iota_nitro_attestation_module_id">module_id</a>: vector&lt;u8&gt;</code>
 </dt>
 <dd>
  Issuing Nitro hypervisor module ID.
 </dd>
 <dt>
-<code><a href="../sui/nitro_attestation.md#sui_nitro_attestation_timestamp">timestamp</a>: u64</code>
+<code><a href="../iota/nitro_attestation.md#iota_nitro_attestation_timestamp">timestamp</a>: u64</code>
 </dt>
 <dd>
  UTC time when document was created, in milliseconds since UNIX epoch.
 </dd>
 <dt>
-<code><a href="../sui/nitro_attestation.md#sui_nitro_attestation_digest">digest</a>: vector&lt;u8&gt;</code>
+<code><a href="../iota/nitro_attestation.md#iota_nitro_attestation_digest">digest</a>: vector&lt;u8&gt;</code>
 </dt>
 <dd>
  The digest function used for calculating the register values.
 </dd>
 <dt>
-<code><a href="../sui/nitro_attestation.md#sui_nitro_attestation_pcrs">pcrs</a>: vector&lt;<a href="../sui/nitro_attestation.md#sui_nitro_attestation_PCREntry">sui::nitro_attestation::PCREntry</a>&gt;</code>
+<code><a href="../iota/nitro_attestation.md#iota_nitro_attestation_pcrs">pcrs</a>: vector&lt;<a href="../iota/nitro_attestation.md#iota_nitro_attestation_PCREntry">iota::nitro_attestation::PCREntry</a>&gt;</code>
 </dt>
 <dd>
  A list of PCREntry containing the index and the PCR bytes.
  <https://docs.aws.amazon.com/enclaves/latest/user/set-up-attestation.html#where>.
 </dd>
 <dt>
-<code><a href="../sui/nitro_attestation.md#sui_nitro_attestation_public_key">public_key</a>: <a href="../std/option.md#std_option_Option">std::option::Option</a>&lt;vector&lt;u8&gt;&gt;</code>
+<code><a href="../iota/nitro_attestation.md#iota_nitro_attestation_public_key">public_key</a>: <a href="../std/option.md#std_option_Option">std::option::Option</a>&lt;vector&lt;u8&gt;&gt;</code>
 </dt>
 <dd>
  An optional DER-encoded key the attestation, consumer can use to encrypt data with.
 </dd>
 <dt>
-<code><a href="../sui/nitro_attestation.md#sui_nitro_attestation_user_data">user_data</a>: <a href="../std/option.md#std_option_Option">std::option::Option</a>&lt;vector&lt;u8&gt;&gt;</code>
+<code><a href="../iota/nitro_attestation.md#iota_nitro_attestation_user_data">user_data</a>: <a href="../std/option.md#std_option_Option">std::option::Option</a>&lt;vector&lt;u8&gt;&gt;</code>
 </dt>
 <dd>
  Additional signed user data, defined by protocol.
 </dd>
 <dt>
-<code><a href="../sui/nitro_attestation.md#sui_nitro_attestation_nonce">nonce</a>: <a href="../std/option.md#std_option_Option">std::option::Option</a>&lt;vector&lt;u8&gt;&gt;</code>
+<code><a href="../iota/nitro_attestation.md#iota_nitro_attestation_nonce">nonce</a>: <a href="../std/option.md#std_option_Option">std::option::Option</a>&lt;vector&lt;u8&gt;&gt;</code>
 </dt>
 <dd>
  An optional cryptographic nonce provided by the attestation consumer as a proof of
@@ -138,47 +138,47 @@ Nitro Attestation Document defined for AWS.
 ## Constants
 
 
-<a name="sui_nitro_attestation_EInvalidPCRsError"></a>
+<a name="iota_nitro_attestation_EInvalidPCRsError"></a>
 
 Error that the PCRs are invalid.
 
 
-<pre><code><b>const</b> <a href="../sui/nitro_attestation.md#sui_nitro_attestation_EInvalidPCRsError">EInvalidPCRsError</a>: u64 = 3;
+<pre><code><b>const</b> <a href="../iota/nitro_attestation.md#iota_nitro_attestation_EInvalidPCRsError">EInvalidPCRsError</a>: u64 = 3;
 </code></pre>
 
 
 
-<a name="sui_nitro_attestation_ENotSupportedError"></a>
+<a name="iota_nitro_attestation_ENotSupportedError"></a>
 
 Error that the feature is not available on this network.
 
 
-<pre><code><b>const</b> <a href="../sui/nitro_attestation.md#sui_nitro_attestation_ENotSupportedError">ENotSupportedError</a>: u64 = 0;
+<pre><code><b>const</b> <a href="../iota/nitro_attestation.md#iota_nitro_attestation_ENotSupportedError">ENotSupportedError</a>: u64 = 0;
 </code></pre>
 
 
 
-<a name="sui_nitro_attestation_EParseError"></a>
+<a name="iota_nitro_attestation_EParseError"></a>
 
 Error that the attestation input failed to be parsed.
 
 
-<pre><code><b>const</b> <a href="../sui/nitro_attestation.md#sui_nitro_attestation_EParseError">EParseError</a>: u64 = 1;
+<pre><code><b>const</b> <a href="../iota/nitro_attestation.md#iota_nitro_attestation_EParseError">EParseError</a>: u64 = 1;
 </code></pre>
 
 
 
-<a name="sui_nitro_attestation_EVerifyError"></a>
+<a name="iota_nitro_attestation_EVerifyError"></a>
 
 Error that the attestation failed to be verified.
 
 
-<pre><code><b>const</b> <a href="../sui/nitro_attestation.md#sui_nitro_attestation_EVerifyError">EVerifyError</a>: u64 = 2;
+<pre><code><b>const</b> <a href="../iota/nitro_attestation.md#iota_nitro_attestation_EVerifyError">EVerifyError</a>: u64 = 2;
 </code></pre>
 
 
 
-<a name="sui_nitro_attestation_load_nitro_attestation"></a>
+<a name="iota_nitro_attestation_load_nitro_attestation"></a>
 
 ## Function `load_nitro_attestation`
 
@@ -189,7 +189,7 @@ Returns the parsed NitroAttestationDocument after verifying the attestation,
 may abort with errors described above.
 
 
-<pre><code><b>entry</b> <b>fun</b> <a href="../sui/nitro_attestation.md#sui_nitro_attestation_load_nitro_attestation">load_nitro_attestation</a>(attestation: vector&lt;u8&gt;, <a href="../sui/clock.md#sui_clock">clock</a>: &<a href="../sui/clock.md#sui_clock_Clock">sui::clock::Clock</a>): <a href="../sui/nitro_attestation.md#sui_nitro_attestation_NitroAttestationDocument">sui::nitro_attestation::NitroAttestationDocument</a>
+<pre><code><b>entry</b> <b>fun</b> <a href="../iota/nitro_attestation.md#iota_nitro_attestation_load_nitro_attestation">load_nitro_attestation</a>(attestation: vector&lt;u8&gt;, <a href="../iota/clock.md#iota_clock">clock</a>: &<a href="../iota/clock.md#iota_clock_Clock">iota::clock::Clock</a>): <a href="../iota/nitro_attestation.md#iota_nitro_attestation_NitroAttestationDocument">iota::nitro_attestation::NitroAttestationDocument</a>
 </code></pre>
 
 
@@ -198,11 +198,11 @@ may abort with errors described above.
 <summary>Implementation</summary>
 
 
-<pre><code><b>entry</b> <b>fun</b> <a href="../sui/nitro_attestation.md#sui_nitro_attestation_load_nitro_attestation">load_nitro_attestation</a>(
+<pre><code><b>entry</b> <b>fun</b> <a href="../iota/nitro_attestation.md#iota_nitro_attestation_load_nitro_attestation">load_nitro_attestation</a>(
     attestation: vector&lt;u8&gt;,
-    <a href="../sui/clock.md#sui_clock">clock</a>: &Clock
-): <a href="../sui/nitro_attestation.md#sui_nitro_attestation_NitroAttestationDocument">NitroAttestationDocument</a> {
-    <a href="../sui/nitro_attestation.md#sui_nitro_attestation_load_nitro_attestation_internal">load_nitro_attestation_internal</a>(&attestation, <a href="../sui/clock.md#sui_clock_timestamp_ms">clock::timestamp_ms</a>(<a href="../sui/clock.md#sui_clock">clock</a>))
+    <a href="../iota/clock.md#iota_clock">clock</a>: &Clock
+): <a href="../iota/nitro_attestation.md#iota_nitro_attestation_NitroAttestationDocument">NitroAttestationDocument</a> {
+    <a href="../iota/nitro_attestation.md#iota_nitro_attestation_load_nitro_attestation_internal">load_nitro_attestation_internal</a>(&attestation, <a href="../iota/clock.md#iota_clock_timestamp_ms">clock::timestamp_ms</a>(<a href="../iota/clock.md#iota_clock">clock</a>))
 }
 </code></pre>
 
@@ -210,13 +210,13 @@ may abort with errors described above.
 
 </details>
 
-<a name="sui_nitro_attestation_module_id"></a>
+<a name="iota_nitro_attestation_module_id"></a>
 
 ## Function `module_id`
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../sui/nitro_attestation.md#sui_nitro_attestation_module_id">module_id</a>(attestation: &<a href="../sui/nitro_attestation.md#sui_nitro_attestation_NitroAttestationDocument">sui::nitro_attestation::NitroAttestationDocument</a>): &vector&lt;u8&gt;
+<pre><code><b>public</b> <b>fun</b> <a href="../iota/nitro_attestation.md#iota_nitro_attestation_module_id">module_id</a>(attestation: &<a href="../iota/nitro_attestation.md#iota_nitro_attestation_NitroAttestationDocument">iota::nitro_attestation::NitroAttestationDocument</a>): &vector&lt;u8&gt;
 </code></pre>
 
 
@@ -225,8 +225,8 @@ may abort with errors described above.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../sui/nitro_attestation.md#sui_nitro_attestation_module_id">module_id</a>(attestation: &<a href="../sui/nitro_attestation.md#sui_nitro_attestation_NitroAttestationDocument">NitroAttestationDocument</a>): &vector&lt;u8&gt; {
-    &attestation.<a href="../sui/nitro_attestation.md#sui_nitro_attestation_module_id">module_id</a>
+<pre><code><b>public</b> <b>fun</b> <a href="../iota/nitro_attestation.md#iota_nitro_attestation_module_id">module_id</a>(attestation: &<a href="../iota/nitro_attestation.md#iota_nitro_attestation_NitroAttestationDocument">NitroAttestationDocument</a>): &vector&lt;u8&gt; {
+    &attestation.<a href="../iota/nitro_attestation.md#iota_nitro_attestation_module_id">module_id</a>
 }
 </code></pre>
 
@@ -234,13 +234,13 @@ may abort with errors described above.
 
 </details>
 
-<a name="sui_nitro_attestation_timestamp"></a>
+<a name="iota_nitro_attestation_timestamp"></a>
 
 ## Function `timestamp`
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../sui/nitro_attestation.md#sui_nitro_attestation_timestamp">timestamp</a>(attestation: &<a href="../sui/nitro_attestation.md#sui_nitro_attestation_NitroAttestationDocument">sui::nitro_attestation::NitroAttestationDocument</a>): &u64
+<pre><code><b>public</b> <b>fun</b> <a href="../iota/nitro_attestation.md#iota_nitro_attestation_timestamp">timestamp</a>(attestation: &<a href="../iota/nitro_attestation.md#iota_nitro_attestation_NitroAttestationDocument">iota::nitro_attestation::NitroAttestationDocument</a>): &u64
 </code></pre>
 
 
@@ -249,8 +249,8 @@ may abort with errors described above.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../sui/nitro_attestation.md#sui_nitro_attestation_timestamp">timestamp</a>(attestation: &<a href="../sui/nitro_attestation.md#sui_nitro_attestation_NitroAttestationDocument">NitroAttestationDocument</a>): &u64 {
-    &attestation.<a href="../sui/nitro_attestation.md#sui_nitro_attestation_timestamp">timestamp</a>
+<pre><code><b>public</b> <b>fun</b> <a href="../iota/nitro_attestation.md#iota_nitro_attestation_timestamp">timestamp</a>(attestation: &<a href="../iota/nitro_attestation.md#iota_nitro_attestation_NitroAttestationDocument">NitroAttestationDocument</a>): &u64 {
+    &attestation.<a href="../iota/nitro_attestation.md#iota_nitro_attestation_timestamp">timestamp</a>
 }
 </code></pre>
 
@@ -258,13 +258,13 @@ may abort with errors described above.
 
 </details>
 
-<a name="sui_nitro_attestation_digest"></a>
+<a name="iota_nitro_attestation_digest"></a>
 
 ## Function `digest`
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../sui/nitro_attestation.md#sui_nitro_attestation_digest">digest</a>(attestation: &<a href="../sui/nitro_attestation.md#sui_nitro_attestation_NitroAttestationDocument">sui::nitro_attestation::NitroAttestationDocument</a>): &vector&lt;u8&gt;
+<pre><code><b>public</b> <b>fun</b> <a href="../iota/nitro_attestation.md#iota_nitro_attestation_digest">digest</a>(attestation: &<a href="../iota/nitro_attestation.md#iota_nitro_attestation_NitroAttestationDocument">iota::nitro_attestation::NitroAttestationDocument</a>): &vector&lt;u8&gt;
 </code></pre>
 
 
@@ -273,8 +273,8 @@ may abort with errors described above.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../sui/nitro_attestation.md#sui_nitro_attestation_digest">digest</a>(attestation: &<a href="../sui/nitro_attestation.md#sui_nitro_attestation_NitroAttestationDocument">NitroAttestationDocument</a>): &vector&lt;u8&gt; {
-    &attestation.<a href="../sui/nitro_attestation.md#sui_nitro_attestation_digest">digest</a>
+<pre><code><b>public</b> <b>fun</b> <a href="../iota/nitro_attestation.md#iota_nitro_attestation_digest">digest</a>(attestation: &<a href="../iota/nitro_attestation.md#iota_nitro_attestation_NitroAttestationDocument">NitroAttestationDocument</a>): &vector&lt;u8&gt; {
+    &attestation.<a href="../iota/nitro_attestation.md#iota_nitro_attestation_digest">digest</a>
 }
 </code></pre>
 
@@ -282,7 +282,7 @@ may abort with errors described above.
 
 </details>
 
-<a name="sui_nitro_attestation_pcrs"></a>
+<a name="iota_nitro_attestation_pcrs"></a>
 
 ## Function `pcrs`
 
@@ -290,7 +290,7 @@ Returns a list of mapping PCREntry containg the index and the PCR bytes.
 Currently AWS supports PCR0, PCR1, PCR2, PCR3, PCR4, PCR8.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../sui/nitro_attestation.md#sui_nitro_attestation_pcrs">pcrs</a>(attestation: &<a href="../sui/nitro_attestation.md#sui_nitro_attestation_NitroAttestationDocument">sui::nitro_attestation::NitroAttestationDocument</a>): &vector&lt;<a href="../sui/nitro_attestation.md#sui_nitro_attestation_PCREntry">sui::nitro_attestation::PCREntry</a>&gt;
+<pre><code><b>public</b> <b>fun</b> <a href="../iota/nitro_attestation.md#iota_nitro_attestation_pcrs">pcrs</a>(attestation: &<a href="../iota/nitro_attestation.md#iota_nitro_attestation_NitroAttestationDocument">iota::nitro_attestation::NitroAttestationDocument</a>): &vector&lt;<a href="../iota/nitro_attestation.md#iota_nitro_attestation_PCREntry">iota::nitro_attestation::PCREntry</a>&gt;
 </code></pre>
 
 
@@ -299,8 +299,8 @@ Currently AWS supports PCR0, PCR1, PCR2, PCR3, PCR4, PCR8.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../sui/nitro_attestation.md#sui_nitro_attestation_pcrs">pcrs</a>(attestation: &<a href="../sui/nitro_attestation.md#sui_nitro_attestation_NitroAttestationDocument">NitroAttestationDocument</a>): &vector&lt;<a href="../sui/nitro_attestation.md#sui_nitro_attestation_PCREntry">PCREntry</a>&gt; {
-    &attestation.<a href="../sui/nitro_attestation.md#sui_nitro_attestation_pcrs">pcrs</a>
+<pre><code><b>public</b> <b>fun</b> <a href="../iota/nitro_attestation.md#iota_nitro_attestation_pcrs">pcrs</a>(attestation: &<a href="../iota/nitro_attestation.md#iota_nitro_attestation_NitroAttestationDocument">NitroAttestationDocument</a>): &vector&lt;<a href="../iota/nitro_attestation.md#iota_nitro_attestation_PCREntry">PCREntry</a>&gt; {
+    &attestation.<a href="../iota/nitro_attestation.md#iota_nitro_attestation_pcrs">pcrs</a>
 }
 </code></pre>
 
@@ -308,13 +308,13 @@ Currently AWS supports PCR0, PCR1, PCR2, PCR3, PCR4, PCR8.
 
 </details>
 
-<a name="sui_nitro_attestation_public_key"></a>
+<a name="iota_nitro_attestation_public_key"></a>
 
 ## Function `public_key`
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../sui/nitro_attestation.md#sui_nitro_attestation_public_key">public_key</a>(attestation: &<a href="../sui/nitro_attestation.md#sui_nitro_attestation_NitroAttestationDocument">sui::nitro_attestation::NitroAttestationDocument</a>): &<a href="../std/option.md#std_option_Option">std::option::Option</a>&lt;vector&lt;u8&gt;&gt;
+<pre><code><b>public</b> <b>fun</b> <a href="../iota/nitro_attestation.md#iota_nitro_attestation_public_key">public_key</a>(attestation: &<a href="../iota/nitro_attestation.md#iota_nitro_attestation_NitroAttestationDocument">iota::nitro_attestation::NitroAttestationDocument</a>): &<a href="../std/option.md#std_option_Option">std::option::Option</a>&lt;vector&lt;u8&gt;&gt;
 </code></pre>
 
 
@@ -323,8 +323,8 @@ Currently AWS supports PCR0, PCR1, PCR2, PCR3, PCR4, PCR8.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../sui/nitro_attestation.md#sui_nitro_attestation_public_key">public_key</a>(attestation: &<a href="../sui/nitro_attestation.md#sui_nitro_attestation_NitroAttestationDocument">NitroAttestationDocument</a>): &Option&lt;vector&lt;u8&gt;&gt; {
-    &attestation.<a href="../sui/nitro_attestation.md#sui_nitro_attestation_public_key">public_key</a>
+<pre><code><b>public</b> <b>fun</b> <a href="../iota/nitro_attestation.md#iota_nitro_attestation_public_key">public_key</a>(attestation: &<a href="../iota/nitro_attestation.md#iota_nitro_attestation_NitroAttestationDocument">NitroAttestationDocument</a>): &Option&lt;vector&lt;u8&gt;&gt; {
+    &attestation.<a href="../iota/nitro_attestation.md#iota_nitro_attestation_public_key">public_key</a>
 }
 </code></pre>
 
@@ -332,13 +332,13 @@ Currently AWS supports PCR0, PCR1, PCR2, PCR3, PCR4, PCR8.
 
 </details>
 
-<a name="sui_nitro_attestation_user_data"></a>
+<a name="iota_nitro_attestation_user_data"></a>
 
 ## Function `user_data`
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../sui/nitro_attestation.md#sui_nitro_attestation_user_data">user_data</a>(attestation: &<a href="../sui/nitro_attestation.md#sui_nitro_attestation_NitroAttestationDocument">sui::nitro_attestation::NitroAttestationDocument</a>): &<a href="../std/option.md#std_option_Option">std::option::Option</a>&lt;vector&lt;u8&gt;&gt;
+<pre><code><b>public</b> <b>fun</b> <a href="../iota/nitro_attestation.md#iota_nitro_attestation_user_data">user_data</a>(attestation: &<a href="../iota/nitro_attestation.md#iota_nitro_attestation_NitroAttestationDocument">iota::nitro_attestation::NitroAttestationDocument</a>): &<a href="../std/option.md#std_option_Option">std::option::Option</a>&lt;vector&lt;u8&gt;&gt;
 </code></pre>
 
 
@@ -347,8 +347,8 @@ Currently AWS supports PCR0, PCR1, PCR2, PCR3, PCR4, PCR8.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../sui/nitro_attestation.md#sui_nitro_attestation_user_data">user_data</a>(attestation: &<a href="../sui/nitro_attestation.md#sui_nitro_attestation_NitroAttestationDocument">NitroAttestationDocument</a>): &Option&lt;vector&lt;u8&gt;&gt; {
-    &attestation.<a href="../sui/nitro_attestation.md#sui_nitro_attestation_user_data">user_data</a>
+<pre><code><b>public</b> <b>fun</b> <a href="../iota/nitro_attestation.md#iota_nitro_attestation_user_data">user_data</a>(attestation: &<a href="../iota/nitro_attestation.md#iota_nitro_attestation_NitroAttestationDocument">NitroAttestationDocument</a>): &Option&lt;vector&lt;u8&gt;&gt; {
+    &attestation.<a href="../iota/nitro_attestation.md#iota_nitro_attestation_user_data">user_data</a>
 }
 </code></pre>
 
@@ -356,13 +356,13 @@ Currently AWS supports PCR0, PCR1, PCR2, PCR3, PCR4, PCR8.
 
 </details>
 
-<a name="sui_nitro_attestation_nonce"></a>
+<a name="iota_nitro_attestation_nonce"></a>
 
 ## Function `nonce`
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../sui/nitro_attestation.md#sui_nitro_attestation_nonce">nonce</a>(attestation: &<a href="../sui/nitro_attestation.md#sui_nitro_attestation_NitroAttestationDocument">sui::nitro_attestation::NitroAttestationDocument</a>): &<a href="../std/option.md#std_option_Option">std::option::Option</a>&lt;vector&lt;u8&gt;&gt;
+<pre><code><b>public</b> <b>fun</b> <a href="../iota/nitro_attestation.md#iota_nitro_attestation_nonce">nonce</a>(attestation: &<a href="../iota/nitro_attestation.md#iota_nitro_attestation_NitroAttestationDocument">iota::nitro_attestation::NitroAttestationDocument</a>): &<a href="../std/option.md#std_option_Option">std::option::Option</a>&lt;vector&lt;u8&gt;&gt;
 </code></pre>
 
 
@@ -371,8 +371,8 @@ Currently AWS supports PCR0, PCR1, PCR2, PCR3, PCR4, PCR8.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../sui/nitro_attestation.md#sui_nitro_attestation_nonce">nonce</a>(attestation: &<a href="../sui/nitro_attestation.md#sui_nitro_attestation_NitroAttestationDocument">NitroAttestationDocument</a>): &Option&lt;vector&lt;u8&gt;&gt; {
-    &attestation.<a href="../sui/nitro_attestation.md#sui_nitro_attestation_nonce">nonce</a>
+<pre><code><b>public</b> <b>fun</b> <a href="../iota/nitro_attestation.md#iota_nitro_attestation_nonce">nonce</a>(attestation: &<a href="../iota/nitro_attestation.md#iota_nitro_attestation_NitroAttestationDocument">NitroAttestationDocument</a>): &Option&lt;vector&lt;u8&gt;&gt; {
+    &attestation.<a href="../iota/nitro_attestation.md#iota_nitro_attestation_nonce">nonce</a>
 }
 </code></pre>
 
@@ -380,13 +380,13 @@ Currently AWS supports PCR0, PCR1, PCR2, PCR3, PCR4, PCR8.
 
 </details>
 
-<a name="sui_nitro_attestation_index"></a>
+<a name="iota_nitro_attestation_index"></a>
 
 ## Function `index`
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../sui/nitro_attestation.md#sui_nitro_attestation_index">index</a>(<b>entry</b>: &<a href="../sui/nitro_attestation.md#sui_nitro_attestation_PCREntry">sui::nitro_attestation::PCREntry</a>): u8
+<pre><code><b>public</b> <b>fun</b> <a href="../iota/nitro_attestation.md#iota_nitro_attestation_index">index</a>(<b>entry</b>: &<a href="../iota/nitro_attestation.md#iota_nitro_attestation_PCREntry">iota::nitro_attestation::PCREntry</a>): u8
 </code></pre>
 
 
@@ -395,8 +395,8 @@ Currently AWS supports PCR0, PCR1, PCR2, PCR3, PCR4, PCR8.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../sui/nitro_attestation.md#sui_nitro_attestation_index">index</a>(<b>entry</b>: &<a href="../sui/nitro_attestation.md#sui_nitro_attestation_PCREntry">PCREntry</a>): u8 {
-    <b>entry</b>.<a href="../sui/nitro_attestation.md#sui_nitro_attestation_index">index</a>
+<pre><code><b>public</b> <b>fun</b> <a href="../iota/nitro_attestation.md#iota_nitro_attestation_index">index</a>(<b>entry</b>: &<a href="../iota/nitro_attestation.md#iota_nitro_attestation_PCREntry">PCREntry</a>): u8 {
+    <b>entry</b>.<a href="../iota/nitro_attestation.md#iota_nitro_attestation_index">index</a>
 }
 </code></pre>
 
@@ -404,13 +404,13 @@ Currently AWS supports PCR0, PCR1, PCR2, PCR3, PCR4, PCR8.
 
 </details>
 
-<a name="sui_nitro_attestation_value"></a>
+<a name="iota_nitro_attestation_value"></a>
 
 ## Function `value`
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../sui/nitro_attestation.md#sui_nitro_attestation_value">value</a>(<b>entry</b>: &<a href="../sui/nitro_attestation.md#sui_nitro_attestation_PCREntry">sui::nitro_attestation::PCREntry</a>): &vector&lt;u8&gt;
+<pre><code><b>public</b> <b>fun</b> <a href="../iota/nitro_attestation.md#iota_nitro_attestation_value">value</a>(<b>entry</b>: &<a href="../iota/nitro_attestation.md#iota_nitro_attestation_PCREntry">iota::nitro_attestation::PCREntry</a>): &vector&lt;u8&gt;
 </code></pre>
 
 
@@ -419,8 +419,8 @@ Currently AWS supports PCR0, PCR1, PCR2, PCR3, PCR4, PCR8.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../sui/nitro_attestation.md#sui_nitro_attestation_value">value</a>(<b>entry</b>: &<a href="../sui/nitro_attestation.md#sui_nitro_attestation_PCREntry">PCREntry</a>): &vector&lt;u8&gt; {
-    &<b>entry</b>.<a href="../sui/nitro_attestation.md#sui_nitro_attestation_value">value</a>
+<pre><code><b>public</b> <b>fun</b> <a href="../iota/nitro_attestation.md#iota_nitro_attestation_value">value</a>(<b>entry</b>: &<a href="../iota/nitro_attestation.md#iota_nitro_attestation_PCREntry">PCREntry</a>): &vector&lt;u8&gt; {
+    &<b>entry</b>.<a href="../iota/nitro_attestation.md#iota_nitro_attestation_value">value</a>
 }
 </code></pre>
 
@@ -428,14 +428,14 @@ Currently AWS supports PCR0, PCR1, PCR2, PCR3, PCR4, PCR8.
 
 </details>
 
-<a name="sui_nitro_attestation_load_nitro_attestation_internal"></a>
+<a name="iota_nitro_attestation_load_nitro_attestation_internal"></a>
 
 ## Function `load_nitro_attestation_internal`
 
 Internal native function
 
 
-<pre><code><b>fun</b> <a href="../sui/nitro_attestation.md#sui_nitro_attestation_load_nitro_attestation_internal">load_nitro_attestation_internal</a>(attestation: &vector&lt;u8&gt;, current_timestamp: u64): <a href="../sui/nitro_attestation.md#sui_nitro_attestation_NitroAttestationDocument">sui::nitro_attestation::NitroAttestationDocument</a>
+<pre><code><b>fun</b> <a href="../iota/nitro_attestation.md#iota_nitro_attestation_load_nitro_attestation_internal">load_nitro_attestation_internal</a>(attestation: &vector&lt;u8&gt;, current_timestamp: u64): <a href="../iota/nitro_attestation.md#iota_nitro_attestation_NitroAttestationDocument">iota::nitro_attestation::NitroAttestationDocument</a>
 </code></pre>
 
 
@@ -444,10 +444,10 @@ Internal native function
 <summary>Implementation</summary>
 
 
-<pre><code><b>native</b> <b>fun</b> <a href="../sui/nitro_attestation.md#sui_nitro_attestation_load_nitro_attestation_internal">load_nitro_attestation_internal</a>(
+<pre><code><b>native</b> <b>fun</b> <a href="../iota/nitro_attestation.md#iota_nitro_attestation_load_nitro_attestation_internal">load_nitro_attestation_internal</a>(
     attestation: &vector&lt;u8&gt;,
     current_timestamp: u64,
-): <a href="../sui/nitro_attestation.md#sui_nitro_attestation_NitroAttestationDocument">NitroAttestationDocument</a>;
+): <a href="../iota/nitro_attestation.md#iota_nitro_attestation_NitroAttestationDocument">NitroAttestationDocument</a>;
 </code></pre>
 
 

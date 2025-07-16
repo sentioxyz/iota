@@ -1,9 +1,10 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use async_graphql::dataloader::DataLoader;
 use prometheus::Registry;
-use sui_kvstore::BigTableClient;
+use iota_kvstore::BigTableClient;
 
 use crate::data::error::Error;
 

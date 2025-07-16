@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 //# init --protocol-version 70 --accounts A --addresses P=0x0 --simulator
@@ -22,7 +23,7 @@ module P::M {
 
 //# run-jsonrpc
 {
-  "method": "suix_getDynamicFieldObject",
+  "method": "iotax_getDynamicFieldObject",
   "params": [
     "0x0000000000000000000000000000000000000000000000000000000000000000",
     { "type": "0x0000000000000000000000000000000000000000000000000000000000000000::M::Key<u64>", "value": "42" }
@@ -31,7 +32,7 @@ module P::M {
 
 //# run-jsonrpc
 {
-  "method": "suix_getDynamicFieldObject",
+  "method": "iotax_getDynamicFieldObject",
   "params": [
     "0x0000000000000000000000000000000000000000000000000000000000000000",
     { "type": "@{obj_0_0}::M::Key<u64>", "value": "42" }
@@ -40,7 +41,7 @@ module P::M {
 
 //# run-jsonrpc
 {
-  "method": "suix_getDynamicFieldObject",
+  "method": "iotax_getDynamicFieldObject",
   "params": [
     "0x0000000000000000000000000000000000000000000000000000000000000000",
     { "type": "@{P}::N::Key<u64>", "value": "42" }
@@ -49,7 +50,7 @@ module P::M {
 
 //# run-jsonrpc
 {
-  "method": "suix_getDynamicFieldObject",
+  "method": "iotax_getDynamicFieldObject",
   "params": [
     "0x0000000000000000000000000000000000000000000000000000000000000000",
     { "type": "@{P}::M::DoesntExist<u64>", "value": "42" }
@@ -58,7 +59,7 @@ module P::M {
 
 //# run-jsonrpc
 {
-  "method": "suix_getDynamicFieldObject",
+  "method": "iotax_getDynamicFieldObject",
   "params": [
     "0x0000000000000000000000000000000000000000000000000000000000000000",
     { "type": "@{P}::M::Key<u64, u32>", "value": "42" }
@@ -67,7 +68,7 @@ module P::M {
 
 //# run-jsonrpc
 {
-  "method": "suix_getDynamicFieldObject",
+  "method": "iotax_getDynamicFieldObject",
   "params": [
     "0x0000000000000000000000000000000000000000000000000000000000000000",
     { "type": "@{P}::M::Key<u64>", "value": null }
@@ -76,7 +77,7 @@ module P::M {
 
 //# run-jsonrpc
 {
-  "method": "suix_getDynamicFieldObject",
+  "method": "iotax_getDynamicFieldObject",
   "params": [
     "0x0000000000000000000000000000000000000000000000000000000000000000",
     { "type": "@{P}::M::Key<u64>", "value": "hello, world" }

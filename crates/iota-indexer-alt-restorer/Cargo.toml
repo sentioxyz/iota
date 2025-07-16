@@ -1,7 +1,7 @@
 [package]
-name = "sui-indexer-alt-restorer"
+name = "iota-indexer-alt-restorer"
 version = "0.1.0"
-authors = ["Mysten Labs <build@mystenlabs.com>"]
+authors = ["IOTA Foundation <info@iota.org>"]
 license = "Apache-2.0"
 publish = false
 edition = "2021"
@@ -19,20 +19,20 @@ diesel-async = { workspace = true, features = ["bb8", "postgres", "async-connect
 indicatif.workspace = true
 object_store.workspace = true
 prometheus.workspace = true
-sui-archival.workspace = true
-sui-config.workspace = true
-sui-core.workspace = true
-sui-field-count.workspace = true
-sui-indexer-alt-schema.workspace = true
-sui-indexer-alt-framework.workspace = true
-sui-pg-db.workspace = true
-sui-snapshot.workspace = true
-sui-storage.workspace = true
-sui-types.workspace = true
+iota-archival.workspace = true
+iota-config.workspace = true
+iota-core.workspace = true
+iota-field-count.workspace = true
+iota-indexer-alt-schema.workspace = true
+iota-indexer-alt-framework.workspace = true
+iota-pg-db.workspace = true
+iota-snapshot.workspace = true
+iota-storage.workspace = true
+iota-types.workspace = true
 tokio = { workspace = true, features = ["full"] }
 telemetry-subscribers.workspace = true
 
 [[bin]]
-name = "sui-indexer-alt-restorer"
+name = "iota-indexer-alt-restorer"
 path = "src/main.rs"
 

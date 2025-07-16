@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 /// This module executes enriched benchmark queries against the database.
@@ -11,7 +12,7 @@ use bb8::Pool;
 use bb8_postgres::PostgresConnectionManager;
 use rand::seq::SliceRandom;
 use rand::SeedableRng;
-use sui_indexer_alt_framework::task::TrySpawnStreamExt;
+use iota_indexer_alt_framework::task::TrySpawnStreamExt;
 use tokio_postgres::{types::ToSql, NoTls};
 use tracing::info;
 use url::Url;

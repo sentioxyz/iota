@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 //# init --protocol-version 70 --accounts A B C --simulator
@@ -44,13 +45,13 @@
 
 //# run-jsonrpc
 {
-  "method": "suix_queryTransactionBlocks",
+  "method": "iotax_queryTransactionBlocks",
   "params": [{}]
 }
 
 //# run-jsonrpc
 {
-  "method": "suix_queryTransactionBlocks",
+  "method": "iotax_queryTransactionBlocks",
   "params": [
     { "filter": { "FromOrToAddress": { "addr": "@{A}" } } }
   ]
@@ -58,7 +59,7 @@
 
 //# run-jsonrpc
 {
-  "method": "suix_queryTransactionBlocks",
+  "method": "iotax_queryTransactionBlocks",
   "params": [
     { "filter": { "ToAddress": "@{A}" } }
   ]
@@ -66,7 +67,7 @@
 
 //# run-jsonrpc
 {
-  "method": "suix_queryTransactionBlocks",
+  "method": "iotax_queryTransactionBlocks",
   "params": [
     { "filter": { "FromOrToAddress": { "addr": "@{B}" } } }
   ]
@@ -74,7 +75,7 @@
 
 //# run-jsonrpc
 {
-  "method": "suix_queryTransactionBlocks",
+  "method": "iotax_queryTransactionBlocks",
   "params": [
     { "filter": { "ToAddress": "@{B}"  } }
   ]
@@ -82,7 +83,7 @@
 
 //# run-jsonrpc
 {
-  "method": "suix_queryTransactionBlocks",
+  "method": "iotax_queryTransactionBlocks",
   "params": [
     { "filter": { "FromOrToAddress": { "addr": "@{C}" } } }
   ]
@@ -90,7 +91,7 @@
 
 //# run-jsonrpc
 {
-  "method": "suix_queryTransactionBlocks",
+  "method": "iotax_queryTransactionBlocks",
   "params": [
     { "filter": { "ToAddress": "@{C}" } }
   ]
@@ -98,7 +99,7 @@
 
 //# run-jsonrpc
 {
-  "method": "suix_queryTransactionBlocks",
+  "method": "iotax_queryTransactionBlocks",
   "params": [
     { "filter": { "FromAddress": "@{A}" } }
   ]
@@ -106,7 +107,7 @@
 
 //# run-jsonrpc
 {
-  "method": "suix_queryTransactionBlocks",
+  "method": "iotax_queryTransactionBlocks",
   "params": [
     { "filter": { "FromAddress": "@{B}" } }
   ]
@@ -114,7 +115,7 @@
 
 //# run-jsonrpc
 {
-  "method": "suix_queryTransactionBlocks",
+  "method": "iotax_queryTransactionBlocks",
   "params": [
     { "filter": { "FromAddress": "@{C}" } }
   ]
@@ -122,7 +123,7 @@
 
 //# run-jsonrpc
 {
-  "method": "suix_queryTransactionBlocks",
+  "method": "iotax_queryTransactionBlocks",
   "params": [
     { "filter": { "FromAndToAddress": { "from": "@{A}", "to": "@{B}" } } }
   ]

@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 mod formatting;
@@ -42,12 +43,12 @@ use move_core_types::{
 };
 use move_ir_types::location::{ByteIndex, Loc};
 use move_package::compilation::compiled_package::CompiledUnitWithSource;
-use sui_json_rpc_types::{SuiObjectDataOptions, SuiRawData};
-use sui_move_build::CompiledPackage;
-use sui_protocol_config::ProtocolConfig;
-use sui_sdk::apis::ReadApi;
-use sui_types::move_package::UpgradePolicy;
-use sui_types::{base_types::ObjectID, execution_config_utils::to_binary_config};
+use iota_json_rpc_types::{IotaObjectDataOptions, IotaRawData};
+use iota_move_build::CompiledPackage;
+use iota_protocol_config::ProtocolConfig;
+use iota_sdk::apis::ReadApi;
+use iota_types::move_package::UpgradePolicy;
+use iota_types::{base_types::ObjectID, execution_config_utils::to_binary_config};
 
 /// Errors that can occur during upgrade compatibility checks,
 /// one-to-one related to the underlying trait functions see: [`CompatibilityMode`].
@@ -662,7 +663,7 @@ pub(crate) async fn check_compatibility(
     protocol_config: ProtocolConfig,
 ) -> Result<(), Error> {
     let existing_obj_read = read_api
-        .get_object_with_options(package_id, SuiObjectDataOptions::new().with_bcs())
+        .get_object_with_options(package_id, IotaObjectDataOptions::new().with_bcs())
         .await
         .context("Unable to get existing package")?;
 
@@ -673,8 +674,8 @@ pub(crate) async fn check_compatibility(
         .ok_or_else(|| anyhow!("Unable to read object"))?;
 
     let existing_package = match existing_obj {
-        SuiRawData::Package(pkg) => Ok(pkg),
-        SuiRawData::MoveObject(_) => Err(anyhow!("Object found when package expected")),
+        IotaRawData::Package(pkg) => Ok(pkg),
+        IotaRawData::MoveObject(_) => Err(anyhow!("Object found when package expected")),
     }?;
 
     let existing_modules = existing_package

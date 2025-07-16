@@ -1,11 +1,12 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use jsonrpsee::{core::RpcResult, proc_macros::rpc};
-use sui_json_rpc_types::SuiMoveNormalizedFunction;
-use sui_open_rpc::Module;
-use sui_open_rpc_macros::open_rpc;
-use sui_types::base_types::ObjectID;
+use iota_json_rpc_types::IotaMoveNormalizedFunction;
+use iota_open_rpc::Module;
+use iota_open_rpc_macros::open_rpc;
+use iota_types::base_types::ObjectID;
 
 use crate::context::Context;
 
@@ -14,8 +15,8 @@ use super::rpc_module::RpcModule;
 mod error;
 mod response;
 
-#[open_rpc(namespace = "sui", tag = "Move APIs")]
-#[rpc(server, namespace = "sui")]
+#[open_rpc(namespace = "iota", tag = "Move APIs")]
+#[rpc(server, namespace = "iota")]
 trait MoveApi {
     #[method(name = "getNormalizedMoveFunction")]
     async fn get_normalized_move_function(
@@ -23,7 +24,7 @@ trait MoveApi {
         package: ObjectID,
         module_name: String,
         function_name: String,
-    ) -> RpcResult<SuiMoveNormalizedFunction>;
+    ) -> RpcResult<IotaMoveNormalizedFunction>;
 }
 
 pub(crate) struct MoveUtils(pub Context);
@@ -35,7 +36,7 @@ impl MoveApiServer for MoveUtils {
         package: ObjectID,
         module_name: String,
         function_name: String,
-    ) -> RpcResult<SuiMoveNormalizedFunction> {
+    ) -> RpcResult<IotaMoveNormalizedFunction> {
         let Self(ctx) = self;
         Ok(response::function(ctx, package, &module_name, &function_name).await?)
     }

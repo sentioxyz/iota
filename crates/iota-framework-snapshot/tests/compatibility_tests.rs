@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 mod compatibility_tests {
@@ -7,11 +8,11 @@ mod compatibility_tests {
     };
     use std::collections::BTreeMap;
     use std::path::Path;
-    use sui_framework::{compare_system_package, BuiltInFramework};
-    use sui_framework_snapshot::{load_bytecode_snapshot, load_bytecode_snapshot_manifest};
-    use sui_move_build::published_at_property;
-    use sui_protocol_config::{Chain, ProtocolConfig, ProtocolVersion};
-    use sui_types::execution_config_utils::to_binary_config;
+    use iota_framework::{compare_system_package, BuiltInFramework};
+    use iota_framework_snapshot::{load_bytecode_snapshot, load_bytecode_snapshot_manifest};
+    use iota_move_build::published_at_property;
+    use iota_protocol_config::{Chain, ProtocolConfig, ProtocolVersion};
+    use iota_types::execution_config_utils::to_binary_config;
 
     #[tokio::test]
     async fn test_framework_compatibility() {
@@ -38,7 +39,7 @@ mod compatibility_tests {
                 .is_none()
                 {
                     panic!(
-                        "The current Sui framework {:?} is not compatible with version {:?}",
+                        "The current IOTA framework {:?} is not compatible with version {:?}",
                         cur_package.id, version
                     );
                 }

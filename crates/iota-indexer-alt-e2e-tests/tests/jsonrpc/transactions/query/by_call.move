@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 //# init --protocol-version 70 --accounts A --addresses P0=0x0 P1=0x0 --simulator
@@ -13,22 +14,22 @@
 module P0::M {
   public struct P0MFoo() has copy, drop, store;
 
-  public fun foo() { sui::event::emit(P0MFoo()) }
+  public fun foo() { iota::event::emit(P0MFoo()) }
 }
 
 module P0::N {
   public struct P0NBar() has copy, drop, store;
   public struct P0NBaz() has copy, drop, store;
 
-  public fun bar() { sui::event::emit(P0NBar()) }
-  public fun baz() { sui::event::emit(P0NBaz()) }
+  public fun bar() { iota::event::emit(P0NBar()) }
+  public fun baz() { iota::event::emit(P0NBaz()) }
 }
 
 //# publish
 module P1::M {
   public struct P1MQux() has copy, drop, store;
 
-  public fun qux() { sui::event::emit(P1MQux()) }
+  public fun qux() { iota::event::emit(P1MQux()) }
 }
 
 //# programmable
@@ -71,7 +72,7 @@ module P1::M {
 
 //# run-jsonrpc
 {
-  "method": "suix_queryTransactionBlocks",
+  "method": "iotax_queryTransactionBlocks",
   "params": [
     {
       "filter": {
@@ -88,7 +89,7 @@ module P1::M {
 
 //# run-jsonrpc
 {
-  "method": "suix_queryTransactionBlocks",
+  "method": "iotax_queryTransactionBlocks",
   "params": [
     {
       "filter": {
@@ -106,7 +107,7 @@ module P1::M {
 
 //# run-jsonrpc
 {
-  "method": "suix_queryTransactionBlocks",
+  "method": "iotax_queryTransactionBlocks",
   "params": [
     {
       "filter": {
@@ -125,7 +126,7 @@ module P1::M {
 
 //# run-jsonrpc
 {
-  "method": "suix_queryTransactionBlocks",
+  "method": "iotax_queryTransactionBlocks",
   "params": [
     {
       "filter": {
@@ -143,7 +144,7 @@ module P1::M {
 
 //# run-jsonrpc
 {
-  "method": "suix_queryTransactionBlocks",
+  "method": "iotax_queryTransactionBlocks",
   "params": [
     {
       "filter": {

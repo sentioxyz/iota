@@ -1,6 +1,7 @@
 # Copyright (c) Mysten Labs, Inc.
+# Modifications Copyright (c) 2025 IOTA Stiftung
 # SPDX-License-Identifier: Apache-2.0
 
-# check that sui move new followed by sui move test succeeds
-sui move new example
-cd example && sui move test
+# check that iota move new followed by iota move test succeeds
+iota move new example
+cd example && iota move test

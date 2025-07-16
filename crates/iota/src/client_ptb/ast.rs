@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::fmt;
@@ -8,9 +9,9 @@ use move_core_types::parsing::{
     types::{ParsedFqName, ParsedModuleId, ParsedStructType, ParsedType},
 };
 use move_core_types::runtime_value::MoveValue;
-use sui_types::{
+use iota_types::{
     base_types::{ObjectID, RESOLVED_ASCII_STR, RESOLVED_STD_OPTION, RESOLVED_UTF8_STR},
-    id::RESOLVED_SUI_ID,
+    id::RESOLVED_IOTA_ID,
     Identifier, TypeTag,
 };
 
@@ -208,7 +209,7 @@ impl Argument {
                     &stag.address,
                     stag.module.as_ident_str(),
                     stag.name.as_ident_str(),
-                ) == RESOLVED_SUI_ID =>
+                ) == RESOLVED_IOTA_ID =>
             {
                 MoveValue::Address(a.into_inner())
             }

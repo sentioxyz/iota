@@ -1,17 +1,18 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-/// A mock of the SuiNS Move package to use during testing.
+/// A mock of the IotaNS Move package to use during testing.
 ///
-/// It provides enough structure to query SuiNS's on-chain state, but it
+/// It provides enough structure to query IotaNS's on-chain state, but it
 /// doesn't maintain the same invariants.
-module suins::suins;
+module iotans::iotans;
 
 use std::string::String;
-use sui::table::{Self, Table};
-use sui::vec_map::{Self, VecMap};
+use iota::table::{Self, Table};
+use iota::vec_map::{Self, VecMap};
 
-use suins::domain::{Self, Domain};
+use iotans::domain::{Self, Domain};
 
 public struct NameRecord has copy, drop, store {
     nft_id: ID,

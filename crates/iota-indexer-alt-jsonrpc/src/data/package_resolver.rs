@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::{
@@ -9,8 +10,8 @@ use std::{
 use async_graphql::dataloader::{DataLoader, Loader};
 use diesel::{ExpressionMethods, QueryDsl};
 use move_core_types::account_address::AccountAddress;
-use sui_indexer_alt_schema::{packages::StoredPackage, schema::sum_packages};
-use sui_package_resolver::{
+use iota_indexer_alt_schema::{packages::StoredPackage, schema::sum_packages};
+use iota_package_resolver::{
     error::Error, Package, PackageStore, PackageStoreWithLruCache, Resolver, Result,
 };
 

@@ -5,7 +5,7 @@ published-at = "0xabc123"
 edition = "2024.beta"
 
 [dependencies]
-MoveStdlib = { local = "../../../../sui-framework/packages/move-stdlib" }
+MoveStdlib = { local = "../../../../iota-framework/packages/move-stdlib" }
 
 [addresses]
 nonexistent = "0x0"

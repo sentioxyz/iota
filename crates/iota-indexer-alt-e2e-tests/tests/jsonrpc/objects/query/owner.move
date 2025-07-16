@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 //# init --protocol-version 70 --accounts A B --simulator
@@ -32,25 +33,25 @@
 
 //# run-jsonrpc
 {
-  "method": "suix_getOwnedObjects",
+  "method": "iotax_getOwnedObjects",
   "params": ["@{A}", { "options": { "showOwner": true, "showContent": true } }]
 }
 
 //# run-jsonrpc
 {
-  "method": "suix_getOwnedObjects",
+  "method": "iotax_getOwnedObjects",
   "params": ["@{B}", { "options": { "showOwner": true, "showContent": true } }]
 }
 
 //# run-jsonrpc
 {
-  "method": "suix_getOwnedObjects",
+  "method": "iotax_getOwnedObjects",
   "params": ["@{A}", { "options": { "showContent": true } }, null, 2]
 }
 
 //# run-jsonrpc --cursors bcs(@{obj_4_1},2)
 {
-  "method": "suix_getOwnedObjects",
+  "method": "iotax_getOwnedObjects",
   "params": ["@{A}", { "options": { "showContent": true } }, "@{cursor_0}", 2]
 }
 
@@ -62,7 +63,7 @@
 
 //# run-jsonrpc
 {
-  "method": "suix_getOwnedObjects",
+  "method": "iotax_getOwnedObjects",
   "params": ["@{B}", { "options": { "showContent": true } }]
 }
 
@@ -73,12 +74,12 @@
 
 //# run-jsonrpc
 {
-  "method": "suix_getOwnedObjects",
+  "method": "iotax_getOwnedObjects",
   "params": ["@{A}", { "options": { "showContent": true } }]
 }
 
 //# run-jsonrpc
 {
-  "method": "suix_getOwnedObjects",
+  "method": "iotax_getOwnedObjects",
   "params": ["@{B}", { "options": { "showContent": true } }]
 }

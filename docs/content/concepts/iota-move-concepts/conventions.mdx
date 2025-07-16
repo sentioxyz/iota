@@ -1,22 +1,22 @@
 ---
 title: Move Conventions
-description: Recommended Move 2024 best practices for Sui development.
+description: Recommended Move 2024 best practices for IOTA development.
 ---
 
-This guide outlines recommended conventions and best practices for writing Move smart contracts on Sui. Following these guidelines helps create more maintainable, secure, and composable code that aligns with ecosystem standards.
+This guide outlines recommended conventions and best practices for writing Move smart contracts on IOTA. Following these guidelines helps create more maintainable, secure, and composable code that aligns with ecosystem standards.
 
-While these conventions are recommendations rather than strict rules, they represent patterns that have proven effective across many Sui projects. They help create consistency across the ecosystem and make code easier to understand and maintain.
+While these conventions are recommendations rather than strict rules, they represent patterns that have proven effective across many IOTA projects. They help create consistency across the ecosystem and make code easier to understand and maintain.
 
 ## Organization principles
 
 ### Package
 
-A Sui package consists of: 
+A IOTA package consists of: 
 - a `sources` directory containing the Move code to be uploaded to the blockchain
 - a `Move.toml` manifest file that declares dependencies and other information about the package
-- a `Move.lock` file that the Sui Move toolchain automatically generates to lock the versions of the dependencies and track the different published and upgraded versions of the package that exist on the different networks
+- a `Move.lock` file that the IOTA Move toolchain automatically generates to lock the versions of the dependencies and track the different published and upgraded versions of the package that exist on the different networks
 
-For this reason, the `Move.lock` file should always be part of the package (don't add it to the `.gitignore` file). Use the [automated address management](https://docs.sui.io/concepts/sui-move-concepts/packages/automated-address-management) instead of the old `published-at` field in the manifest file.
+For this reason, the `Move.lock` file should always be part of the package (don't add it to the `.gitignore` file). Use the [automated address management](https://docs.iota.org/concepts/iota-move-concepts/packages/automated-address-management) instead of the old `published-at` field in the manifest file.
 
 Optionally, you can add a `tests` directory to contain the tests for the package and an `examples` directory to provide use cases for the package. Neither directory is uploaded on chain when you publish the package.
 
@@ -101,7 +101,7 @@ Group imports by dependency, for example:
 
 ```move
 use std::string::String;
-use sui::{
+use iota::{
     coin::Coin,
     balance,
     table::Table
@@ -196,7 +196,7 @@ public struct Receipt<Data> has store { ... }
 
 ## Code Structure
 
-The following section covers common patterns and best practices specific to Move development on Sui, including object ownership models and function design principles.
+The following section covers common patterns and best practices specific to Move development on Iota, including object ownership models and function design principles.
 
 ### Shared objects
 
@@ -227,7 +227,7 @@ Keep your functions pure to maintain composability. Do not use `transfer::transf
 ```move
 module conventions::amm;
 
-use sui::coin::Coin;
+use iota::coin::Coin;
 
 public struct Pool has key {
     id: UID
@@ -264,7 +264,7 @@ Pass the `Coin` object by value with the exact right amount directly to improve 
 ```move
 module conventions::amm;
 
-use sui::coin::Coin;
+use iota::coin::Coin;
 
 public struct Pool has key {
     id: UID
@@ -290,10 +290,10 @@ To maintain composability, use capability objects instead of arrays of addresses
 ```move
 module conventions::access_control;
 
-use sui::sui::SUI;
-use sui::balance::Balance;
-use sui::coin::{Self, Coin};
-use sui::table::{Self, Table};
+use iota::iota::IOTA;
+use iota::balance::Balance;
+use iota::coin::{Self, Coin};
+use iota::table::{Self, Table};
 
 public struct Account has key, store {
     id: UID,
@@ -304,11 +304,11 @@ public struct State has key {
     id: UID,
     // field not necessary as the state lives in the Account objects
     accounts: Table<address, u64>,
-    balance: Balance<SUI>
+    balance: Balance<IOTA>
 }
 
 // right -> with this function, another protocol can hold the `Account` on behalf of a user.
-public fun withdraw(state: &mut State, account: &mut Account, ctx: &mut TxContext): Coin<SUI> {
+public fun withdraw(state: &mut State, account: &mut Account, ctx: &mut TxContext): Coin<IOTA> {
     let authorized_balance = account.balance;
 
     account.balance = 0;
@@ -317,7 +317,7 @@ public fun withdraw(state: &mut State, account: &mut Account, ctx: &mut TxContex
 }
 
 // wrong -> this is less composable.
-public fun wrong_withdraw(state: &mut State, ctx: &mut TxContext): Coin<SUI> {
+public fun wrong_withdraw(state: &mut State, ctx: &mut TxContext): Coin<IOTA> {
     let sender = tx_context::sender(ctx);
 
     let authorized_balance = table::borrow_mut(&mut state.accounts, sender);
@@ -334,33 +334,33 @@ If your dApp data has a one to one relationship, it's best to use owned objects.
 ```move
 module conventions::vesting_wallet;
 
-use sui::sui::SUI;
-use sui::coin::Coin;
-use sui::table::Table;
-use sui::balance::Balance;
+use iota::iota::IOTA;
+use iota::coin::Coin;
+use iota::table::Table;
+use iota::balance::Balance;
 
 public struct OwnedWallet has key {
     id: UID,
-    balance: Balance<SUI>
+    balance: Balance<IOTA>
 }
 
 public struct SharedWallet has key {
     id: UID,
-    balance: Balance<SUI>,
+    balance: Balance<IOTA>,
     accounts: Table<address, u64>
 }
 
 
 // A vesting wallet releases a certain amount of coin over a period of time.
 // If the entire balance belongs to one user and the wallet has no additional functionalities, it is best to store it in an owned object.
-public fun new(deposit: Coin<SUI>, ctx: &mut TxContext): OwnedWallet {
+public fun new(deposit: Coin<IOTA>, ctx: &mut TxContext): OwnedWallet {
     // Implementation omitted.
     abort(0)
 }
 
 // If you wish to add extra functionality to a vesting wallet, it is best to share the object.
 // For example, if you wish the issuer of the wallet to be able to cancel the contract in the future.
-public fun new_shared(deposit: Coin<SUI>, ctx: &mut TxContext) {
+public fun new_shared(deposit: Coin<IOTA>, ctx: &mut TxContext) {
     // Implementation omitted.
     // shares the `SharedWallet`.
     abort(0)
@@ -412,7 +412,7 @@ Use field comments to describe the properties of your structs. In complex functi
 module conventions::hero;
 
 use std::string::String;
-use sui::kiosk::{Kiosk, KioskOwnerCap};
+use iota::kiosk::{Kiosk, KioskOwnerCap};
 
 public struct Hero has key, store {
     id: UID,

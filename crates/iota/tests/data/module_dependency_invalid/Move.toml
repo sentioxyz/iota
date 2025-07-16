@@ -5,7 +5,7 @@ published-at = "mystery"
 edition = "2024.beta"
 
 [dependencies]
-MoveStdlib = { local = "../../../../sui-framework/packages/move-stdlib" }
+MoveStdlib = { local = "../../../../iota-framework/packages/move-stdlib" }
 
 [addresses]
 invalid = "0x0"

@@ -1,11 +1,12 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use thiserror::Error;
 
 #[derive(Error, Debug, PartialEq, Eq)]
 pub enum FaucetError {
-    #[error("Missing X-Turnstile-Token header. For testnet tokens, please use the Web UI: https://faucet.sui.io")]
+    #[error("Missing X-Turnstile-Token header. For testnet tokens, please use the Web UI: https://faucet.iota.io")]
     MissingTurnstileTokenHeader,
 
     #[error("Request limit exceeded. {0}")]

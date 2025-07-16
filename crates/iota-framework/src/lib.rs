@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use move_binary_format::{
@@ -8,23 +9,23 @@ use move_core_types::gas_algebra::InternalGas;
 use serde::{Deserialize, Serialize};
 use std::fmt::Formatter;
 use std::sync::LazyLock;
-use sui_types::base_types::ObjectRef;
-use sui_types::storage::ObjectStore;
-use sui_types::{
+use iota_types::base_types::ObjectRef;
+use iota_types::storage::ObjectStore;
+use iota_types::{
     base_types::ObjectID,
     digests::TransactionDigest,
     move_package::MovePackage,
     object::{Object, OBJECT_START_VERSION},
-    MOVE_STDLIB_PACKAGE_ID, SUI_FRAMEWORK_PACKAGE_ID, SUI_SYSTEM_PACKAGE_ID,
+    MOVE_STDLIB_PACKAGE_ID, IOTA_FRAMEWORK_PACKAGE_ID, IOTA_SYSTEM_PACKAGE_ID,
 };
-use sui_types::{BRIDGE_PACKAGE_ID, DEEPBOOK_PACKAGE_ID};
+use iota_types::{BRIDGE_PACKAGE_ID, DEEPBOOK_PACKAGE_ID};
 use tracing::error;
 
 /// Encapsulates a system package in the framework
 pub struct SystemPackageMetadata {
     /// The name of the package (e.g. "MoveStdLib")
     pub name: String,
-    /// The path within the repo to the source (e.g. "crates/sui-framework/packages/move-stdlib")
+    /// The path within the repo to the source (e.g. "crates/iota-framework/packages/move-stdlib")
     pub path: String,
     /// The compiled bytecode and object ID of the package
     pub compiled: SystemPackage,
@@ -105,7 +106,7 @@ macro_rules! define_system_package_metadata {
             vec![
                 $(SystemPackageMetadata::new(
                     $name,
-                    concat!("crates/sui-framework/packages/", $path),
+                    concat!("crates/iota-framework/packages/", $path),
                     $id,
                     include_bytes!(concat!(env!("CARGO_MANIFEST_DIR"), "/packages_compiled", "/", $path)),
                     &$deps,
@@ -125,22 +126,22 @@ impl BuiltInFramework {
         define_system_package_metadata!([
             (MOVE_STDLIB_PACKAGE_ID, "MoveStdlib", "move-stdlib", []),
             (
-                SUI_FRAMEWORK_PACKAGE_ID,
-                "Sui",
-                "sui-framework",
+                IOTA_FRAMEWORK_PACKAGE_ID,
+                "IOTA",
+                "iota-framework",
                 [MOVE_STDLIB_PACKAGE_ID]
             ),
             (
-                SUI_SYSTEM_PACKAGE_ID,
-                "SuiSystem",
-                "sui-system",
-                [MOVE_STDLIB_PACKAGE_ID, SUI_FRAMEWORK_PACKAGE_ID]
+                IOTA_SYSTEM_PACKAGE_ID,
+                "IotaSystem",
+                "iota-system",
+                [MOVE_STDLIB_PACKAGE_ID, IOTA_FRAMEWORK_PACKAGE_ID]
             ),
             (
                 DEEPBOOK_PACKAGE_ID,
                 "DeepBook",
                 "deepbook",
-                [MOVE_STDLIB_PACKAGE_ID, SUI_FRAMEWORK_PACKAGE_ID]
+                [MOVE_STDLIB_PACKAGE_ID, IOTA_FRAMEWORK_PACKAGE_ID]
             ),
             (
                 BRIDGE_PACKAGE_ID,
@@ -148,8 +149,8 @@ impl BuiltInFramework {
                 "bridge",
                 [
                     MOVE_STDLIB_PACKAGE_ID,
-                    SUI_FRAMEWORK_PACKAGE_ID,
-                    SUI_SYSTEM_PACKAGE_ID
+                    IOTA_FRAMEWORK_PACKAGE_ID,
+                    IOTA_SYSTEM_PACKAGE_ID
                 ]
             )
         ])

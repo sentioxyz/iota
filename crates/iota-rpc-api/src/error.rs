@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use tonic::Code;
@@ -58,8 +59,8 @@ impl From<RpcError> for tonic::Status {
     }
 }
 
-impl From<sui_types::storage::error::Error> for RpcError {
-    fn from(value: sui_types::storage::error::Error) -> Self {
+impl From<iota_types::storage::error::Error> for RpcError {
+    fn from(value: iota_types::storage::error::Error) -> Self {
         Self {
             code: Code::Internal,
             message: Some(value.to_string()),
@@ -78,8 +79,8 @@ impl From<anyhow::Error> for RpcError {
     }
 }
 
-impl From<sui_types::sui_sdk_types_conversions::SdkTypeConversionError> for RpcError {
-    fn from(value: sui_types::sui_sdk_types_conversions::SdkTypeConversionError) -> Self {
+impl From<iota_types::iota_sdk_types_conversions::SdkTypeConversionError> for RpcError {
+    fn from(value: iota_types::iota_sdk_types_conversions::SdkTypeConversionError) -> Self {
         Self {
             code: Code::Internal,
             message: Some(value.to_string()),
@@ -98,17 +99,17 @@ impl From<bcs::Error> for RpcError {
     }
 }
 
-impl From<sui_types::quorum_driver_types::QuorumDriverError> for RpcError {
-    fn from(error: sui_types::quorum_driver_types::QuorumDriverError) -> Self {
+impl From<iota_types::quorum_driver_types::QuorumDriverError> for RpcError {
+    fn from(error: iota_types::quorum_driver_types::QuorumDriverError) -> Self {
         use itertools::Itertools;
-        use sui_types::error::SuiError;
-        use sui_types::quorum_driver_types::QuorumDriverError::*;
+        use iota_types::error::IotaError;
+        use iota_types::quorum_driver_types::QuorumDriverError::*;
 
         match error {
             InvalidUserSignature(err) => {
                 let message = {
                     let err = match err {
-                        SuiError::UserInputError { error } => error.to_string(),
+                        IotaError::UserInputError { error } => error.to_string(),
                         _ => err.to_string(),
                     };
                     format!("Invalid user signature: {err}")
@@ -158,7 +159,7 @@ impl From<sui_types::quorum_driver_types::QuorumDriverError> for RpcError {
                             // So, we take an easier route and consider them non-retryable
                             // at all. Combining this with the sorting above, clients will
                             // see the dominant error first.
-                            SuiError::UserInputError { error } => Some(error.to_string()),
+                            IotaError::UserInputError { error } => Some(error.to_string()),
                             _ => {
                                 if err.is_retryable().0 {
                                     None

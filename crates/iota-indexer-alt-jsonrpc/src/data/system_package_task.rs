@@ -1,10 +1,11 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::time::Duration;
 
 use diesel::{sql_query, sql_types::BigInt, QueryableByName};
-use sui_types::SYSTEM_PACKAGE_ADDRESSES;
+use iota_types::SYSTEM_PACKAGE_ADDRESSES;
 use tokio::{task::JoinHandle, time};
 use tokio_util::sync::CancellationToken;
 use tracing::{error, info};

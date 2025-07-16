@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::metrics::{
@@ -97,7 +98,7 @@ impl<M: MetricsCallbackProvider> ServerBuilder<M> {
             );
         let route_layers = ServiceBuilder::new()
             .map_request(|mut request: http::Request<_>| {
-                if let Some(connect_info) = request.extensions().get::<sui_http::ConnectInfo>() {
+                if let Some(connect_info) = request.extensions().get::<iota_http::ConnectInfo>() {
                     let tonic_connect_info = tonic::transport::server::TcpConnectInfo {
                         local_addr: Some(connect_info.local_addr),
                         remote_addr: Some(connect_info.remote_addr),
@@ -117,7 +118,7 @@ impl<M: MetricsCallbackProvider> ServerBuilder<M> {
                 crate::grpc_timeout::GrpcTimeout::new(service, request_timeout)
             });
 
-        let mut builder = sui_http::Builder::new().config(http_config);
+        let mut builder = iota_http::Builder::new().config(http_config);
 
         if let Some(tls_config) = tls_config {
             builder = builder.tls_config(tls_config);
@@ -139,11 +140,11 @@ impl<M: MetricsCallbackProvider> ServerBuilder<M> {
     }
 }
 
-/// TLS server name to use for the public Sui validator interface.
-pub const SUI_TLS_SERVER_NAME: &str = "sui";
+/// TLS server name to use for the public IOTA validator interface.
+pub const IOTA_TLS_SERVER_NAME: &str = "iota";
 
 pub struct Server {
-    server: sui_http::ServerHandle,
+    server: iota_http::ServerHandle,
     local_addr: Multiaddr,
     health_reporter: tonic_health::server::HealthReporter,
 }
@@ -162,7 +163,7 @@ impl Server {
         self.health_reporter.clone()
     }
 
-    pub fn handle(&self) -> &sui_http::ServerHandle {
+    pub fn handle(&self) -> &iota_http::ServerHandle {
         &self.server
     }
 }

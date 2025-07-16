@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 //! CheckpointExecutor is a Node component that executes all checkpoints for the
@@ -19,22 +20,22 @@
 //! end of epoch. This allows us to use it as a signal for reconfig.
 
 use futures::StreamExt;
-use mysten_common::{debug_fatal, fatal};
+use iota_common::{debug_fatal, fatal};
 use parking_lot::Mutex;
 use std::{sync::Arc, time::Instant};
-use sui_types::crypto::RandomnessRound;
-use sui_types::inner_temporary_store::PackageStoreWithFallback;
-use sui_types::messages_checkpoint::{CheckpointContents, CheckpointSequenceNumber};
-use sui_types::transaction::{TransactionDataAPI, TransactionKind};
+use iota_types::crypto::RandomnessRound;
+use iota_types::inner_temporary_store::PackageStoreWithFallback;
+use iota_types::messages_checkpoint::{CheckpointContents, CheckpointSequenceNumber};
+use iota_types::transaction::{TransactionDataAPI, TransactionKind};
 
-use sui_config::node::{CheckpointExecutorConfig, RunWithRange};
-use sui_macros::fail_point;
-use sui_types::accumulator::Accumulator;
-use sui_types::effects::{TransactionEffects, TransactionEffectsAPI};
-use sui_types::executable_transaction::VerifiedExecutableTransaction;
-use sui_types::full_checkpoint_content::CheckpointData;
-use sui_types::message_envelope::Message;
-use sui_types::{
+use iota_config::node::{CheckpointExecutorConfig, RunWithRange};
+use iota_macros::fail_point;
+use iota_types::accumulator::Accumulator;
+use iota_types::effects::{TransactionEffects, TransactionEffectsAPI};
+use iota_types::executable_transaction::VerifiedExecutableTransaction;
+use iota_types::full_checkpoint_content::CheckpointData;
+use iota_types::message_envelope::Message;
+use iota_types::{
     base_types::{TransactionDigest, TransactionEffectsDigest},
     messages_checkpoint::VerifiedCheckpoint,
     transaction::VerifiedTransaction,
@@ -199,7 +200,7 @@ impl CheckpointExecutor {
     /// If `run_with_range` is set, execution will stop early.
     #[instrument(level = "error", skip_all, fields(epoch = ?self.epoch_store.epoch()))]
     pub async fn run_epoch(self, run_with_range: Option<RunWithRange>) -> StopReason {
-        let _metrics_guard = mysten_metrics::monitored_scope("CheckpointExecutor::run_epoch");
+        let _metrics_guard = iota_metrics::monitored_scope("CheckpointExecutor::run_epoch");
         info!(?run_with_range, "CheckpointExecutor::run_epoch");
         debug!(
             "Checkpoint executor running for epoch {:?}",
@@ -224,7 +225,7 @@ impl CheckpointExecutor {
 
         let this = Arc::new(self);
 
-        let concurrency = std::env::var("SUI_CHECKPOINT_EXECUTION_MAX_CONCURRENCY")
+        let concurrency = std::env::var("IOTA_CHECKPOINT_EXECUTION_MAX_CONCURRENCY")
             .ok()
             .and_then(|s| s.parse().ok())
             .unwrap_or(this.config.checkpoint_execution_max_concurrency);
@@ -266,7 +267,7 @@ impl CheckpointExecutor {
         tokio::task::spawn_blocking({
             move || {
                 let _sequential_step_guard =
-                    mysten_metrics::monitored_scope("CheckpointExecutor::sequential_step");
+                    iota_metrics::monitored_scope("CheckpointExecutor::sequential_step");
 
                 let tps = self.tps_estimator.lock().update(
                     Instant::now(),
@@ -365,7 +366,7 @@ impl CheckpointExecutor {
 
         let sequence_number = checkpoint.sequence_number;
         if checkpoint.is_last_checkpoint_of_epoch() && sequence_number > 0 {
-            let _wait_for_previous_checkpoints_guard = mysten_metrics::monitored_scope(
+            let _wait_for_previous_checkpoints_guard = iota_metrics::monitored_scope(
                 "CheckpointExecutor::wait_for_previous_checkpoints",
             );
 
@@ -376,13 +377,13 @@ impl CheckpointExecutor {
         }
 
         let _parallel_step_guard =
-            mysten_metrics::monitored_scope("CheckpointExecutor::parallel_step");
+            iota_metrics::monitored_scope("CheckpointExecutor::parallel_step");
 
         let (mut ckpt_state, unexecuted_tx_digests) = tokio::task::spawn_blocking({
             let this = self.clone();
             move || {
                 let _scope =
-                    mysten_metrics::monitored_scope("CheckpointExecutor::execute_transactions");
+                    iota_metrics::monitored_scope("CheckpointExecutor::execute_transactions");
                 let ckpt_state = this.load_checkpoint_transactions(checkpoint);
                 let unexecuted_tx_digests = this.schedule_transaction_execution(&ckpt_state);
                 (ckpt_state, unexecuted_tx_digests)
@@ -400,7 +401,7 @@ impl CheckpointExecutor {
         }
 
         tokio::task::spawn_blocking(move || {
-            let _scope = mysten_metrics::monitored_scope("CheckpointExecutor::finalize_checkpoint");
+            let _scope = iota_metrics::monitored_scope("CheckpointExecutor::finalize_checkpoint");
             self.epoch_store
                 .insert_finalized_transactions(&ckpt_state.data.tx_digests, sequence_number)
                 .expect("failed to insert finalized transactions");

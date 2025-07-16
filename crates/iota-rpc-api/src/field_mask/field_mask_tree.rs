@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use super::is_valid_path;
@@ -90,7 +91,7 @@ impl FieldMaskTree {
     /// paths, including if it is an exact match.
     ///
     /// ```
-    /// # use sui_rpc_api::field_mask::FieldMaskTree;
+    /// # use iota_rpc_api::field_mask::FieldMaskTree;
     /// let mut tree = FieldMaskTree::default();
     /// tree.add_field_path("foo.bar");
     ///

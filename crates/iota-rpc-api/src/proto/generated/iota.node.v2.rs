@@ -31,14 +31,14 @@ pub struct GetNodeInfoResponse {
     /// The lowest checkpoint for which object data is available.
     #[prost(uint64, optional, tag = "7")]
     pub lowest_available_checkpoint_objects: ::core::option::Option<u64>,
-    /// Software version of the `sui-node` binary.
+    /// Software version of the `iota-node` binary.
     #[prost(string, optional, tag = "8")]
     pub software_version: ::core::option::Option<::prost::alloc::string::String>,
 }
 /// Request message for NodeService.GetCommittee.
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct GetCommitteeRequest {
-    /// Request the sui.types.ValidatorCommittee corresponding to the
+    /// Request the iota.types.ValidatorCommittee corresponding to the
     /// provided epoch. If no epoch is provided the committee for the current
     /// epoch will be returned.
     #[prost(uint64, optional, tag = "1")]
@@ -65,14 +65,14 @@ pub struct GetTransactionRequest {
 /// Response message for `NodeService.GetTransactio`n.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GetTransactionResponse {
-    /// The digest of this [Transaction](<https://docs.rs/sui-sdk-types/latest/sui_sdk_types/struct.Transaction.html>).
+    /// The digest of this [Transaction](<https://docs.rs/iota-sdk-types/latest/iota_sdk_types/struct.Transaction.html>).
     #[prost(message, optional, tag = "1")]
     pub digest: ::core::option::Option<super::super::types::Digest>,
     /// The transaction itself.
     #[prost(message, optional, tag = "2")]
     pub transaction: ::core::option::Option<super::super::types::Transaction>,
     /// The
-    /// [Transaction](<https://docs.rs/sui-sdk-types/latest/sui_sdk_types/struct.Transaction.html>)
+    /// [Transaction](<https://docs.rs/iota-sdk-types/latest/iota_sdk_types/struct.Transaction.html>)
     /// encoded as BCS bytes.
     #[prost(message, optional, tag = "3")]
     pub transaction_bcs: ::core::option::Option<super::super::types::Bcs>,
@@ -81,7 +81,7 @@ pub struct GetTransactionResponse {
     #[prost(message, repeated, tag = "4")]
     pub signatures: ::prost::alloc::vec::Vec<super::super::types::UserSignature>,
     /// List of
-    /// [UserSignature](<https://docs.rs/sui-sdk-types/latest/sui_sdk_types/struct.UserSignature.html>)s
+    /// [UserSignature](<https://docs.rs/iota-sdk-types/latest/iota_sdk_types/struct.UserSignature.html>)s
     /// encoded as bytes.
     #[prost(bytes = "bytes", repeated, tag = "11")]
     pub signatures_bytes: ::prost::alloc::vec::Vec<::prost::bytes::Bytes>,
@@ -89,7 +89,7 @@ pub struct GetTransactionResponse {
     #[prost(message, optional, tag = "5")]
     pub effects: ::core::option::Option<super::super::types::TransactionEffects>,
     /// The
-    /// [TransactionEffects](<https://docs.rs/sui-sdk-types/latest/sui_sdk_types/struct.TransactionEffects.html>)
+    /// [TransactionEffects](<https://docs.rs/iota-sdk-types/latest/iota_sdk_types/struct.TransactionEffects.html>)
     /// for this transaction encoded as BCS bytes.
     #[prost(message, optional, tag = "6")]
     pub effects_bcs: ::core::option::Option<super::super::types::Bcs>,
@@ -97,12 +97,12 @@ pub struct GetTransactionResponse {
     ///
     /// This field might be empty, even if it was explicitly requested, if the
     /// transaction didn't produce any events.
-    /// `sui.types.TransactionEffects.events_digest` is populated if the
+    /// `iota.types.TransactionEffects.events_digest` is populated if the
     /// transaction produced any events.
     #[prost(message, optional, tag = "7")]
     pub events: ::core::option::Option<super::super::types::TransactionEvents>,
     /// The
-    /// [TransactionEvents](<https://docs.rs/sui-sdk-types/latest/sui_sdk_types/struct.TransactionEvents.html>)
+    /// [TransactionEvents](<https://docs.rs/iota-sdk-types/latest/iota_sdk_types/struct.TransactionEvents.html>)
     /// for this transaction encoded as BCS bytes.
     #[prost(message, optional, tag = "8")]
     pub events_bcs: ::core::option::Option<super::super::types::Bcs>,
@@ -145,7 +145,7 @@ pub struct GetObjectResponse {
     #[prost(message, optional, tag = "4")]
     pub object: ::core::option::Option<super::super::types::Object>,
     /// The
-    /// [Object](<https://docs.rs/sui-sdk-types/latest/sui_sdk_types/struct.Object.html>)
+    /// [Object](<https://docs.rs/iota-sdk-types/latest/iota_sdk_types/struct.Object.html>)
     /// encoded as BCS bytes.
     #[prost(message, optional, tag = "5")]
     pub object_bcs: ::core::option::Option<super::super::types::Bcs>,
@@ -181,7 +181,7 @@ pub struct GetCheckpointResponse {
     #[prost(message, optional, tag = "3")]
     pub summary: ::core::option::Option<super::super::types::CheckpointSummary>,
     /// The
-    /// [CheckpointSummary](<https://docs.rs/sui-sdk-types/latest/sui_sdk_types/struct.CheckpointSummary.html>)
+    /// [CheckpointSummary](<https://docs.rs/iota-sdk-types/latest/iota_sdk_types/struct.CheckpointSummary.html>)
     /// for this checkpoint encoded as BCS bytes.
     #[prost(message, optional, tag = "4")]
     pub summary_bcs: ::core::option::Option<super::super::types::Bcs>,
@@ -195,7 +195,7 @@ pub struct GetCheckpointResponse {
     #[prost(message, optional, tag = "6")]
     pub contents: ::core::option::Option<super::super::types::CheckpointContents>,
     /// The
-    /// [CheckpointContents](<https://docs.rs/sui-sdk-types/latest/sui_sdk_types/struct.CheckpointContents.html>)
+    /// [CheckpointContents](<https://docs.rs/iota-sdk-types/latest/iota_sdk_types/struct.CheckpointContents.html>)
     /// for this checkpoint encoded as BCS bytes.
     #[prost(message, optional, tag = "7")]
     pub contents_bcs: ::core::option::Option<super::super::types::Bcs>,
@@ -231,7 +231,7 @@ pub struct GetFullCheckpointResponse {
     #[prost(message, optional, tag = "3")]
     pub summary: ::core::option::Option<super::super::types::CheckpointSummary>,
     /// The
-    /// [CheckpointSummary](<https://docs.rs/sui-sdk-types/latest/sui_sdk_types/struct.CheckpointSummary.html>)
+    /// [CheckpointSummary](<https://docs.rs/iota-sdk-types/latest/iota_sdk_types/struct.CheckpointSummary.html>)
     /// for this checkpoint encoded as BCS bytes.
     #[prost(message, optional, tag = "4")]
     pub summary_bcs: ::core::option::Option<super::super::types::Bcs>,
@@ -245,7 +245,7 @@ pub struct GetFullCheckpointResponse {
     #[prost(message, optional, tag = "6")]
     pub contents: ::core::option::Option<super::super::types::CheckpointContents>,
     /// The
-    /// [CheckpointContents](<https://docs.rs/sui-sdk-types/latest/sui_sdk_types/struct.CheckpointContents.html>)
+    /// [CheckpointContents](<https://docs.rs/iota-sdk-types/latest/iota_sdk_types/struct.CheckpointContents.html>)
     /// for this checkpoint encoded as BCS bytes.
     #[prost(message, optional, tag = "7")]
     pub contents_bcs: ::core::option::Option<super::super::types::Bcs>,
@@ -263,7 +263,7 @@ pub struct FullCheckpointTransaction {
     #[prost(message, optional, tag = "2")]
     pub transaction: ::core::option::Option<super::super::types::Transaction>,
     /// The
-    /// [Transaction](<https://docs.rs/sui-sdk-types/latest/sui_sdk_types/struct.Transaction.html>)
+    /// [Transaction](<https://docs.rs/iota-sdk-types/latest/iota_sdk_types/struct.Transaction.html>)
     /// encoded as BCS bytes.
     #[prost(message, optional, tag = "3")]
     pub transaction_bcs: ::core::option::Option<super::super::types::Bcs>,
@@ -271,7 +271,7 @@ pub struct FullCheckpointTransaction {
     #[prost(message, optional, tag = "5")]
     pub effects: ::core::option::Option<super::super::types::TransactionEffects>,
     /// The
-    /// [TransactionEffects](<https://docs.rs/sui-sdk-types/latest/sui_sdk_types/struct.TransactionEffects.html>)
+    /// [TransactionEffects](<https://docs.rs/iota-sdk-types/latest/iota_sdk_types/struct.TransactionEffects.html>)
     /// for this transaction encoded as BCS bytes.
     #[prost(message, optional, tag = "6")]
     pub effects_bcs: ::core::option::Option<super::super::types::Bcs>,
@@ -279,12 +279,12 @@ pub struct FullCheckpointTransaction {
     ///
     /// This field might be empty, even if it was explicitly requested, if the
     /// transaction didn't produce any events.
-    /// `sui.types.TransactionEffects.events_digest` is populated if the
+    /// `iota.types.TransactionEffects.events_digest` is populated if the
     /// transaction produced any events.
     #[prost(message, optional, tag = "7")]
     pub events: ::core::option::Option<super::super::types::TransactionEvents>,
     /// The
-    /// [TransactionEvents](<https://docs.rs/sui-sdk-types/latest/sui_sdk_types/struct.TransactionEvents.html>)
+    /// [TransactionEvents](<https://docs.rs/iota-sdk-types/latest/iota_sdk_types/struct.TransactionEvents.html>)
     /// for this transaction encoded as BCS bytes.
     #[prost(message, optional, tag = "8")]
     pub events_bcs: ::core::option::Option<super::super::types::Bcs>,
@@ -311,7 +311,7 @@ pub struct FullCheckpointObject {
     #[prost(message, optional, tag = "4")]
     pub object: ::core::option::Option<super::super::types::Object>,
     /// The
-    /// [object](<https://docs.rs/sui-sdk-types/latest/sui_sdk_types/struct.Object.html>)
+    /// [object](<https://docs.rs/iota-sdk-types/latest/iota_sdk_types/struct.Object.html>)
     /// encoded as BCS bytes.
     #[prost(message, optional, tag = "5")]
     pub object_bcs: ::core::option::Option<super::super::types::Bcs>,
@@ -350,7 +350,7 @@ pub struct ExecuteTransactionResponse {
     #[prost(message, optional, tag = "2")]
     pub effects: ::core::option::Option<super::super::types::TransactionEffects>,
     /// The
-    /// [TransactionEffects](<https://docs.rs/sui-sdk-types/latest/sui_sdk_types/struct.TransactionEffects.html>)
+    /// [TransactionEffects](<https://docs.rs/iota-sdk-types/latest/iota_sdk_types/struct.TransactionEffects.html>)
     /// for this transaction encoded as BCS bytes.
     #[prost(message, optional, tag = "3")]
     pub effects_bcs: ::core::option::Option<super::super::types::Bcs>,
@@ -358,12 +358,12 @@ pub struct ExecuteTransactionResponse {
     ///
     /// This field might be empty, even if it was explicitly requested, if the
     /// transaction didn't produce any events.
-    /// `sui.types.TransactionEffects.events_digest` is populated if the
+    /// `iota.types.TransactionEffects.events_digest` is populated if the
     /// transaction produced any events.
     #[prost(message, optional, tag = "4")]
     pub events: ::core::option::Option<super::super::types::TransactionEvents>,
     /// The
-    /// [TransactionEvents](<https://docs.rs/sui-sdk-types/latest/sui_sdk_types/struct.TransactionEvents.html>)
+    /// [TransactionEvents](<https://docs.rs/iota-sdk-types/latest/iota_sdk_types/struct.TransactionEvents.html>)
     /// for this transaction encoded as BCS bytes.
     #[prost(message, optional, tag = "5")]
     pub events_bcs: ::core::option::Option<super::super::types::Bcs>,
@@ -421,7 +421,7 @@ pub mod node_service_client {
     )]
     use tonic::codegen::*;
     use tonic::codegen::http::Uri;
-    /// Service for reading data from a Sui Fullnode.
+    /// Service for reading data from a IOTA Fullnode.
     #[derive(Debug, Clone)]
     pub struct NodeServiceClient<T> {
         inner: tonic::client::Grpc<T>,
@@ -520,11 +520,11 @@ pub mod node_service_client {
                 })?;
             let codec = tonic::codec::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
-                "/sui.node.v2.NodeService/GetNodeInfo",
+                "/iota.node.v2.NodeService/GetNodeInfo",
             );
             let mut req = request.into_request();
             req.extensions_mut()
-                .insert(GrpcMethod::new("sui.node.v2.NodeService", "GetNodeInfo"));
+                .insert(GrpcMethod::new("iota.node.v2.NodeService", "GetNodeInfo"));
             self.inner.unary(req, path, codec).await
         }
         /// Request the validator committee for a particular epoch or for the current
@@ -546,11 +546,11 @@ pub mod node_service_client {
                 })?;
             let codec = tonic::codec::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
-                "/sui.node.v2.NodeService/GetCommittee",
+                "/iota.node.v2.NodeService/GetCommittee",
             );
             let mut req = request.into_request();
             req.extensions_mut()
-                .insert(GrpcMethod::new("sui.node.v2.NodeService", "GetCommittee"));
+                .insert(GrpcMethod::new("iota.node.v2.NodeService", "GetCommittee"));
             self.inner.unary(req, path, codec).await
         }
         /// Request information for the specified object.
@@ -584,11 +584,11 @@ pub mod node_service_client {
                 })?;
             let codec = tonic::codec::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
-                "/sui.node.v2.NodeService/GetObject",
+                "/iota.node.v2.NodeService/GetObject",
             );
             let mut req = request.into_request();
             req.extensions_mut()
-                .insert(GrpcMethod::new("sui.node.v2.NodeService", "GetObject"));
+                .insert(GrpcMethod::new("iota.node.v2.NodeService", "GetObject"));
             self.inner.unary(req, path, codec).await
         }
         /// Request information for the specified transaction.
@@ -618,11 +618,11 @@ pub mod node_service_client {
                 })?;
             let codec = tonic::codec::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
-                "/sui.node.v2.NodeService/GetTransaction",
+                "/iota.node.v2.NodeService/GetTransaction",
             );
             let mut req = request.into_request();
             req.extensions_mut()
-                .insert(GrpcMethod::new("sui.node.v2.NodeService", "GetTransaction"));
+                .insert(GrpcMethod::new("iota.node.v2.NodeService", "GetTransaction"));
             self.inner.unary(req, path, codec).await
         }
         /// Request information for the specified checkpoint.
@@ -653,11 +653,11 @@ pub mod node_service_client {
                 })?;
             let codec = tonic::codec::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
-                "/sui.node.v2.NodeService/GetCheckpoint",
+                "/iota.node.v2.NodeService/GetCheckpoint",
             );
             let mut req = request.into_request();
             req.extensions_mut()
-                .insert(GrpcMethod::new("sui.node.v2.NodeService", "GetCheckpoint"));
+                .insert(GrpcMethod::new("iota.node.v2.NodeService", "GetCheckpoint"));
             self.inner.unary(req, path, codec).await
         }
         /// Request information for the entirety of the specified checkpoint.
@@ -692,11 +692,11 @@ pub mod node_service_client {
                 })?;
             let codec = tonic::codec::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
-                "/sui.node.v2.NodeService/GetFullCheckpoint",
+                "/iota.node.v2.NodeService/GetFullCheckpoint",
             );
             let mut req = request.into_request();
             req.extensions_mut()
-                .insert(GrpcMethod::new("sui.node.v2.NodeService", "GetFullCheckpoint"));
+                .insert(GrpcMethod::new("iota.node.v2.NodeService", "GetFullCheckpoint"));
             self.inner.unary(req, path, codec).await
         }
         /// Request that the provided transaction be relayed to the validator set for
@@ -718,12 +718,12 @@ pub mod node_service_client {
                 })?;
             let codec = tonic::codec::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
-                "/sui.node.v2.NodeService/ExecuteTransaction",
+                "/iota.node.v2.NodeService/ExecuteTransaction",
             );
             let mut req = request.into_request();
             req.extensions_mut()
                 .insert(
-                    GrpcMethod::new("sui.node.v2.NodeService", "ExecuteTransaction"),
+                    GrpcMethod::new("iota.node.v2.NodeService", "ExecuteTransaction"),
                 );
             self.inner.unary(req, path, codec).await
         }
@@ -847,7 +847,7 @@ pub mod node_service_server {
             tonic::Status,
         >;
     }
-    /// Service for reading data from a Sui Fullnode.
+    /// Service for reading data from a IOTA Fullnode.
     #[derive(Debug)]
     pub struct NodeServiceServer<T> {
         inner: Arc<T>,
@@ -924,7 +924,7 @@ pub mod node_service_server {
         }
         fn call(&mut self, req: http::Request<B>) -> Self::Future {
             match req.uri().path() {
-                "/sui.node.v2.NodeService/GetNodeInfo" => {
+                "/iota.node.v2.NodeService/GetNodeInfo" => {
                     #[allow(non_camel_case_types)]
                     struct GetNodeInfoSvc<T: NodeService>(pub Arc<T>);
                     impl<
@@ -969,7 +969,7 @@ pub mod node_service_server {
                     };
                     Box::pin(fut)
                 }
-                "/sui.node.v2.NodeService/GetCommittee" => {
+                "/iota.node.v2.NodeService/GetCommittee" => {
                     #[allow(non_camel_case_types)]
                     struct GetCommitteeSvc<T: NodeService>(pub Arc<T>);
                     impl<
@@ -1014,7 +1014,7 @@ pub mod node_service_server {
                     };
                     Box::pin(fut)
                 }
-                "/sui.node.v2.NodeService/GetObject" => {
+                "/iota.node.v2.NodeService/GetObject" => {
                     #[allow(non_camel_case_types)]
                     struct GetObjectSvc<T: NodeService>(pub Arc<T>);
                     impl<
@@ -1059,7 +1059,7 @@ pub mod node_service_server {
                     };
                     Box::pin(fut)
                 }
-                "/sui.node.v2.NodeService/GetTransaction" => {
+                "/iota.node.v2.NodeService/GetTransaction" => {
                     #[allow(non_camel_case_types)]
                     struct GetTransactionSvc<T: NodeService>(pub Arc<T>);
                     impl<
@@ -1104,7 +1104,7 @@ pub mod node_service_server {
                     };
                     Box::pin(fut)
                 }
-                "/sui.node.v2.NodeService/GetCheckpoint" => {
+                "/iota.node.v2.NodeService/GetCheckpoint" => {
                     #[allow(non_camel_case_types)]
                     struct GetCheckpointSvc<T: NodeService>(pub Arc<T>);
                     impl<
@@ -1149,7 +1149,7 @@ pub mod node_service_server {
                     };
                     Box::pin(fut)
                 }
-                "/sui.node.v2.NodeService/GetFullCheckpoint" => {
+                "/iota.node.v2.NodeService/GetFullCheckpoint" => {
                     #[allow(non_camel_case_types)]
                     struct GetFullCheckpointSvc<T: NodeService>(pub Arc<T>);
                     impl<
@@ -1195,7 +1195,7 @@ pub mod node_service_server {
                     };
                     Box::pin(fut)
                 }
-                "/sui.node.v2.NodeService/ExecuteTransaction" => {
+                "/iota.node.v2.NodeService/ExecuteTransaction" => {
                     #[allow(non_camel_case_types)]
                     struct ExecuteTransactionSvc<T: NodeService>(pub Arc<T>);
                     impl<
@@ -1274,7 +1274,7 @@ pub mod node_service_server {
         }
     }
     /// Generated gRPC service name
-    pub const SERVICE_NAME: &str = "sui.node.v2.NodeService";
+    pub const SERVICE_NAME: &str = "iota.node.v2.NodeService";
     impl<T> tonic::server::NamedService for NodeServiceServer<T> {
         const NAME: &'static str = SERVICE_NAME;
     }

@@ -1,37 +1,37 @@
-# Sui Edge Proxy
+# IOTA Edge Proxy
 
-The Sui Edge Proxy is a simple proxy service that routes read and execution requests to different fullnode endpoints based on configuration. The purpose is to provide a single entrypoint for all RPC requests, and maintain a consistent connection to the read and execution fullnodes, ensuring the fastest possible client experience for RPC requests.
+The IOTA Edge Proxy is a simple proxy service that routes read and execution requests to different fullnode endpoints based on configuration. The purpose is to provide a single entrypoint for all RPC requests, and maintain a consistent connection to the read and execution fullnodes, ensuring the fastest possible client experience for RPC requests.
 
 ## Deployment
 
-At the time of writing, the Sui Edge Proxy is best run as a Kubernetes Deployment. The following guide will walk you through deploying the `sui-edge-proxy` in k8s.
+At the time of writing, the IOTA Edge Proxy is best run as a Kubernetes Deployment. The following guide will walk you through deploying the `iota-edge-proxy` in k8s.
 
-## Guide to Deploying `sui-edge-proxy` in Kubernetes
+## Guide to Deploying `iota-edge-proxy` in Kubernetes
 
-This guide will walk you through deploying the `sui-edge-proxy` Rust service on a Kubernetes cluster using a deployment configuration and an accompanying service.
+This guide will walk you through deploying the `iota-edge-proxy` Rust service on a Kubernetes cluster using a deployment configuration and an accompanying service.
 
 ### Prerequisites
 
 - Ensure you have `kubectl` installed and configured to connect to your Kubernetes cluster.
-- Have `sui-edge-proxy.yaml`, `benchmark-svc.yaml`, and the ConfigMap `sui-edge-proxy-config` prepared.
+- Have `iota-edge-proxy.yaml`, `benchmark-svc.yaml`, and the ConfigMap `iota-edge-proxy-config` prepared.
 
 ### Overview of Components
 
-1. **Deployment**: Defines the `sui-edge-proxy` service deployment in Kubernetes.
-2. **Service**: Exposes the `sui-edge-proxy` service to other services within the cluster.
-3. **ConfigMap**: Provides configuration details for `sui-edge-proxy`.
+1. **Deployment**: Defines the `iota-edge-proxy` service deployment in Kubernetes.
+2. **Service**: Exposes the `iota-edge-proxy` service to other services within the cluster.
+3. **ConfigMap**: Provides configuration details for `iota-edge-proxy`.
 
 ### Step 1: Set Up the ConfigMap
 
-The ConfigMap provides runtime configurations for `sui-edge-proxy`.
+The ConfigMap provides runtime configurations for `iota-edge-proxy`.
 
-#### `sui-edge-proxy-config.yaml`
+#### `iota-edge-proxy-config.yaml`
 
 ```yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: sui-edge-proxy-config
+  name: iota-edge-proxy-config
   namespace: benchmark-rpc-testnet
 data:
   proxy.yaml: |
@@ -46,51 +46,51 @@ data:
 
     read-peer:
       # K8s service address for routing read traffic
-      address: "http://sui-node-benchmark.benchmark-rpc-testnet.svc.cluster.local:9000"
+      address: "http://iota-node-benchmark.benchmark-rpc-testnet.svc.cluster.local:9000"
 ```
 
 Apply the ConfigMap:
 
 ```bash
-kubectl apply -f sui-edge-proxy-config.yaml
+kubectl apply -f iota-edge-proxy-config.yaml
 ```
 
-### Step 2: Deploy `sui-edge-proxy` Deployment
+### Step 2: Deploy `iota-edge-proxy` Deployment
 
-The deployment configuration runs a single instance of `sui-edge-proxy` and mounts the configuration from the ConfigMap.
+The deployment configuration runs a single instance of `iota-edge-proxy` and mounts the configuration from the ConfigMap.
 
-#### `sui-edge-proxy.yaml`
+#### `iota-edge-proxy.yaml`
 
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sui-edge-proxy
+  name: iota-edge-proxy
   namespace: benchmark-rpc-testnet
   labels:
-    app: sui-edge-proxy
-    cluster: sui-fleet-usw1
+    app: iota-edge-proxy
+    cluster: iota-fleet-usw1
     network: testnet
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: sui-edge-proxy
+      app: iota-edge-proxy
   template:
     metadata:
       labels:
-        app: sui-edge-proxy
+        app: iota-edge-proxy
       annotations:
         prometheus.io/path: /metrics
         prometheus.io/port: '9184'
         prometheus.io/scrape: 'true'
     spec:
       containers:
-        - name: sui-edge-proxy
-          image: mysten/sui-tools:mainnet
+        - name: iota-edge-proxy
+          image: iotaledger/iota-tools:mainnet
           imagePullPolicy: IfNotPresent
           command:
-            - /opt/sui/bin/sui-edge-proxy
+            - /opt/iota/bin/iota-edge-proxy
             - --config=/config/proxy.yaml
           env:
             - name: RUST_LOG
@@ -104,18 +104,18 @@ spec:
       volumes:
         - name: config-volume
           configMap:
-            name: sui-edge-proxy-config
+            name: iota-edge-proxy-config
 ```
 
 Apply the deployment:
 
 ```bash
-kubectl apply -f sui-edge-proxy.yaml
+kubectl apply -f iota-edge-proxy.yaml
 ```
 
 ### Step 3: Create the Service
 
-The Service routes traffic to the `sui-edge-proxy` deployment. It uses `ClientIP` session affinity to maintain connection consistency for each client.
+The Service routes traffic to the `iota-edge-proxy` deployment. It uses `ClientIP` session affinity to maintain connection consistency for each client.
 
 #### `benchmark-svc.yaml`
 
@@ -123,14 +123,14 @@ The Service routes traffic to the `sui-edge-proxy` deployment. It uses `ClientIP
 apiVersion: v1
 kind: Service
 metadata:
-  name: sui-node-benchmark
+  name: iota-node-benchmark
   namespace: benchmark-rpc-testnet
   annotations:
     cloud.google.com/neg: '{"ingress":true}'
 spec:
   type: ClusterIP
   selector:
-    app: sui-node-benchmark
+    app: iota-node-benchmark
   ports:
     - port: 9000
       targetPort: 9000
@@ -156,10 +156,10 @@ kubectl get deployments -n benchmark-rpc-testnet
 kubectl get services -n benchmark-rpc-testnet
 ```
 
-Confirm that the `sui-edge-proxy` pod is running:
+Confirm that the `iota-edge-proxy` pod is running:
 
 ```bash
-kubectl get pods -n benchmark-rpc-testnet -l app=sui-edge-proxy
+kubectl get pods -n benchmark-rpc-testnet -l app=iota-edge-proxy
 ```
 
 ### Summary
@@ -168,17 +168,17 @@ Now that this has been deployed, ingress traffic can be pointed at the edge-prox
 
 ## Troubleshooting / Debugging
 
-If you find any issues with the Sui Edge Proxy or would like to request a feature, please open an issue in the [sui repository](https://github.com/MystenLabs/sui/issues/new).
+If you find any issues with the IOTA Edge Proxy or would like to request a feature, please open an issue in the [iota repository](https://github.com/iotaledger/iota/issues/new).
 
 ## Local Development
 
-To run the Sui Edge Proxy locally and issue test JSON-RPC requests:
+To run the IOTA Edge Proxy locally and issue test JSON-RPC requests:
 
-1. Create or modify your local config YAML ("sui-edge-proxy-config.yaml") as needed, an example is provided in the repo.
+1. Create or modify your local config YAML ("iota-edge-proxy-config.yaml") as needed, an example is provided in the repo.
 2. In one terminal, run:
 
    ```bash
-   RUST_LOG=debug cargo run -- --config=sui-edge-proxy-config.yaml
+   RUST_LOG=debug cargo run -- --config=iota-edge-proxy-config.yaml
    ```
 
    This will start up the proxy listening on the configured port (e.g. 127.0.0.1:8080).
@@ -191,7 +191,7 @@ To run the Sui Edge Proxy locally and issue test JSON-RPC requests:
    --data-raw '{
        "jsonrpc": "2.0",
        "id": 1,
-       "method": "sui_getLatestCheckpointSequenceNumber",
+       "method": "iota_getLatestCheckpointSequenceNumber",
        "params": []
    }'
    ```

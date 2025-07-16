@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::authority_state::StateReadError;
@@ -9,11 +10,11 @@ use jsonrpsee::core::ClientError as RpcError;
 use jsonrpsee::types::error::INTERNAL_ERROR_CODE;
 use jsonrpsee::types::{ErrorObject, ErrorObjectOwned};
 use std::collections::BTreeMap;
-use sui_json_rpc_api::{TRANSACTION_EXECUTION_CLIENT_ERROR_CODE, TRANSIENT_ERROR_CODE};
-use sui_name_service::NameServiceError;
-use sui_types::committee::{QUORUM_THRESHOLD, TOTAL_VOTING_POWER};
-use sui_types::error::{SuiError, SuiObjectResponseError, UserInputError};
-use sui_types::quorum_driver_types::QuorumDriverError;
+use iota_json_rpc_api::{TRANSACTION_EXECUTION_CLIENT_ERROR_CODE, TRANSIENT_ERROR_CODE};
+use iota_name_service::NameServiceError;
+use iota_types::committee::{QUORUM_THRESHOLD, TOTAL_VOTING_POWER};
+use iota_types::error::{IotaError, IotaObjectResponseError, UserInputError};
+use iota_types::quorum_driver_types::QuorumDriverError;
 use thiserror::Error;
 use tokio::task::JoinError;
 
@@ -22,7 +23,7 @@ pub type RpcInterimResult<T = ()> = Result<T, Error>;
 #[derive(Debug, Error)]
 pub enum Error {
     #[error(transparent)]
-    SuiError(SuiError),
+    IotaError(IotaError),
 
     #[error(transparent)]
     InternalError(#[from] anyhow::Error),
@@ -60,10 +61,10 @@ pub enum Error {
     FastCryptoError(#[from] FastCryptoError),
 
     #[error(transparent)]
-    SuiObjectResponseError(#[from] SuiObjectResponseError),
+    IotaObjectResponseError(#[from] IotaObjectResponseError),
 
     #[error(transparent)]
-    SuiRpcInputError(#[from] SuiRpcInputError),
+    IotaRpcInputError(#[from] IotaRpcInputError),
 
     // TODO(wlmyng): convert StateReadError::Internal message to generic internal error message.
     #[error(transparent)]
@@ -76,16 +77,16 @@ pub enum Error {
     NameServiceError(#[from] NameServiceError),
 }
 
-impl From<SuiError> for Error {
-    fn from(e: SuiError) -> Self {
+impl From<IotaError> for Error {
+    fn from(e: IotaError) -> Self {
         match e {
-            SuiError::UserInputError { error } => Self::UserInputError(error),
-            SuiError::SuiObjectResponseError { error } => Self::SuiObjectResponseError(error),
-            SuiError::UnsupportedFeatureError { error } => Self::UnsupportedFeature(error),
-            SuiError::IndexStoreNotAvailable => Self::UnsupportedFeature(
+            IotaError::UserInputError { error } => Self::UserInputError(error),
+            IotaError::IotaObjectResponseError { error } => Self::IotaObjectResponseError(error),
+            IotaError::UnsupportedFeatureError { error } => Self::UnsupportedFeature(error),
+            IotaError::IndexStoreNotAvailable => Self::UnsupportedFeature(
                 "Required indexes are not available on this node".to_string(),
             ),
-            other => Self::SuiError(other),
+            other => Self::IotaError(other),
         }
     }
 }
@@ -112,11 +113,11 @@ impl From<Error> for ErrorObjectOwned {
         match e {
             Error::UserInputError(_) => invalid_params(e),
             Error::UnsupportedFeature(_) => invalid_params(e),
-            Error::SuiObjectResponseError(err) => match err {
-                SuiObjectResponseError::NotExists { .. }
-                | SuiObjectResponseError::DynamicFieldNotFound { .. }
-                | SuiObjectResponseError::Deleted { .. }
-                | SuiObjectResponseError::DisplayError { .. } => invalid_params(err),
+            Error::IotaObjectResponseError(err) => match err {
+                IotaObjectResponseError::NotExists { .. }
+                | IotaObjectResponseError::DynamicFieldNotFound { .. }
+                | IotaObjectResponseError::Deleted { .. }
+                | IotaObjectResponseError::DisplayError { .. } => invalid_params(err),
                 _ => failed(err),
             },
             Error::NameServiceError(err) => match err {
@@ -128,12 +129,12 @@ impl From<Error> for ErrorObjectOwned {
                 | NameServiceError::InvalidSeparator { .. } => invalid_params(err),
                 _ => failed(err),
             },
-            Error::SuiRpcInputError(err) => invalid_params(err),
-            Error::SuiError(sui_error) => match sui_error {
-                SuiError::TransactionNotFound { .. }
-                | SuiError::TransactionsNotFound { .. }
-                | SuiError::TransactionEventsNotFound { .. } => invalid_params(sui_error),
-                _ => failed(sui_error),
+            Error::IotaRpcInputError(err) => invalid_params(err),
+            Error::IotaError(iota_error) => match iota_error {
+                IotaError::TransactionNotFound { .. }
+                | IotaError::TransactionsNotFound { .. }
+                | IotaError::TransactionEventsNotFound { .. } => invalid_params(iota_error),
+                _ => failed(iota_error),
             },
             Error::StateReadError(err) => match err {
                 StateReadError::Client(_) => invalid_params(err),
@@ -222,7 +223,7 @@ impl From<Error> for ErrorObjectOwned {
                                     // So, we take an easier route and consider them non-retryable
                                     // at all. Combining this with the sorting above, clients will
                                     // see the dominant error first.
-                                    SuiError::UserInputError { error } => Some(error.to_string()),
+                                    IotaError::UserInputError { error } => Some(error.to_string()),
                                     _ => {
                                         if err.is_retryable().0 {
                                             None
@@ -272,7 +273,7 @@ impl From<Error> for ErrorObjectOwned {
 }
 
 #[derive(Debug, Error)]
-pub enum SuiRpcInputError {
+pub enum IotaRpcInputError {
     #[error("Input contains duplicates")]
     ContainsDuplicates,
 
@@ -292,7 +293,7 @@ pub enum SuiRpcInputError {
     ProtocolVersionUnsupported(u64, u64),
 
     #[error("{0}")]
-    CannotParseSuiStructTag(String),
+    CannotParseIotaStructTag(String),
 
     #[error(transparent)]
     Base64(#[from] eyre::Report),
@@ -310,14 +311,14 @@ pub enum SuiRpcInputError {
     UserInputError(#[from] UserInputError),
 }
 
-impl From<SuiRpcInputError> for RpcError {
-    fn from(e: SuiRpcInputError) -> Self {
+impl From<IotaRpcInputError> for RpcError {
+    fn from(e: IotaRpcInputError) -> Self {
         RpcError::Call(invalid_params(e))
     }
 }
 
-impl From<SuiRpcInputError> for ErrorObjectOwned {
-    fn from(e: SuiRpcInputError) -> Self {
+impl From<IotaRpcInputError> for ErrorObjectOwned {
+    fn from(e: IotaRpcInputError) -> Self {
         invalid_params(e)
     }
 }
@@ -327,15 +328,15 @@ mod tests {
     use super::*;
     use expect_test::expect;
     use jsonrpsee::types::ErrorObjectOwned;
-    use sui_types::base_types::AuthorityName;
-    use sui_types::base_types::ObjectID;
-    use sui_types::base_types::ObjectRef;
-    use sui_types::base_types::SequenceNumber;
-    use sui_types::committee::StakeUnit;
-    use sui_types::crypto::AuthorityPublicKey;
-    use sui_types::crypto::AuthorityPublicKeyBytes;
-    use sui_types::digests::ObjectDigest;
-    use sui_types::digests::TransactionDigest;
+    use iota_types::base_types::AuthorityName;
+    use iota_types::base_types::ObjectID;
+    use iota_types::base_types::ObjectRef;
+    use iota_types::base_types::SequenceNumber;
+    use iota_types::committee::StakeUnit;
+    use iota_types::crypto::AuthorityPublicKey;
+    use iota_types::crypto::AuthorityPublicKeyBytes;
+    use iota_types::digests::ObjectDigest;
+    use iota_types::digests::TransactionDigest;
 
     fn test_object_ref() -> ObjectRef {
         (
@@ -351,7 +352,7 @@ mod tests {
         #[test]
         fn test_invalid_user_signature() {
             let quorum_driver_error =
-                QuorumDriverError::InvalidUserSignature(SuiError::InvalidSignature {
+                QuorumDriverError::InvalidUserSignature(IotaError::InvalidSignature {
                     error: "Test inner invalid signature".to_string(),
                 });
 
@@ -396,7 +397,7 @@ mod tests {
 
         #[test]
         fn test_objects_double_used() {
-            use sui_types::crypto::VerifyingKey;
+            use iota_types::crypto::VerifyingKey;
             let mut conflicting_txes: BTreeMap<
                 TransactionDigest,
                 (Vec<(AuthorityName, ObjectRef)>, StakeUnit),
@@ -436,7 +437,7 @@ mod tests {
 
         #[test]
         fn test_objects_double_used_equivocated() {
-            use sui_types::crypto::VerifyingKey;
+            use iota_types::crypto::VerifyingKey;
             let mut conflicting_txes: BTreeMap<
                 TransactionDigest,
                 (Vec<(AuthorityName, ObjectRef)>, StakeUnit),
@@ -478,7 +479,7 @@ mod tests {
             let quorum_driver_error = QuorumDriverError::NonRecoverableTransactionError {
                 errors: vec![
                     (
-                        SuiError::UserInputError {
+                        IotaError::UserInputError {
                             error: UserInputError::GasBalanceTooLow {
                                 gas_balance: 10,
                                 needed_gas_amount: 100,
@@ -488,7 +489,7 @@ mod tests {
                         vec![],
                     ),
                     (
-                        SuiError::UserInputError {
+                        IotaError::UserInputError {
                             error: UserInputError::ObjectVersionUnavailableForConsumption {
                                 provided_obj_ref: test_object_ref(),
                                 current_version: 10.into(),
@@ -514,7 +515,7 @@ mod tests {
             let quorum_driver_error = QuorumDriverError::NonRecoverableTransactionError {
                 errors: vec![
                     (
-                        SuiError::UserInputError {
+                        IotaError::UserInputError {
                             error: UserInputError::ObjectNotFound {
                                 object_id: test_object_ref().0,
                                 version: None,
@@ -524,7 +525,7 @@ mod tests {
                         vec![],
                     ),
                     (
-                        SuiError::RpcError("Hello".to_string(), "Testing".to_string()),
+                        IotaError::RpcError("Hello".to_string(), "Testing".to_string()),
                         0,
                         vec![],
                     ),
@@ -543,7 +544,7 @@ mod tests {
         #[test]
         fn test_quorum_driver_internal_error() {
             let quorum_driver_error = QuorumDriverError::QuorumDriverInternalError(
-                SuiError::UnexpectedMessage("test".to_string()),
+                IotaError::UnexpectedMessage("test".to_string()),
             );
 
             let error_object: ErrorObjectOwned =
@@ -558,7 +559,7 @@ mod tests {
         fn test_system_overload() {
             let quorum_driver_error = QuorumDriverError::SystemOverload {
                 overloaded_stake: 10,
-                errors: vec![(SuiError::UnexpectedMessage("test".to_string()), 0, vec![])],
+                errors: vec![(IotaError::UnexpectedMessage("test".to_string()), 0, vec![])],
             };
 
             let error_object: ErrorObjectOwned =

@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::{collections::BTreeSet, sync::Arc};
@@ -275,7 +276,7 @@ impl BlockVerifier for NoopBlockVerifier {
 mod test {
     use consensus_config::AuthorityIndex;
     use rstest::rstest;
-    use sui_protocol_config::ProtocolConfig;
+    use iota_protocol_config::ProtocolConfig;
 
     use super::*;
     use crate::{

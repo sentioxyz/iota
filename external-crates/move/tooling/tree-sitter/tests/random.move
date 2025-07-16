@@ -1,16 +1,17 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 #[allow(unused_use)]
 // This module provides functionality for generating and using secure randomness.
 //
 // Randomness is currently write-only, until user-facing API is implemented.
-module sui::random {
+module iota::random {
     use std::vector;
-    use sui::object::{Self, UID};
-    use sui::transfer;
-    use sui::tx_context::{Self, TxContext};
-    use sui::versioned::{Self, Versioned};
+    use iota::object::{Self, UID};
+    use iota::transfer;
+    use iota::tx_context::{Self, TxContext};
+    use iota::versioned::{Self, Versioned};
 
     // Sender is not @0x0 the system address.
     const ENotSystemAddress: u64 = 0;

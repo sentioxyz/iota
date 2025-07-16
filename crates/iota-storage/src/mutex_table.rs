@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::collections::hash_map::{DefaultHasher, RandomState};
@@ -15,7 +16,7 @@ use tokio::task::JoinHandle;
 use tokio::time::Instant;
 use tracing::info;
 
-use mysten_metrics::spawn_monitored_task;
+use iota_metrics::spawn_monitored_task;
 
 type OwnedMutexGuard<T> = ArcMutexGuard<parking_lot::RawMutex, T>;
 type OwnedRwLockReadGuard<T> = ArcRwLockReadGuard<parking_lot::RawRwLock, T>;

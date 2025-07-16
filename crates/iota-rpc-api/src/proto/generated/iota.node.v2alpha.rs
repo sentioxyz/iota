@@ -146,7 +146,7 @@ pub struct GetProtocolConfigResponse {
 pub struct GetGasInfoRequest {}
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct GetGasInfoResponse {
-    /// Reference gas price denominated in MIST
+    /// Reference gas price denominated in NANOS
     #[prost(uint64, optional, tag = "1")]
     pub reference_gas_price: ::core::option::Option<u64>,
 }
@@ -234,7 +234,7 @@ pub mod node_service_client {
     )]
     use tonic::codegen::*;
     use tonic::codegen::http::Uri;
-    /// Service for reading data from a Sui Full node.
+    /// Service for reading data from a IOTA Full node.
     #[derive(Debug, Clone)]
     pub struct NodeServiceClient<T> {
         inner: tonic::client::Grpc<T>,
@@ -333,11 +333,11 @@ pub mod node_service_client {
                 })?;
             let codec = tonic::codec::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
-                "/sui.node.v2alpha.NodeService/GetCoinInfo",
+                "/iota.node.v2alpha.NodeService/GetCoinInfo",
             );
             let mut req = request.into_request();
             req.extensions_mut()
-                .insert(GrpcMethod::new("sui.node.v2alpha.NodeService", "GetCoinInfo"));
+                .insert(GrpcMethod::new("iota.node.v2alpha.NodeService", "GetCoinInfo"));
             self.inner.unary(req, path, codec).await
         }
         /// List the dynamic fields for provided parent.
@@ -358,12 +358,12 @@ pub mod node_service_client {
                 })?;
             let codec = tonic::codec::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
-                "/sui.node.v2alpha.NodeService/ListDynamicFields",
+                "/iota.node.v2alpha.NodeService/ListDynamicFields",
             );
             let mut req = request.into_request();
             req.extensions_mut()
                 .insert(
-                    GrpcMethod::new("sui.node.v2alpha.NodeService", "ListDynamicFields"),
+                    GrpcMethod::new("iota.node.v2alpha.NodeService", "ListDynamicFields"),
                 );
             self.inner.unary(req, path, codec).await
         }
@@ -384,12 +384,12 @@ pub mod node_service_client {
                 })?;
             let codec = tonic::codec::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
-                "/sui.node.v2alpha.NodeService/ListAccountObjects",
+                "/iota.node.v2alpha.NodeService/ListAccountObjects",
             );
             let mut req = request.into_request();
             req.extensions_mut()
                 .insert(
-                    GrpcMethod::new("sui.node.v2alpha.NodeService", "ListAccountObjects"),
+                    GrpcMethod::new("iota.node.v2alpha.NodeService", "ListAccountObjects"),
                 );
             self.inner.unary(req, path, codec).await
         }
@@ -410,12 +410,12 @@ pub mod node_service_client {
                 })?;
             let codec = tonic::codec::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
-                "/sui.node.v2alpha.NodeService/GetProtocolConfig",
+                "/iota.node.v2alpha.NodeService/GetProtocolConfig",
             );
             let mut req = request.into_request();
             req.extensions_mut()
                 .insert(
-                    GrpcMethod::new("sui.node.v2alpha.NodeService", "GetProtocolConfig"),
+                    GrpcMethod::new("iota.node.v2alpha.NodeService", "GetProtocolConfig"),
                 );
             self.inner.unary(req, path, codec).await
         }
@@ -436,11 +436,11 @@ pub mod node_service_client {
                 })?;
             let codec = tonic::codec::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
-                "/sui.node.v2alpha.NodeService/GetGasInfo",
+                "/iota.node.v2alpha.NodeService/GetGasInfo",
             );
             let mut req = request.into_request();
             req.extensions_mut()
-                .insert(GrpcMethod::new("sui.node.v2alpha.NodeService", "GetGasInfo"));
+                .insert(GrpcMethod::new("iota.node.v2alpha.NodeService", "GetGasInfo"));
             self.inner.unary(req, path, codec).await
         }
         pub async fn simulate_transaction(
@@ -460,13 +460,13 @@ pub mod node_service_client {
                 })?;
             let codec = tonic::codec::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
-                "/sui.node.v2alpha.NodeService/SimulateTransaction",
+                "/iota.node.v2alpha.NodeService/SimulateTransaction",
             );
             let mut req = request.into_request();
             req.extensions_mut()
                 .insert(
                     GrpcMethod::new(
-                        "sui.node.v2alpha.NodeService",
+                        "iota.node.v2alpha.NodeService",
                         "SimulateTransaction",
                     ),
                 );
@@ -489,12 +489,12 @@ pub mod node_service_client {
                 })?;
             let codec = tonic::codec::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
-                "/sui.node.v2alpha.NodeService/ResolveTransaction",
+                "/iota.node.v2alpha.NodeService/ResolveTransaction",
             );
             let mut req = request.into_request();
             req.extensions_mut()
                 .insert(
-                    GrpcMethod::new("sui.node.v2alpha.NodeService", "ResolveTransaction"),
+                    GrpcMethod::new("iota.node.v2alpha.NodeService", "ResolveTransaction"),
                 );
             self.inner.unary(req, path, codec).await
         }
@@ -565,7 +565,7 @@ pub mod node_service_server {
             tonic::Status,
         >;
     }
-    /// Service for reading data from a Sui Full node.
+    /// Service for reading data from a IOTA Full node.
     #[derive(Debug)]
     pub struct NodeServiceServer<T> {
         inner: Arc<T>,
@@ -642,7 +642,7 @@ pub mod node_service_server {
         }
         fn call(&mut self, req: http::Request<B>) -> Self::Future {
             match req.uri().path() {
-                "/sui.node.v2alpha.NodeService/GetCoinInfo" => {
+                "/iota.node.v2alpha.NodeService/GetCoinInfo" => {
                     #[allow(non_camel_case_types)]
                     struct GetCoinInfoSvc<T: NodeService>(pub Arc<T>);
                     impl<
@@ -687,7 +687,7 @@ pub mod node_service_server {
                     };
                     Box::pin(fut)
                 }
-                "/sui.node.v2alpha.NodeService/ListDynamicFields" => {
+                "/iota.node.v2alpha.NodeService/ListDynamicFields" => {
                     #[allow(non_camel_case_types)]
                     struct ListDynamicFieldsSvc<T: NodeService>(pub Arc<T>);
                     impl<
@@ -733,7 +733,7 @@ pub mod node_service_server {
                     };
                     Box::pin(fut)
                 }
-                "/sui.node.v2alpha.NodeService/ListAccountObjects" => {
+                "/iota.node.v2alpha.NodeService/ListAccountObjects" => {
                     #[allow(non_camel_case_types)]
                     struct ListAccountObjectsSvc<T: NodeService>(pub Arc<T>);
                     impl<
@@ -779,7 +779,7 @@ pub mod node_service_server {
                     };
                     Box::pin(fut)
                 }
-                "/sui.node.v2alpha.NodeService/GetProtocolConfig" => {
+                "/iota.node.v2alpha.NodeService/GetProtocolConfig" => {
                     #[allow(non_camel_case_types)]
                     struct GetProtocolConfigSvc<T: NodeService>(pub Arc<T>);
                     impl<
@@ -825,7 +825,7 @@ pub mod node_service_server {
                     };
                     Box::pin(fut)
                 }
-                "/sui.node.v2alpha.NodeService/GetGasInfo" => {
+                "/iota.node.v2alpha.NodeService/GetGasInfo" => {
                     #[allow(non_camel_case_types)]
                     struct GetGasInfoSvc<T: NodeService>(pub Arc<T>);
                     impl<
@@ -870,7 +870,7 @@ pub mod node_service_server {
                     };
                     Box::pin(fut)
                 }
-                "/sui.node.v2alpha.NodeService/SimulateTransaction" => {
+                "/iota.node.v2alpha.NodeService/SimulateTransaction" => {
                     #[allow(non_camel_case_types)]
                     struct SimulateTransactionSvc<T: NodeService>(pub Arc<T>);
                     impl<
@@ -916,7 +916,7 @@ pub mod node_service_server {
                     };
                     Box::pin(fut)
                 }
-                "/sui.node.v2alpha.NodeService/ResolveTransaction" => {
+                "/iota.node.v2alpha.NodeService/ResolveTransaction" => {
                     #[allow(non_camel_case_types)]
                     struct ResolveTransactionSvc<T: NodeService>(pub Arc<T>);
                     impl<
@@ -995,7 +995,7 @@ pub mod node_service_server {
         }
     }
     /// Generated gRPC service name
-    pub const SERVICE_NAME: &str = "sui.node.v2alpha.NodeService";
+    pub const SERVICE_NAME: &str = "iota.node.v2alpha.NodeService";
     impl<T> tonic::server::NamedService for NodeServiceServer<T> {
         const NAME: &'static str = SERVICE_NAME;
     }
@@ -1030,7 +1030,7 @@ pub mod subscription_service_client {
     )]
     use tonic::codegen::*;
     use tonic::codegen::http::Uri;
-    /// Service for subscribing to data from a Sui Fullnode
+    /// Service for subscribing to data from a IOTA Fullnode
     #[derive(Debug, Clone)]
     pub struct SubscriptionServiceClient<T> {
         inner: tonic::client::Grpc<T>,
@@ -1113,7 +1113,7 @@ pub mod subscription_service_client {
         }
         /// Subscribe to the stream of checkpoints.
         ///
-        /// This API provides a subscription to the checkpoint stream for the Sui
+        /// This API provides a subscription to the checkpoint stream for the IOTA
         /// blockchain. When a subscription is initialized the stream will begin with
         /// the latest executed checkpoint as seen by the server. Responses are
         /// gaurenteed to return checkpoints in-order and without gaps. This enables
@@ -1121,7 +1121,7 @@ pub mod subscription_service_client {
         /// event the subscription terminates (either by the client/server or by the
         /// connection breaking), clients will be able to reinitailize a subscription
         /// and then leverage other APIs (e.g.
-        /// sui.node.v2.NodeService.GetFullCheckpoint) in order to request data for
+        /// iota.node.v2.NodeService.GetFullCheckpoint) in order to request data for
         /// the checkpoints they missed.
         pub async fn subscribe_checkpoints(
             &mut self,
@@ -1142,13 +1142,13 @@ pub mod subscription_service_client {
                 })?;
             let codec = tonic::codec::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
-                "/sui.node.v2alpha.SubscriptionService/SubscribeCheckpoints",
+                "/iota.node.v2alpha.SubscriptionService/SubscribeCheckpoints",
             );
             let mut req = request.into_request();
             req.extensions_mut()
                 .insert(
                     GrpcMethod::new(
-                        "sui.node.v2alpha.SubscriptionService",
+                        "iota.node.v2alpha.SubscriptionService",
                         "SubscribeCheckpoints",
                     ),
                 );
@@ -1180,7 +1180,7 @@ pub mod subscription_service_server {
             + 'static;
         /// Subscribe to the stream of checkpoints.
         ///
-        /// This API provides a subscription to the checkpoint stream for the Sui
+        /// This API provides a subscription to the checkpoint stream for the IOTA
         /// blockchain. When a subscription is initialized the stream will begin with
         /// the latest executed checkpoint as seen by the server. Responses are
         /// gaurenteed to return checkpoints in-order and without gaps. This enables
@@ -1188,7 +1188,7 @@ pub mod subscription_service_server {
         /// event the subscription terminates (either by the client/server or by the
         /// connection breaking), clients will be able to reinitailize a subscription
         /// and then leverage other APIs (e.g.
-        /// sui.node.v2.NodeService.GetFullCheckpoint) in order to request data for
+        /// iota.node.v2.NodeService.GetFullCheckpoint) in order to request data for
         /// the checkpoints they missed.
         async fn subscribe_checkpoints(
             &self,
@@ -1198,7 +1198,7 @@ pub mod subscription_service_server {
             tonic::Status,
         >;
     }
-    /// Service for subscribing to data from a Sui Fullnode
+    /// Service for subscribing to data from a IOTA Fullnode
     #[derive(Debug)]
     pub struct SubscriptionServiceServer<T> {
         inner: Arc<T>,
@@ -1275,7 +1275,7 @@ pub mod subscription_service_server {
         }
         fn call(&mut self, req: http::Request<B>) -> Self::Future {
             match req.uri().path() {
-                "/sui.node.v2alpha.SubscriptionService/SubscribeCheckpoints" => {
+                "/iota.node.v2alpha.SubscriptionService/SubscribeCheckpoints" => {
                     #[allow(non_camel_case_types)]
                     struct SubscribeCheckpointsSvc<T: SubscriptionService>(pub Arc<T>);
                     impl<
@@ -1359,7 +1359,7 @@ pub mod subscription_service_server {
         }
     }
     /// Generated gRPC service name
-    pub const SERVICE_NAME: &str = "sui.node.v2alpha.SubscriptionService";
+    pub const SERVICE_NAME: &str = "iota.node.v2alpha.SubscriptionService";
     impl<T> tonic::server::NamedService for SubscriptionServiceServer<T> {
         const NAME: &'static str = SERVICE_NAME;
     }

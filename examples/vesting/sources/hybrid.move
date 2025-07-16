@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 /// ===========================================================================================
@@ -15,8 +16,8 @@ module vesting::hybrid;
 
 use vesting::cliff;
 use vesting::linear;
-use sui::coin::{Self, Coin};
-use sui::clock::Clock;
+use iota::coin::{Self, Coin};
+use iota::clock::Clock;
 
 
 // === Structs ===

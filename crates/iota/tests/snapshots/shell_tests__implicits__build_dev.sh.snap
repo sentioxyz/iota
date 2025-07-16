@@ -1,13 +1,14 @@
 ---
-source: crates/sui/tests/shell_tests.rs
+source: crates/iota/tests/shell_tests.rs
 description: tests/shell_tests/implicits/build_dev.sh
 ---
 ----- script -----
 # Copyright (c) Mysten Labs, Inc.
+# Modifications Copyright (c) 2025 IOTA Stiftung
 # SPDX-License-Identifier: Apache-2.0
 
 # tests that building a package that implicitly depends on `Bridge` works in dev mode
-sui move build --dev -p example 2> /dev/null
+iota move build --dev -p example 2> /dev/null
 
 ----- results -----
 success: true

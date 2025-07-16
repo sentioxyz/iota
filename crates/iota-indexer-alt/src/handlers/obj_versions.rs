@@ -1,16 +1,17 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::sync::Arc;
 
 use anyhow::Result;
 use diesel_async::RunQueryDsl;
-use sui_indexer_alt_framework::{
+use iota_indexer_alt_framework::{
     db,
     pipeline::{concurrent::Handler, Processor},
     types::full_checkpoint_content::CheckpointData,
 };
-use sui_indexer_alt_schema::{objects::StoredObjVersion, schema::obj_versions};
+use iota_indexer_alt_schema::{objects::StoredObjVersion, schema::obj_versions};
 
 pub(crate) struct ObjVersions;
 

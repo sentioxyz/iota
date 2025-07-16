@@ -1,10 +1,10 @@
 protocol-key-pair:
-  path: /opt/sui/key-pairs/protocol.key
+  path: /opt/iota/key-pairs/protocol.key
 worker-key-pair:
-  path: /opt/sui/key-pairs/worker.key
+  path: /opt/iota/key-pairs/worker.key
 network-key-pair:
-  path: /opt/sui/key-pairs/network.key
-db-path: /opt/sui/db/authorities_db
+  path: /opt/iota/key-pairs/network.key
+db-path: /opt/iota/db/authorities_db
 network-address: /ip4/0.0.0.0/tcp/8080/http
 json-rpc-address: 0.0.0.0:9000
 enable-experimental-rest-api: true
@@ -13,7 +13,7 @@ rest:
 metrics-address: 0.0.0.0:9184
 admin-interface-port: 1337
 consensus-config:
-  db-path: /opt/sui/db/consensus_db
+  db-path: /opt/iota/db/consensus_db
   db-retention-epochs: null
   db-pruner-period-secs: null
   max-pending-transactions: null
@@ -47,16 +47,16 @@ grpc-load-shed: null
 grpc-concurrency-limit: 20000000000
 p2p-config:
   listen-address: 0.0.0.0:8084
-  external-address: /dns/hello.sui.io/udp/8084
+  external-address: /dns/hello.iota.io/udp/8084
   seed-peers:
   - peer-id: 1cab034c3d3e43f8a33d39b3e358815537439ad8dc89c6660cac2e4ee994f017
-    address: /dns/test.sui.io/udp/8084
+    address: /dns/test.iota.io/udp/8084
   state-sync:
     checkpoint-content-timeout-ms: 10000
   anemo-config:
     max-concurrent-connections: 0
 genesis:
-  genesis-file-location: /opt/sui/config/genesis.blob
+  genesis-file-location: /opt/iota/config/genesis.blob
 authority-store-pruning-config:
   num-latest-epoch-dbs-to-retain: 3
   epoch-db-pruning-period-secs: 3600
@@ -71,9 +71,9 @@ db-checkpoint-config:
   perform-db-checkpoints-at-epoch-end: false
 indirect-objects-threshold: 18446744073709551615
 expensive-safety-check-config:
-  enable-epoch-sui-conservation-check: false
-  enable-deep-per-tx-sui-conservation-check: false
-  force-disable-epoch-sui-conservation-check: false
+  enable-epoch-iota-conservation-check: false
+  enable-deep-per-tx-iota-conservation-check: false
+  force-disable-epoch-iota-conservation-check: false
   enable-state-consistency-check: false
   force-disable-state-consistency-check: false
   enable-secondary-index-checks: false
@@ -96,7 +96,7 @@ state-snapshot-write-config:
   concurrency: 0
 indexer-max-subscriptions: null
 transaction-kv-store-read-config:
-  base-url: https://transactions.sui.io/
+  base-url: https://transactions.iota.io/
   cache-size: 100000
 jwk-fetch-interval-seconds: 3600
 zklogin-oauth-providers:

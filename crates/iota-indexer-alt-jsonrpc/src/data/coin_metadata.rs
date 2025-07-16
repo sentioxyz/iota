@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::{
@@ -9,10 +10,10 @@ use std::{
 use async_graphql::dataloader::Loader;
 use diesel::{BoolExpressionMethods, ExpressionMethods, JoinOnDsl, QueryDsl};
 use move_core_types::language_storage::StructTag;
-use sui_indexer_alt_schema::{objects::StoredObjInfo, schema::obj_info};
-use sui_types::{
+use iota_indexer_alt_schema::{objects::StoredObjInfo, schema::obj_info};
+use iota_types::{
     coin::{COIN_METADATA_STRUCT_NAME, COIN_MODULE_NAME},
-    TypeTag, SUI_FRAMEWORK_ADDRESS,
+    TypeTag, IOTA_FRAMEWORK_ADDRESS,
 };
 
 use crate::data::error::Error;
@@ -20,7 +21,7 @@ use crate::data::error::Error;
 use super::pg_reader::PgReader;
 
 /// Key for fetching the  of a CoinMetadata object, based on its coin marker type, e.g.
-/// `0x2::sui::SUI`.
+/// `0x2::iota::IOTA`.
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub(crate) struct CoinMetadataKey(pub StructTag);
 
@@ -82,7 +83,7 @@ impl Loader<CoinMetadataKey> for PgReader {
                 instantiation,
             ))
             .filter(newer!(object_id).is_null())
-            .filter(candidates!(package).eq(SUI_FRAMEWORK_ADDRESS.into_bytes()))
+            .filter(candidates!(package).eq(IOTA_FRAMEWORK_ADDRESS.into_bytes()))
             .filter(candidates!(module).eq(COIN_MODULE_NAME.as_str()))
             .filter(candidates!(name).eq(COIN_METADATA_STRUCT_NAME.as_str()))
             .filter(candidates!(instantiation).eq_any(&instantiations));

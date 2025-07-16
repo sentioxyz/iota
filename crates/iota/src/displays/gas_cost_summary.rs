@@ -1,9 +1,10 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::displays::Pretty;
 use std::fmt::{Display, Formatter};
-use sui_types::gas::GasCostSummary;
+use iota_types::gas::GasCostSummary;
 
 impl Display for Pretty<'_, GasCostSummary> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {

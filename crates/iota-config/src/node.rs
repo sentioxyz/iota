@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 use crate::certificate_deny_config::CertificateDenyConfig;
 use crate::genesis;
@@ -9,7 +10,7 @@ use crate::verifier_signing_config::VerifierSigningConfig;
 use crate::Config;
 use anyhow::Result;
 use consensus_config::Parameters as ConsensusParameters;
-use mysten_common::fatal;
+use iota_common::fatal;
 use nonzero_ext::nonzero;
 use once_cell::sync::OnceCell;
 use rand::rngs::OsRng;
@@ -21,26 +22,26 @@ use std::num::{NonZeroU32, NonZeroUsize};
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use std::time::Duration;
-use sui_keys::keypair_file::{read_authority_keypair_from_file, read_keypair_from_file};
-use sui_types::base_types::{ObjectID, SuiAddress};
-use sui_types::committee::EpochId;
-use sui_types::crypto::AuthorityPublicKeyBytes;
-use sui_types::crypto::KeypairTraits;
-use sui_types::crypto::NetworkKeyPair;
-use sui_types::crypto::SuiKeyPair;
-use sui_types::messages_checkpoint::CheckpointSequenceNumber;
-use sui_types::supported_protocol_versions::{Chain, SupportedProtocolVersions};
-use sui_types::traffic_control::{PolicyConfig, RemoteFirewallConfig};
+use iota_keys::keypair_file::{read_authority_keypair_from_file, read_keypair_from_file};
+use iota_types::base_types::{ObjectID, IotaAddress};
+use iota_types::committee::EpochId;
+use iota_types::crypto::AuthorityPublicKeyBytes;
+use iota_types::crypto::KeypairTraits;
+use iota_types::crypto::NetworkKeyPair;
+use iota_types::crypto::IotaKeyPair;
+use iota_types::messages_checkpoint::CheckpointSequenceNumber;
+use iota_types::supported_protocol_versions::{Chain, SupportedProtocolVersions};
+use iota_types::traffic_control::{PolicyConfig, RemoteFirewallConfig};
 
-use sui_types::crypto::{get_key_pair_from_rng, AccountKeyPair, AuthorityKeyPair};
-use sui_types::multiaddr::Multiaddr;
+use iota_types::crypto::{get_key_pair_from_rng, AccountKeyPair, AuthorityKeyPair};
+use iota_types::multiaddr::Multiaddr;
 use tracing::info;
 
 // Default max number of concurrent requests served
 pub const DEFAULT_GRPC_CONCURRENCY_LIMIT: usize = 20000000000;
 
-/// Default gas price of 100 Mist
-pub const DEFAULT_VALIDATOR_GAS_PRICE: u64 = sui_types::transaction::DEFAULT_VALIDATOR_GAS_PRICE;
+/// Default gas price of 100 Nanos
+pub const DEFAULT_VALIDATOR_GAS_PRICE: u64 = iota_types::transaction::DEFAULT_VALIDATOR_GAS_PRICE;
 
 /// Default commission rate of 2%
 pub const DEFAULT_COMMISSION_RATE: u64 = 200;
@@ -65,7 +66,7 @@ pub struct NodeConfig {
     pub json_rpc_address: SocketAddr,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub rpc: Option<sui_rpc_api::Config>,
+    pub rpc: Option<iota_rpc_api::Config>,
 
     #[serde(default = "default_metrics_address")]
     pub metrics_address: SocketAddr,
@@ -114,8 +115,8 @@ pub struct NodeConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metrics: Option<MetricsConfig>,
 
-    /// In a `sui-node` binary, this is set to SupportedProtocolVersions::SYSTEM_DEFAULT
-    /// in sui-node/src/main.rs. It is present in the config so that it can be changed by tests in
+    /// In a `iota-node` binary, this is set to SupportedProtocolVersions::SYSTEM_DEFAULT
+    /// in iota-node/src/main.rs. It is present in the config so that it can be changed by tests in
     /// order to test protocol upgrades.
     #[serde(skip)]
     pub supported_protocol_versions: Option<SupportedProtocolVersions>,
@@ -127,7 +128,7 @@ pub struct NodeConfig {
     pub expensive_safety_check_config: ExpensiveSafetyCheckConfig,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub name_service_package_address: Option<SuiAddress>,
+    pub name_service_package_address: Option<IotaAddress>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name_service_registry_id: Option<ObjectID>,
@@ -357,7 +358,7 @@ impl Default for ExecutionCacheConfig {
 
 impl ExecutionCacheConfig {
     pub fn max_cache_size(&self) -> u64 {
-        std::env::var("SUI_MAX_CACHE_SIZE")
+        std::env::var("IOTA_MAX_CACHE_SIZE")
             .ok()
             .and_then(|s| s.parse().ok())
             .unwrap_or_else(|| match self {
@@ -369,7 +370,7 @@ impl ExecutionCacheConfig {
     }
 
     pub fn package_cache_size(&self) -> u64 {
-        std::env::var("SUI_PACKAGE_CACHE_SIZE")
+        std::env::var("IOTA_PACKAGE_CACHE_SIZE")
             .ok()
             .and_then(|s| s.parse().ok())
             .unwrap_or_else(|| match self {
@@ -381,7 +382,7 @@ impl ExecutionCacheConfig {
     }
 
     pub fn object_cache_size(&self) -> u64 {
-        std::env::var("SUI_OBJECT_CACHE_SIZE")
+        std::env::var("IOTA_OBJECT_CACHE_SIZE")
             .ok()
             .and_then(|s| s.parse().ok())
             .unwrap_or_else(|| match self {
@@ -393,7 +394,7 @@ impl ExecutionCacheConfig {
     }
 
     pub fn marker_cache_size(&self) -> u64 {
-        std::env::var("SUI_MARKER_CACHE_SIZE")
+        std::env::var("IOTA_MARKER_CACHE_SIZE")
             .ok()
             .and_then(|s| s.parse().ok())
             .unwrap_or_else(|| match self {
@@ -405,7 +406,7 @@ impl ExecutionCacheConfig {
     }
 
     pub fn object_by_id_cache_size(&self) -> u64 {
-        std::env::var("SUI_OBJECT_BY_ID_CACHE_SIZE")
+        std::env::var("IOTA_OBJECT_BY_ID_CACHE_SIZE")
             .ok()
             .and_then(|s| s.parse().ok())
             .unwrap_or_else(|| match self {
@@ -418,7 +419,7 @@ impl ExecutionCacheConfig {
     }
 
     pub fn transaction_cache_size(&self) -> u64 {
-        std::env::var("SUI_TRANSACTION_CACHE_SIZE")
+        std::env::var("IOTA_TRANSACTION_CACHE_SIZE")
             .ok()
             .and_then(|s| s.parse().ok())
             .unwrap_or_else(|| match self {
@@ -431,7 +432,7 @@ impl ExecutionCacheConfig {
     }
 
     pub fn executed_effect_cache_size(&self) -> u64 {
-        std::env::var("SUI_EXECUTED_EFFECT_CACHE_SIZE")
+        std::env::var("IOTA_EXECUTED_EFFECT_CACHE_SIZE")
             .ok()
             .and_then(|s| s.parse().ok())
             .unwrap_or_else(|| match self {
@@ -444,7 +445,7 @@ impl ExecutionCacheConfig {
     }
 
     pub fn effect_cache_size(&self) -> u64 {
-        std::env::var("SUI_EFFECT_CACHE_SIZE")
+        std::env::var("IOTA_EFFECT_CACHE_SIZE")
             .ok()
             .and_then(|s| s.parse().ok())
             .unwrap_or_else(|| match self {
@@ -456,7 +457,7 @@ impl ExecutionCacheConfig {
     }
 
     pub fn events_cache_size(&self) -> u64 {
-        std::env::var("SUI_EVENTS_CACHE_SIZE")
+        std::env::var("IOTA_EVENTS_CACHE_SIZE")
             .ok()
             .and_then(|s| s.parse().ok())
             .unwrap_or_else(|| match self {
@@ -468,7 +469,7 @@ impl ExecutionCacheConfig {
     }
 
     pub fn transaction_objects_cache_size(&self) -> u64 {
-        std::env::var("SUI_TRANSACTION_OBJECTS_CACHE_SIZE")
+        std::env::var("IOTA_TRANSACTION_OBJECTS_CACHE_SIZE")
             .ok()
             .and_then(|s| s.parse().ok())
             .unwrap_or_else(|| match self {
@@ -481,7 +482,7 @@ impl ExecutionCacheConfig {
     }
 
     pub fn backpressure_threshold(&self) -> u64 {
-        std::env::var("SUI_BACKPRESSURE_THRESHOLD")
+        std::env::var("IOTA_BACKPRESSURE_THRESHOLD")
             .ok()
             .and_then(|s| s.parse().ok())
             .unwrap_or_else(|| match self {
@@ -494,7 +495,7 @@ impl ExecutionCacheConfig {
     }
 
     pub fn backpressure_threshold_for_rpc(&self) -> u64 {
-        std::env::var("SUI_BACKPRESSURE_THRESHOLD_FOR_RPC")
+        std::env::var("IOTA_BACKPRESSURE_THRESHOLD_FOR_RPC")
             .ok()
             .and_then(|s| s.parse().ok())
             .unwrap_or_else(|| match self {
@@ -535,7 +536,7 @@ impl Default for TransactionKeyValueStoreReadConfig {
 }
 
 fn default_base_url() -> String {
-    "https://transactions.sui.io/".to_string()
+    "https://transactions.iota.io/".to_string()
 }
 
 fn default_cache_size() -> u64 {
@@ -658,7 +659,7 @@ impl NodeConfig {
 
     pub fn worker_key_pair(&self) -> &NetworkKeyPair {
         match self.worker_key_pair.keypair() {
-            SuiKeyPair::Ed25519(kp) => kp,
+            IotaKeyPair::Ed25519(kp) => kp,
             other => panic!(
                 "Invalid keypair type: {:?}, only Ed25519 is allowed for worker key",
                 other
@@ -668,7 +669,7 @@ impl NodeConfig {
 
     pub fn network_key_pair(&self) -> &NetworkKeyPair {
         match self.network_key_pair.keypair() {
-            SuiKeyPair::Ed25519(kp) => kp,
+            IotaKeyPair::Ed25519(kp) => kp,
             other => panic!(
                 "Invalid keypair type: {:?}, only Ed25519 is allowed for network key",
                 other
@@ -708,7 +709,7 @@ impl NodeConfig {
         self.genesis.genesis()
     }
 
-    pub fn sui_address(&self) -> SuiAddress {
+    pub fn iota_address(&self) -> IotaAddress {
         (&self.account_key_pair.keypair().public()).into()
     }
 
@@ -733,7 +734,7 @@ impl NodeConfig {
         self.jsonrpc_server_type.unwrap_or(ServerType::Http)
     }
 
-    pub fn rpc(&self) -> Option<&sui_rpc_api::Config> {
+    pub fn rpc(&self) -> Option<&iota_rpc_api::Config> {
         self.rpc.as_ref()
     }
 }
@@ -831,20 +832,20 @@ pub struct CheckpointExecutorConfig {
 pub struct ExpensiveSafetyCheckConfig {
     /// If enabled, at epoch boundary, we will check that the storage
     /// fund balance is always identical to the sum of the storage
-    /// rebate of all live objects, and that the total SUI in the network remains
+    /// rebate of all live objects, and that the total IOTA in the network remains
     /// the same.
     #[serde(default)]
-    enable_epoch_sui_conservation_check: bool,
+    enable_epoch_iota_conservation_check: bool,
 
-    /// If enabled, we will check that the total SUI in all input objects of a tx
-    /// (both the Move part and the storage rebate) matches the total SUI in all
+    /// If enabled, we will check that the total IOTA in all input objects of a tx
+    /// (both the Move part and the storage rebate) matches the total IOTA in all
     /// output objects of the tx + gas fees
     #[serde(default)]
-    enable_deep_per_tx_sui_conservation_check: bool,
+    enable_deep_per_tx_iota_conservation_check: bool,
 
-    /// Disable epoch SUI conservation check even when we are running in debug mode.
+    /// Disable epoch IOTA conservation check even when we are running in debug mode.
     #[serde(default)]
-    force_disable_epoch_sui_conservation_check: bool,
+    force_disable_epoch_iota_conservation_check: bool,
 
     /// If enabled, at epoch boundary, we will check that the accumulated
     /// live object state matches the end of epoch root state digest.
@@ -863,9 +864,9 @@ pub struct ExpensiveSafetyCheckConfig {
 impl ExpensiveSafetyCheckConfig {
     pub fn new_enable_all() -> Self {
         Self {
-            enable_epoch_sui_conservation_check: true,
-            enable_deep_per_tx_sui_conservation_check: true,
-            force_disable_epoch_sui_conservation_check: false,
+            enable_epoch_iota_conservation_check: true,
+            enable_deep_per_tx_iota_conservation_check: true,
+            force_disable_epoch_iota_conservation_check: false,
             enable_state_consistency_check: true,
             force_disable_state_consistency_check: false,
             enable_secondary_index_checks: false, // Disable by default for now
@@ -874,22 +875,22 @@ impl ExpensiveSafetyCheckConfig {
 
     pub fn new_disable_all() -> Self {
         Self {
-            enable_epoch_sui_conservation_check: false,
-            enable_deep_per_tx_sui_conservation_check: false,
-            force_disable_epoch_sui_conservation_check: true,
+            enable_epoch_iota_conservation_check: false,
+            enable_deep_per_tx_iota_conservation_check: false,
+            force_disable_epoch_iota_conservation_check: true,
             enable_state_consistency_check: false,
             force_disable_state_consistency_check: true,
             enable_secondary_index_checks: false,
         }
     }
 
-    pub fn force_disable_epoch_sui_conservation_check(&mut self) {
-        self.force_disable_epoch_sui_conservation_check = true;
+    pub fn force_disable_epoch_iota_conservation_check(&mut self) {
+        self.force_disable_epoch_iota_conservation_check = true;
     }
 
-    pub fn enable_epoch_sui_conservation_check(&self) -> bool {
-        (self.enable_epoch_sui_conservation_check || cfg!(debug_assertions))
-            && !self.force_disable_epoch_sui_conservation_check
+    pub fn enable_epoch_iota_conservation_check(&self) -> bool {
+        (self.enable_epoch_iota_conservation_check || cfg!(debug_assertions))
+            && !self.force_disable_epoch_iota_conservation_check
     }
 
     pub fn force_disable_state_consistency_check(&mut self) {
@@ -901,8 +902,8 @@ impl ExpensiveSafetyCheckConfig {
             && !self.force_disable_state_consistency_check
     }
 
-    pub fn enable_deep_per_tx_sui_conservation_check(&self) -> bool {
-        self.enable_deep_per_tx_sui_conservation_check || cfg!(debug_assertions)
+    pub fn enable_deep_per_tx_iota_conservation_check(&self) -> bool {
+        self.enable_deep_per_tx_iota_conservation_check || cfg!(debug_assertions)
     }
 
     pub fn enable_secondary_index_checks(&self) -> bool {
@@ -1279,14 +1280,14 @@ enum GenesisLocation {
     },
 }
 
-/// Wrapper struct for SuiKeyPair that can be deserialized from a file path. Used by network, worker, and account keypair.
+/// Wrapper struct for IotaKeyPair that can be deserialized from a file path. Used by network, worker, and account keypair.
 #[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize)]
 pub struct KeyPairWithPath {
     #[serde(flatten)]
     location: KeyPairLocation,
 
     #[serde(skip)]
-    keypair: OnceCell<Arc<SuiKeyPair>>,
+    keypair: OnceCell<Arc<IotaKeyPair>>,
 }
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize, Eq)]
@@ -1295,7 +1296,7 @@ pub struct KeyPairWithPath {
 enum KeyPairLocation {
     InPlace {
         #[serde_as(as = "Arc<KeyPairBase64>")]
-        value: Arc<SuiKeyPair>,
+        value: Arc<IotaKeyPair>,
     },
     File {
         #[serde(rename = "path")]
@@ -1304,8 +1305,8 @@ enum KeyPairLocation {
 }
 
 impl KeyPairWithPath {
-    pub fn new(kp: SuiKeyPair) -> Self {
-        let cell: OnceCell<Arc<SuiKeyPair>> = OnceCell::new();
+    pub fn new(kp: IotaKeyPair) -> Self {
+        let cell: OnceCell<Arc<IotaKeyPair>> = OnceCell::new();
         let arc_kp = Arc::new(kp);
         // OK to unwrap panic because authority should not start without all keypairs loaded.
         cell.set(arc_kp.clone()).expect("Failed to set keypair");
@@ -1316,7 +1317,7 @@ impl KeyPairWithPath {
     }
 
     pub fn new_from_path(path: PathBuf) -> Self {
-        let cell: OnceCell<Arc<SuiKeyPair>> = OnceCell::new();
+        let cell: OnceCell<Arc<IotaKeyPair>> = OnceCell::new();
         // OK to unwrap panic because authority should not start without all keypairs loaded.
         cell.set(Arc::new(read_keypair_from_file(&path).unwrap_or_else(
             |e| panic!("Invalid keypair file at path {:?}: {e}", &path),
@@ -1328,7 +1329,7 @@ impl KeyPairWithPath {
         }
     }
 
-    pub fn keypair(&self) -> &SuiKeyPair {
+    pub fn keypair(&self) -> &IotaKeyPair {
         self.keypair
             .get_or_init(|| match &self.location {
                 KeyPairLocation::InPlace { value } => value.clone(),
@@ -1422,8 +1423,8 @@ mod tests {
 
     use fastcrypto::traits::KeyPair;
     use rand::{rngs::StdRng, SeedableRng};
-    use sui_keys::keypair_file::{write_authority_keypair_to_file, write_keypair_to_file};
-    use sui_types::crypto::{get_key_pair_from_rng, AuthorityKeyPair, NetworkKeyPair, SuiKeyPair};
+    use iota_keys::keypair_file::{write_authority_keypair_to_file, write_keypair_to_file};
+    use iota_types::crypto::{get_key_pair_from_rng, AuthorityKeyPair, NetworkKeyPair, IotaKeyPair};
 
     use super::Genesis;
     use crate::NodeConfig;
@@ -1448,7 +1449,7 @@ mod tests {
     /// Tests that a legacy validator config (captured on 12/06/2024) can be parsed.
     #[test]
     fn legacy_validator_config() {
-        const FILE: &str = include_str!("../data/sui-node-legacy.yaml");
+        const FILE: &str = include_str!("../data/iota-node-legacy.yaml");
 
         let _template: NodeConfig = serde_yaml::from_str(FILE).unwrap();
     }
@@ -1464,12 +1465,12 @@ mod tests {
 
         write_authority_keypair_to_file(&protocol_key_pair, PathBuf::from("protocol.key")).unwrap();
         write_keypair_to_file(
-            &SuiKeyPair::Ed25519(worker_key_pair.copy()),
+            &IotaKeyPair::Ed25519(worker_key_pair.copy()),
             PathBuf::from("worker.key"),
         )
         .unwrap();
         write_keypair_to_file(
-            &SuiKeyPair::Ed25519(network_key_pair.copy()),
+            &IotaKeyPair::Ed25519(network_key_pair.copy()),
             PathBuf::from("network.key"),
         )
         .unwrap();

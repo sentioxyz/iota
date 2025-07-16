@@ -5,10 +5,10 @@ use tap::Pipe;
 // TransactionEffects
 //
 
-impl From<sui_sdk_types::TransactionEffects> for super::TransactionEffects {
-    fn from(value: sui_sdk_types::TransactionEffects) -> Self {
+impl From<iota_sdk_types::TransactionEffects> for super::TransactionEffects {
+    fn from(value: iota_sdk_types::TransactionEffects) -> Self {
         use super::transaction_effects::Version;
-        use sui_sdk_types::TransactionEffects::*;
+        use iota_sdk_types::TransactionEffects::*;
 
         let version = match value {
             V1(v1) => Version::V1((*v1).into()),
@@ -21,7 +21,7 @@ impl From<sui_sdk_types::TransactionEffects> for super::TransactionEffects {
     }
 }
 
-impl TryFrom<&super::TransactionEffects> for sui_sdk_types::TransactionEffects {
+impl TryFrom<&super::TransactionEffects> for iota_sdk_types::TransactionEffects {
     type Error = TryFromProtoError;
 
     fn try_from(value: &super::TransactionEffects) -> Result<Self, Self::Error> {
@@ -43,9 +43,9 @@ impl TryFrom<&super::TransactionEffects> for sui_sdk_types::TransactionEffects {
 // TransactionEffectsV1
 //
 
-impl From<sui_sdk_types::TransactionEffectsV1> for super::TransactionEffectsV1 {
+impl From<iota_sdk_types::TransactionEffectsV1> for super::TransactionEffectsV1 {
     fn from(
-        sui_sdk_types::TransactionEffectsV1 {
+        iota_sdk_types::TransactionEffectsV1 {
             status,
             epoch,
             gas_used,
@@ -61,7 +61,7 @@ impl From<sui_sdk_types::TransactionEffectsV1> for super::TransactionEffectsV1 {
             gas_object,
             events_digest,
             dependencies,
-        }: sui_sdk_types::TransactionEffectsV1,
+        }: iota_sdk_types::TransactionEffectsV1,
     ) -> Self {
         Self {
             status: Some(status.into()),
@@ -83,7 +83,7 @@ impl From<sui_sdk_types::TransactionEffectsV1> for super::TransactionEffectsV1 {
     }
 }
 
-impl TryFrom<&super::TransactionEffectsV1> for sui_sdk_types::TransactionEffectsV1 {
+impl TryFrom<&super::TransactionEffectsV1> for iota_sdk_types::TransactionEffectsV1 {
     type Error = TryFromProtoError;
 
     fn try_from(
@@ -196,9 +196,9 @@ impl TryFrom<&super::TransactionEffectsV1> for sui_sdk_types::TransactionEffects
 // TransactionEffectsV2
 //
 
-impl From<sui_sdk_types::TransactionEffectsV2> for super::TransactionEffectsV2 {
+impl From<iota_sdk_types::TransactionEffectsV2> for super::TransactionEffectsV2 {
     fn from(
-        sui_sdk_types::TransactionEffectsV2 {
+        iota_sdk_types::TransactionEffectsV2 {
             status,
             epoch,
             gas_used,
@@ -210,7 +210,7 @@ impl From<sui_sdk_types::TransactionEffectsV2> for super::TransactionEffectsV2 {
             changed_objects,
             unchanged_shared_objects,
             auxiliary_data_digest,
-        }: sui_sdk_types::TransactionEffectsV2,
+        }: iota_sdk_types::TransactionEffectsV2,
     ) -> Self {
         Self {
             status: Some(status.into()),
@@ -231,7 +231,7 @@ impl From<sui_sdk_types::TransactionEffectsV2> for super::TransactionEffectsV2 {
     }
 }
 
-impl TryFrom<&super::TransactionEffectsV2> for sui_sdk_types::TransactionEffectsV2 {
+impl TryFrom<&super::TransactionEffectsV2> for iota_sdk_types::TransactionEffectsV2 {
     type Error = TryFromProtoError;
 
     fn try_from(
@@ -310,8 +310,8 @@ impl TryFrom<&super::TransactionEffectsV2> for sui_sdk_types::TransactionEffects
 // ModifiedAtVersion
 //
 
-impl From<sui_sdk_types::ModifiedAtVersion> for super::ModifiedAtVersion {
-    fn from(value: sui_sdk_types::ModifiedAtVersion) -> Self {
+impl From<iota_sdk_types::ModifiedAtVersion> for super::ModifiedAtVersion {
+    fn from(value: iota_sdk_types::ModifiedAtVersion) -> Self {
         Self {
             object_id: Some(value.object_id.into()),
             version: Some(value.version),
@@ -319,7 +319,7 @@ impl From<sui_sdk_types::ModifiedAtVersion> for super::ModifiedAtVersion {
     }
 }
 
-impl TryFrom<&super::ModifiedAtVersion> for sui_sdk_types::ModifiedAtVersion {
+impl TryFrom<&super::ModifiedAtVersion> for iota_sdk_types::ModifiedAtVersion {
     type Error = TryFromProtoError;
 
     fn try_from(value: &super::ModifiedAtVersion) -> Result<Self, Self::Error> {
@@ -340,8 +340,8 @@ impl TryFrom<&super::ModifiedAtVersion> for sui_sdk_types::ModifiedAtVersion {
 // ObjectReferenceWithOwner
 //
 
-impl From<sui_sdk_types::ObjectReferenceWithOwner> for super::ObjectReferenceWithOwner {
-    fn from(value: sui_sdk_types::ObjectReferenceWithOwner) -> Self {
+impl From<iota_sdk_types::ObjectReferenceWithOwner> for super::ObjectReferenceWithOwner {
+    fn from(value: iota_sdk_types::ObjectReferenceWithOwner) -> Self {
         Self {
             reference: Some(value.reference.into()),
             owner: Some(value.owner.into()),
@@ -349,7 +349,7 @@ impl From<sui_sdk_types::ObjectReferenceWithOwner> for super::ObjectReferenceWit
     }
 }
 
-impl TryFrom<&super::ObjectReferenceWithOwner> for sui_sdk_types::ObjectReferenceWithOwner {
+impl TryFrom<&super::ObjectReferenceWithOwner> for iota_sdk_types::ObjectReferenceWithOwner {
     type Error = TryFromProtoError;
 
     fn try_from(value: &super::ObjectReferenceWithOwner) -> Result<Self, Self::Error> {
@@ -373,8 +373,8 @@ impl TryFrom<&super::ObjectReferenceWithOwner> for sui_sdk_types::ObjectReferenc
 // ChangedObject
 //
 
-impl From<sui_sdk_types::ChangedObject> for super::ChangedObject {
-    fn from(value: sui_sdk_types::ChangedObject) -> Self {
+impl From<iota_sdk_types::ChangedObject> for super::ChangedObject {
+    fn from(value: iota_sdk_types::ChangedObject) -> Self {
         Self {
             object_id: Some(value.object_id.into()),
             input_state: Some(value.input_state.into()),
@@ -384,7 +384,7 @@ impl From<sui_sdk_types::ChangedObject> for super::ChangedObject {
     }
 }
 
-impl TryFrom<&super::ChangedObject> for sui_sdk_types::ChangedObject {
+impl TryFrom<&super::ChangedObject> for iota_sdk_types::ChangedObject {
     type Error = TryFromProtoError;
 
     fn try_from(value: &super::ChangedObject) -> Result<Self, Self::Error> {
@@ -425,11 +425,11 @@ impl TryFrom<&super::ChangedObject> for sui_sdk_types::ChangedObject {
 // InputState
 //
 
-impl From<sui_sdk_types::ObjectIn> for super::changed_object::InputState {
-    fn from(value: sui_sdk_types::ObjectIn) -> Self {
+impl From<iota_sdk_types::ObjectIn> for super::changed_object::InputState {
+    fn from(value: iota_sdk_types::ObjectIn) -> Self {
         match value {
-            sui_sdk_types::ObjectIn::NotExist => Self::NotExist(()),
-            sui_sdk_types::ObjectIn::Exist {
+            iota_sdk_types::ObjectIn::NotExist => Self::NotExist(()),
+            iota_sdk_types::ObjectIn::Exist {
                 version,
                 digest,
                 owner,
@@ -442,7 +442,7 @@ impl From<sui_sdk_types::ObjectIn> for super::changed_object::InputState {
     }
 }
 
-impl TryFrom<&super::changed_object::InputState> for sui_sdk_types::ObjectIn {
+impl TryFrom<&super::changed_object::InputState> for iota_sdk_types::ObjectIn {
     type Error = TryFromProtoError;
 
     fn try_from(value: &super::changed_object::InputState) -> Result<Self, Self::Error> {
@@ -474,9 +474,9 @@ impl TryFrom<&super::changed_object::InputState> for sui_sdk_types::ObjectIn {
 // OutputState
 //
 
-impl From<sui_sdk_types::ObjectOut> for super::changed_object::OutputState {
-    fn from(value: sui_sdk_types::ObjectOut) -> Self {
-        use sui_sdk_types::ObjectOut::*;
+impl From<iota_sdk_types::ObjectOut> for super::changed_object::OutputState {
+    fn from(value: iota_sdk_types::ObjectOut) -> Self {
+        use iota_sdk_types::ObjectOut::*;
         match value {
             NotExist => Self::Removed(()),
             ObjectWrite { digest, owner } => Self::ObjectWrite(super::ObjectWrite {
@@ -491,7 +491,7 @@ impl From<sui_sdk_types::ObjectOut> for super::changed_object::OutputState {
     }
 }
 
-impl TryFrom<&super::changed_object::OutputState> for sui_sdk_types::ObjectOut {
+impl TryFrom<&super::changed_object::OutputState> for iota_sdk_types::ObjectOut {
     type Error = TryFromProtoError;
 
     fn try_from(value: &super::changed_object::OutputState) -> Result<Self, Self::Error> {
@@ -526,9 +526,9 @@ impl TryFrom<&super::changed_object::OutputState> for sui_sdk_types::ObjectOut {
 // IdOperation
 //
 
-impl From<sui_sdk_types::IdOperation> for super::changed_object::IdOperation {
-    fn from(value: sui_sdk_types::IdOperation) -> Self {
-        use sui_sdk_types::IdOperation::*;
+impl From<iota_sdk_types::IdOperation> for super::changed_object::IdOperation {
+    fn from(value: iota_sdk_types::IdOperation) -> Self {
+        use iota_sdk_types::IdOperation::*;
 
         match value {
             None => Self::None(()),
@@ -538,7 +538,7 @@ impl From<sui_sdk_types::IdOperation> for super::changed_object::IdOperation {
     }
 }
 
-impl TryFrom<&super::changed_object::IdOperation> for sui_sdk_types::IdOperation {
+impl TryFrom<&super::changed_object::IdOperation> for iota_sdk_types::IdOperation {
     type Error = TryFromProtoError;
 
     fn try_from(value: &super::changed_object::IdOperation) -> Result<Self, Self::Error> {
@@ -557,8 +557,8 @@ impl TryFrom<&super::changed_object::IdOperation> for sui_sdk_types::IdOperation
 // UnchangedSharedObject
 //
 
-impl From<sui_sdk_types::UnchangedSharedObject> for super::UnchangedSharedObject {
-    fn from(value: sui_sdk_types::UnchangedSharedObject) -> Self {
+impl From<iota_sdk_types::UnchangedSharedObject> for super::UnchangedSharedObject {
+    fn from(value: iota_sdk_types::UnchangedSharedObject) -> Self {
         Self {
             object_id: Some(value.object_id.into()),
             kind: Some(value.kind.into()),
@@ -566,7 +566,7 @@ impl From<sui_sdk_types::UnchangedSharedObject> for super::UnchangedSharedObject
     }
 }
 
-impl TryFrom<&super::UnchangedSharedObject> for sui_sdk_types::UnchangedSharedObject {
+impl TryFrom<&super::UnchangedSharedObject> for iota_sdk_types::UnchangedSharedObject {
     type Error = TryFromProtoError;
 
     fn try_from(value: &super::UnchangedSharedObject) -> Result<Self, Self::Error> {
@@ -590,9 +590,9 @@ impl TryFrom<&super::UnchangedSharedObject> for sui_sdk_types::UnchangedSharedOb
 // UnchangedSharedKind
 //
 
-impl From<sui_sdk_types::UnchangedSharedKind> for super::unchanged_shared_object::Kind {
-    fn from(value: sui_sdk_types::UnchangedSharedKind) -> Self {
-        use sui_sdk_types::UnchangedSharedKind::*;
+impl From<iota_sdk_types::UnchangedSharedKind> for super::unchanged_shared_object::Kind {
+    fn from(value: iota_sdk_types::UnchangedSharedKind) -> Self {
+        use iota_sdk_types::UnchangedSharedKind::*;
 
         match value {
             ReadOnlyRoot { version, digest } => Self::ReadOnlyRoot(super::ReadOnlyRoot {
@@ -607,7 +607,7 @@ impl From<sui_sdk_types::UnchangedSharedKind> for super::unchanged_shared_object
     }
 }
 
-impl TryFrom<&super::unchanged_shared_object::Kind> for sui_sdk_types::UnchangedSharedKind {
+impl TryFrom<&super::unchanged_shared_object::Kind> for iota_sdk_types::UnchangedSharedKind {
     type Error = TryFromProtoError;
 
     fn try_from(value: &super::unchanged_shared_object::Kind) -> Result<Self, Self::Error> {

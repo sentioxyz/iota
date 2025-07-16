@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 #[derive(thiserror::Error, Debug)]
@@ -7,8 +8,8 @@ pub(super) enum Error {
     BadIdentifier(String),
 
     #[error("{0}")]
-    NotFound(sui_package_resolver::error::Error),
+    NotFound(iota_package_resolver::error::Error),
 
     #[error("Type resolution limit reached: {0}")]
-    ResolutionLimit(sui_package_resolver::error::Error),
+    ResolutionLimit(iota_package_resolver::error::Error),
 }

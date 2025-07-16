@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 /// ===========================================================================================
@@ -11,8 +12,8 @@
 /// - Defines a milestone-based vesting schedule.
 /// ===========================================================================================
 module vesting::milestone;
-use sui::coin::{Self, Coin};
-use sui::balance::Balance;
+use iota::coin::{Self, Coin};
+use iota::balance::Balance;
 
 // === Errors ===
 #[error]

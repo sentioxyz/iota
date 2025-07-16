@@ -1,7 +1,8 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-module sui_system::validator_cap;
+module iota_system::validator_cap;
 
 /// The capability object is created when creating a new `Validator` or when the
 /// validator explicitly creates a new capability object for rotation/revocation.

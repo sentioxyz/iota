@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::{
@@ -31,9 +32,9 @@ use std::{
 };
 
 use crate::{
-    base_types::{EpochId, SuiAddress},
+    base_types::{EpochId, IotaAddress},
     crypto::PublicKey,
-    error::SuiError,
+    error::IotaError,
 };
 
 #[cfg(test)]
@@ -84,7 +85,7 @@ impl AuthenticatorTrait for MultiSig {
         &self,
         epoch_id: EpochId,
         max_epoch_upper_bound_delta: Option<u64>,
-    ) -> Result<(), SuiError> {
+    ) -> Result<(), IotaError> {
         // If there is any zkLogin signatures, filter and check epoch for each.
         // TODO: call this on all sigs to avoid future lapses
         self.get_zklogin_sigs()?.iter().try_for_each(|s| {
@@ -95,33 +96,33 @@ impl AuthenticatorTrait for MultiSig {
     fn verify_claims<T>(
         &self,
         value: &IntentMessage<T>,
-        multisig_address: SuiAddress,
+        multisig_address: IotaAddress,
         verify_params: &VerifyParams,
         zklogin_inputs_cache: Arc<VerifiedDigestCache<ZKLoginInputsDigest>>,
-    ) -> Result<(), SuiError>
+    ) -> Result<(), IotaError>
     where
         T: Serialize,
     {
         self.multisig_pk
             .validate()
-            .map_err(|_| SuiError::InvalidSignature {
+            .map_err(|_| IotaError::InvalidSignature {
                 error: "Invalid multisig pubkey".to_string(),
             })?;
 
-        if SuiAddress::from(&self.multisig_pk) != multisig_address {
-            return Err(SuiError::InvalidSignature {
+        if IotaAddress::from(&self.multisig_pk) != multisig_address {
+            return Err(IotaError::InvalidSignature {
                 error: "Invalid address derived from pks".to_string(),
             });
         }
 
         if !self.get_zklogin_sigs()?.is_empty() && !verify_params.accept_zklogin_in_multisig {
-            return Err(SuiError::InvalidSignature {
+            return Err(IotaError::InvalidSignature {
                 error: "zkLogin sig not supported inside multisig".to_string(),
             });
         }
 
         if self.has_passkey_sigs() && !verify_params.accept_passkey_in_multisig {
-            return Err(SuiError::InvalidSignature {
+            return Err(IotaError::InvalidSignature {
                 error: "Passkey sig not supported inside multisig".to_string(),
             });
         }
@@ -138,20 +139,20 @@ impl AuthenticatorTrait for MultiSig {
                 self.multisig_pk
                     .pk_map
                     .get(i as usize)
-                    .ok_or(SuiError::InvalidSignature {
+                    .ok_or(IotaError::InvalidSignature {
                         error: "Invalid public keys index".to_string(),
                     })?;
             let res = match sig {
                 CompressedSignature::Ed25519(s) => {
                     let pk =
                         Ed25519PublicKey::from_bytes(subsig_pubkey.as_ref()).map_err(|_| {
-                            SuiError::InvalidSignature {
+                            IotaError::InvalidSignature {
                                 error: "Invalid ed25519 pk bytes".to_string(),
                             }
                         })?;
                     pk.verify(
                         &digest,
-                        &s.try_into().map_err(|_| SuiError::InvalidSignature {
+                        &s.try_into().map_err(|_| IotaError::InvalidSignature {
                             error: "Invalid ed25519 signature bytes".to_string(),
                         })?,
                     )
@@ -159,13 +160,13 @@ impl AuthenticatorTrait for MultiSig {
                 CompressedSignature::Secp256k1(s) => {
                     let pk =
                         Secp256k1PublicKey::from_bytes(subsig_pubkey.as_ref()).map_err(|_| {
-                            SuiError::InvalidSignature {
+                            IotaError::InvalidSignature {
                                 error: "Invalid k1 pk bytes".to_string(),
                             }
                         })?;
                     pk.verify(
                         &digest,
-                        &s.try_into().map_err(|_| SuiError::InvalidSignature {
+                        &s.try_into().map_err(|_| IotaError::InvalidSignature {
                             error: "Invalid k1 signature bytes".to_string(),
                         })?,
                     )
@@ -173,27 +174,27 @@ impl AuthenticatorTrait for MultiSig {
                 CompressedSignature::Secp256r1(s) => {
                     let pk =
                         Secp256r1PublicKey::from_bytes(subsig_pubkey.as_ref()).map_err(|_| {
-                            SuiError::InvalidSignature {
+                            IotaError::InvalidSignature {
                                 error: "Invalid r1 pk bytes".to_string(),
                             }
                         })?;
                     pk.verify(
                         &digest,
-                        &s.try_into().map_err(|_| SuiError::InvalidSignature {
+                        &s.try_into().map_err(|_| IotaError::InvalidSignature {
                             error: "Invalid r1 signature bytes".to_string(),
                         })?,
                     )
                 }
                 CompressedSignature::ZkLogin(z) => {
                     let authenticator = ZkLoginAuthenticator::from_bytes(&z.0).map_err(|_| {
-                        SuiError::InvalidSignature {
+                        IotaError::InvalidSignature {
                             error: "Invalid zklogin authenticator bytes".to_string(),
                         }
                     })?;
                     authenticator
                         .verify_claims(
                             value,
-                            SuiAddress::from(subsig_pubkey),
+                            IotaAddress::from(subsig_pubkey),
                             verify_params,
                             zklogin_inputs_cache.clone(),
                         )
@@ -202,14 +203,14 @@ impl AuthenticatorTrait for MultiSig {
                 CompressedSignature::Passkey(bytes) => {
                     let authenticator =
                         PasskeyAuthenticator::from_bytes(&bytes.0).map_err(|_| {
-                            SuiError::InvalidSignature {
+                            IotaError::InvalidSignature {
                                 error: "Invalid passkey authenticator bytes".to_string(),
                             }
                         })?;
                     authenticator
                         .verify_claims(
                             value,
-                            SuiAddress::from(subsig_pubkey),
+                            IotaAddress::from(subsig_pubkey),
                             verify_params,
                             zklogin_inputs_cache.clone(),
                         )
@@ -219,11 +220,11 @@ impl AuthenticatorTrait for MultiSig {
             if res.is_ok() {
                 weight_sum += *weight as u16;
             } else {
-                return res.map_err(|e| SuiError::InvalidSignature {
+                return res.map_err(|e| IotaError::InvalidSignature {
                     error: format!(
                         "Invalid sig for pk={} address={:?} error={:?}",
                         subsig_pubkey.encode_base64(),
-                        SuiAddress::from(subsig_pubkey),
+                        IotaAddress::from(subsig_pubkey),
                         e.to_string()
                     ),
                 });
@@ -232,7 +233,7 @@ impl AuthenticatorTrait for MultiSig {
         if weight_sum >= self.multisig_pk.threshold {
             Ok(())
         } else {
-            Err(SuiError::InvalidSignature {
+            Err(IotaError::InvalidSignature {
                 error: format!(
                     "Insufficient weight={:?} threshold={:?}",
                     weight_sum, self.multisig_pk.threshold
@@ -244,9 +245,9 @@ impl AuthenticatorTrait for MultiSig {
 
 /// Interpret a bitmap of 01s as a list of indices that is set to 1s.
 /// e.g. 22 = 0b10110, then the result is [1, 2, 4].
-pub fn as_indices(bitmap: u16) -> Result<Vec<u8>, SuiError> {
+pub fn as_indices(bitmap: u16) -> Result<Vec<u8>, IotaError> {
     if bitmap > MAX_BITMAP_VALUE {
-        return Err(SuiError::InvalidSignature {
+        return Err(IotaError::InvalidSignature {
             error: "Invalid bitmap".to_string(),
         });
     }
@@ -280,15 +281,15 @@ impl MultiSig {
     pub fn combine(
         full_sigs: Vec<GenericSignature>,
         multisig_pk: MultiSigPublicKey,
-    ) -> Result<Self, SuiError> {
+    ) -> Result<Self, IotaError> {
         multisig_pk
             .validate()
-            .map_err(|_| SuiError::InvalidSignature {
+            .map_err(|_| IotaError::InvalidSignature {
                 error: "Invalid multisig public key".to_string(),
             })?;
 
         if full_sigs.len() > multisig_pk.pk_map.len() || full_sigs.is_empty() {
-            return Err(SuiError::InvalidSignature {
+            return Err(IotaError::InvalidSignature {
                 error: "Invalid number of signatures".to_string(),
             });
         }
@@ -298,11 +299,11 @@ impl MultiSig {
             let pk = s.to_public_key()?;
             let index = multisig_pk
                 .get_index(&pk)
-                .ok_or(SuiError::IncorrectSigner {
+                .ok_or(IotaError::IncorrectSigner {
                     error: format!("pk does not exist: {:?}", pk),
                 })?;
             if bitmap & (1 << index) != 0 {
-                return Err(SuiError::InvalidSignature {
+                return Err(IotaError::InvalidSignature {
                     error: "Duplicate public key".to_string(),
                 });
             }
@@ -337,7 +338,7 @@ impl MultiSig {
         &self.sigs
     }
 
-    pub fn get_zklogin_sigs(&self) -> Result<Vec<ZkLoginAuthenticator>, SuiError> {
+    pub fn get_zklogin_sigs(&self) -> Result<Vec<ZkLoginAuthenticator>, IotaError> {
         let authenticator_as_bytes: Vec<_> = self
             .sigs
             .iter()
@@ -349,14 +350,14 @@ impl MultiSig {
         authenticator_as_bytes
             .iter()
             .map(|z| {
-                ZkLoginAuthenticator::from_bytes(&z.0).map_err(|_| SuiError::InvalidSignature {
+                ZkLoginAuthenticator::from_bytes(&z.0).map_err(|_| IotaError::InvalidSignature {
                     error: "Invalid zklogin authenticator bytes".to_string(),
                 })
             })
             .collect()
     }
 
-    pub fn get_indices(&self) -> Result<Vec<u8>, SuiError> {
+    pub fn get_indices(&self) -> Result<Vec<u8>, IotaError> {
         as_indices(self.bitmap)
     }
 
@@ -381,13 +382,13 @@ impl ToFromBytes for MultiSig {
 }
 
 impl FromStr for MultiSig {
-    type Err = SuiError;
+    type Err = IotaError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let bytes = Base64::decode(s).map_err(|_| SuiError::InvalidSignature {
+        let bytes = Base64::decode(s).map_err(|_| IotaError::InvalidSignature {
             error: "Invalid base64 string".to_string(),
         })?;
-        let sig = MultiSig::from_bytes(&bytes).map_err(|_| SuiError::InvalidSignature {
+        let sig = MultiSig::from_bytes(&bytes).map_err(|_| IotaError::InvalidSignature {
             error: "Invalid multisig bytes".to_string(),
         })?;
         Ok(sig)
@@ -430,7 +431,7 @@ impl MultiSigPublicKey {
         pks: Vec<PublicKey>,
         weights: Vec<WeightUnit>,
         threshold: ThresholdUnit,
-    ) -> Result<Self, SuiError> {
+    ) -> Result<Self, IotaError> {
         if pks.is_empty()
             || weights.is_empty()
             || threshold == 0
@@ -447,7 +448,7 @@ impl MultiSigPublicKey {
                 .enumerate()
                 .any(|(i, pk)| pks.iter().skip(i + 1).any(|other_pk| *pk == *other_pk))
         {
-            return Err(SuiError::InvalidSignature {
+            return Err(IotaError::InvalidSignature {
                 error: "Invalid multisig public key construction".to_string(),
             });
         }

@@ -1,5 +1,6 @@
 #!/bin/bash
 # Copyright (c) Mysten Labs, Inc.
+# Modifications Copyright (c) 2025 IOTA Stiftung
 # SPDX-License-Identifier: Apache-2.0
 
 set -x
@@ -16,11 +17,11 @@ proto/google/protobuf/field_mask.proto
 proto/google/protobuf/timestamp.proto
 proto/google/rpc/error_details.proto
 proto/google/rpc/status.proto
-proto/sui/node/v2/node_service.proto
-proto/sui/node/v2alpha/node_service.proto
-proto/sui/node/v2alpha/subscription_service.proto
-proto/sui/types/signature_scheme.proto
-proto/sui/types/types.proto
+proto/iota/node/v2/node_service.proto
+proto/iota/node/v2alpha/node_service.proto
+proto/iota/node/v2alpha/subscription_service.proto
+proto/iota/types/signature_scheme.proto
+proto/iota/types/types.proto
 )
 
 # requires that protoc as well as the protoc-gen-doc plugin is installed and

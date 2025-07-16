@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 //# init --protocol-version 70 --accounts A --addresses P=0x0 --simulator
@@ -31,13 +32,13 @@ module P::M {
 
 //# run-jsonrpc
 {
-  "method": "sui_getNormalizedMoveFunction",
+  "method": "iota_getNormalizedMoveFunction",
   "params": ["@{P}", "M", "foo"]
 }
 
 //# run-jsonrpc
 {
-  "method": "sui_getNormalizedMoveFunction",
+  "method": "iota_getNormalizedMoveFunction",
   "params": ["@{P}", "M", "bar"]
 }
 
@@ -66,48 +67,48 @@ module P::M {
 
 //# run-jsonrpc
 {
-  "method": "sui_getNormalizedMoveFunction",
+  "method": "iota_getNormalizedMoveFunction",
   "params": ["@{P}", "M", "foo"]
 }
 
 //# run-jsonrpc
 {
-  "method": "sui_getNormalizedMoveFunction",
+  "method": "iota_getNormalizedMoveFunction",
   "params": ["@{P}", "M", "bar"]
 }
 
 //# run-jsonrpc
 {
-  "method": "sui_getNormalizedMoveFunction",
+  "method": "iota_getNormalizedMoveFunction",
   "params": ["@{P}", "M", "baz"]
 }
 
 //# run-jsonrpc
 {
-  "method": "sui_getNormalizedMoveFunction",
+  "method": "iota_getNormalizedMoveFunction",
   "params": ["@{P}", "not a module", "foo"]
 }
 
 //# run-jsonrpc
 {
-  "method": "sui_getNormalizedMoveFunction",
+  "method": "iota_getNormalizedMoveFunction",
   "params": ["0x0", "M", "foo"]
 }
 
 //# run-jsonrpc
 {
-  "method": "sui_getNormalizedMoveFunction",
+  "method": "iota_getNormalizedMoveFunction",
   "params": ["@{obj_0_0}", "M", "foo"]
 }
 
 //# run-jsonrpc
 {
-  "method": "sui_getNormalizedMoveFunction",
+  "method": "iota_getNormalizedMoveFunction",
   "params": ["@{P}", "N", "foo"]
 }
 
 //# run-jsonrpc
 {
-  "method": "sui_getNormalizedMoveFunction",
+  "method": "iota_getNormalizedMoveFunction",
   "params": ["@{P}", "M", "qux"]
 }

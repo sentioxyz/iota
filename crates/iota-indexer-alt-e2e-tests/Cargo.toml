@@ -1,7 +1,7 @@
 [package]
-name = "sui-indexer-alt-e2e-tests"
+name = "iota-indexer-alt-e2e-tests"
 version = "0.1.0"
-authors = ["Mysten Labs <eng@mystenlabs.com>"]
+authors = ["IOTA Foundation <info@iota.org>"]
 license = "Apache-2.0"
 publish = false
 edition = "2021"
@@ -24,16 +24,16 @@ tokio-util.workspace = true
 url.workspace = true
 
 simulacrum.workspace = true
-sui-indexer-alt.workspace = true
-sui-indexer-alt-framework.workspace = true
-sui-indexer-alt-jsonrpc.workspace = true
-sui-pg-db.workspace = true
-sui-types.workspace = true
+iota-indexer-alt.workspace = true
+iota-indexer-alt-framework.workspace = true
+iota-indexer-alt-jsonrpc.workspace = true
+iota-pg-db.workspace = true
+iota-types.workspace = true
 
 [target.'cfg(msim)'.dependencies]
 msim.workspace = true
-sui-protocol-config.workspace = true
-sui-simulator.workspace = true
+iota-protocol-config.workspace = true
+iota-simulator.workspace = true
 tracing.workspace = true
 
 [dev-dependencies]
@@ -47,11 +47,11 @@ telemetry-subscribers.workspace = true
 
 move-core-types.workspace = true
 
-sui-json-rpc-types.workspace = true
-sui-macros.workspace = true
-sui-move-build.workspace = true
-sui-swarm-config.workspace = true
-sui-transactional-test-runner.workspace = true
+iota-json-rpc-types.workspace = true
+iota-macros.workspace = true
+iota-move-build.workspace = true
+iota-swarm-config.workspace = true
+iota-transactional-test-runner.workspace = true
 test-cluster.workspace = true
 tracing.workspace = true
 

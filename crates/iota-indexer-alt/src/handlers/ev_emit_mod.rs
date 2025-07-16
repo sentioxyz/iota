@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::ops::Range;
@@ -7,13 +8,13 @@ use std::{collections::BTreeSet, sync::Arc};
 use anyhow::Result;
 use diesel::{ExpressionMethods, QueryDsl};
 use diesel_async::RunQueryDsl;
-use sui_indexer_alt_framework::{
+use iota_indexer_alt_framework::{
     db,
     models::cp_sequence_numbers::tx_interval,
     pipeline::{concurrent::Handler, Processor},
     types::full_checkpoint_content::CheckpointData,
 };
-use sui_indexer_alt_schema::{events::StoredEvEmitMod, schema::ev_emit_mod};
+use iota_indexer_alt_schema::{events::StoredEvEmitMod, schema::ev_emit_mod};
 
 pub(crate) struct EvEmitMod;
 
@@ -85,12 +86,12 @@ impl Handler for EvEmitMod {
 mod tests {
     use super::*;
     use diesel_async::RunQueryDsl;
-    use sui_indexer_alt_framework::{
+    use iota_indexer_alt_framework::{
         handlers::cp_sequence_numbers::CpSequenceNumbers,
         types::{event::Event, test_checkpoint_data_builder::TestCheckpointDataBuilder},
         Indexer,
     };
-    use sui_indexer_alt_schema::MIGRATIONS;
+    use iota_indexer_alt_schema::MIGRATIONS;
 
     // A helper function to return all entries in the ev_emit_mod table sorted by package, module,
     // tx_sequence_number, and sender.

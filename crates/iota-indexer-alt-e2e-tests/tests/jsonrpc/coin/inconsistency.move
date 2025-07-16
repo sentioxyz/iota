@@ -1,7 +1,8 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-// This illustrates the "inconsistency" of suix_getCoins, as opposed to graphql's consistency feature.
+// This illustrates the "inconsistency" of iotax_getCoins, as opposed to graphql's consistency feature.
 // We have a coin with balance 3400 and another coin with balance 12000 at checkpoint 1.
 // We query with limit 2 and get a cursor specifying checkpoint 1 with the 12000 coin.
 // We update the 3400 coin's balance to 1400 at checkpoint 2.
@@ -26,7 +27,7 @@
 
 //# run-jsonrpc
 {
-  "method": "suix_getCoins",
+  "method": "iotax_getCoins",
   "params": ["@{A}", null, null, 2]
 }
 
@@ -38,6 +39,6 @@
 
 //# run-jsonrpc --cursors bcs(@{obj_1_0},1,4)
 {
-  "method": "suix_getCoins",
+  "method": "iotax_getCoins",
   "params": ["@{A}", null, "@{cursor_0}"]
 }

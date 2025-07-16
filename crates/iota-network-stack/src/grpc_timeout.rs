@@ -1,7 +1,9 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 //
 // Ported from `tonic` crate
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: MIT
 
 use http::{HeaderMap, HeaderValue, Request, Response};

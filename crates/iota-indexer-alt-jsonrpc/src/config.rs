@@ -1,14 +1,15 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::mem;
 
-use sui_default_config::DefaultConfig;
-use sui_protocol_config::ProtocolConfig;
-use sui_types::base_types::{ObjectID, SuiAddress};
+use iota_default_config::DefaultConfig;
+use iota_protocol_config::ProtocolConfig;
+use iota_types::base_types::{ObjectID, IotaAddress};
 use tracing::warn;
 
-pub use sui_name_service::NameServiceConfig;
+pub use iota_name_service::NameServiceConfig;
 
 #[derive(Debug)]
 pub struct RpcConfig {
@@ -18,7 +19,7 @@ pub struct RpcConfig {
     /// Configuration for transaction-related RPC methods.
     pub transactions: TransactionsConfig,
 
-    /// Configuration for SuiNS related RPC methods.
+    /// Configuration for IotaNS related RPC methods.
     pub name_service: NameServiceConfig,
 
     /// Configuration for coin-related RPC methods.
@@ -31,7 +32,7 @@ pub struct RpcConfig {
     pub bigtable: Option<BigtableConfig>,
 
     /// Configuring limits for the package resolver.
-    pub package_resolver: sui_package_resolver::Limits,
+    pub package_resolver: iota_package_resolver::Limits,
 }
 
 #[DefaultConfig]
@@ -43,7 +44,7 @@ pub struct RpcLayer {
     /// Configuration for transaction-related RPC methods.
     pub transactions: TransactionsLayer,
 
-    /// Configuration for SuiNS related RPC methods.
+    /// Configuration for IotaNS related RPC methods.
     pub name_service: NameServiceLayer,
 
     /// Configuration for coin-related RPC methods.
@@ -131,7 +132,7 @@ pub struct TransactionsLayer {
 #[DefaultConfig]
 #[derive(Clone, Default, Debug)]
 pub struct NameServiceLayer {
-    pub package_address: Option<SuiAddress>,
+    pub package_address: Option<IotaAddress>,
     pub registry_id: Option<ObjectID>,
     pub reverse_registry_id: Option<ObjectID>,
 
@@ -290,9 +291,9 @@ impl WriteLayer {
 }
 
 impl PackageResolverLayer {
-    pub fn finish(self) -> sui_package_resolver::Limits {
+    pub fn finish(self) -> iota_package_resolver::Limits {
         check_extra("package-resolver", self.extra);
-        sui_package_resolver::Limits {
+        iota_package_resolver::Limits {
             max_type_argument_depth: self.max_type_argument_depth,
             max_type_argument_width: self.max_type_argument_width,
             max_type_nodes: self.max_type_nodes,
@@ -351,7 +352,7 @@ impl Default for CoinsConfig {
 impl Default for WriteConfig {
     fn default() -> Self {
         Self {
-            header_value: "sui-indexer-alt-jsonrpc".to_string(),
+            header_value: "iota-indexer-alt-jsonrpc".to_string(),
             max_request_size: (10 * 2) << 20, // 10MB
         }
     }

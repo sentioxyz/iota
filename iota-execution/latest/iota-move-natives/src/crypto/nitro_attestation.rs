@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use move_binary_format::errors::{PartialVMError, PartialVMResult};
@@ -11,7 +12,7 @@ use move_vm_types::{
     values::{Struct, Value, Vector, VectorRef},
 };
 use std::collections::VecDeque;
-use sui_types::nitro_attestation::{parse_nitro_attestation, verify_nitro_attestation};
+use iota_types::nitro_attestation::{parse_nitro_attestation, verify_nitro_attestation};
 
 use crate::{object_runtime::ObjectRuntime, NativesCostTable};
 use move_vm_runtime::native_charge_gas_early_exit;

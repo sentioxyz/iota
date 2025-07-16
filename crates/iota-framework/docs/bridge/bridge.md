@@ -33,7 +33,7 @@ title: Module `bridge::bridge`
 -  [Function `execute_emergency_op`](#bridge_bridge_execute_emergency_op)
 -  [Function `execute_update_bridge_limit`](#bridge_bridge_execute_update_bridge_limit)
 -  [Function `execute_update_asset_price`](#bridge_bridge_execute_update_asset_price)
--  [Function `execute_add_tokens_on_sui`](#bridge_bridge_execute_add_tokens_on_sui)
+-  [Function `execute_add_tokens_on_iota`](#bridge_bridge_execute_add_tokens_on_iota)
 -  [Function `get_current_seq_num_and_increment`](#bridge_bridge_get_current_seq_num_and_increment)
 -  [Function `get_parsed_token_transfer_message`](#bridge_bridge_get_parsed_token_transfer_message)
 
@@ -53,46 +53,46 @@ title: Module `bridge::bridge`
 <b>use</b> <a href="../std/type_name.md#std_type_name">std::type_name</a>;
 <b>use</b> <a href="../std/u64.md#std_u64">std::u64</a>;
 <b>use</b> <a href="../std/vector.md#std_vector">std::vector</a>;
-<b>use</b> <a href="../sui/address.md#sui_address">sui::address</a>;
-<b>use</b> <a href="../sui/bag.md#sui_bag">sui::bag</a>;
-<b>use</b> <a href="../sui/balance.md#sui_balance">sui::balance</a>;
-<b>use</b> <a href="../sui/bcs.md#sui_bcs">sui::bcs</a>;
-<b>use</b> <a href="../sui/clock.md#sui_clock">sui::clock</a>;
-<b>use</b> <a href="../sui/coin.md#sui_coin">sui::coin</a>;
-<b>use</b> <a href="../sui/config.md#sui_config">sui::config</a>;
-<b>use</b> <a href="../sui/deny_list.md#sui_deny_list">sui::deny_list</a>;
-<b>use</b> <a href="../sui/dynamic_field.md#sui_dynamic_field">sui::dynamic_field</a>;
-<b>use</b> <a href="../sui/dynamic_object_field.md#sui_dynamic_object_field">sui::dynamic_object_field</a>;
-<b>use</b> <a href="../sui/ecdsa_k1.md#sui_ecdsa_k1">sui::ecdsa_k1</a>;
-<b>use</b> <a href="../sui/event.md#sui_event">sui::event</a>;
-<b>use</b> <a href="../sui/hash.md#sui_hash">sui::hash</a>;
-<b>use</b> <a href="../sui/hex.md#sui_hex">sui::hex</a>;
-<b>use</b> <a href="../sui/linked_table.md#sui_linked_table">sui::linked_table</a>;
-<b>use</b> <a href="../sui/object.md#sui_object">sui::object</a>;
-<b>use</b> <a href="../sui/object_bag.md#sui_object_bag">sui::object_bag</a>;
-<b>use</b> <a href="../sui/package.md#sui_package">sui::package</a>;
-<b>use</b> <a href="../sui/pay.md#sui_pay">sui::pay</a>;
-<b>use</b> <a href="../sui/priority_queue.md#sui_priority_queue">sui::priority_queue</a>;
-<b>use</b> <a href="../sui/sui.md#sui_sui">sui::sui</a>;
-<b>use</b> <a href="../sui/table.md#sui_table">sui::table</a>;
-<b>use</b> <a href="../sui/table_vec.md#sui_table_vec">sui::table_vec</a>;
-<b>use</b> <a href="../sui/transfer.md#sui_transfer">sui::transfer</a>;
-<b>use</b> <a href="../sui/tx_context.md#sui_tx_context">sui::tx_context</a>;
-<b>use</b> <a href="../sui/types.md#sui_types">sui::types</a>;
-<b>use</b> <a href="../sui/url.md#sui_url">sui::url</a>;
-<b>use</b> <a href="../sui/vec_map.md#sui_vec_map">sui::vec_map</a>;
-<b>use</b> <a href="../sui/vec_set.md#sui_vec_set">sui::vec_set</a>;
-<b>use</b> <a href="../sui/versioned.md#sui_versioned">sui::versioned</a>;
-<b>use</b> <a href="../sui_system/stake_subsidy.md#sui_system_stake_subsidy">sui_system::stake_subsidy</a>;
-<b>use</b> <a href="../sui_system/staking_pool.md#sui_system_staking_pool">sui_system::staking_pool</a>;
-<b>use</b> <a href="../sui_system/storage_fund.md#sui_system_storage_fund">sui_system::storage_fund</a>;
-<b>use</b> <a href="../sui_system/sui_system.md#sui_system_sui_system">sui_system::sui_system</a>;
-<b>use</b> <a href="../sui_system/sui_system_state_inner.md#sui_system_sui_system_state_inner">sui_system::sui_system_state_inner</a>;
-<b>use</b> <a href="../sui_system/validator.md#sui_system_validator">sui_system::validator</a>;
-<b>use</b> <a href="../sui_system/validator_cap.md#sui_system_validator_cap">sui_system::validator_cap</a>;
-<b>use</b> <a href="../sui_system/validator_set.md#sui_system_validator_set">sui_system::validator_set</a>;
-<b>use</b> <a href="../sui_system/validator_wrapper.md#sui_system_validator_wrapper">sui_system::validator_wrapper</a>;
-<b>use</b> <a href="../sui_system/voting_power.md#sui_system_voting_power">sui_system::voting_power</a>;
+<b>use</b> <a href="../iota/address.md#iota_address">iota::address</a>;
+<b>use</b> <a href="../iota/bag.md#iota_bag">iota::bag</a>;
+<b>use</b> <a href="../iota/balance.md#iota_balance">iota::balance</a>;
+<b>use</b> <a href="../iota/bcs.md#iota_bcs">iota::bcs</a>;
+<b>use</b> <a href="../iota/clock.md#iota_clock">iota::clock</a>;
+<b>use</b> <a href="../iota/coin.md#iota_coin">iota::coin</a>;
+<b>use</b> <a href="../iota/config.md#iota_config">iota::config</a>;
+<b>use</b> <a href="../iota/deny_list.md#iota_deny_list">iota::deny_list</a>;
+<b>use</b> <a href="../iota/dynamic_field.md#iota_dynamic_field">iota::dynamic_field</a>;
+<b>use</b> <a href="../iota/dynamic_object_field.md#iota_dynamic_object_field">iota::dynamic_object_field</a>;
+<b>use</b> <a href="../iota/ecdsa_k1.md#iota_ecdsa_k1">iota::ecdsa_k1</a>;
+<b>use</b> <a href="../iota/event.md#iota_event">iota::event</a>;
+<b>use</b> <a href="../iota/hash.md#iota_hash">iota::hash</a>;
+<b>use</b> <a href="../iota/hex.md#iota_hex">iota::hex</a>;
+<b>use</b> <a href="../iota/linked_table.md#iota_linked_table">iota::linked_table</a>;
+<b>use</b> <a href="../iota/object.md#iota_object">iota::object</a>;
+<b>use</b> <a href="../iota/object_bag.md#iota_object_bag">iota::object_bag</a>;
+<b>use</b> <a href="../iota/package.md#iota_package">iota::package</a>;
+<b>use</b> <a href="../iota/pay.md#iota_pay">iota::pay</a>;
+<b>use</b> <a href="../iota/priority_queue.md#iota_priority_queue">iota::priority_queue</a>;
+<b>use</b> <a href="../iota/iota.md#iota_iota">iota::iota</a>;
+<b>use</b> <a href="../iota/table.md#iota_table">iota::table</a>;
+<b>use</b> <a href="../iota/table_vec.md#iota_table_vec">iota::table_vec</a>;
+<b>use</b> <a href="../iota/transfer.md#iota_transfer">iota::transfer</a>;
+<b>use</b> <a href="../iota/tx_context.md#iota_tx_context">iota::tx_context</a>;
+<b>use</b> <a href="../iota/types.md#iota_types">iota::types</a>;
+<b>use</b> <a href="../iota/url.md#iota_url">iota::url</a>;
+<b>use</b> <a href="../iota/vec_map.md#iota_vec_map">iota::vec_map</a>;
+<b>use</b> <a href="../iota/vec_set.md#iota_vec_set">iota::vec_set</a>;
+<b>use</b> <a href="../iota/versioned.md#iota_versioned">iota::versioned</a>;
+<b>use</b> <a href="../iota_system/stake_subsidy.md#iota_system_stake_subsidy">iota_system::stake_subsidy</a>;
+<b>use</b> <a href="../iota_system/staking_pool.md#iota_system_staking_pool">iota_system::staking_pool</a>;
+<b>use</b> <a href="../iota_system/storage_fund.md#iota_system_storage_fund">iota_system::storage_fund</a>;
+<b>use</b> <a href="../iota_system/iota_system.md#iota_system_iota_system">iota_system::iota_system</a>;
+<b>use</b> <a href="../iota_system/iota_system_state_inner.md#iota_system_iota_system_state_inner">iota_system::iota_system_state_inner</a>;
+<b>use</b> <a href="../iota_system/validator.md#iota_system_validator">iota_system::validator</a>;
+<b>use</b> <a href="../iota_system/validator_cap.md#iota_system_validator_cap">iota_system::validator_cap</a>;
+<b>use</b> <a href="../iota_system/validator_set.md#iota_system_validator_set">iota_system::validator_set</a>;
+<b>use</b> <a href="../iota_system/validator_wrapper.md#iota_system_validator_wrapper">iota_system::validator_wrapper</a>;
+<b>use</b> <a href="../iota_system/voting_power.md#iota_system_voting_power">iota_system::voting_power</a>;
 </code></pre>
 
 
@@ -114,12 +114,12 @@ title: Module `bridge::bridge`
 
 <dl>
 <dt>
-<code>id: <a href="../sui/object.md#sui_object_UID">sui::object::UID</a></code>
+<code>id: <a href="../iota/object.md#iota_object_UID">iota::object::UID</a></code>
 </dt>
 <dd>
 </dd>
 <dt>
-<code>inner: <a href="../sui/versioned.md#sui_versioned_Versioned">sui::versioned::Versioned</a></code>
+<code>inner: <a href="../iota/versioned.md#iota_versioned_Versioned">iota::versioned::Versioned</a></code>
 </dt>
 <dd>
 </dd>
@@ -160,7 +160,7 @@ title: Module `bridge::bridge`
 <dd>
 </dd>
 <dt>
-<code>sequence_nums: <a href="../sui/vec_map.md#sui_vec_map_VecMap">sui::vec_map::VecMap</a>&lt;u8, u64&gt;</code>
+<code>sequence_nums: <a href="../iota/vec_map.md#iota_vec_map_VecMap">iota::vec_map::VecMap</a>&lt;u8, u64&gt;</code>
 </dt>
 <dd>
 </dd>
@@ -175,7 +175,7 @@ title: Module `bridge::bridge`
 <dd>
 </dd>
 <dt>
-<code>token_transfer_records: <a href="../sui/linked_table.md#sui_linked_table_LinkedTable">sui::linked_table::LinkedTable</a>&lt;<a href="../bridge/message.md#bridge_message_BridgeMessageKey">bridge::message::BridgeMessageKey</a>, <a href="../bridge/bridge.md#bridge_bridge_BridgeRecord">bridge::bridge::BridgeRecord</a>&gt;</code>
+<code>token_transfer_records: <a href="../iota/linked_table.md#iota_linked_table_LinkedTable">iota::linked_table::LinkedTable</a>&lt;<a href="../bridge/message.md#bridge_message_BridgeMessageKey">bridge::message::BridgeMessageKey</a>, <a href="../bridge/bridge.md#bridge_bridge_BridgeRecord">bridge::bridge::BridgeRecord</a>&gt;</code>
 </dt>
 <dd>
 </dd>
@@ -501,11 +501,11 @@ title: Module `bridge::bridge`
 
 
 
-<a name="bridge_bridge_EInvariantSuiInitializedTokenTransferShouldNotBeClaimed"></a>
+<a name="bridge_bridge_EInvariantIotaInitializedTokenTransferShouldNotBeClaimed"></a>
 
 
 
-<pre><code><b>const</b> <a href="../bridge/bridge.md#bridge_bridge_EInvariantSuiInitializedTokenTransferShouldNotBeClaimed">EInvariantSuiInitializedTokenTransferShouldNotBeClaimed</a>: u64 = 10;
+<pre><code><b>const</b> <a href="../bridge/bridge.md#bridge_bridge_EInvariantIotaInitializedTokenTransferShouldNotBeClaimed">EInvariantIotaInitializedTokenTransferShouldNotBeClaimed</a>: u64 = 10;
 </code></pre>
 
 
@@ -696,7 +696,7 @@ title: Module `bridge::bridge`
 
 
 
-<pre><code><b>fun</b> <a href="../bridge/bridge.md#bridge_bridge_create">create</a>(id: <a href="../sui/object.md#sui_object_UID">sui::object::UID</a>, chain_id: u8, ctx: &<b>mut</b> <a href="../sui/tx_context.md#sui_tx_context_TxContext">sui::tx_context::TxContext</a>)
+<pre><code><b>fun</b> <a href="../bridge/bridge.md#bridge_bridge_create">create</a>(id: <a href="../iota/object.md#iota_object_UID">iota::object::UID</a>, chain_id: u8, ctx: &<b>mut</b> <a href="../iota/tx_context.md#iota_tx_context_TxContext">iota::tx_context::TxContext</a>)
 </code></pre>
 
 
@@ -736,7 +736,7 @@ title: Module `bridge::bridge`
 
 
 
-<pre><code><b>fun</b> <a href="../bridge/bridge.md#bridge_bridge_init_bridge_committee">init_bridge_committee</a>(<a href="../bridge/bridge.md#bridge_bridge">bridge</a>: &<b>mut</b> <a href="../bridge/bridge.md#bridge_bridge_Bridge">bridge::bridge::Bridge</a>, active_validator_voting_power: <a href="../sui/vec_map.md#sui_vec_map_VecMap">sui::vec_map::VecMap</a>&lt;<b>address</b>, u64&gt;, min_stake_participation_percentage: u64, ctx: &<a href="../sui/tx_context.md#sui_tx_context_TxContext">sui::tx_context::TxContext</a>)
+<pre><code><b>fun</b> <a href="../bridge/bridge.md#bridge_bridge_init_bridge_committee">init_bridge_committee</a>(<a href="../bridge/bridge.md#bridge_bridge">bridge</a>: &<b>mut</b> <a href="../bridge/bridge.md#bridge_bridge_Bridge">bridge::bridge::Bridge</a>, active_validator_voting_power: <a href="../iota/vec_map.md#iota_vec_map_VecMap">iota::vec_map::VecMap</a>&lt;<b>address</b>, u64&gt;, min_stake_participation_percentage: u64, ctx: &<a href="../iota/tx_context.md#iota_tx_context_TxContext">iota::tx_context::TxContext</a>)
 </code></pre>
 
 
@@ -773,7 +773,7 @@ title: Module `bridge::bridge`
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../bridge/bridge.md#bridge_bridge_committee_registration">committee_registration</a>(<a href="../bridge/bridge.md#bridge_bridge">bridge</a>: &<b>mut</b> <a href="../bridge/bridge.md#bridge_bridge_Bridge">bridge::bridge::Bridge</a>, system_state: &<b>mut</b> <a href="../sui_system/sui_system.md#sui_system_sui_system_SuiSystemState">sui_system::sui_system::SuiSystemState</a>, bridge_pubkey_bytes: vector&lt;u8&gt;, http_rest_url: vector&lt;u8&gt;, ctx: &<a href="../sui/tx_context.md#sui_tx_context_TxContext">sui::tx_context::TxContext</a>)
+<pre><code><b>public</b> <b>fun</b> <a href="../bridge/bridge.md#bridge_bridge_committee_registration">committee_registration</a>(<a href="../bridge/bridge.md#bridge_bridge">bridge</a>: &<b>mut</b> <a href="../bridge/bridge.md#bridge_bridge_Bridge">bridge::bridge::Bridge</a>, system_state: &<b>mut</b> <a href="../iota_system/iota_system.md#iota_system_iota_system_IotaSystemState">iota_system::iota_system::IotaSystemState</a>, bridge_pubkey_bytes: vector&lt;u8&gt;, http_rest_url: vector&lt;u8&gt;, ctx: &<a href="../iota/tx_context.md#iota_tx_context_TxContext">iota::tx_context::TxContext</a>)
 </code></pre>
 
 
@@ -784,7 +784,7 @@ title: Module `bridge::bridge`
 
 <pre><code><b>public</b> <b>fun</b> <a href="../bridge/bridge.md#bridge_bridge_committee_registration">committee_registration</a>(
     <a href="../bridge/bridge.md#bridge_bridge">bridge</a>: &<b>mut</b> <a href="../bridge/bridge.md#bridge_bridge_Bridge">Bridge</a>,
-    system_state: &<b>mut</b> SuiSystemState,
+    system_state: &<b>mut</b> IotaSystemState,
     bridge_pubkey_bytes: vector&lt;u8&gt;,
     http_rest_url: vector&lt;u8&gt;,
     ctx: &TxContext
@@ -805,7 +805,7 @@ title: Module `bridge::bridge`
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../bridge/bridge.md#bridge_bridge_update_node_url">update_node_url</a>(<a href="../bridge/bridge.md#bridge_bridge">bridge</a>: &<b>mut</b> <a href="../bridge/bridge.md#bridge_bridge_Bridge">bridge::bridge::Bridge</a>, new_url: vector&lt;u8&gt;, ctx: &<a href="../sui/tx_context.md#sui_tx_context_TxContext">sui::tx_context::TxContext</a>)
+<pre><code><b>public</b> <b>fun</b> <a href="../bridge/bridge.md#bridge_bridge_update_node_url">update_node_url</a>(<a href="../bridge/bridge.md#bridge_bridge">bridge</a>: &<b>mut</b> <a href="../bridge/bridge.md#bridge_bridge_Bridge">bridge::bridge::Bridge</a>, new_url: vector&lt;u8&gt;, ctx: &<a href="../iota/tx_context.md#iota_tx_context_TxContext">iota::tx_context::TxContext</a>)
 </code></pre>
 
 
@@ -829,7 +829,7 @@ title: Module `bridge::bridge`
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../bridge/bridge.md#bridge_bridge_register_foreign_token">register_foreign_token</a>&lt;T&gt;(<a href="../bridge/bridge.md#bridge_bridge">bridge</a>: &<b>mut</b> <a href="../bridge/bridge.md#bridge_bridge_Bridge">bridge::bridge::Bridge</a>, tc: <a href="../sui/coin.md#sui_coin_TreasuryCap">sui::coin::TreasuryCap</a>&lt;T&gt;, uc: <a href="../sui/package.md#sui_package_UpgradeCap">sui::package::UpgradeCap</a>, metadata: &<a href="../sui/coin.md#sui_coin_CoinMetadata">sui::coin::CoinMetadata</a>&lt;T&gt;)
+<pre><code><b>public</b> <b>fun</b> <a href="../bridge/bridge.md#bridge_bridge_register_foreign_token">register_foreign_token</a>&lt;T&gt;(<a href="../bridge/bridge.md#bridge_bridge">bridge</a>: &<b>mut</b> <a href="../bridge/bridge.md#bridge_bridge_Bridge">bridge::bridge::Bridge</a>, tc: <a href="../iota/coin.md#iota_coin_TreasuryCap">iota::coin::TreasuryCap</a>&lt;T&gt;, uc: <a href="../iota/package.md#iota_package_UpgradeCap">iota::package::UpgradeCap</a>, metadata: &<a href="../iota/coin.md#iota_coin_CoinMetadata">iota::coin::CoinMetadata</a>&lt;T&gt;)
 </code></pre>
 
 
@@ -860,7 +860,7 @@ title: Module `bridge::bridge`
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../bridge/bridge.md#bridge_bridge_send_token">send_token</a>&lt;T&gt;(<a href="../bridge/bridge.md#bridge_bridge">bridge</a>: &<b>mut</b> <a href="../bridge/bridge.md#bridge_bridge_Bridge">bridge::bridge::Bridge</a>, target_chain: u8, target_address: vector&lt;u8&gt;, token: <a href="../sui/coin.md#sui_coin_Coin">sui::coin::Coin</a>&lt;T&gt;, ctx: &<b>mut</b> <a href="../sui/tx_context.md#sui_tx_context_TxContext">sui::tx_context::TxContext</a>)
+<pre><code><b>public</b> <b>fun</b> <a href="../bridge/bridge.md#bridge_bridge_send_token">send_token</a>&lt;T&gt;(<a href="../bridge/bridge.md#bridge_bridge">bridge</a>: &<b>mut</b> <a href="../bridge/bridge.md#bridge_bridge_Bridge">bridge::bridge::Bridge</a>, target_chain: u8, target_address: vector&lt;u8&gt;, token: <a href="../iota/coin.md#iota_coin_Coin">iota::coin::Coin</a>&lt;T&gt;, ctx: &<b>mut</b> <a href="../iota/tx_context.md#iota_tx_context_TxContext">iota::tx_context::TxContext</a>)
 </code></pre>
 
 
@@ -957,12 +957,12 @@ title: Module `bridge::bridge`
         <a href="../bridge/bridge.md#bridge_bridge_EUnexpectedChainID">EUnexpectedChainID</a>,
     );
     <b>let</b> message_key = <a href="../bridge/message.md#bridge_message">message</a>.key();
-    // retrieve pending <a href="../bridge/message.md#bridge_message">message</a> <b>if</b> source chain is Sui, the initial <a href="../bridge/message.md#bridge_message">message</a>
+    // retrieve pending <a href="../bridge/message.md#bridge_message">message</a> <b>if</b> source chain is Iota, the initial <a href="../bridge/message.md#bridge_message">message</a>
     // must exist on chain
     <b>if</b> (<a href="../bridge/message.md#bridge_message">message</a>.source_chain() == inner.chain_id) {
         <b>let</b> record = &<b>mut</b> inner.token_transfer_records[message_key];
         <b>assert</b>!(record.<a href="../bridge/message.md#bridge_message">message</a> == <a href="../bridge/message.md#bridge_message">message</a>, <a href="../bridge/bridge.md#bridge_bridge_EMalformedMessageError">EMalformedMessageError</a>);
-        <b>assert</b>!(!record.claimed, <a href="../bridge/bridge.md#bridge_bridge_EInvariantSuiInitializedTokenTransferShouldNotBeClaimed">EInvariantSuiInitializedTokenTransferShouldNotBeClaimed</a>);
+        <b>assert</b>!(!record.claimed, <a href="../bridge/bridge.md#bridge_bridge_EInvariantIotaInitializedTokenTransferShouldNotBeClaimed">EInvariantIotaInitializedTokenTransferShouldNotBeClaimed</a>);
         // If record already <b>has</b> verified signatures, it means the <a href="../bridge/message.md#bridge_message">message</a> <b>has</b> been approved
         // Then we exit early.
         <b>if</b> (record.verified_signatures.is_some()) {
@@ -1003,7 +1003,7 @@ title: Module `bridge::bridge`
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../bridge/bridge.md#bridge_bridge_claim_token">claim_token</a>&lt;T&gt;(<a href="../bridge/bridge.md#bridge_bridge">bridge</a>: &<b>mut</b> <a href="../bridge/bridge.md#bridge_bridge_Bridge">bridge::bridge::Bridge</a>, clock: &<a href="../sui/clock.md#sui_clock_Clock">sui::clock::Clock</a>, source_chain: u8, bridge_seq_num: u64, ctx: &<b>mut</b> <a href="../sui/tx_context.md#sui_tx_context_TxContext">sui::tx_context::TxContext</a>): <a href="../sui/coin.md#sui_coin_Coin">sui::coin::Coin</a>&lt;T&gt;
+<pre><code><b>public</b> <b>fun</b> <a href="../bridge/bridge.md#bridge_bridge_claim_token">claim_token</a>&lt;T&gt;(<a href="../bridge/bridge.md#bridge_bridge">bridge</a>: &<b>mut</b> <a href="../bridge/bridge.md#bridge_bridge_Bridge">bridge::bridge::Bridge</a>, clock: &<a href="../iota/clock.md#iota_clock_Clock">iota::clock::Clock</a>, source_chain: u8, bridge_seq_num: u64, ctx: &<b>mut</b> <a href="../iota/tx_context.md#iota_tx_context_TxContext">iota::tx_context::TxContext</a>): <a href="../iota/coin.md#iota_coin_Coin">iota::coin::Coin</a>&lt;T&gt;
 </code></pre>
 
 
@@ -1042,7 +1042,7 @@ title: Module `bridge::bridge`
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../bridge/bridge.md#bridge_bridge_claim_and_transfer_token">claim_and_transfer_token</a>&lt;T&gt;(<a href="../bridge/bridge.md#bridge_bridge">bridge</a>: &<b>mut</b> <a href="../bridge/bridge.md#bridge_bridge_Bridge">bridge::bridge::Bridge</a>, clock: &<a href="../sui/clock.md#sui_clock_Clock">sui::clock::Clock</a>, source_chain: u8, bridge_seq_num: u64, ctx: &<b>mut</b> <a href="../sui/tx_context.md#sui_tx_context_TxContext">sui::tx_context::TxContext</a>)
+<pre><code><b>public</b> <b>fun</b> <a href="../bridge/bridge.md#bridge_bridge_claim_and_transfer_token">claim_and_transfer_token</a>&lt;T&gt;(<a href="../bridge/bridge.md#bridge_bridge">bridge</a>: &<b>mut</b> <a href="../bridge/bridge.md#bridge_bridge_Bridge">bridge::bridge::Bridge</a>, clock: &<a href="../iota/clock.md#iota_clock_Clock">iota::clock::Clock</a>, source_chain: u8, bridge_seq_num: u64, ctx: &<b>mut</b> <a href="../iota/tx_context.md#iota_tx_context_TxContext">iota::tx_context::TxContext</a>)
 </code></pre>
 
 
@@ -1112,9 +1112,9 @@ title: Module `bridge::bridge`
     } <b>else</b> <b>if</b> (message_type == <a href="../bridge/message_types.md#bridge_message_types_update_asset_price">message_types::update_asset_price</a>()) {
         <b>let</b> payload = <a href="../bridge/message.md#bridge_message">message</a>.extract_update_asset_price();
         inner.<a href="../bridge/bridge.md#bridge_bridge_execute_update_asset_price">execute_update_asset_price</a>(payload);
-    } <b>else</b> <b>if</b> (message_type == <a href="../bridge/message_types.md#bridge_message_types_add_tokens_on_sui">message_types::add_tokens_on_sui</a>()) {
-        <b>let</b> payload = <a href="../bridge/message.md#bridge_message">message</a>.extract_add_tokens_on_sui();
-        inner.<a href="../bridge/bridge.md#bridge_bridge_execute_add_tokens_on_sui">execute_add_tokens_on_sui</a>(payload);
+    } <b>else</b> <b>if</b> (message_type == <a href="../bridge/message_types.md#bridge_message_types_add_tokens_on_iota">message_types::add_tokens_on_iota</a>()) {
+        <b>let</b> payload = <a href="../bridge/message.md#bridge_message">message</a>.extract_add_tokens_on_iota();
+        inner.<a href="../bridge/bridge.md#bridge_bridge_execute_add_tokens_on_iota">execute_add_tokens_on_iota</a>(payload);
     } <b>else</b> {
         <b>abort</b> <a href="../bridge/bridge.md#bridge_bridge_EUnexpectedMessageType">EUnexpectedMessageType</a>
     };
@@ -1273,7 +1273,7 @@ title: Module `bridge::bridge`
 
 
 
-<pre><code><b>fun</b> <a href="../bridge/bridge.md#bridge_bridge_claim_token_internal">claim_token_internal</a>&lt;T&gt;(<a href="../bridge/bridge.md#bridge_bridge">bridge</a>: &<b>mut</b> <a href="../bridge/bridge.md#bridge_bridge_Bridge">bridge::bridge::Bridge</a>, clock: &<a href="../sui/clock.md#sui_clock_Clock">sui::clock::Clock</a>, source_chain: u8, bridge_seq_num: u64, ctx: &<b>mut</b> <a href="../sui/tx_context.md#sui_tx_context_TxContext">sui::tx_context::TxContext</a>): (<a href="../std/option.md#std_option_Option">std::option::Option</a>&lt;<a href="../sui/coin.md#sui_coin_Coin">sui::coin::Coin</a>&lt;T&gt;&gt;, <b>address</b>)
+<pre><code><b>fun</b> <a href="../bridge/bridge.md#bridge_bridge_claim_token_internal">claim_token_internal</a>&lt;T&gt;(<a href="../bridge/bridge.md#bridge_bridge">bridge</a>: &<b>mut</b> <a href="../bridge/bridge.md#bridge_bridge_Bridge">bridge::bridge::Bridge</a>, clock: &<a href="../iota/clock.md#iota_clock_Clock">iota::clock::Clock</a>, source_chain: u8, bridge_seq_num: u64, ctx: &<b>mut</b> <a href="../iota/tx_context.md#iota_tx_context_TxContext">iota::tx_context::TxContext</a>): (<a href="../std/option.md#std_option_Option">std::option::Option</a>&lt;<a href="../iota/coin.md#iota_coin_Coin">iota::coin::Coin</a>&lt;T&gt;&gt;, <b>address</b>)
 </code></pre>
 
 
@@ -1446,13 +1446,13 @@ title: Module `bridge::bridge`
 
 </details>
 
-<a name="bridge_bridge_execute_add_tokens_on_sui"></a>
+<a name="bridge_bridge_execute_add_tokens_on_iota"></a>
 
-## Function `execute_add_tokens_on_sui`
+## Function `execute_add_tokens_on_iota`
 
 
 
-<pre><code><b>fun</b> <a href="../bridge/bridge.md#bridge_bridge_execute_add_tokens_on_sui">execute_add_tokens_on_sui</a>(inner: &<b>mut</b> <a href="../bridge/bridge.md#bridge_bridge_BridgeInner">bridge::bridge::BridgeInner</a>, payload: <a href="../bridge/message.md#bridge_message_AddTokenOnSui">bridge::message::AddTokenOnSui</a>)
+<pre><code><b>fun</b> <a href="../bridge/bridge.md#bridge_bridge_execute_add_tokens_on_iota">execute_add_tokens_on_iota</a>(inner: &<b>mut</b> <a href="../bridge/bridge.md#bridge_bridge_BridgeInner">bridge::bridge::BridgeInner</a>, payload: <a href="../bridge/message.md#bridge_message_AddTokenOnIota">bridge::message::AddTokenOnIota</a>)
 </code></pre>
 
 
@@ -1461,7 +1461,7 @@ title: Module `bridge::bridge`
 <summary>Implementation</summary>
 
 
-<pre><code><b>fun</b> <a href="../bridge/bridge.md#bridge_bridge_execute_add_tokens_on_sui">execute_add_tokens_on_sui</a>(inner: &<b>mut</b> <a href="../bridge/bridge.md#bridge_bridge_BridgeInner">BridgeInner</a>, payload: AddTokenOnSui) {
+<pre><code><b>fun</b> <a href="../bridge/bridge.md#bridge_bridge_execute_add_tokens_on_iota">execute_add_tokens_on_iota</a>(inner: &<b>mut</b> <a href="../bridge/bridge.md#bridge_bridge_BridgeInner">BridgeInner</a>, payload: AddTokenOnIota) {
     // FIXME: <b>assert</b> native_token to be <b>false</b> and add test
     <b>let</b> native_token = payload.is_native();
     <b>let</b> <b>mut</b> token_ids = payload.token_ids();

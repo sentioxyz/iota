@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::bigtable::metrics::KvMetrics;
@@ -22,12 +23,12 @@ use std::sync::{Arc, RwLock};
 use std::task::{Context, Poll};
 use std::time::Duration;
 use std::time::Instant;
-use sui_types::base_types::{ObjectID, TransactionDigest};
-use sui_types::digests::CheckpointDigest;
-use sui_types::full_checkpoint_content::CheckpointData;
-use sui_types::messages_checkpoint::CheckpointSequenceNumber;
-use sui_types::object::Object;
-use sui_types::storage::ObjectKey;
+use iota_types::base_types::{ObjectID, TransactionDigest};
+use iota_types::digests::CheckpointDigest;
+use iota_types::full_checkpoint_content::CheckpointData;
+use iota_types::messages_checkpoint::CheckpointSequenceNumber;
+use iota_types::object::Object;
+use iota_types::storage::ObjectKey;
 use tonic::body::BoxBody;
 use tonic::codegen::Service;
 use tonic::transport::{Certificate, Channel, ClientTlsConfig};
@@ -40,7 +41,7 @@ const CHECKPOINTS_TABLE: &str = "checkpoints";
 const CHECKPOINTS_BY_DIGEST_TABLE: &str = "checkpoints_by_digest";
 const WATERMARK_TABLE: &str = "watermark";
 
-const COLUMN_FAMILY_NAME: &str = "sui";
+const COLUMN_FAMILY_NAME: &str = "iota";
 const DEFAULT_COLUMN_QUALIFIER: &str = "";
 const CHECKPOINT_SUMMARY_COLUMN_QUALIFIER: &str = "s";
 const CHECKPOINT_SIGNATURES_COLUMN_QUALIFIER: &str = "sg";

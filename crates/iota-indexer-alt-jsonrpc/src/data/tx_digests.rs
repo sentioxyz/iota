@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::{
@@ -8,7 +9,7 @@ use std::{
 
 use async_graphql::dataloader::Loader;
 use diesel::{ExpressionMethods, QueryDsl};
-use sui_indexer_alt_schema::{schema::tx_digests, transactions::StoredTxDigest};
+use iota_indexer_alt_schema::{schema::tx_digests, transactions::StoredTxDigest};
 
 use super::{error::Error, pg_reader::PgReader};
 

@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::net::SocketAddr;
@@ -21,8 +22,8 @@ use metrics::middleware::MetricsLayer;
 use metrics::RpcMetrics;
 use prometheus::Registry;
 use serde_json::json;
-use sui_open_rpc::Project;
-use sui_pg_db::DbArgs;
+use iota_open_rpc::Project;
+use iota_pg_db::DbArgs;
 use tokio::task::JoinHandle;
 use tokio_util::sync::CancellationToken;
 use tower_layer::Identity;
@@ -98,13 +99,13 @@ impl RpcService {
 
         let schema = Project::new(
             env!("CARGO_PKG_VERSION"),
-            "Sui JSON-RPC",
-            "A JSON-RPC API for interacting with the Sui blockchain.",
-            "Mysten Labs",
-            "https://mystenlabs.com",
-            "build@mystenlabs.com",
+            "IOTA JSON-RPC",
+            "A JSON-RPC API for interacting with the IOTA blockchain.",
+            "IOTA Foundation",
+            "https://iota.org",
+            "build@iota.org",
             "Apache-2.0",
-            "https://raw.githubusercontent.com/MystenLabs/sui/main/LICENSE",
+            "https://raw.githubusercontent.com/iotaledger/iota/main/LICENSE",
         );
 
         Ok(Self {
@@ -276,9 +277,9 @@ mod tests {
     use jsonrpsee::{core::RpcResult, proc_macros::rpc, types::error::METHOD_NOT_FOUND_CODE};
     use reqwest::Client;
     use serde_json::{json, Value};
-    use sui_open_rpc::Module;
-    use sui_open_rpc_macros::open_rpc;
-    use sui_pg_db::temp::get_available_port;
+    use iota_open_rpc::Module;
+    use iota_open_rpc_macros::open_rpc;
+    use iota_pg_db::temp::get_available_port;
 
     use super::*;
 
@@ -386,7 +387,7 @@ mod tests {
             .await
             .expect("Deserialization should succeed");
 
-        assert_eq!(resp["result"]["info"]["title"], "Sui JSON-RPC");
+        assert_eq!(resp["result"]["info"]["title"], "IOTA JSON-RPC");
         assert_eq!(
             resp["result"]["methods"],
             json!([

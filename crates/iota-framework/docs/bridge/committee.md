@@ -33,42 +33,42 @@ title: Module `bridge::committee`
 <b>use</b> <a href="../std/type_name.md#std_type_name">std::type_name</a>;
 <b>use</b> <a href="../std/u64.md#std_u64">std::u64</a>;
 <b>use</b> <a href="../std/vector.md#std_vector">std::vector</a>;
-<b>use</b> <a href="../sui/address.md#sui_address">sui::address</a>;
-<b>use</b> <a href="../sui/bag.md#sui_bag">sui::bag</a>;
-<b>use</b> <a href="../sui/balance.md#sui_balance">sui::balance</a>;
-<b>use</b> <a href="../sui/bcs.md#sui_bcs">sui::bcs</a>;
-<b>use</b> <a href="../sui/coin.md#sui_coin">sui::coin</a>;
-<b>use</b> <a href="../sui/config.md#sui_config">sui::config</a>;
-<b>use</b> <a href="../sui/deny_list.md#sui_deny_list">sui::deny_list</a>;
-<b>use</b> <a href="../sui/dynamic_field.md#sui_dynamic_field">sui::dynamic_field</a>;
-<b>use</b> <a href="../sui/dynamic_object_field.md#sui_dynamic_object_field">sui::dynamic_object_field</a>;
-<b>use</b> <a href="../sui/ecdsa_k1.md#sui_ecdsa_k1">sui::ecdsa_k1</a>;
-<b>use</b> <a href="../sui/event.md#sui_event">sui::event</a>;
-<b>use</b> <a href="../sui/hash.md#sui_hash">sui::hash</a>;
-<b>use</b> <a href="../sui/hex.md#sui_hex">sui::hex</a>;
-<b>use</b> <a href="../sui/object.md#sui_object">sui::object</a>;
-<b>use</b> <a href="../sui/pay.md#sui_pay">sui::pay</a>;
-<b>use</b> <a href="../sui/priority_queue.md#sui_priority_queue">sui::priority_queue</a>;
-<b>use</b> <a href="../sui/sui.md#sui_sui">sui::sui</a>;
-<b>use</b> <a href="../sui/table.md#sui_table">sui::table</a>;
-<b>use</b> <a href="../sui/table_vec.md#sui_table_vec">sui::table_vec</a>;
-<b>use</b> <a href="../sui/transfer.md#sui_transfer">sui::transfer</a>;
-<b>use</b> <a href="../sui/tx_context.md#sui_tx_context">sui::tx_context</a>;
-<b>use</b> <a href="../sui/types.md#sui_types">sui::types</a>;
-<b>use</b> <a href="../sui/url.md#sui_url">sui::url</a>;
-<b>use</b> <a href="../sui/vec_map.md#sui_vec_map">sui::vec_map</a>;
-<b>use</b> <a href="../sui/vec_set.md#sui_vec_set">sui::vec_set</a>;
-<b>use</b> <a href="../sui/versioned.md#sui_versioned">sui::versioned</a>;
-<b>use</b> <a href="../sui_system/stake_subsidy.md#sui_system_stake_subsidy">sui_system::stake_subsidy</a>;
-<b>use</b> <a href="../sui_system/staking_pool.md#sui_system_staking_pool">sui_system::staking_pool</a>;
-<b>use</b> <a href="../sui_system/storage_fund.md#sui_system_storage_fund">sui_system::storage_fund</a>;
-<b>use</b> <a href="../sui_system/sui_system.md#sui_system_sui_system">sui_system::sui_system</a>;
-<b>use</b> <a href="../sui_system/sui_system_state_inner.md#sui_system_sui_system_state_inner">sui_system::sui_system_state_inner</a>;
-<b>use</b> <a href="../sui_system/validator.md#sui_system_validator">sui_system::validator</a>;
-<b>use</b> <a href="../sui_system/validator_cap.md#sui_system_validator_cap">sui_system::validator_cap</a>;
-<b>use</b> <a href="../sui_system/validator_set.md#sui_system_validator_set">sui_system::validator_set</a>;
-<b>use</b> <a href="../sui_system/validator_wrapper.md#sui_system_validator_wrapper">sui_system::validator_wrapper</a>;
-<b>use</b> <a href="../sui_system/voting_power.md#sui_system_voting_power">sui_system::voting_power</a>;
+<b>use</b> <a href="../iota/address.md#iota_address">iota::address</a>;
+<b>use</b> <a href="../iota/bag.md#iota_bag">iota::bag</a>;
+<b>use</b> <a href="../iota/balance.md#iota_balance">iota::balance</a>;
+<b>use</b> <a href="../iota/bcs.md#iota_bcs">iota::bcs</a>;
+<b>use</b> <a href="../iota/coin.md#iota_coin">iota::coin</a>;
+<b>use</b> <a href="../iota/config.md#iota_config">iota::config</a>;
+<b>use</b> <a href="../iota/deny_list.md#iota_deny_list">iota::deny_list</a>;
+<b>use</b> <a href="../iota/dynamic_field.md#iota_dynamic_field">iota::dynamic_field</a>;
+<b>use</b> <a href="../iota/dynamic_object_field.md#iota_dynamic_object_field">iota::dynamic_object_field</a>;
+<b>use</b> <a href="../iota/ecdsa_k1.md#iota_ecdsa_k1">iota::ecdsa_k1</a>;
+<b>use</b> <a href="../iota/event.md#iota_event">iota::event</a>;
+<b>use</b> <a href="../iota/hash.md#iota_hash">iota::hash</a>;
+<b>use</b> <a href="../iota/hex.md#iota_hex">iota::hex</a>;
+<b>use</b> <a href="../iota/object.md#iota_object">iota::object</a>;
+<b>use</b> <a href="../iota/pay.md#iota_pay">iota::pay</a>;
+<b>use</b> <a href="../iota/priority_queue.md#iota_priority_queue">iota::priority_queue</a>;
+<b>use</b> <a href="../iota/iota.md#iota_iota">iota::iota</a>;
+<b>use</b> <a href="../iota/table.md#iota_table">iota::table</a>;
+<b>use</b> <a href="../iota/table_vec.md#iota_table_vec">iota::table_vec</a>;
+<b>use</b> <a href="../iota/transfer.md#iota_transfer">iota::transfer</a>;
+<b>use</b> <a href="../iota/tx_context.md#iota_tx_context">iota::tx_context</a>;
+<b>use</b> <a href="../iota/types.md#iota_types">iota::types</a>;
+<b>use</b> <a href="../iota/url.md#iota_url">iota::url</a>;
+<b>use</b> <a href="../iota/vec_map.md#iota_vec_map">iota::vec_map</a>;
+<b>use</b> <a href="../iota/vec_set.md#iota_vec_set">iota::vec_set</a>;
+<b>use</b> <a href="../iota/versioned.md#iota_versioned">iota::versioned</a>;
+<b>use</b> <a href="../iota_system/stake_subsidy.md#iota_system_stake_subsidy">iota_system::stake_subsidy</a>;
+<b>use</b> <a href="../iota_system/staking_pool.md#iota_system_staking_pool">iota_system::staking_pool</a>;
+<b>use</b> <a href="../iota_system/storage_fund.md#iota_system_storage_fund">iota_system::storage_fund</a>;
+<b>use</b> <a href="../iota_system/iota_system.md#iota_system_iota_system">iota_system::iota_system</a>;
+<b>use</b> <a href="../iota_system/iota_system_state_inner.md#iota_system_iota_system_state_inner">iota_system::iota_system_state_inner</a>;
+<b>use</b> <a href="../iota_system/validator.md#iota_system_validator">iota_system::validator</a>;
+<b>use</b> <a href="../iota_system/validator_cap.md#iota_system_validator_cap">iota_system::validator_cap</a>;
+<b>use</b> <a href="../iota_system/validator_set.md#iota_system_validator_set">iota_system::validator_set</a>;
+<b>use</b> <a href="../iota_system/validator_wrapper.md#iota_system_validator_wrapper">iota_system::validator_wrapper</a>;
+<b>use</b> <a href="../iota_system/voting_power.md#iota_system_voting_power">iota_system::voting_power</a>;
 </code></pre>
 
 
@@ -121,12 +121,12 @@ title: Module `bridge::committee`
 
 <dl>
 <dt>
-<code>members: <a href="../sui/vec_map.md#sui_vec_map_VecMap">sui::vec_map::VecMap</a>&lt;vector&lt;u8&gt;, <a href="../bridge/committee.md#bridge_committee_CommitteeMember">bridge::committee::CommitteeMember</a>&gt;</code>
+<code>members: <a href="../iota/vec_map.md#iota_vec_map_VecMap">iota::vec_map::VecMap</a>&lt;vector&lt;u8&gt;, <a href="../bridge/committee.md#bridge_committee_CommitteeMember">bridge::committee::CommitteeMember</a>&gt;</code>
 </dt>
 <dd>
 </dd>
 <dt>
-<code>member_registrations: <a href="../sui/vec_map.md#sui_vec_map_VecMap">sui::vec_map::VecMap</a>&lt;<b>address</b>, <a href="../bridge/committee.md#bridge_committee_CommitteeMemberRegistration">bridge::committee::CommitteeMemberRegistration</a>&gt;</code>
+<code>member_registrations: <a href="../iota/vec_map.md#iota_vec_map_VecMap">iota::vec_map::VecMap</a>&lt;<b>address</b>, <a href="../bridge/committee.md#bridge_committee_CommitteeMemberRegistration">bridge::committee::CommitteeMemberRegistration</a>&gt;</code>
 </dt>
 <dd>
 </dd>
@@ -157,7 +157,7 @@ title: Module `bridge::committee`
 
 <dl>
 <dt>
-<code>members: <a href="../sui/vec_map.md#sui_vec_map_VecMap">sui::vec_map::VecMap</a>&lt;vector&lt;u8&gt;, <a href="../bridge/committee.md#bridge_committee_CommitteeMember">bridge::committee::CommitteeMember</a>&gt;</code>
+<code>members: <a href="../iota/vec_map.md#iota_vec_map_VecMap">iota::vec_map::VecMap</a>&lt;vector&lt;u8&gt;, <a href="../bridge/committee.md#bridge_committee_CommitteeMember">bridge::committee::CommitteeMember</a>&gt;</code>
 </dt>
 <dd>
 </dd>
@@ -219,10 +219,10 @@ title: Module `bridge::committee`
 
 <dl>
 <dt>
-<code>sui_address: <b>address</b></code>
+<code>iota_address: <b>address</b></code>
 </dt>
 <dd>
- The Sui Address of the validator
+ The IOTA Address of the validator
 </dd>
 <dt>
 <code>bridge_pubkey_bytes: vector&lt;u8&gt;</code>
@@ -271,10 +271,10 @@ title: Module `bridge::committee`
 
 <dl>
 <dt>
-<code>sui_address: <b>address</b></code>
+<code>iota_address: <b>address</b></code>
 </dt>
 <dd>
- The Sui Address of the validator
+ The IOTA Address of the validator
 </dd>
 <dt>
 <code>bridge_pubkey_bytes: vector&lt;u8&gt;</code>
@@ -398,11 +398,11 @@ title: Module `bridge::committee`
 
 
 
-<a name="bridge_committee_SUI_MESSAGE_PREFIX"></a>
+<a name="bridge_committee_IOTA_MESSAGE_PREFIX"></a>
 
 
 
-<pre><code><b>const</b> <a href="../bridge/committee.md#bridge_committee_SUI_MESSAGE_PREFIX">SUI_MESSAGE_PREFIX</a>: vector&lt;u8&gt; = vector[83, 85, 73, 95, 66, 82, 73, 68, 71, 69, 95, 77, 69, 83, 83, 65, 71, 69];
+<pre><code><b>const</b> <a href="../bridge/committee.md#bridge_committee_IOTA_MESSAGE_PREFIX">IOTA_MESSAGE_PREFIX</a>: vector&lt;u8&gt; = vector[83, 85, 73, 95, 66, 82, 73, 68, 71, 69, 95, 77, 69, 83, 83, 65, 71, 69];
 </code></pre>
 
 
@@ -431,7 +431,7 @@ title: Module `bridge::committee`
     <b>let</b> <b>mut</b> seen_pub_key = vec_set::empty&lt;vector&lt;u8&gt;&gt;();
     <b>let</b> required_voting_power = <a href="../bridge/message.md#bridge_message">message</a>.required_voting_power();
     // add prefix to the <a href="../bridge/message.md#bridge_message">message</a> bytes
-    <b>let</b> <b>mut</b> message_bytes = <a href="../bridge/committee.md#bridge_committee_SUI_MESSAGE_PREFIX">SUI_MESSAGE_PREFIX</a>;
+    <b>let</b> <b>mut</b> message_bytes = <a href="../bridge/committee.md#bridge_committee_IOTA_MESSAGE_PREFIX">IOTA_MESSAGE_PREFIX</a>;
     message_bytes.append(<a href="../bridge/message.md#bridge_message">message</a>.serialize_message());
     <b>let</b> <b>mut</b> threshold = 0;
     <b>while</b> (i &lt; signature_counts) {
@@ -462,7 +462,7 @@ title: Module `bridge::committee`
 
 
 
-<pre><code><b>public</b>(package) <b>fun</b> <a href="../bridge/committee.md#bridge_committee_create">create</a>(ctx: &<a href="../sui/tx_context.md#sui_tx_context_TxContext">sui::tx_context::TxContext</a>): <a href="../bridge/committee.md#bridge_committee_BridgeCommittee">bridge::committee::BridgeCommittee</a>
+<pre><code><b>public</b>(package) <b>fun</b> <a href="../bridge/committee.md#bridge_committee_create">create</a>(ctx: &<a href="../iota/tx_context.md#iota_tx_context_TxContext">iota::tx_context::TxContext</a>): <a href="../bridge/committee.md#bridge_committee_BridgeCommittee">bridge::committee::BridgeCommittee</a>
 </code></pre>
 
 
@@ -491,7 +491,7 @@ title: Module `bridge::committee`
 
 
 
-<pre><code><b>public</b>(package) <b>fun</b> <a href="../bridge/committee.md#bridge_committee_register">register</a>(self: &<b>mut</b> <a href="../bridge/committee.md#bridge_committee_BridgeCommittee">bridge::committee::BridgeCommittee</a>, system_state: &<b>mut</b> <a href="../sui_system/sui_system.md#sui_system_sui_system_SuiSystemState">sui_system::sui_system::SuiSystemState</a>, bridge_pubkey_bytes: vector&lt;u8&gt;, http_rest_url: vector&lt;u8&gt;, ctx: &<a href="../sui/tx_context.md#sui_tx_context_TxContext">sui::tx_context::TxContext</a>)
+<pre><code><b>public</b>(package) <b>fun</b> <a href="../bridge/committee.md#bridge_committee_register">register</a>(self: &<b>mut</b> <a href="../bridge/committee.md#bridge_committee_BridgeCommittee">bridge::committee::BridgeCommittee</a>, system_state: &<b>mut</b> <a href="../iota_system/iota_system.md#iota_system_iota_system_IotaSystemState">iota_system::iota_system::IotaSystemState</a>, bridge_pubkey_bytes: vector&lt;u8&gt;, http_rest_url: vector&lt;u8&gt;, ctx: &<a href="../iota/tx_context.md#iota_tx_context_TxContext">iota::tx_context::TxContext</a>)
 </code></pre>
 
 
@@ -502,7 +502,7 @@ title: Module `bridge::committee`
 
 <pre><code><b>public</b>(package) <b>fun</b> <a href="../bridge/committee.md#bridge_committee_register">register</a>(
     self: &<b>mut</b> <a href="../bridge/committee.md#bridge_committee_BridgeCommittee">BridgeCommittee</a>,
-    system_state: &<b>mut</b> SuiSystemState,
+    system_state: &<b>mut</b> IotaSystemState,
     bridge_pubkey_bytes: vector&lt;u8&gt;,
     http_rest_url: vector&lt;u8&gt;,
     ctx: &TxContext
@@ -524,7 +524,7 @@ title: Module `bridge::committee`
         *registration
     } <b>else</b> {
         <b>let</b> registration = <a href="../bridge/committee.md#bridge_committee_CommitteeMemberRegistration">CommitteeMemberRegistration</a> {
-            sui_address: sender,
+            iota_address: sender,
             bridge_pubkey_bytes,
             http_rest_url,
         };
@@ -550,7 +550,7 @@ title: Module `bridge::committee`
 
 
 
-<pre><code><b>public</b>(package) <b>fun</b> <a href="../bridge/committee.md#bridge_committee_try_create_next_committee">try_create_next_committee</a>(self: &<b>mut</b> <a href="../bridge/committee.md#bridge_committee_BridgeCommittee">bridge::committee::BridgeCommittee</a>, active_validator_voting_power: <a href="../sui/vec_map.md#sui_vec_map_VecMap">sui::vec_map::VecMap</a>&lt;<b>address</b>, u64&gt;, min_stake_participation_percentage: u64, ctx: &<a href="../sui/tx_context.md#sui_tx_context_TxContext">sui::tx_context::TxContext</a>)
+<pre><code><b>public</b>(package) <b>fun</b> <a href="../bridge/committee.md#bridge_committee_try_create_next_committee">try_create_next_committee</a>(self: &<b>mut</b> <a href="../bridge/committee.md#bridge_committee_BridgeCommittee">bridge::committee::BridgeCommittee</a>, active_validator_voting_power: <a href="../iota/vec_map.md#iota_vec_map_VecMap">iota::vec_map::VecMap</a>&lt;<b>address</b>, u64&gt;, min_stake_participation_percentage: u64, ctx: &<a href="../iota/tx_context.md#iota_tx_context_TxContext">iota::tx_context::TxContext</a>)
 </code></pre>
 
 
@@ -573,12 +573,12 @@ title: Module `bridge::committee`
         <b>let</b> (_, registration) = self.member_registrations.get_entry_by_idx(i);
         // Find validator stake amount from system state
         // Process registration <b>if</b> it's active validator
-        <b>let</b> voting_power = active_validator_voting_power.try_get(&registration.sui_address);
+        <b>let</b> voting_power = active_validator_voting_power.try_get(&registration.iota_address);
         <b>if</b> (voting_power.is_some()) {
             <b>let</b> voting_power = voting_power.destroy_some();
             stake_participation_percentage = stake_participation_percentage + voting_power;
             <b>let</b> member = <a href="../bridge/committee.md#bridge_committee_CommitteeMember">CommitteeMember</a> {
-                sui_address: registration.sui_address,
+                iota_address: registration.iota_address,
                 bridge_pubkey_bytes: registration.bridge_pubkey_bytes,
                 voting_power: (voting_power <b>as</b> u64),
                 http_rest_url: registration.http_rest_url,
@@ -664,7 +664,7 @@ title: Module `bridge::committee`
 
 
 
-<pre><code><b>public</b>(package) <b>fun</b> <a href="../bridge/committee.md#bridge_committee_committee_members">committee_members</a>(self: &<a href="../bridge/committee.md#bridge_committee_BridgeCommittee">bridge::committee::BridgeCommittee</a>): &<a href="../sui/vec_map.md#sui_vec_map_VecMap">sui::vec_map::VecMap</a>&lt;vector&lt;u8&gt;, <a href="../bridge/committee.md#bridge_committee_CommitteeMember">bridge::committee::CommitteeMember</a>&gt;
+<pre><code><b>public</b>(package) <b>fun</b> <a href="../bridge/committee.md#bridge_committee_committee_members">committee_members</a>(self: &<a href="../bridge/committee.md#bridge_committee_BridgeCommittee">bridge::committee::BridgeCommittee</a>): &<a href="../iota/vec_map.md#iota_vec_map_VecMap">iota::vec_map::VecMap</a>&lt;vector&lt;u8&gt;, <a href="../bridge/committee.md#bridge_committee_CommitteeMember">bridge::committee::CommitteeMember</a>&gt;
 </code></pre>
 
 
@@ -690,7 +690,7 @@ title: Module `bridge::committee`
 
 
 
-<pre><code><b>public</b>(package) <b>fun</b> <a href="../bridge/committee.md#bridge_committee_update_node_url">update_node_url</a>(self: &<b>mut</b> <a href="../bridge/committee.md#bridge_committee_BridgeCommittee">bridge::committee::BridgeCommittee</a>, new_url: vector&lt;u8&gt;, ctx: &<a href="../sui/tx_context.md#sui_tx_context_TxContext">sui::tx_context::TxContext</a>)
+<pre><code><b>public</b>(package) <b>fun</b> <a href="../bridge/committee.md#bridge_committee_update_node_url">update_node_url</a>(self: &<b>mut</b> <a href="../bridge/committee.md#bridge_committee_BridgeCommittee">bridge::committee::BridgeCommittee</a>, new_url: vector&lt;u8&gt;, ctx: &<a href="../iota/tx_context.md#iota_tx_context_TxContext">iota::tx_context::TxContext</a>)
 </code></pre>
 
 
@@ -703,7 +703,7 @@ title: Module `bridge::committee`
     <b>let</b> <b>mut</b> idx = 0;
     <b>while</b> (idx &lt; self.members.size()) {
         <b>let</b> (_, member) = self.members.get_entry_by_idx_mut(idx);
-        <b>if</b> (member.sui_address == ctx.sender()) {
+        <b>if</b> (member.iota_address == ctx.sender()) {
             member.http_rest_url = new_url;
             emit (<a href="../bridge/committee.md#bridge_committee_CommitteeMemberUrlUpdateEvent">CommitteeMemberUrlUpdateEvent</a> {
                 member: member.bridge_pubkey_bytes,

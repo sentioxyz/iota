@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::collections::VecDeque;
@@ -8,9 +9,9 @@ use std::sync::Arc;
 use std::{cmp::Ordering, hash::DefaultHasher};
 
 use moka::sync::Cache as MokaCache;
-use mysten_common::debug_fatal;
+use iota_common::debug_fatal;
 use parking_lot::Mutex;
-use sui_types::base_types::SequenceNumber;
+use iota_types::base_types::SequenceNumber;
 
 pub enum CacheResult<T> {
     /// Entry is in the cache
@@ -334,7 +335,7 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use sui_types::base_types::SequenceNumber;
+    use iota_types::base_types::SequenceNumber;
 
     // Helper function to create a SequenceNumber for simplicity
     fn seq(num: u64) -> SequenceNumber {

@@ -11,7 +11,7 @@ title: Module `bridge::message`
 -  [Struct `Blocklist`](#bridge_message_Blocklist)
 -  [Struct `UpdateBridgeLimit`](#bridge_message_UpdateBridgeLimit)
 -  [Struct `UpdateAssetPrice`](#bridge_message_UpdateAssetPrice)
--  [Struct `AddTokenOnSui`](#bridge_message_AddTokenOnSui)
+-  [Struct `AddTokenOnIota`](#bridge_message_AddTokenOnIota)
 -  [Struct `ParsedTokenTransferMessage`](#bridge_message_ParsedTokenTransferMessage)
 -  [Constants](#@Constants_0)
 -  [Function `extract_token_bridge_payload`](#bridge_message_extract_token_bridge_payload)
@@ -19,14 +19,14 @@ title: Module `bridge::message`
 -  [Function `extract_blocklist_payload`](#bridge_message_extract_blocklist_payload)
 -  [Function `extract_update_bridge_limit`](#bridge_message_extract_update_bridge_limit)
 -  [Function `extract_update_asset_price`](#bridge_message_extract_update_asset_price)
--  [Function `extract_add_tokens_on_sui`](#bridge_message_extract_add_tokens_on_sui)
+-  [Function `extract_add_tokens_on_iota`](#bridge_message_extract_add_tokens_on_iota)
 -  [Function `serialize_message`](#bridge_message_serialize_message)
 -  [Function `create_token_bridge_message`](#bridge_message_create_token_bridge_message)
 -  [Function `create_emergency_op_message`](#bridge_message_create_emergency_op_message)
 -  [Function `create_blocklist_message`](#bridge_message_create_blocklist_message)
 -  [Function `create_update_bridge_limit_message`](#bridge_message_create_update_bridge_limit_message)
 -  [Function `create_update_asset_price_message`](#bridge_message_create_update_asset_price_message)
--  [Function `create_add_tokens_on_sui_message`](#bridge_message_create_add_tokens_on_sui_message)
+-  [Function `create_add_tokens_on_iota_message`](#bridge_message_create_add_tokens_on_iota_message)
 -  [Function `create_key`](#bridge_message_create_key)
 -  [Function `key`](#bridge_message_key)
 -  [Function `message_version`](#bridge_message_message_version)
@@ -65,9 +65,9 @@ title: Module `bridge::message`
 <b>use</b> <a href="../std/option.md#std_option">std::option</a>;
 <b>use</b> <a href="../std/string.md#std_string">std::string</a>;
 <b>use</b> <a href="../std/vector.md#std_vector">std::vector</a>;
-<b>use</b> <a href="../sui/address.md#sui_address">sui::address</a>;
-<b>use</b> <a href="../sui/bcs.md#sui_bcs">sui::bcs</a>;
-<b>use</b> <a href="../sui/hex.md#sui_hex">sui::hex</a>;
+<b>use</b> <a href="../iota/address.md#iota_address">iota::address</a>;
+<b>use</b> <a href="../iota/bcs.md#iota_bcs">iota::bcs</a>;
+<b>use</b> <a href="../iota/hex.md#iota_hex">iota::hex</a>;
 </code></pre>
 
 
@@ -324,13 +324,13 @@ title: Module `bridge::message`
 
 </details>
 
-<a name="bridge_message_AddTokenOnSui"></a>
+<a name="bridge_message_AddTokenOnIota"></a>
 
-## Struct `AddTokenOnSui`
+## Struct `AddTokenOnIota`
 
 
 
-<pre><code><b>public</b> <b>struct</b> <a href="../bridge/message.md#bridge_message_AddTokenOnSui">AddTokenOnSui</a> <b>has</b> drop
+<pre><code><b>public</b> <b>struct</b> <a href="../bridge/message.md#bridge_message_AddTokenOnIota">AddTokenOnIota</a> <b>has</b> drop
 </code></pre>
 
 
@@ -687,13 +687,13 @@ Emergency op payload is just a single byte
 
 </details>
 
-<a name="bridge_message_extract_add_tokens_on_sui"></a>
+<a name="bridge_message_extract_add_tokens_on_iota"></a>
 
-## Function `extract_add_tokens_on_sui`
+## Function `extract_add_tokens_on_iota`
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../bridge/message.md#bridge_message_extract_add_tokens_on_sui">extract_add_tokens_on_sui</a>(<a href="../bridge/message.md#bridge_message">message</a>: &<a href="../bridge/message.md#bridge_message_BridgeMessage">bridge::message::BridgeMessage</a>): <a href="../bridge/message.md#bridge_message_AddTokenOnSui">bridge::message::AddTokenOnSui</a>
+<pre><code><b>public</b> <b>fun</b> <a href="../bridge/message.md#bridge_message_extract_add_tokens_on_iota">extract_add_tokens_on_iota</a>(<a href="../bridge/message.md#bridge_message">message</a>: &<a href="../bridge/message.md#bridge_message_BridgeMessage">bridge::message::BridgeMessage</a>): <a href="../bridge/message.md#bridge_message_AddTokenOnIota">bridge::message::AddTokenOnIota</a>
 </code></pre>
 
 
@@ -702,7 +702,7 @@ Emergency op payload is just a single byte
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../bridge/message.md#bridge_message_extract_add_tokens_on_sui">extract_add_tokens_on_sui</a>(<a href="../bridge/message.md#bridge_message">message</a>: &<a href="../bridge/message.md#bridge_message_BridgeMessage">BridgeMessage</a>): <a href="../bridge/message.md#bridge_message_AddTokenOnSui">AddTokenOnSui</a> {
+<pre><code><b>public</b> <b>fun</b> <a href="../bridge/message.md#bridge_message_extract_add_tokens_on_iota">extract_add_tokens_on_iota</a>(<a href="../bridge/message.md#bridge_message">message</a>: &<a href="../bridge/message.md#bridge_message_BridgeMessage">BridgeMessage</a>): <a href="../bridge/message.md#bridge_message_AddTokenOnIota">AddTokenOnIota</a> {
     <b>let</b> <b>mut</b> bcs = bcs::new(<a href="../bridge/message.md#bridge_message">message</a>.<a href="../bridge/message.md#bridge_message_payload">payload</a>);
     <b>let</b> native_token = bcs.peel_bool();
     <b>let</b> <a href="../bridge/message.md#bridge_message_token_ids">token_ids</a> = bcs.peel_vec_u8();
@@ -715,7 +715,7 @@ Emergency op payload is just a single byte
         n = n + 1;
     };
     <b>assert</b>!(bcs.into_remainder_bytes().is_empty(), <a href="../bridge/message.md#bridge_message_ETrailingBytes">ETrailingBytes</a>);
-    <a href="../bridge/message.md#bridge_message_AddTokenOnSui">AddTokenOnSui</a> {
+    <a href="../bridge/message.md#bridge_message_AddTokenOnIota">AddTokenOnIota</a> {
         native_token,
         <a href="../bridge/message.md#bridge_message_token_ids">token_ids</a>,
         <a href="../bridge/message.md#bridge_message_token_type_names">token_type_names</a>,
@@ -1017,11 +1017,11 @@ Update asset price message
 
 </details>
 
-<a name="bridge_message_create_add_tokens_on_sui_message"></a>
+<a name="bridge_message_create_add_tokens_on_iota_message"></a>
 
-## Function `create_add_tokens_on_sui_message`
+## Function `create_add_tokens_on_iota_message`
 
-Update Sui token message
+Update IOTA token message
 [message_type:u8]
 [version:u8]
 [nonce:u64]
@@ -1032,7 +1032,7 @@ Update Sui token message
 [token_prices:vector<u64>]
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../bridge/message.md#bridge_message_create_add_tokens_on_sui_message">create_add_tokens_on_sui_message</a>(<a href="../bridge/message.md#bridge_message_source_chain">source_chain</a>: u8, <a href="../bridge/message.md#bridge_message_seq_num">seq_num</a>: u64, native_token: bool, <a href="../bridge/message.md#bridge_message_token_ids">token_ids</a>: vector&lt;u8&gt;, type_names: vector&lt;<a href="../std/ascii.md#std_ascii_String">std::ascii::String</a>&gt;, <a href="../bridge/message.md#bridge_message_token_prices">token_prices</a>: vector&lt;u64&gt;): <a href="../bridge/message.md#bridge_message_BridgeMessage">bridge::message::BridgeMessage</a>
+<pre><code><b>public</b> <b>fun</b> <a href="../bridge/message.md#bridge_message_create_add_tokens_on_iota_message">create_add_tokens_on_iota_message</a>(<a href="../bridge/message.md#bridge_message_source_chain">source_chain</a>: u8, <a href="../bridge/message.md#bridge_message_seq_num">seq_num</a>: u64, native_token: bool, <a href="../bridge/message.md#bridge_message_token_ids">token_ids</a>: vector&lt;u8&gt;, type_names: vector&lt;<a href="../std/ascii.md#std_ascii_String">std::ascii::String</a>&gt;, <a href="../bridge/message.md#bridge_message_token_prices">token_prices</a>: vector&lt;u64&gt;): <a href="../bridge/message.md#bridge_message_BridgeMessage">bridge::message::BridgeMessage</a>
 </code></pre>
 
 
@@ -1041,7 +1041,7 @@ Update Sui token message
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../bridge/message.md#bridge_message_create_add_tokens_on_sui_message">create_add_tokens_on_sui_message</a>(
+<pre><code><b>public</b> <b>fun</b> <a href="../bridge/message.md#bridge_message_create_add_tokens_on_iota_message">create_add_tokens_on_iota_message</a>(
     <a href="../bridge/message.md#bridge_message_source_chain">source_chain</a>: u8,
     <a href="../bridge/message.md#bridge_message_seq_num">seq_num</a>: u64,
     native_token: bool,
@@ -1055,7 +1055,7 @@ Update Sui token message
     <a href="../bridge/message.md#bridge_message_payload">payload</a>.append(bcs::to_bytes(&type_names));
     <a href="../bridge/message.md#bridge_message_payload">payload</a>.append(bcs::to_bytes(&<a href="../bridge/message.md#bridge_message_token_prices">token_prices</a>));
     <a href="../bridge/message.md#bridge_message_BridgeMessage">BridgeMessage</a> {
-        <a href="../bridge/message.md#bridge_message_message_type">message_type</a>: <a href="../bridge/message_types.md#bridge_message_types_add_tokens_on_sui">message_types::add_tokens_on_sui</a>(),
+        <a href="../bridge/message.md#bridge_message_message_type">message_type</a>: <a href="../bridge/message_types.md#bridge_message_types_add_tokens_on_iota">message_types::add_tokens_on_iota</a>(),
         <a href="../bridge/message.md#bridge_message_message_version">message_version</a>: <a href="../bridge/message.md#bridge_message_CURRENT_MESSAGE_VERSION">CURRENT_MESSAGE_VERSION</a>,
         <a href="../bridge/message.md#bridge_message_seq_num">seq_num</a>,
         <a href="../bridge/message.md#bridge_message_source_chain">source_chain</a>,
@@ -1530,7 +1530,7 @@ Update Sui token message
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../bridge/message.md#bridge_message_is_native">is_native</a>(self: &<a href="../bridge/message.md#bridge_message_AddTokenOnSui">bridge::message::AddTokenOnSui</a>): bool
+<pre><code><b>public</b> <b>fun</b> <a href="../bridge/message.md#bridge_message_is_native">is_native</a>(self: &<a href="../bridge/message.md#bridge_message_AddTokenOnIota">bridge::message::AddTokenOnIota</a>): bool
 </code></pre>
 
 
@@ -1539,7 +1539,7 @@ Update Sui token message
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../bridge/message.md#bridge_message_is_native">is_native</a>(self: &<a href="../bridge/message.md#bridge_message_AddTokenOnSui">AddTokenOnSui</a>): bool {
+<pre><code><b>public</b> <b>fun</b> <a href="../bridge/message.md#bridge_message_is_native">is_native</a>(self: &<a href="../bridge/message.md#bridge_message_AddTokenOnIota">AddTokenOnIota</a>): bool {
     self.native_token
 }
 </code></pre>
@@ -1554,7 +1554,7 @@ Update Sui token message
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../bridge/message.md#bridge_message_token_ids">token_ids</a>(self: &<a href="../bridge/message.md#bridge_message_AddTokenOnSui">bridge::message::AddTokenOnSui</a>): vector&lt;u8&gt;
+<pre><code><b>public</b> <b>fun</b> <a href="../bridge/message.md#bridge_message_token_ids">token_ids</a>(self: &<a href="../bridge/message.md#bridge_message_AddTokenOnIota">bridge::message::AddTokenOnIota</a>): vector&lt;u8&gt;
 </code></pre>
 
 
@@ -1563,7 +1563,7 @@ Update Sui token message
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../bridge/message.md#bridge_message_token_ids">token_ids</a>(self: &<a href="../bridge/message.md#bridge_message_AddTokenOnSui">AddTokenOnSui</a>): vector&lt;u8&gt; {
+<pre><code><b>public</b> <b>fun</b> <a href="../bridge/message.md#bridge_message_token_ids">token_ids</a>(self: &<a href="../bridge/message.md#bridge_message_AddTokenOnIota">AddTokenOnIota</a>): vector&lt;u8&gt; {
     self.<a href="../bridge/message.md#bridge_message_token_ids">token_ids</a>
 }
 </code></pre>
@@ -1578,7 +1578,7 @@ Update Sui token message
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../bridge/message.md#bridge_message_token_type_names">token_type_names</a>(self: &<a href="../bridge/message.md#bridge_message_AddTokenOnSui">bridge::message::AddTokenOnSui</a>): vector&lt;<a href="../std/ascii.md#std_ascii_String">std::ascii::String</a>&gt;
+<pre><code><b>public</b> <b>fun</b> <a href="../bridge/message.md#bridge_message_token_type_names">token_type_names</a>(self: &<a href="../bridge/message.md#bridge_message_AddTokenOnIota">bridge::message::AddTokenOnIota</a>): vector&lt;<a href="../std/ascii.md#std_ascii_String">std::ascii::String</a>&gt;
 </code></pre>
 
 
@@ -1587,7 +1587,7 @@ Update Sui token message
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../bridge/message.md#bridge_message_token_type_names">token_type_names</a>(self: &<a href="../bridge/message.md#bridge_message_AddTokenOnSui">AddTokenOnSui</a>): vector&lt;String&gt; {
+<pre><code><b>public</b> <b>fun</b> <a href="../bridge/message.md#bridge_message_token_type_names">token_type_names</a>(self: &<a href="../bridge/message.md#bridge_message_AddTokenOnIota">AddTokenOnIota</a>): vector&lt;String&gt; {
     self.<a href="../bridge/message.md#bridge_message_token_type_names">token_type_names</a>
 }
 </code></pre>
@@ -1602,7 +1602,7 @@ Update Sui token message
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../bridge/message.md#bridge_message_token_prices">token_prices</a>(self: &<a href="../bridge/message.md#bridge_message_AddTokenOnSui">bridge::message::AddTokenOnSui</a>): vector&lt;u64&gt;
+<pre><code><b>public</b> <b>fun</b> <a href="../bridge/message.md#bridge_message_token_prices">token_prices</a>(self: &<a href="../bridge/message.md#bridge_message_AddTokenOnIota">bridge::message::AddTokenOnIota</a>): vector&lt;u64&gt;
 </code></pre>
 
 
@@ -1611,7 +1611,7 @@ Update Sui token message
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="../bridge/message.md#bridge_message_token_prices">token_prices</a>(self: &<a href="../bridge/message.md#bridge_message_AddTokenOnSui">AddTokenOnSui</a>): vector&lt;u64&gt; {
+<pre><code><b>public</b> <b>fun</b> <a href="../bridge/message.md#bridge_message_token_prices">token_prices</a>(self: &<a href="../bridge/message.md#bridge_message_AddTokenOnIota">AddTokenOnIota</a>): vector&lt;u64&gt; {
     self.<a href="../bridge/message.md#bridge_message_token_prices">token_prices</a>
 }
 </code></pre>
@@ -1703,7 +1703,7 @@ Return the required signature threshold for the message, values are voting power
         5001
     } <b>else</b> <b>if</b> (<a href="../bridge/message.md#bridge_message_message_type">message_type</a> == <a href="../bridge/message_types.md#bridge_message_types_update_bridge_limit">message_types::update_bridge_limit</a>()) {
         5001
-    } <b>else</b> <b>if</b> (<a href="../bridge/message.md#bridge_message_message_type">message_type</a> == <a href="../bridge/message_types.md#bridge_message_types_add_tokens_on_sui">message_types::add_tokens_on_sui</a>()) {
+    } <b>else</b> <b>if</b> (<a href="../bridge/message.md#bridge_message_message_type">message_type</a> == <a href="../bridge/message_types.md#bridge_message_types_add_tokens_on_iota">message_types::add_tokens_on_iota</a>()) {
         5001
     } <b>else</b> {
         <b>abort</b> <a href="../bridge/message.md#bridge_message_EInvalidMessageType">EInvalidMessageType</a>
@@ -1780,7 +1780,7 @@ Return the required signature threshold for the message, values are voting power
 
 
 
-<pre><code><b>fun</b> <a href="../bridge/message.md#bridge_message_peel_u64_be">peel_u64_be</a>(bcs: &<b>mut</b> <a href="../sui/bcs.md#sui_bcs_BCS">sui::bcs::BCS</a>): u64
+<pre><code><b>fun</b> <a href="../bridge/message.md#bridge_message_peel_u64_be">peel_u64_be</a>(bcs: &<b>mut</b> <a href="../iota/bcs.md#iota_bcs_BCS">iota::bcs::BCS</a>): u64
 </code></pre>
 
 

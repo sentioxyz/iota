@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::authority::{test_authority_builder::TestAuthorityBuilder, AuthorityState};
@@ -9,20 +10,20 @@ use futures::future::join_all;
 use std::collections::BTreeMap;
 use std::sync::Arc;
 use std::time::Duration;
-use sui_config::genesis::Genesis;
-use sui_config::local_ip_utils;
-use sui_config::node::AuthorityOverloadConfig;
-use sui_framework::BuiltInFramework;
-use sui_genesis_builder::validator_info::ValidatorInfo;
-use sui_move_build::test_utils::compile_basics_package;
-use sui_protocol_config::ProtocolConfig;
-use sui_types::base_types::{ObjectID, SuiAddress, TransactionDigest};
-use sui_types::crypto::AuthorityKeyPair;
-use sui_types::crypto::{
+use iota_config::genesis::Genesis;
+use iota_config::local_ip_utils;
+use iota_config::node::AuthorityOverloadConfig;
+use iota_framework::BuiltInFramework;
+use iota_genesis_builder::validator_info::ValidatorInfo;
+use iota_move_build::test_utils::compile_basics_package;
+use iota_protocol_config::ProtocolConfig;
+use iota_types::base_types::{ObjectID, IotaAddress, TransactionDigest};
+use iota_types::crypto::AuthorityKeyPair;
+use iota_types::crypto::{
     generate_proof_of_possession, get_key_pair, AccountKeyPair, AuthorityPublicKeyBytes,
-    NetworkKeyPair, SuiKeyPair,
+    NetworkKeyPair, IotaKeyPair,
 };
-use sui_types::object::Object;
+use iota_types::object::Object;
 
 async fn init_genesis(
     committee_size: usize,
@@ -47,20 +48,20 @@ async fn init_genesis(
     let pkg_id = pkg.id();
     genesis_objects.push(pkg);
 
-    let mut builder = sui_genesis_builder::Builder::new().add_objects(genesis_objects);
+    let mut builder = iota_genesis_builder::Builder::new().add_objects(genesis_objects);
     let mut key_pairs = Vec::new();
     for i in 0..committee_size {
         let key_pair: AuthorityKeyPair = get_key_pair().1;
         let authority_name = key_pair.public().into();
         let worker_key_pair: NetworkKeyPair = get_key_pair().1;
         let worker_name = worker_key_pair.public().clone();
-        let account_key_pair: SuiKeyPair = get_key_pair::<AccountKeyPair>().1.into();
+        let account_key_pair: IotaKeyPair = get_key_pair::<AccountKeyPair>().1.into();
         let network_key_pair: NetworkKeyPair = get_key_pair().1;
         let validator_info = ValidatorInfo {
             name: format!("validator-{i}"),
             protocol_key: authority_name,
             worker_key: worker_name,
-            account_address: SuiAddress::from(&account_key_pair.public()),
+            account_address: IotaAddress::from(&account_key_pair.public()),
             network_key: network_key_pair.public().clone(),
             gas_price: 1,
             commission_rate: 0,

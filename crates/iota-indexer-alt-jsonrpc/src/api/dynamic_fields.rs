@@ -1,16 +1,17 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use anyhow::{anyhow, Context as _};
 use jsonrpsee::{core::RpcResult, proc_macros::rpc};
-use sui_json::SuiJsonValue;
-use sui_json_rpc_types::{SuiObjectDataOptions, SuiObjectResponse};
-use sui_open_rpc::Module;
-use sui_open_rpc_macros::open_rpc;
-use sui_types::{
+use iota_json::IotaJsonValue;
+use iota_json_rpc_types::{IotaObjectDataOptions, IotaObjectResponse};
+use iota_open_rpc::Module;
+use iota_open_rpc_macros::open_rpc;
+use iota_types::{
     base_types::ObjectID,
     dynamic_field::{derive_dynamic_field_id, DynamicFieldInfo, DynamicFieldName},
-    error::SuiObjectResponseError,
+    error::IotaObjectResponseError,
     object::Object,
     TypeTag,
 };
@@ -24,8 +25,8 @@ use crate::{
 
 use super::{objects, rpc_module::RpcModule};
 
-#[open_rpc(namespace = "suix", tag = "Dynamic Fields API")]
-#[rpc(server, namespace = "suix")]
+#[open_rpc(namespace = "iotax", tag = "Dynamic Fields API")]
+#[rpc(server, namespace = "iotax")]
 trait DynamicFieldsApi {
     /// Return the information from a dynamic field based on its parent ID and name.
     #[method(name = "getDynamicFieldObject")]
@@ -35,7 +36,7 @@ trait DynamicFieldsApi {
         parent_object_id: ObjectID,
         /// The Name of the dynamic field
         name: DynamicFieldName,
-    ) -> RpcResult<SuiObjectResponse>;
+    ) -> RpcResult<IotaObjectResponse>;
 }
 
 pub struct DynamicFields(pub Context);
@@ -46,7 +47,7 @@ enum Error {
     BadName(anyhow::Error),
 
     #[error("Invalid type {0}: {1}")]
-    BadType(TypeTag, sui_package_resolver::error::Error),
+    BadType(TypeTag, iota_package_resolver::error::Error),
 
     #[error("Could not serialize dynamic field name as {0}: {1}")]
     TypeMismatch(TypeTag, anyhow::Error),
@@ -58,7 +59,7 @@ impl DynamicFieldsApiServer for DynamicFields {
         &self,
         parent_object_id: ObjectID,
         name: DynamicFieldName,
-    ) -> RpcResult<SuiObjectResponse> {
+    ) -> RpcResult<IotaObjectResponse> {
         let Self(ctx) = self;
         Ok(dynamic_field_object_response(ctx, parent_object_id, name).await?)
     }
@@ -78,13 +79,13 @@ async fn dynamic_field_object_response(
     ctx: &Context,
     parent_object_id: ObjectID,
     name: DynamicFieldName,
-) -> Result<SuiObjectResponse, RpcError<Error>> {
+) -> Result<IotaObjectResponse, RpcError<Error>> {
     let layout = ctx
         .package_resolver()
         .type_layout(name.type_.clone())
         .await
         .map_err(|e| {
-            use sui_package_resolver::error::Error as PRE;
+            use iota_package_resolver::error::Error as PRE;
             match &e {
                 // These errors can be triggered by passing a type that doesn't exist for the
                 // dynamic field name.
@@ -124,7 +125,7 @@ async fn dynamic_field_object_response(
             }
         })?;
 
-    let bytes = SuiJsonValue::new(name.value)
+    let bytes = IotaJsonValue::new(name.value)
         .map_err(|e| invalid_params(Error::BadName(e)))?
         .to_bcs_bytes(&layout)
         .map_err(|e| invalid_params(Error::TypeMismatch(name.type_.clone(), e)))?;
@@ -135,15 +136,15 @@ async fn dynamic_field_object_response(
         .with_context(|| format!("Failed to fetch dynamic field on {parent_object_id}"))?;
 
     let Some(object) = df.or(dof) else {
-        return Ok(SuiObjectResponse::new_with_error(
-            SuiObjectResponseError::DynamicFieldNotFound { parent_object_id },
+        return Ok(IotaObjectResponse::new_with_error(
+            IotaObjectResponseError::DynamicFieldNotFound { parent_object_id },
         ));
     };
 
-    let options = SuiObjectDataOptions::full_content();
+    let options = IotaObjectDataOptions::full_content();
 
     use RpcError as E;
-    Ok(SuiObjectResponse::new_with_data(
+    Ok(IotaObjectResponse::new_with_data(
         objects::response::object_data_with_options(ctx, object, &options)
             .await
             .map_err(|e| match e {

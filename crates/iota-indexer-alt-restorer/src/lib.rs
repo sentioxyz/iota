@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 mod archives;
@@ -6,20 +7,20 @@ mod snapshot;
 
 use archives::ArchivalCheckpointInfo;
 use clap::Parser;
-use sui_pg_db::DbArgs;
+use iota_pg_db::DbArgs;
 use url::Url;
 
 use crate::snapshot::SnapshotRestorer;
 
 #[derive(Parser, Debug, Clone)]
-#[clap(name = "sui-indexer-alt-restorer")]
+#[clap(name = "iota-indexer-alt-restorer")]
 pub struct Args {
     /// Restore from end of this epoch.
     #[clap(long, env = "START_EPOCH", required = true)]
     pub start_epoch: u64,
 
     /// Url of the endpoint to fetch snapshot files from,
-    /// for example <https://formal-snapshot.mainnet.sui.io>
+    /// for example <https://formal-snapshot.mainnet.iota.io>
     #[clap(long, env = "ENDPOINT", required = true)]
     pub endpoint: String,
 
@@ -43,11 +44,11 @@ pub struct Args {
     #[clap(
         long,
         env = "DATABASE_URL",
-        default_value = "postgres://postgres:postgrespw@localhost:5432/sui_indexer_alt"
+        default_value = "postgres://postgres:postgrespw@localhost:5432/iota_indexer_alt"
     )]
     pub database_url: Url,
 
-    /// Database connection arguments from `sui-pg-db`.
+    /// Database connection arguments from `iota-pg-db`.
     #[clap(flatten)]
     pub db_args: DbArgs,
 }

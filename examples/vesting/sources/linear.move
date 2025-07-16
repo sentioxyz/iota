@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 /// ===========================================================================================
@@ -11,9 +12,9 @@
 /// ===========================================================================================
 #[allow(unused_const)]
 module vesting::linear;
-use sui::coin::{Self, Coin};
-use sui::clock::Clock;
-use sui::balance::Balance;
+use iota::coin::{Self, Coin};
+use iota::clock::Clock;
+use iota::balance::Balance;
 
 // === Errors ===
 #[error]

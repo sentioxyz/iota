@@ -1,12 +1,13 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::stake_with_validator;
-use sui_macros::sim_test;
-use sui_rpc_api::field_mask::FieldMask;
-use sui_rpc_api::field_mask::FieldMaskUtil;
-use sui_rpc_api::proto::node::v2::node_service_client::NodeServiceClient;
-use sui_rpc_api::proto::node::v2::{GetTransactionRequest, GetTransactionResponse};
+use iota_macros::sim_test;
+use iota_rpc_api::field_mask::FieldMask;
+use iota_rpc_api::field_mask::FieldMaskUtil;
+use iota_rpc_api::proto::node::v2::node_service_client::NodeServiceClient;
+use iota_rpc_api::proto::node::v2::{GetTransactionRequest, GetTransactionResponse};
 use test_cluster::TestClusterBuilder;
 
 #[sim_test]

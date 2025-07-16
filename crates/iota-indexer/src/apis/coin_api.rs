@@ -1,19 +1,20 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::indexer_reader::IndexerReader;
 use async_trait::async_trait;
 use jsonrpsee::core::RpcResult;
 use jsonrpsee::RpcModule;
-use sui_json_rpc::coin_api::{parse_to_struct_tag, parse_to_type_tag};
-use sui_json_rpc::error::SuiRpcInputError;
-use sui_json_rpc::SuiRpcModule;
-use sui_json_rpc_api::{cap_page_limit, CoinReadApiServer};
-use sui_json_rpc_types::{Balance, CoinPage, Page, SuiCoinMetadata};
-use sui_open_rpc::Module;
-use sui_types::balance::Supply;
-use sui_types::base_types::{ObjectID, SuiAddress};
-use sui_types::gas_coin::{GAS, TOTAL_SUPPLY_MIST};
+use iota_json_rpc::coin_api::{parse_to_struct_tag, parse_to_type_tag};
+use iota_json_rpc::error::IotaRpcInputError;
+use iota_json_rpc::IotaRpcModule;
+use iota_json_rpc_api::{cap_page_limit, CoinReadApiServer};
+use iota_json_rpc_types::{Balance, CoinPage, Page, IotaCoinMetadata};
+use iota_open_rpc::Module;
+use iota_types::balance::Supply;
+use iota_types::base_types::{ObjectID, IotaAddress};
+use iota_types::gas_coin::{GAS, TOTAL_SUPPLY_NANOS};
 
 pub(crate) struct CoinReadApi {
     inner: IndexerReader,
@@ -29,7 +30,7 @@ impl CoinReadApi {
 impl CoinReadApiServer for CoinReadApi {
     async fn get_coins(
         &self,
-        owner: SuiAddress,
+        owner: IotaAddress,
         coin_type: Option<String>,
         cursor: Option<String>,
         limit: Option<usize>,
@@ -46,7 +47,7 @@ impl CoinReadApiServer for CoinReadApi {
         let cursor = match cursor {
             Some(c) => c
                 .parse()
-                .map_err(|e| SuiRpcInputError::GenericInvalid(format!("invalid cursor: {e}")))?,
+                .map_err(|e| IotaRpcInputError::GenericInvalid(format!("invalid cursor: {e}")))?,
             // If cursor is not specified, we need to start from the beginning of the coin type, which is the minimal possible ObjectID.
             None => ObjectID::ZERO,
         };
@@ -67,7 +68,7 @@ impl CoinReadApiServer for CoinReadApi {
 
     async fn get_all_coins(
         &self,
-        owner: SuiAddress,
+        owner: IotaAddress,
         cursor: Option<String>,
         limit: Option<usize>,
     ) -> RpcResult<CoinPage> {
@@ -79,7 +80,7 @@ impl CoinReadApiServer for CoinReadApi {
         let cursor = match cursor {
             Some(c) => c
                 .parse()
-                .map_err(|e| SuiRpcInputError::GenericInvalid(format!("invalid cursor: {e}")))?,
+                .map_err(|e| IotaRpcInputError::GenericInvalid(format!("invalid cursor: {e}")))?,
             // If cursor is not specified, we need to start from the beginning of the coin type, which is the minimal possible ObjectID.
             None => ObjectID::ZERO,
         };
@@ -100,7 +101,7 @@ impl CoinReadApiServer for CoinReadApi {
 
     async fn get_balance(
         &self,
-        owner: SuiAddress,
+        owner: IotaAddress,
         coin_type: Option<String>,
     ) -> RpcResult<Balance> {
         // Normalize coin type tag and default to Gas
@@ -117,14 +118,14 @@ impl CoinReadApiServer for CoinReadApi {
         Ok(results.swap_remove(0))
     }
 
-    async fn get_all_balances(&self, owner: SuiAddress) -> RpcResult<Vec<Balance>> {
+    async fn get_all_balances(&self, owner: IotaAddress) -> RpcResult<Vec<Balance>> {
         self.inner
             .get_coin_balances(owner, None)
             .await
             .map_err(Into::into)
     }
 
-    async fn get_coin_metadata(&self, coin_type: String) -> RpcResult<Option<SuiCoinMetadata>> {
+    async fn get_coin_metadata(&self, coin_type: String) -> RpcResult<Option<IotaCoinMetadata>> {
         let coin_struct = parse_to_struct_tag(&coin_type)?;
         self.inner
             .get_coin_metadata(coin_struct)
@@ -136,7 +137,7 @@ impl CoinReadApiServer for CoinReadApi {
         let coin_struct = parse_to_struct_tag(&coin_type)?;
         if GAS::is_gas(&coin_struct) {
             Ok(Supply {
-                value: TOTAL_SUPPLY_MIST,
+                value: TOTAL_SUPPLY_NANOS,
             })
         } else {
             self.inner
@@ -147,12 +148,12 @@ impl CoinReadApiServer for CoinReadApi {
     }
 }
 
-impl SuiRpcModule for CoinReadApi {
+impl IotaRpcModule for CoinReadApi {
     fn rpc(self) -> RpcModule<Self> {
         self.into_rpc()
     }
 
     fn rpc_doc_module() -> Module {
-        sui_json_rpc_api::CoinReadApiOpenRpc::module_doc()
+        iota_json_rpc_api::CoinReadApiOpenRpc::module_doc()
     }
 }

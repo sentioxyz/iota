@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use axum::middleware::{self, Next};
@@ -9,7 +10,7 @@ use std::path::PathBuf;
 use std::sync::{Arc, RwLock};
 use std::time::Duration;
 use std::{ffi::OsString, fs, path::Path, process::Command};
-use sui_package_management::system_package_versions::latest_system_packages;
+use iota_package_management::system_package_versions::latest_system_packages;
 use tokio::sync::oneshot::Sender;
 
 use anyhow::{anyhow, bail};
@@ -20,7 +21,7 @@ use axum::Extension;
 use axum::{Json, Router};
 use hyper::http::{HeaderName, HeaderValue, Method};
 use hyper::{HeaderMap, StatusCode};
-use mysten_metrics::RegistryService;
+use iota_metrics::RegistryService;
 use prometheus::{register_int_counter_with_registry, IntCounter, Registry};
 use serde::{Deserialize, Serialize};
 use tower::ServiceBuilder;
@@ -30,25 +31,25 @@ use url::Url;
 use move_core_types::account_address::AccountAddress;
 use move_package::{BuildConfig as MoveBuildConfig, LintFlag};
 use move_symbol_pool::Symbol;
-use sui_move::manage_package::resolve_lock_file_path;
-use sui_move_build::{implicit_deps, BuildConfig, SuiPackageHooks};
-use sui_sdk::rpc_types::SuiTransactionBlockEffects;
-use sui_sdk::types::base_types::ObjectID;
-use sui_sdk::SuiClientBuilder;
-use sui_source_validation::{BytecodeSourceVerifier, ValidationMode};
+use iota_move::manage_package::resolve_lock_file_path;
+use iota_move_build::{implicit_deps, BuildConfig, IotaPackageHooks};
+use iota_sdk::rpc_types::IotaTransactionBlockEffects;
+use iota_sdk::types::base_types::ObjectID;
+use iota_sdk::IotaClientBuilder;
+use iota_source_validation::{BytecodeSourceVerifier, ValidationMode};
 
 pub const HOST_PORT_ENV: &str = "HOST_PORT";
-pub const SUI_SOURCE_VALIDATION_VERSION_HEADER: &str = "x-sui-source-validation-version";
-pub const SUI_SOURCE_VALIDATION_VERSION: &str = "0.1";
+pub const IOTA_SOURCE_VALIDATION_VERSION_HEADER: &str = "x-iota-source-validation-version";
+pub const IOTA_SOURCE_VALIDATION_VERSION: &str = "0.1";
 
-pub const MAINNET_URL: &str = "https://fullnode.mainnet.sui.io:443";
-pub const TESTNET_URL: &str = "https://fullnode.testnet.sui.io:443";
-pub const DEVNET_URL: &str = "https://fullnode.devnet.sui.io:443";
+pub const MAINNET_URL: &str = "https://fullnode.mainnet.iota.io:443";
+pub const TESTNET_URL: &str = "https://fullnode.testnet.iota.io:443";
+pub const DEVNET_URL: &str = "https://fullnode.devnet.iota.io:443";
 pub const LOCALNET_URL: &str = "http://127.0.0.1:9000";
 
-pub const MAINNET_WS_URL: &str = "wss://rpc.mainnet.sui.io:443";
-pub const TESTNET_WS_URL: &str = "wss://rpc.testnet.sui.io:443";
-pub const DEVNET_WS_URL: &str = "wss://rpc.devnet.sui.io:443";
+pub const MAINNET_WS_URL: &str = "wss://rpc.mainnet.iota.io:443";
+pub const TESTNET_WS_URL: &str = "wss://rpc.testnet.iota.io:443";
+pub const DEVNET_WS_URL: &str = "wss://rpc.devnet.iota.io:443";
 pub const LOCALNET_WS_URL: &str = "ws://127.0.0.1:9000";
 
 pub const WS_PING_INTERVAL: Duration = Duration::from_millis(20_000);
@@ -150,7 +151,7 @@ pub async fn verify_package(
     network: &Network,
     package_path: impl AsRef<Path>,
 ) -> anyhow::Result<(Network, AddressLookup)> {
-    move_package::package_hooks::register_package_hooks(Box::new(SuiPackageHooks));
+    move_package::package_hooks::register_package_hooks(Box::new(IotaPackageHooks));
     // TODO(rvantonder): use config RPC URL instead of hardcoded URLs
     let network_url = match network {
         Network::Mainnet => MAINNET_URL,
@@ -158,7 +159,7 @@ pub async fn verify_package(
         Network::Devnet => DEVNET_URL,
         Network::Localnet => LOCALNET_URL,
     };
-    let client = SuiClientBuilder::default().build(network_url).await?;
+    let client = IotaClientBuilder::default().build(network_url).await?;
     let chain_id = client.read_api().get_chain_identifier().await?;
     let mut config =
         resolve_lock_file_path(MoveBuildConfig::default(), Some(package_path.as_ref()))?;
@@ -431,7 +432,7 @@ pub async fn watch_for_upgrades(
     _packages: Vec<PackageSource>,
     _app_state: Arc<RwLock<AppState>>,
     _network: Network,
-    _channel: Option<Sender<SuiTransactionBlockEffects>>,
+    _channel: Option<Sender<IotaTransactionBlockEffects>>,
 ) -> anyhow::Result<()> {
     Err(anyhow!("Fatal: JsonRPC Subscriptions no longer supported. Reimplement without using subscriptions."))
 }
@@ -539,21 +540,21 @@ async fn check_version_header(
     next: Next,
 ) -> Response {
     let version = headers
-        .get(SUI_SOURCE_VALIDATION_VERSION_HEADER)
+        .get(IOTA_SOURCE_VALIDATION_VERSION_HEADER)
         .as_ref()
         .and_then(|h| h.to_str().ok())
         .map(|s| s.to_string());
 
     match version {
-        Some(v) if v != SUI_SOURCE_VALIDATION_VERSION => {
+        Some(v) if v != IOTA_SOURCE_VALIDATION_VERSION => {
             let error = format!(
                 "Unsupported version '{v}' specified in header \
-		 {SUI_SOURCE_VALIDATION_VERSION_HEADER}"
+		 {IOTA_SOURCE_VALIDATION_VERSION_HEADER}"
             );
             let mut headers = HeaderMap::new();
             headers.insert(
-                HeaderName::from_static(SUI_SOURCE_VALIDATION_VERSION_HEADER),
-                HeaderValue::from_static(SUI_SOURCE_VALIDATION_VERSION),
+                HeaderName::from_static(IOTA_SOURCE_VALIDATION_VERSION_HEADER),
+                HeaderValue::from_static(IOTA_SOURCE_VALIDATION_VERSION),
             );
             return (
                 StatusCode::BAD_REQUEST,
@@ -566,8 +567,8 @@ async fn check_version_header(
     }
     let mut response = next.run(req).await;
     response.headers_mut().insert(
-        HeaderName::from_static(SUI_SOURCE_VALIDATION_VERSION_HEADER),
-        HeaderValue::from_static(SUI_SOURCE_VALIDATION_VERSION),
+        HeaderName::from_static(IOTA_SOURCE_VALIDATION_VERSION_HEADER),
+        HeaderValue::from_static(IOTA_SOURCE_VALIDATION_VERSION),
     );
     response
 }
@@ -603,7 +604,7 @@ pub fn start_prometheus_server(listener: TcpListener) -> RegistryService {
     let registry_service = RegistryService::new(registry);
 
     let app = Router::new()
-        .route(METRICS_ROUTE, get(mysten_metrics::metrics))
+        .route(METRICS_ROUTE, get(iota_metrics::metrics))
         .layer(Extension(registry_service.clone()));
 
     tokio::spawn(async move {

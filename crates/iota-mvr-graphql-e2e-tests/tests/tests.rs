@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 #![allow(unused_imports)]
@@ -7,13 +8,13 @@ use anyhow::bail;
 use async_trait::async_trait;
 use serde_json::Value;
 use std::{path::Path, sync::Arc, time::Duration};
-use sui_mvr_graphql_rpc::test_infra::cluster::{serve_executor, ExecutorCluster};
-use sui_transactional_test_runner::{
-    args::SuiInitArgs,
+use iota_mvr_graphql_rpc::test_infra::cluster::{serve_executor, ExecutorCluster};
+use iota_transactional_test_runner::{
+    args::IotaInitArgs,
     create_adapter,
     offchain_state::{OffchainStateReader, TestResponse},
     run_tasks_with_adapter,
-    test_adapter::{SuiTestAdapter, PRE_COMPILED},
+    test_adapter::{IotaTestAdapter, PRE_COMPILED},
 };
 
 pub struct OffchainReaderForAdapter {
@@ -66,7 +67,7 @@ async fn run_test(path: &Path) -> Result<(), Box<dyn std::error::Error>> {
     if !cfg!(msim) {
         // start the adapter first to start the executor (simulacrum)
         let (output, mut adapter) =
-            create_adapter::<SuiTestAdapter>(path, Some(Arc::new(PRE_COMPILED.clone()))).await?;
+            create_adapter::<IotaTestAdapter>(path, Some(Arc::new(PRE_COMPILED.clone()))).await?;
 
         let offchain_config = adapter.offchain_config.as_ref().unwrap();
 

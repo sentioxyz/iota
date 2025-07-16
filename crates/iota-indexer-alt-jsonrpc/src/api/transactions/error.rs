@@ -1,7 +1,8 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-use sui_types::{base_types::ObjectID, digests::TransactionDigest};
+use iota_types::{base_types::ObjectID, digests::TransactionDigest};
 
 #[derive(thiserror::Error, Debug)]
 pub(super) enum Error {

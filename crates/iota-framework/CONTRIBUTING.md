@@ -1,4 +1,4 @@
-This file contains useful information and troubleshooting advice for those wishing to contribute to `sui-framework` crate.
+This file contains useful information and troubleshooting advice for those wishing to contribute to `iota-framework` crate.
 
 ## Framework Move source code changes
 
@@ -6,10 +6,10 @@ If changes need to be made to the framework's Move code, additional actions need
 
 ### Snapshot tests update
 
-Run the following script from the Sui's [root directory](../../) and accept any changes (if you do not have `cargo-insta` installed, run the `cargo install cargo-insta` command first):
+Run the following script from the IOTA's [root directory](../../) and accept any changes (if you do not have `cargo-insta` installed, run the `cargo install cargo-insta` command first):
 
 ```bash
 ./scripts/update_all_snapshots.sh
 ```
 
-Please use your best judgment to decide if the changes between old and new versions of the snapshots look "reasonable" (e.g., a minor change in gas costs). When in doubt, please reach out to a member of Sui core team.
+Please use your best judgment to decide if the changes between old and new versions of the snapshots look "reasonable" (e.g., a minor change in gas costs). When in doubt, please reach out to a member of IOTA core team.

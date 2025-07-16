@@ -1,11 +1,12 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 //# init --protocol-version 70 --addresses Test=0x0 --accounts A B --simulator --objects-snapshot-min-checkpoint-lag 2
 
 //# publish --sender A
 module Test::fake {
-    use sui::coin;
+    use iota::coin;
 
     public struct FAKE has drop {}
 
@@ -40,7 +41,7 @@ module Test::fake {
 
 //# run-jsonrpc
 {
-  "method": "suix_getCoins",
+  "method": "iotax_getCoins",
   "params": ["@{A}", "@{Test}::fake::FAKE"]
 }
 
@@ -50,18 +51,18 @@ module Test::fake {
 
 //# run-jsonrpc
 {
-  "method": "suix_getCoins",
-  "params": ["@{A}", "0x2::sui::SUI"]
+  "method": "iotax_getCoins",
+  "params": ["@{A}", "0x2::iota::IOTA"]
 }
 
 //# run-jsonrpc
 {
-  "method": "suix_getCoins",
+  "method": "iotax_getCoins",
   "params": ["@{A}", "@{Test}::fake::FAKE", null, 2]
 }
 
 //# run-jsonrpc
 {
-  "method": "suix_getCoins",
+  "method": "iotax_getCoins",
   "params": ["@{B}", "@{Test}::fake::FAKE", null, 1]
 }

@@ -1,12 +1,13 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-use sui_macros::sim_test;
-use sui_rpc_api::client::Client as CoreClient;
-use sui_rpc_api::field_mask::FieldMask;
-use sui_rpc_api::field_mask::FieldMaskUtil;
-use sui_rpc_api::proto::node::v2::node_service_client::NodeServiceClient;
-use sui_rpc_api::proto::node::v2::{
+use iota_macros::sim_test;
+use iota_rpc_api::client::Client as CoreClient;
+use iota_rpc_api::field_mask::FieldMask;
+use iota_rpc_api::field_mask::FieldMaskUtil;
+use iota_rpc_api::proto::node::v2::node_service_client::NodeServiceClient;
+use iota_rpc_api::proto::node::v2::{
     FullCheckpointObject, FullCheckpointTransaction, GetCheckpointRequest, GetCheckpointResponse,
     GetFullCheckpointRequest, GetFullCheckpointResponse,
 };
@@ -148,7 +149,7 @@ async fn get_full_checkpoint() {
     // A Checkpoint that we know has a transaction that emitted an event
     let checkpoint = grpc_client
         .get_transaction(
-            sui_rpc_api::proto::node::v2::GetTransactionRequest::new(transaction_digest)
+            iota_rpc_api::proto::node::v2::GetTransactionRequest::new(transaction_digest)
                 .with_read_mask(FieldMask::from_paths(["checkpoint"])),
         )
         .await
@@ -353,8 +354,8 @@ async fn get_full_checkpoint() {
 
 #[sim_test]
 async fn subscribe_checkpoint() {
-    use sui_rpc_api::proto::node::v2alpha::subscription_service_client::SubscriptionServiceClient;
-    use sui_rpc_api::proto::node::v2alpha::SubscribeCheckpointsRequest;
+    use iota_rpc_api::proto::node::v2alpha::subscription_service_client::SubscriptionServiceClient;
+    use iota_rpc_api::proto::node::v2alpha::SubscribeCheckpointsRequest;
     use tokio_stream::StreamExt;
 
     let test_cluster = TestClusterBuilder::new().build().await;

@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::collections::BTreeMap;
@@ -13,18 +14,18 @@ use object_store::path::Path;
 use tokio::sync::Mutex;
 use tracing::{debug, info};
 
-use sui_config::object_storage_config::{ObjectStoreConfig, ObjectStoreType};
-use sui_core::authority::authority_store_tables::LiveObject;
-use sui_field_count::FieldCount;
-use sui_indexer_alt_framework::task::TrySpawnStreamExt;
-use sui_indexer_alt_schema::objects::StoredObjInfo;
-use sui_indexer_alt_schema::schema::obj_info;
-use sui_pg_db::Db;
-use sui_snapshot::{
+use iota_config::object_storage_config::{ObjectStoreConfig, ObjectStoreType};
+use iota_core::authority::authority_store_tables::LiveObject;
+use iota_field_count::FieldCount;
+use iota_indexer_alt_framework::task::TrySpawnStreamExt;
+use iota_indexer_alt_schema::objects::StoredObjInfo;
+use iota_indexer_alt_schema::schema::obj_info;
+use iota_pg_db::Db;
+use iota_snapshot::{
     reader::{download_bytes, LiveObjectIter, StateSnapshotReaderV1},
     FileMetadata,
 };
-use sui_storage::object_store::ObjectStoreGetExt;
+use iota_storage::object_store::ObjectStoreGetExt;
 
 use crate::Args;
 

@@ -1,7 +1,8 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 use arc_swap::ArcSwapOption;
-use mysten_metrics::monitored_mpsc::UnboundedReceiver;
+use iota_metrics::monitored_mpsc::UnboundedReceiver;
 use std::{
     net::{IpAddr, SocketAddr},
     sync::Arc,
@@ -13,7 +14,7 @@ use anyhow::Result;
 use consensus_config::{AuthorityIndex, Committee, NetworkKeyPair, Parameters, ProtocolKeyPair};
 use parking_lot::Mutex;
 use prometheus::Registry;
-use sui_protocol_config::{ConsensusNetwork, ProtocolConfig};
+use iota_protocol_config::{ConsensusNetwork, ProtocolConfig};
 use tempfile::TempDir;
 
 use consensus_core::network::tonic_network::to_socket_addr;
@@ -117,7 +118,7 @@ pub(crate) struct AuthorityNodeInner {
 
 #[derive(Debug)]
 struct NodeHandle {
-    node_id: sui_simulator::task::NodeId,
+    node_id: iota_simulator::task::NodeId,
 }
 
 /// When dropped, stop and wait for the node running in this node to completely shutdown.
@@ -125,7 +126,7 @@ impl Drop for AuthorityNodeInner {
     fn drop(&mut self) {
         if let Some(handle) = self.handle.take() {
             tracing::info!("shutting down {}", handle.node_id);
-            sui_simulator::runtime::Handle::try_current().map(|h| h.delete_node(handle.node_id));
+            iota_simulator::runtime::Handle::try_current().map(|h| h.delete_node(handle.node_id));
         }
     }
 }
@@ -136,7 +137,7 @@ impl AuthorityNodeInner {
         let (startup_sender, mut startup_receiver) = tokio::sync::watch::channel(false);
         let (cancel_sender, cancel_receiver) = tokio::sync::watch::channel(false);
 
-        let handle = sui_simulator::runtime::Handle::current();
+        let handle = iota_simulator::runtime::Handle::current();
         let builder = handle.create_node();
 
         let authority = config.committee.authority(config.authority_index);

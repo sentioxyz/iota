@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use clap::Parser;
@@ -7,7 +8,7 @@ use move_package::source_package::layout::SourcePackageLayout;
 use std::{fs::create_dir_all, io::Write, path::Path};
 
 #[derive(Parser)]
-#[group(id = "sui-move-new")]
+#[group(id = "iota-move-new")]
 pub struct New {
     #[clap(flatten)]
     pub new: new::New,
@@ -33,7 +34,7 @@ module {name}::{name};
 */
 
 // For Move coding conventions, see
-// https://docs.sui.io/concepts/sui-move-concepts/conventions
+// https://docs.iota.org/concepts/iota-move-concepts/conventions
 
 "#,
             name = name

@@ -1,16 +1,17 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 module deepbook::clob_v2 {
     use std::type_name::TypeName;
 
-    use sui::balance::{Self, Balance};
-    use sui::clock::{Self, Clock};
-    use sui::coin::{Self, Coin};
-    use sui::event;
-    use sui::linked_table::{Self, LinkedTable};
-    use sui::sui::SUI;
-    use sui::table::{Self, Table, contains, borrow_mut};
+    use iota::balance::{Self, Balance};
+    use iota::clock::{Self, Clock};
+    use iota::coin::{Self, Coin};
+    use iota::event;
+    use iota::linked_table::{Self, LinkedTable};
+    use iota::iota::IOTA;
+    use iota::table::{Self, Table, contains, borrow_mut};
 
     use deepbook::critbit::{Self, CritbitTree, borrow_mut_leaf_by_index, remove_leaf_by_index, borrow_leaf_by_index, borrow_leaf_by_key, find_leaf};
     use deepbook::custodian_v2::{Self as custodian, Custodian, AccountCap, account_owner};
@@ -176,7 +177,7 @@ module deepbook::clob_v2 {
         // For each pool, order id is incremental and unique for each opening order.
         // Orders that are submitted earlier has lower order ids.
         // 64 bits are sufficient for order ids whereas 32 bits are not.
-        // Assuming a maximum TPS of 100K/s of Sui chain, it would take (1<<63) / 100000 / 3600 / 24 / 365 = 2924712 years to reach the full capacity.
+        // Assuming a maximum TPS of 100K/s of IOTA chain, it would take (1<<63) / 100000 / 3600 / 24 / 365 = 2924712 years to reach the full capacity.
         // The highest bit of the order id is used to denote the order type, 0 for bid, 1 for ask.
         order_id: u64,
         client_order_id: u64,
@@ -227,7 +228,7 @@ module deepbook::clob_v2 {
         base_custodian: Custodian<BaseAsset>,
         quote_custodian: Custodian<QuoteAsset>,
         // Stores the fee paid to create this pool. These funds are not accessible.
-        creation_fee: Balance<SUI>,
+        creation_fee: Balance<IOTA>,
         // Deprecated.
         base_asset_trading_fees: Balance<BaseAsset>,
         // Stores the trading fees paid in `QuoteAsset`. These funds are not accessible in the V1 of the Pools, but V2 Pools are accessible.
@@ -314,7 +315,7 @@ module deepbook::clob_v2 {
     public fun create_pool<BaseAsset, QuoteAsset>(
         _tick_size: u64,
         _lot_size: u64,
-        _creation_fee: Coin<SUI>,
+        _creation_fee: Coin<IOTA>,
         _ctx: &mut TxContext,
     ) {
         
@@ -330,7 +331,7 @@ module deepbook::clob_v2 {
         _lot_size: u64,
         _taker_fee_rate: u64,
         _maker_rebate_rate: u64,
-        _creation_fee: Coin<SUI>,
+        _creation_fee: Coin<IOTA>,
         _ctx: &mut TxContext,
     ) {
         
@@ -342,7 +343,7 @@ module deepbook::clob_v2 {
     public fun create_pool_with_return<BaseAsset, QuoteAsset>(
         _tick_size: u64,
         _lot_size: u64,
-        _creation_fee: Coin<SUI>,
+        _creation_fee: Coin<IOTA>,
         _ctx: &mut TxContext,
     ): Pool<BaseAsset, QuoteAsset> {
         
@@ -358,7 +359,7 @@ module deepbook::clob_v2 {
         _lot_size: u64,
         _taker_fee_rate: u64,
         _maker_rebate_rate: u64,
-        _creation_fee: Coin<SUI>,
+        _creation_fee: Coin<IOTA>,
         _ctx: &mut TxContext,
     ) : Pool<BaseAsset, QuoteAsset> {
         
@@ -374,7 +375,7 @@ module deepbook::clob_v2 {
         _lot_size: u64,
         _taker_fee_rate: u64,
         _maker_rebate_rate: u64,
-        _creation_fee: Coin<SUI>,
+        _creation_fee: Coin<IOTA>,
         _ctx: &mut TxContext,
     ) : (Pool<BaseAsset, QuoteAsset>, PoolOwnerCap) {
         

@@ -1,8 +1,9 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 /// Priority queue implemented using a max heap.
-module sui::priority_queue {
+module iota::priority_queue {
     use std::vector;
 
     /// For when heap is empty and there's no data to pop.

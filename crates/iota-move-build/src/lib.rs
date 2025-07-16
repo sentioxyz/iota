@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 extern crate move_ir_types;
@@ -44,28 +45,28 @@ use move_package::{
 };
 use move_symbol_pool::Symbol;
 use serde_reflection::Registry;
-use sui_package_management::{
+use iota_package_management::{
     resolve_published_id,
     system_package_versions::{SystemPackagesVersion, SYSTEM_GIT_REPO},
     PublishedAtError,
 };
-use sui_protocol_config::{Chain, ProtocolConfig, ProtocolVersion};
-use sui_types::{
+use iota_protocol_config::{Chain, ProtocolConfig, ProtocolVersion};
+use iota_types::{
     base_types::ObjectID,
-    error::{SuiError, SuiResult},
+    error::{IotaError, IotaResult},
     is_system_package,
     move_package::{FnInfo, FnInfoKey, FnInfoMap, MovePackage},
-    BRIDGE_ADDRESS, DEEPBOOK_ADDRESS, MOVE_STDLIB_ADDRESS, SUI_FRAMEWORK_ADDRESS,
-    SUI_SYSTEM_ADDRESS,
+    BRIDGE_ADDRESS, DEEPBOOK_ADDRESS, MOVE_STDLIB_ADDRESS, IOTA_FRAMEWORK_ADDRESS,
+    IOTA_SYSTEM_ADDRESS,
 };
-use sui_verifier::verifier as sui_bytecode_verifier;
+use iota_verifier::verifier as iota_bytecode_verifier;
 
 #[cfg(test)]
 #[path = "unit_tests/build_tests.rs"]
 mod build_tests;
 
 pub mod test_utils {
-    use crate::{BuildConfig, CompiledPackage, SuiPackageHooks};
+    use crate::{BuildConfig, CompiledPackage, IotaPackageHooks};
     use std::path::PathBuf;
 
     pub fn compile_basics_package() -> CompiledPackage {
@@ -73,11 +74,11 @@ pub mod test_utils {
     }
 
     pub fn compile_managed_coin_package() -> CompiledPackage {
-        compile_example_package("../../crates/sui-core/src/unit_tests/data/managed_coin")
+        compile_example_package("../../crates/iota-core/src/unit_tests/data/managed_coin")
     }
 
     pub fn compile_example_package(relative_path: &str) -> CompiledPackage {
-        move_package::package_hooks::register_package_hooks(Box::new(SuiPackageHooks));
+        move_package::package_hooks::register_package_hooks(Box::new(IotaPackageHooks));
         let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
         path.push(relative_path);
 
@@ -85,7 +86,7 @@ pub mod test_utils {
     }
 }
 
-/// Wrapper around the core Move `CompiledPackage` with some Sui-specific traits and info
+/// Wrapper around the core Move `CompiledPackage` with some IOTA-specific traits and info
 #[derive(Debug, Clone)]
 pub struct CompiledPackage {
     pub package: MoveCompiledPackage,
@@ -100,7 +101,7 @@ pub struct CompiledPackage {
     pub dependency_graph: DependencyGraph,
 }
 
-/// Wrapper around the core Move `BuildConfig` with some Sui-specific info
+/// Wrapper around the core Move `BuildConfig` with some IOTA-specific info
 #[derive(Clone)]
 pub struct BuildConfig {
     pub config: MoveBuildConfig,
@@ -115,11 +116,11 @@ pub struct BuildConfig {
 
 impl BuildConfig {
     pub fn new_for_testing() -> Self {
-        move_package::package_hooks::register_package_hooks(Box::new(SuiPackageHooks));
+        move_package::package_hooks::register_package_hooks(Box::new(IotaPackageHooks));
         let install_dir = tempfile::tempdir().unwrap().into_path();
 
         let config = MoveBuildConfig {
-            default_flavor: Some(move_compiler::editions::Flavor::Sui),
+            default_flavor: Some(move_compiler::editions::Flavor::Iota),
 
             lock_file: Some(install_dir.join("Move.lock")),
             install_dir: Some(install_dir),
@@ -198,8 +199,8 @@ impl BuildConfig {
     }
 
     /// Given a `path` and a `build_config`, build the package in that path, including its dependencies.
-    /// If we are building the Sui framework, we skip the check that the addresses should be 0
-    pub fn build(self, path: &Path) -> SuiResult<CompiledPackage> {
+    /// If we are building the IOTA framework, we skip the check that the addresses should be 0
+    pub fn build(self, path: &Path) -> IotaResult<CompiledPackage> {
         let print_diags_to_stderr = self.print_diags_to_stderr;
         let run_bytecode_verifier = self.run_bytecode_verifier;
         let chain_id = self.chain_id.clone();
@@ -216,9 +217,9 @@ impl BuildConfig {
         mut self,
         path: &Path,
         chain_id: Option<String>,
-    ) -> SuiResult<ResolvedGraph> {
-        if let Some(err_msg) = set_sui_flavor(&mut self.config) {
-            return Err(SuiError::ModuleBuildFailure { error: err_msg });
+    ) -> IotaResult<ResolvedGraph> {
+        if let Some(err_msg) = set_iota_flavor(&mut self.config) {
+            return Err(IotaError::ModuleBuildFailure { error: err_msg });
         }
 
         if self.print_diags_to_stderr {
@@ -228,7 +229,7 @@ impl BuildConfig {
             self.config
                 .resolution_graph_for_package(path, chain_id, &mut std::io::sink())
         }
-        .map_err(|err| SuiError::ModuleBuildFailure {
+        .map_err(|err| IotaError::ModuleBuildFailure {
             error: format!("{:?}", err),
         })
     }
@@ -244,24 +245,24 @@ pub fn decorate_warnings(warning_diags: Diagnostics, files: Option<&MappedFiles>
         report_warnings(f, warning_diags);
     }
     if any_linter_warnings {
-        eprintln!("Please report feedback on the linter warnings at https://forums.sui.io\n");
+        eprintln!("Please report feedback on the linter warnings at https://forums.iota.io\n");
     }
     if filtered_diags_num > 0 {
         eprintln!("Total number of linter warnings suppressed: {filtered_diags_num} (unique lints: {unique})");
     }
 }
 
-/// Sets build config's default flavor to `Flavor::Sui`. Returns error message if the flavor was
-/// previously set to something else than `Flavor::Sui`.
-pub fn set_sui_flavor(build_config: &mut MoveBuildConfig) -> Option<String> {
+/// Sets build config's default flavor to `Flavor::Iota`. Returns error message if the flavor was
+/// previously set to something else than `Flavor::Iota`.
+pub fn set_iota_flavor(build_config: &mut MoveBuildConfig) -> Option<String> {
     use move_compiler::editions::Flavor;
 
-    let flavor = build_config.default_flavor.get_or_insert(Flavor::Sui);
-    if flavor != &Flavor::Sui {
+    let flavor = build_config.default_flavor.get_or_insert(Flavor::Iota);
+    if flavor != &Flavor::Iota {
         return Some(format!(
             "The flavor of the Move compiler cannot be overridden with anything but \
                  \"{}\", but the default override was set to: \"{flavor}\"",
-            Flavor::Sui,
+            Flavor::Iota,
         ));
     }
     None
@@ -272,7 +273,7 @@ pub fn build_from_resolution_graph(
     run_bytecode_verifier: bool,
     print_diags_to_stderr: bool,
     chain_id: Option<String>,
-) -> SuiResult<CompiledPackage> {
+) -> IotaResult<CompiledPackage> {
     let (published_at, dependency_ids) = gather_published_ids(&resolution_graph, chain_id);
 
     // collect bytecode dependencies as these are not returned as part of core
@@ -286,7 +287,7 @@ pub fn build_from_resolution_graph(
         BuildConfig::compile_package(&resolution_graph, &mut std::io::sink())
     };
 
-    let (package, fn_info) = result.map_err(|error| SuiError::ModuleBuildFailure {
+    let (package, fn_info) = result.map_err(|error| IotaError::ModuleBuildFailure {
         // Use [Debug] formatting to capture [anyhow] error context
         error: format!("{:?}", error),
     })?;
@@ -307,7 +308,7 @@ pub fn build_from_resolution_graph(
 /// Returns the bytecode deps from `resolution_graph` that have no source code
 fn collect_bytecode_deps(
     resolution_graph: &ResolvedGraph,
-) -> SuiResult<Vec<(Symbol, CompiledModule)>> {
+) -> IotaResult<Vec<(Symbol, CompiledModule)>> {
     let mut bytecode_deps = vec![];
     for (name, pkg) in resolution_graph.package_table.iter() {
         if !pkg
@@ -319,7 +320,7 @@ fn collect_bytecode_deps(
         }
         let modules =
             pkg.get_bytecodes_bytes()
-                .map_err(|error| SuiError::ModuleDeserializationFailure {
+                .map_err(|error| IotaError::ModuleDeserializationFailure {
                     error: format!(
                         "Deserializing bytecode dependency for package {}: {:?}",
                         name, error
@@ -328,7 +329,7 @@ fn collect_bytecode_deps(
         for module in modules {
             let module =
                 CompiledModule::deserialize_with_defaults(module.as_ref()).map_err(|error| {
-                    SuiError::ModuleDeserializationFailure {
+                    IotaError::ModuleDeserializationFailure {
                         error: format!(
                             "Deserializing bytecode dependency for package {}: {:?}",
                             name, error
@@ -342,20 +343,20 @@ fn collect_bytecode_deps(
 }
 
 /// Check that the compiled modules in `package` are valid
-fn verify_bytecode(package: &MoveCompiledPackage, fn_info: &FnInfoMap) -> SuiResult<()> {
+fn verify_bytecode(package: &MoveCompiledPackage, fn_info: &FnInfoMap) -> IotaResult<()> {
     let compiled_modules = package.root_modules_map();
     let verifier_config = ProtocolConfig::get_for_version(ProtocolVersion::MAX, Chain::Unknown)
         .verifier_config(/* signing_limits */ None);
 
     for m in compiled_modules.iter_modules() {
         move_bytecode_verifier::verify_module_unmetered(m).map_err(|err| {
-            SuiError::ModuleVerificationFailure {
+            IotaError::ModuleVerificationFailure {
                 error: err.to_string(),
             }
         })?;
-        sui_bytecode_verifier::sui_verify_module_unmetered(m, fn_info, &verifier_config)?;
+        iota_bytecode_verifier::iota_verify_module_unmetered(m, fn_info, &verifier_config)?;
     }
-    // TODO(https://github.com/MystenLabs/sui/issues/69): Run Move linker
+    // TODO(https://github.com/iotaledger/iota/issues/69): Run Move linker
 
     Ok(())
 }
@@ -420,7 +421,7 @@ impl CompiledPackage {
                 .collect()
         } else {
             // Collect all module IDs from the current package to be published (module names are not
-            // sufficient as we may have modules with the same names in user code and in Sui
+            // sufficient as we may have modules with the same names in user code and in IOTA
             // framework which would result in the latter being pulled into a set of modules to be
             // published).
             let self_modules: HashSet<_> = self
@@ -486,16 +487,16 @@ impl CompiledPackage {
             .filter(|m| *m.self_id().address() == BRIDGE_ADDRESS)
     }
 
-    /// Get bytecode modules from the Sui System that are used by this package
-    pub fn get_sui_system_modules(&self) -> impl Iterator<Item = &CompiledModule> {
+    /// Get bytecode modules from the IOTA System that are used by this package
+    pub fn get_iota_system_modules(&self) -> impl Iterator<Item = &CompiledModule> {
         self.get_modules_and_deps()
-            .filter(|m| *m.self_id().address() == SUI_SYSTEM_ADDRESS)
+            .filter(|m| *m.self_id().address() == IOTA_SYSTEM_ADDRESS)
     }
 
-    /// Get bytecode modules from the Sui Framework that are used by this package
-    pub fn get_sui_framework_modules(&self) -> impl Iterator<Item = &CompiledModule> {
+    /// Get bytecode modules from the IOTA Framework that are used by this package
+    pub fn get_iota_framework_modules(&self) -> impl Iterator<Item = &CompiledModule> {
         self.get_modules_and_deps()
-            .filter(|m| *m.self_id().address() == SUI_FRAMEWORK_ADDRESS)
+            .filter(|m| *m.self_id().address() == IOTA_FRAMEWORK_ADDRESS)
     }
 
     /// Get bytecode modules from the Move stdlib that are used by this package
@@ -595,7 +596,7 @@ impl CompiledPackage {
     pub fn verify_unpublished_dependencies(
         &self,
         unpublished_deps: &BTreeSet<Symbol>,
-    ) -> SuiResult<()> {
+    ) -> IotaResult<()> {
         if unpublished_deps.is_empty() {
             return Ok(());
         }
@@ -635,7 +636,7 @@ impl CompiledPackage {
                 .into(),
         );
 
-        Err(SuiError::ModulePublishFailure {
+        Err(IotaError::ModulePublishFailure {
             error: error_message.join("\n"),
         })
     }
@@ -739,9 +740,9 @@ impl GetModule for CompiledPackage {
 
 pub const PUBLISHED_AT_MANIFEST_FIELD: &str = "published-at";
 
-pub struct SuiPackageHooks;
+pub struct IotaPackageHooks;
 
-impl PackageHooks for SuiPackageHooks {
+impl PackageHooks for IotaPackageHooks {
     fn custom_package_info_fields(&self) -> Vec<String> {
         vec![
             PUBLISHED_AT_MANIFEST_FIELD.to_string(),
@@ -855,7 +856,7 @@ pub fn published_at_property(manifest: &SourceManifest) -> Result<ObjectID, Publ
     ObjectID::from_str(value.as_str()).map_err(|_| PublishedAtError::Invalid(value.to_owned()))
 }
 
-pub fn check_unpublished_dependencies(unpublished: &BTreeSet<Symbol>) -> Result<(), SuiError> {
+pub fn check_unpublished_dependencies(unpublished: &BTreeSet<Symbol>) -> Result<(), IotaError> {
     if unpublished.is_empty() {
         return Ok(());
     };
@@ -877,12 +878,12 @@ pub fn check_unpublished_dependencies(unpublished: &BTreeSet<Symbol>) -> Result<
             .into(),
     );
 
-    Err(SuiError::ModulePublishFailure {
+    Err(IotaError::ModulePublishFailure {
         error: error_messages.join("\n"),
     })
 }
 
-pub fn check_invalid_dependencies(invalid: &BTreeMap<Symbol, String>) -> Result<(), SuiError> {
+pub fn check_invalid_dependencies(invalid: &BTreeMap<Symbol, String>) -> Result<(), IotaError> {
     if invalid.is_empty() {
         return Ok(());
     }
@@ -898,7 +899,7 @@ pub fn check_invalid_dependencies(invalid: &BTreeMap<Symbol, String>) -> Result<
         })
         .collect::<Vec<_>>();
 
-    Err(SuiError::ModulePublishFailure {
+    Err(IotaError::ModulePublishFailure {
         error: error_messages.join("\n"),
     })
 }

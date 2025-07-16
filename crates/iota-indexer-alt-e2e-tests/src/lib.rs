@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::{
@@ -11,18 +12,18 @@ use anyhow::{bail, Context};
 use diesel::{ExpressionMethods, OptionalExtension, QueryDsl};
 use diesel_async::RunQueryDsl;
 use simulacrum::Simulacrum;
-use sui_indexer_alt::{config::IndexerConfig, setup_indexer};
-use sui_indexer_alt_framework::{ingestion::ClientArgs, schema::watermarks, IndexerArgs};
-use sui_indexer_alt_jsonrpc::{
+use iota_indexer_alt::{config::IndexerConfig, setup_indexer};
+use iota_indexer_alt_framework::{ingestion::ClientArgs, schema::watermarks, IndexerArgs};
+use iota_indexer_alt_jsonrpc::{
     api::write::WriteArgs, config::RpcConfig, data::system_package_task::SystemPackageTaskArgs,
     start_rpc, RpcArgs,
 };
-use sui_pg_db::{
+use iota_pg_db::{
     temp::{get_available_port, TempDb},
     Db, DbArgs,
 };
-use sui_types::{
-    base_types::{ObjectRef, SuiAddress},
+use iota_types::{
+    base_types::{ObjectRef, IotaAddress},
     crypto::AccountKeyPair,
     effects::{TransactionEffects, TransactionEffectsAPI},
     error::ExecutionError,
@@ -152,7 +153,7 @@ impl FullCluster {
     pub fn funded_account(
         &mut self,
         amount: u64,
-    ) -> anyhow::Result<(SuiAddress, AccountKeyPair, ObjectRef)> {
+    ) -> anyhow::Result<(IotaAddress, AccountKeyPair, ObjectRef)> {
         self.executor.funded_account(amount)
     }
 
@@ -160,7 +161,7 @@ impl FullCluster {
     /// object that was sent.
     pub fn request_gas(
         &mut self,
-        address: SuiAddress,
+        address: IotaAddress,
         amount: u64,
     ) -> anyhow::Result<TransactionEffects> {
         self.executor.request_gas(address, amount)

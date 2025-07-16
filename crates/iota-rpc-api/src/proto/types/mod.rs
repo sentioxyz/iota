@@ -1,13 +1,14 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use super::TryFromProtoError;
 
 // Include the generated proto definitions
-include!("../generated/sui.types.rs");
+include!("../generated/iota.types.rs");
 
 /// Byte encoded FILE_DESCRIPTOR_SET.
-pub const FILE_DESCRIPTOR_SET: &[u8] = include_bytes!("../generated/sui.types.fds.bin");
+pub const FILE_DESCRIPTOR_SET: &[u8] = include_bytes!("../generated/iota.types.fds.bin");
 
 #[cfg(test)]
 mod tests {
@@ -33,15 +34,15 @@ mod transaction_convert;
 // Address
 //
 
-impl From<sui_sdk_types::Address> for Address {
-    fn from(value: sui_sdk_types::Address) -> Self {
+impl From<iota_sdk_types::Address> for Address {
+    fn from(value: iota_sdk_types::Address) -> Self {
         Self {
             address: Some(value.as_bytes().to_vec().into()),
         }
     }
 }
 
-impl TryFrom<&Address> for sui_sdk_types::Address {
+impl TryFrom<&Address> for iota_sdk_types::Address {
     type Error = TryFromProtoError;
 
     fn try_from(Address { address }: &Address) -> Result<Self, Self::Error> {
@@ -59,15 +60,15 @@ impl TryFrom<&Address> for sui_sdk_types::Address {
 // ObjectId
 //
 
-impl From<sui_sdk_types::ObjectId> for ObjectId {
-    fn from(value: sui_sdk_types::ObjectId) -> Self {
+impl From<iota_sdk_types::ObjectId> for ObjectId {
+    fn from(value: iota_sdk_types::ObjectId) -> Self {
         Self {
             object_id: Some(value.as_bytes().to_vec().into()),
         }
     }
 }
 
-impl TryFrom<&ObjectId> for sui_sdk_types::ObjectId {
+impl TryFrom<&ObjectId> for iota_sdk_types::ObjectId {
     type Error = TryFromProtoError;
 
     fn try_from(ObjectId { object_id }: &ObjectId) -> Result<Self, Self::Error> {
@@ -85,15 +86,15 @@ impl TryFrom<&ObjectId> for sui_sdk_types::ObjectId {
 // Digest
 //
 
-impl From<sui_sdk_types::Digest> for Digest {
-    fn from(value: sui_sdk_types::Digest) -> Self {
+impl From<iota_sdk_types::Digest> for Digest {
+    fn from(value: iota_sdk_types::Digest) -> Self {
         Self {
             digest: Some(value.as_bytes().to_vec().into()),
         }
     }
 }
 
-impl TryFrom<&Digest> for sui_sdk_types::Digest {
+impl TryFrom<&Digest> for iota_sdk_types::Digest {
     type Error = TryFromProtoError;
 
     fn try_from(Digest { digest }: &Digest) -> Result<Self, Self::Error> {
@@ -109,17 +110,17 @@ impl TryFrom<&Digest> for sui_sdk_types::Digest {
 
 macro_rules! impl_digest_proto {
     ($t:ident) => {
-        impl From<sui_sdk_types::$t> for Digest {
-            fn from(value: sui_sdk_types::$t) -> Self {
-                sui_sdk_types::Digest::from(value).into()
+        impl From<iota_sdk_types::$t> for Digest {
+            fn from(value: iota_sdk_types::$t) -> Self {
+                iota_sdk_types::Digest::from(value).into()
             }
         }
 
-        impl TryFrom<&Digest> for sui_sdk_types::$t {
+        impl TryFrom<&Digest> for iota_sdk_types::$t {
             type Error = TryFromProtoError;
 
             fn try_from(digest: &Digest) -> Result<Self, Self::Error> {
-                sui_sdk_types::Digest::try_from(digest).map(Into::into)
+                iota_sdk_types::Digest::try_from(digest).map(Into::into)
             }
         }
     };

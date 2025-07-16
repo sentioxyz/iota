@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use fastcrypto::encoding::Base64;
@@ -11,36 +12,36 @@ use std::future;
 use std::sync::Arc;
 use std::time::Duration;
 use std::time::Instant;
-use sui_json_rpc_types::DevInspectArgs;
-use sui_json_rpc_types::SuiData;
-use sui_json_rpc_types::ZkLoginIntentScope;
-use sui_json_rpc_types::ZkLoginVerifyResult;
+use iota_json_rpc_types::DevInspectArgs;
+use iota_json_rpc_types::IotaData;
+use iota_json_rpc_types::ZkLoginIntentScope;
+use iota_json_rpc_types::ZkLoginVerifyResult;
 
-use crate::error::{Error, SuiRpcResult};
+use crate::error::{Error, IotaRpcResult};
 use crate::RpcClient;
-use sui_json_rpc_api::{
+use iota_json_rpc_api::{
     CoinReadApiClient, GovernanceReadApiClient, IndexerApiClient, MoveUtilsClient, ReadApiClient,
     WriteApiClient,
 };
-use sui_json_rpc_types::CheckpointPage;
-use sui_json_rpc_types::{
+use iota_json_rpc_types::CheckpointPage;
+use iota_json_rpc_types::{
     Balance, Checkpoint, CheckpointId, Coin, CoinPage, DelegatedStake, DevInspectResults,
     DryRunTransactionBlockResponse, DynamicFieldPage, EventFilter, EventPage, ObjectsPage,
-    ProtocolConfigResponse, SuiCoinMetadata, SuiCommittee, SuiEvent, SuiGetPastObjectRequest,
-    SuiMoveNormalizedModule, SuiObjectDataOptions, SuiObjectResponse, SuiObjectResponseQuery,
-    SuiPastObjectResponse, SuiTransactionBlockEffects, SuiTransactionBlockResponse,
-    SuiTransactionBlockResponseOptions, SuiTransactionBlockResponseQuery, TransactionBlocksPage,
+    ProtocolConfigResponse, IotaCoinMetadata, IotaCommittee, IotaEvent, IotaGetPastObjectRequest,
+    IotaMoveNormalizedModule, IotaObjectDataOptions, IotaObjectResponse, IotaObjectResponseQuery,
+    IotaPastObjectResponse, IotaTransactionBlockEffects, IotaTransactionBlockResponse,
+    IotaTransactionBlockResponseOptions, IotaTransactionBlockResponseQuery, TransactionBlocksPage,
     TransactionFilter,
 };
-use sui_types::balance::Supply;
-use sui_types::base_types::{ObjectID, SequenceNumber, SuiAddress, TransactionDigest};
-use sui_types::dynamic_field::DynamicFieldName;
-use sui_types::event::EventID;
-use sui_types::messages_checkpoint::CheckpointSequenceNumber;
-use sui_types::quorum_driver_types::ExecuteTransactionRequestType;
-use sui_types::sui_serde::BigInt;
-use sui_types::sui_system_state::sui_system_state_summary::SuiSystemStateSummary;
-use sui_types::transaction::{Transaction, TransactionData, TransactionKind};
+use iota_types::balance::Supply;
+use iota_types::base_types::{ObjectID, SequenceNumber, IotaAddress, TransactionDigest};
+use iota_types::dynamic_field::DynamicFieldName;
+use iota_types::event::EventID;
+use iota_types::messages_checkpoint::CheckpointSequenceNumber;
+use iota_types::quorum_driver_types::ExecuteTransactionRequestType;
+use iota_types::iota_serde::BigInt;
+use iota_types::iota_system_state::iota_system_state_summary::IotaSystemStateSummary;
+use iota_types::transaction::{Transaction, TransactionData, TransactionKind};
 
 const WAIT_FOR_LOCAL_EXECUTION_TIMEOUT: Duration = Duration::from_secs(60);
 const WAIT_FOR_LOCAL_EXECUTION_DELAY: Duration = Duration::from_millis(200);
@@ -64,15 +65,15 @@ impl ReadApi {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// use sui_sdk::SuiClientBuilder;
-    /// use sui_types::base_types::SuiAddress;
+    /// use iota_sdk::IotaClientBuilder;
+    /// use iota_types::base_types::IotaAddress;
     /// use std::str::FromStr;
     ///
     /// #[tokio::main]
     /// async fn main() -> Result<(), anyhow::Error> {
-    ///     let sui = SuiClientBuilder::default().build_localnet().await?;
-    ///     let address = SuiAddress::from_str("0x0000....0000")?;
-    ///     let owned_objects = sui
+    ///     let iota = IotaClientBuilder::default().build_localnet().await?;
+    ///     let address = IotaAddress::from_str("0x0000....0000")?;
+    ///     let owned_objects = iota
     ///         .read_api()
     ///         .get_owned_objects(address, None, None, None)
     ///         .await?;
@@ -81,11 +82,11 @@ impl ReadApi {
     /// ```
     pub async fn get_owned_objects(
         &self,
-        address: SuiAddress,
-        query: Option<SuiObjectResponseQuery>,
+        address: IotaAddress,
+        query: Option<IotaObjectResponseQuery>,
         cursor: Option<ObjectID>,
         limit: Option<usize>,
-    ) -> SuiRpcResult<ObjectsPage> {
+    ) -> IotaRpcResult<ObjectsPage> {
         Ok(self
             .api
             .http
@@ -104,15 +105,15 @@ impl ReadApi {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// use sui_sdk::SuiClientBuilder;
-    /// use sui_types::base_types::{ObjectID, SuiAddress};
+    /// use iota_sdk::IotaClientBuilder;
+    /// use iota_types::base_types::{ObjectID, IotaAddress};
     /// use std::str::FromStr;
     ///
     /// #[tokio::main]
     /// async fn main() -> Result<(), anyhow::Error> {
-    ///     let sui = SuiClientBuilder::default().build_localnet().await?;
-    ///     let address = SuiAddress::from_str("0x0000....0000")?;
-    ///     let owned_objects = sui
+    ///     let iota = IotaClientBuilder::default().build_localnet().await?;
+    ///     let address = IotaAddress::from_str("0x0000....0000")?;
+    ///     let owned_objects = iota
     ///         .read_api()
     ///         .get_owned_objects(address, None, None, None)
     ///         .await?;
@@ -122,11 +123,11 @@ impl ReadApi {
     ///         address
     ///     ));
     ///     let object_data = object.data.as_ref().expect(&format!(
-    ///         "No object data for this SuiObjectResponse {:?}",
+    ///         "No object data for this IotaObjectResponse {:?}",
     ///         object
     ///     ));
     ///     let object_id = object_data.object_id;
-    ///     let dynamic_fields = sui
+    ///     let dynamic_fields = iota
     ///         .read_api()
     ///         .get_dynamic_fields(object_id, None, None)
     ///         .await?;
@@ -138,7 +139,7 @@ impl ReadApi {
         object_id: ObjectID,
         cursor: Option<ObjectID>,
         limit: Option<usize>,
-    ) -> SuiRpcResult<DynamicFieldPage> {
+    ) -> IotaRpcResult<DynamicFieldPage> {
         Ok(self
             .api
             .http
@@ -151,7 +152,7 @@ impl ReadApi {
         &self,
         parent_object_id: ObjectID,
         name: DynamicFieldName,
-    ) -> SuiRpcResult<SuiObjectResponse> {
+    ) -> IotaRpcResult<IotaObjectResponse> {
         Ok(self
             .api
             .http
@@ -168,16 +169,16 @@ impl ReadApi {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// use sui_sdk::SuiClientBuilder;
-    /// use sui_types::base_types::{ObjectID, SuiAddress};
-    /// use sui_json_rpc_types::SuiObjectDataOptions;
+    /// use iota_sdk::IotaClientBuilder;
+    /// use iota_types::base_types::{ObjectID, IotaAddress};
+    /// use iota_json_rpc_types::IotaObjectDataOptions;
     /// use std::str::FromStr;
     ///
     /// #[tokio::main]
     /// async fn main() -> Result<(), anyhow::Error> {
-    ///     let sui = SuiClientBuilder::default().build_localnet().await?;
-    ///     let address = SuiAddress::from_str("0x0000....0000")?;
-    ///     let owned_objects = sui
+    ///     let iota = IotaClientBuilder::default().build_localnet().await?;
+    ///     let address = IotaAddress::from_str("0x0000....0000")?;
+    ///     let owned_objects = iota
     ///         .read_api()
     ///         .get_owned_objects(address, None, None, None)
     ///         .await?;
@@ -187,17 +188,17 @@ impl ReadApi {
     ///         address
     ///     ));
     ///     let object_data = object.data.as_ref().expect(&format!(
-    ///         "No object data for this SuiObjectResponse {:?}",
+    ///         "No object data for this IotaObjectResponse {:?}",
     ///         object
     ///     ));
     ///     let object_id = object_data.object_id;
     ///     let version = object_data.version;
-    ///     let past_object = sui
+    ///     let past_object = iota
     ///         .read_api()
     ///         .try_get_parsed_past_object(
     ///             object_id,
     ///             version,
-    ///             SuiObjectDataOptions {
+    ///             IotaObjectDataOptions {
     ///                 show_type: true,
     ///                 show_owner: true,
     ///                 show_previous_transaction: true,
@@ -215,8 +216,8 @@ impl ReadApi {
         &self,
         object_id: ObjectID,
         version: SequenceNumber,
-        options: SuiObjectDataOptions,
-    ) -> SuiRpcResult<SuiPastObjectResponse> {
+        options: IotaObjectDataOptions,
+    ) -> IotaRpcResult<IotaPastObjectResponse> {
         Ok(self
             .api
             .http
@@ -224,23 +225,23 @@ impl ReadApi {
             .await?)
     }
 
-    /// Return a list of [SuiPastObjectResponse] objects, or an error upon failure.
+    /// Return a list of [IotaPastObjectResponse] objects, or an error upon failure.
     ///
     /// See [this function](ReadApi::try_get_parsed_past_object) for more details about past objects.
     ///
     /// # Examples
     ///
     /// ```rust,no_run
-    /// use sui_sdk::SuiClientBuilder;
-    /// use sui_types::base_types::{ObjectID, SuiAddress};
-    /// use sui_json_rpc_types::{SuiObjectDataOptions, SuiGetPastObjectRequest};
+    /// use iota_sdk::IotaClientBuilder;
+    /// use iota_types::base_types::{ObjectID, IotaAddress};
+    /// use iota_json_rpc_types::{IotaObjectDataOptions, IotaGetPastObjectRequest};
     /// use std::str::FromStr;
     ///
     /// #[tokio::main]
     /// async fn main() -> Result<(), anyhow::Error> {
-    ///     let sui = SuiClientBuilder::default().build_localnet().await?;
-    ///     let address = SuiAddress::from_str("0x0000....0000")?;
-    ///     let owned_objects = sui
+    ///     let iota = IotaClientBuilder::default().build_localnet().await?;
+    ///     let address = IotaAddress::from_str("0x0000....0000")?;
+    ///     let owned_objects = iota
     ///         .read_api()
     ///         .get_owned_objects(address, None, None, None)
     ///         .await?;
@@ -250,17 +251,17 @@ impl ReadApi {
     ///         address
     ///     ));
     ///     let object_data = object.data.as_ref().expect(&format!(
-    ///         "No object data for this SuiObjectResponse {:?}",
+    ///         "No object data for this IotaObjectResponse {:?}",
     ///         object
     ///     ));
     ///     let object_id = object_data.object_id;
     ///     let version = object_data.version;
-    ///     let past_object = sui
+    ///     let past_object = iota
     ///         .read_api()
     ///         .try_get_parsed_past_object(
     ///             object_id,
     ///             version,
-    ///             SuiObjectDataOptions {
+    ///             IotaObjectDataOptions {
     ///                 show_type: true,
     ///                 show_owner: true,
     ///                 show_previous_transaction: true,
@@ -272,14 +273,14 @@ impl ReadApi {
     ///         )
     ///         .await?;
     ///     let past_object = past_object.into_object()?;
-    ///     let multi_past_object = sui
+    ///     let multi_past_object = iota
     ///         .read_api()
     ///         .try_multi_get_parsed_past_object(
-    ///             vec![SuiGetPastObjectRequest {
+    ///             vec![IotaGetPastObjectRequest {
     ///                 object_id: past_object.object_id,
     ///                 version: past_object.version,
     ///             }],
-    ///             SuiObjectDataOptions {
+    ///             IotaObjectDataOptions {
     ///                 show_type: true,
     ///                 show_owner: true,
     ///                 show_previous_transaction: true,
@@ -295,9 +296,9 @@ impl ReadApi {
     /// ```
     pub async fn try_multi_get_parsed_past_object(
         &self,
-        past_objects: Vec<SuiGetPastObjectRequest>,
-        options: SuiObjectDataOptions,
-    ) -> SuiRpcResult<Vec<SuiPastObjectResponse>> {
+        past_objects: Vec<IotaGetPastObjectRequest>,
+        options: IotaObjectDataOptions,
+    ) -> IotaRpcResult<Vec<IotaPastObjectResponse>> {
         Ok(self
             .api
             .http
@@ -305,25 +306,25 @@ impl ReadApi {
             .await?)
     }
 
-    /// Return a [SuiObjectResponse] based on the provided [ObjectID] and [SuiObjectDataOptions], or an error upon failure.
+    /// Return a [IotaObjectResponse] based on the provided [ObjectID] and [IotaObjectDataOptions], or an error upon failure.
     ///
-    /// The [SuiObjectResponse] contains two fields:
-    /// 1) `data` for the object's data (see [SuiObjectData](sui_json_rpc_types::SuiObjectData)),
-    /// 2) `error` for the error (if any) (see [SuiObjectResponseError](sui_types::error::SuiObjectResponseError)).
+    /// The [IotaObjectResponse] contains two fields:
+    /// 1) `data` for the object's data (see [IotaObjectData](iota_json_rpc_types::IotaObjectData)),
+    /// 2) `error` for the error (if any) (see [IotaObjectResponseError](iota_types::error::IotaObjectResponseError)).
     ///
     /// # Examples
     ///
     /// ```rust,no_run
-    /// use sui_sdk::SuiClientBuilder;
-    /// use sui_types::base_types::SuiAddress;
-    /// use sui_json_rpc_types::SuiObjectDataOptions;
+    /// use iota_sdk::IotaClientBuilder;
+    /// use iota_types::base_types::IotaAddress;
+    /// use iota_json_rpc_types::IotaObjectDataOptions;
     /// use std::str::FromStr;
     ///
     /// #[tokio::main]
     /// async fn main() -> Result<(), anyhow::Error> {
-    ///     let sui = SuiClientBuilder::default().build_localnet().await?;
-    ///     let address = SuiAddress::from_str("0x0000....0000")?;
-    ///     let owned_objects = sui
+    ///     let iota = IotaClientBuilder::default().build_localnet().await?;
+    ///     let address = IotaAddress::from_str("0x0000....0000")?;
+    ///     let owned_objects = iota
     ///         .read_api()
     ///         .get_owned_objects(address, None, None, None)
     ///         .await?;
@@ -333,12 +334,12 @@ impl ReadApi {
     ///         address
     ///     ));
     ///     let object_data = object.data.as_ref().expect(&format!(
-    ///         "No object data for this SuiObjectResponse {:?}",
+    ///         "No object data for this IotaObjectResponse {:?}",
     ///         object
     ///     ));
     ///     let object_id = object_data.object_id;
-    ///     let object = sui.read_api().get_object_with_options(object_id,
-    ///             SuiObjectDataOptions {
+    ///     let object = iota.read_api().get_object_with_options(object_id,
+    ///             IotaObjectDataOptions {
     ///                 show_type: true,
     ///                 show_owner: true,
     ///                 show_previous_transaction: true,
@@ -354,27 +355,27 @@ impl ReadApi {
     pub async fn get_object_with_options(
         &self,
         object_id: ObjectID,
-        options: SuiObjectDataOptions,
-    ) -> SuiRpcResult<SuiObjectResponse> {
+        options: IotaObjectDataOptions,
+    ) -> IotaRpcResult<IotaObjectResponse> {
         Ok(self.api.http.get_object(object_id, Some(options)).await?)
     }
 
-    /// Return a list of [SuiObjectResponse] from the given vector of [ObjectID]s and [SuiObjectDataOptions], or an error upon failure.
+    /// Return a list of [IotaObjectResponse] from the given vector of [ObjectID]s and [IotaObjectDataOptions], or an error upon failure.
     ///
     /// If only one object is needed, use the [get_object_with_options](ReadApi::get_object_with_options) function instead.
     ///
     /// # Examples
     ///
     /// ```rust,no_run
-    /// use sui_sdk::SuiClientBuilder;
-    /// use sui_types::base_types::SuiAddress;
-    /// use sui_json_rpc_types::SuiObjectDataOptions;
+    /// use iota_sdk::IotaClientBuilder;
+    /// use iota_types::base_types::IotaAddress;
+    /// use iota_json_rpc_types::IotaObjectDataOptions;
     /// use std::str::FromStr;
     /// #[tokio::main]
     /// async fn main() -> Result<(), anyhow::Error> {
-    ///     let sui = SuiClientBuilder::default().build_localnet().await?;
-    ///     let address = SuiAddress::from_str("0x0000....0000")?;
-    ///     let owned_objects = sui
+    ///     let iota = IotaClientBuilder::default().build_localnet().await?;
+    ///     let address = IotaAddress::from_str("0x0000....0000")?;
+    ///     let owned_objects = iota
     ///         .read_api()
     ///         .get_owned_objects(address, None, None, None)
     ///         .await?;
@@ -384,13 +385,13 @@ impl ReadApi {
     ///         address
     ///     ));
     ///     let object_data = object.data.as_ref().expect(&format!(
-    ///         "No object data for this SuiObjectResponse {:?}",
+    ///         "No object data for this IotaObjectResponse {:?}",
     ///         object
     ///     ));
     ///     let object_id = object_data.object_id;
     ///     let object_ids = vec![object_id]; // and other object ids
-    ///     let object = sui.read_api().multi_get_object_with_options(object_ids,
-    ///             SuiObjectDataOptions {
+    ///     let object = iota.read_api().multi_get_object_with_options(object_ids,
+    ///             IotaObjectDataOptions {
     ///                 show_type: true,
     ///                 show_owner: true,
     ///                 show_previous_transaction: true,
@@ -406,8 +407,8 @@ impl ReadApi {
     pub async fn multi_get_object_with_options(
         &self,
         object_ids: Vec<ObjectID>,
-        options: SuiObjectDataOptions,
-    ) -> SuiRpcResult<Vec<SuiObjectResponse>> {
+        options: IotaObjectDataOptions,
+    ) -> IotaRpcResult<Vec<IotaObjectResponse>> {
         Ok(self
             .api
             .http
@@ -416,9 +417,9 @@ impl ReadApi {
     }
 
     /// Return An object's bcs content [`Vec<u8>`] based on the provided [ObjectID], or an error upon failure.
-    pub async fn get_move_object_bcs(&self, object_id: ObjectID) -> SuiRpcResult<Vec<u8>> {
+    pub async fn get_move_object_bcs(&self, object_id: ObjectID) -> IotaRpcResult<Vec<u8>> {
         let resp = self
-            .get_object_with_options(object_id, SuiObjectDataOptions::default().with_bcs())
+            .get_object_with_options(object_id, IotaObjectDataOptions::default().with_bcs())
             .await?
             .into_object()
             .map_err(|e| {
@@ -438,44 +439,44 @@ impl ReadApi {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// use sui_sdk::SuiClientBuilder;
+    /// use iota_sdk::IotaClientBuilder;
     ///
     /// #[tokio::main]
     /// async fn main() -> Result<(), anyhow::Error> {
-    ///     let sui = SuiClientBuilder::default().build_localnet().await?;
-    ///     let total_transaction_blocks = sui
+    ///     let iota = IotaClientBuilder::default().build_localnet().await?;
+    ///     let total_transaction_blocks = iota
     ///         .read_api()
     ///         .get_total_transaction_blocks()
     ///         .await?;
     ///     Ok(())
     /// }
     /// ```
-    pub async fn get_total_transaction_blocks(&self) -> SuiRpcResult<u64> {
+    pub async fn get_total_transaction_blocks(&self) -> IotaRpcResult<u64> {
         Ok(*self.api.http.get_total_transaction_blocks().await?)
     }
 
-    /// Return a transaction and its effects in a [SuiTransactionBlockResponse] based on its
+    /// Return a transaction and its effects in a [IotaTransactionBlockResponse] based on its
     /// [TransactionDigest], or an error upon failure.
     pub async fn get_transaction_with_options(
         &self,
         digest: TransactionDigest,
-        options: SuiTransactionBlockResponseOptions,
-    ) -> SuiRpcResult<SuiTransactionBlockResponse> {
+        options: IotaTransactionBlockResponseOptions,
+    ) -> IotaRpcResult<IotaTransactionBlockResponse> {
         Ok(self
             .api
             .http
             .get_transaction_block(digest, Some(options))
             .await?)
     }
-    /// Return a list of [SuiTransactionBlockResponse] based on the given vector of [TransactionDigest], or an error upon failure.
+    /// Return a list of [IotaTransactionBlockResponse] based on the given vector of [TransactionDigest], or an error upon failure.
     ///
     /// If only one transaction data is needed, use the
     /// [get_transaction_with_options](ReadApi::get_transaction_with_options) function instead.
     pub async fn multi_get_transactions_with_options(
         &self,
         digests: Vec<TransactionDigest>,
-        options: SuiTransactionBlockResponseOptions,
-    ) -> SuiRpcResult<Vec<SuiTransactionBlockResponse>> {
+        options: IotaTransactionBlockResponseOptions,
+    ) -> IotaRpcResult<Vec<IotaTransactionBlockResponse>> {
         Ok(self
             .api
             .http
@@ -483,21 +484,21 @@ impl ReadApi {
             .await?)
     }
 
-    /// Return the [SuiCommittee] information for the provided `epoch`, or an error upon failure.
+    /// Return the [IotaCommittee] information for the provided `epoch`, or an error upon failure.
     ///
-    /// The [SuiCommittee] contains the validators list and their information (name and stakes).
+    /// The [IotaCommittee] contains the validators list and their information (name and stakes).
     ///
     /// The argument `epoch` is either a known epoch id or `None` for the current epoch.
     ///
     /// # Examples
     ///
     /// ```rust,no_run
-    /// use sui_sdk::SuiClientBuilder;
+    /// use iota_sdk::IotaClientBuilder;
     ///
     /// #[tokio::main]
     /// async fn main() -> Result<(), anyhow::Error> {
-    ///     let sui = SuiClientBuilder::default().build_localnet().await?;
-    ///     let committee_info = sui
+    ///     let iota = IotaClientBuilder::default().build_localnet().await?;
+    ///     let committee_info = iota
     ///         .read_api()
     ///         .get_committee_info(None)
     ///         .await?;
@@ -507,18 +508,18 @@ impl ReadApi {
     pub async fn get_committee_info(
         &self,
         epoch: Option<BigInt<u64>>,
-    ) -> SuiRpcResult<SuiCommittee> {
+    ) -> IotaRpcResult<IotaCommittee> {
         Ok(self.api.http.get_committee_info(epoch).await?)
     }
 
     /// Return a paginated response with all transaction blocks information, or an error upon failure.
     pub async fn query_transaction_blocks(
         &self,
-        query: SuiTransactionBlockResponseQuery,
+        query: IotaTransactionBlockResponseQuery,
         cursor: Option<TransactionDigest>,
         limit: Option<usize>,
         descending_order: bool,
-    ) -> SuiRpcResult<TransactionBlocksPage> {
+    ) -> IotaRpcResult<TransactionBlocksPage> {
         Ok(self
             .api
             .http
@@ -527,15 +528,15 @@ impl ReadApi {
     }
 
     /// Return the first four bytes of the chain's genesis checkpoint digest, or an error upon failure.
-    pub async fn get_chain_identifier(&self) -> SuiRpcResult<String> {
+    pub async fn get_chain_identifier(&self) -> IotaRpcResult<String> {
         Ok(self.api.http.get_chain_identifier().await?)
     }
 
     /// Return a checkpoint, or an error upon failure.
     ///
-    /// A Sui checkpoint is a sequence of transaction sets that a quorum of validators
-    /// agree upon as having been executed within the Sui system.
-    pub async fn get_checkpoint(&self, id: CheckpointId) -> SuiRpcResult<Checkpoint> {
+    /// A IOTA checkpoint is a sequence of transaction sets that a quorum of validators
+    /// agree upon as having been executed within the IOTA system.
+    pub async fn get_checkpoint(&self, id: CheckpointId) -> IotaRpcResult<Checkpoint> {
         Ok(self.api.http.get_checkpoint(id).await?)
     }
 
@@ -545,7 +546,7 @@ impl ReadApi {
         cursor: Option<BigInt<u64>>,
         limit: Option<usize>,
         descending_order: bool,
-    ) -> SuiRpcResult<CheckpointPage> {
+    ) -> IotaRpcResult<CheckpointPage> {
         Ok(self
             .api
             .http
@@ -556,7 +557,7 @@ impl ReadApi {
     /// Return the sequence number of the latest checkpoint that has been executed, or an error upon failure.
     pub async fn get_latest_checkpoint_sequence_number(
         &self,
-    ) -> SuiRpcResult<CheckpointSequenceNumber> {
+    ) -> IotaRpcResult<CheckpointSequenceNumber> {
         Ok(*self
             .api
             .http
@@ -564,13 +565,13 @@ impl ReadApi {
             .await?)
     }
 
-    /// Return a stream of [SuiTransactionBlockResponse], or an error upon failure.
+    /// Return a stream of [IotaTransactionBlockResponse], or an error upon failure.
     pub fn get_transactions_stream(
         &self,
-        query: SuiTransactionBlockResponseQuery,
+        query: IotaTransactionBlockResponseQuery,
         cursor: Option<TransactionDigest>,
         descending_order: bool,
-    ) -> impl Stream<Item = SuiTransactionBlockResponse> + '_ {
+    ) -> impl Stream<Item = IotaTransactionBlockResponse> + '_ {
         stream::unfold(
             (vec![], cursor, true, query),
             move |(mut data, cursor, first, query)| async move {
@@ -603,13 +604,13 @@ impl ReadApi {
     pub async fn subscribe_transaction(
         &self,
         filter: TransactionFilter,
-    ) -> SuiRpcResult<impl Stream<Item = SuiRpcResult<SuiTransactionBlockEffects>>> {
+    ) -> IotaRpcResult<impl Stream<Item = IotaRpcResult<IotaTransactionBlockEffects>>> {
         let Some(c) = &self.api.ws else {
             return Err(Error::Subscription(
                 "Subscription only supported by WebSocket client.".to_string(),
             ));
         };
-        let subscription: Subscription<SuiTransactionBlockEffects> =
+        let subscription: Subscription<IotaTransactionBlockEffects> =
             c.subscribe_transaction(filter).await?;
         Ok(subscription.map(|item| Ok(item?)))
     }
@@ -618,7 +619,7 @@ impl ReadApi {
     pub async fn get_normalized_move_modules_by_package(
         &self,
         package: ObjectID,
-    ) -> SuiRpcResult<BTreeMap<String, SuiMoveNormalizedModule>> {
+    ) -> IotaRpcResult<BTreeMap<String, IotaMoveNormalizedModule>> {
         Ok(self
             .api
             .http
@@ -628,7 +629,7 @@ impl ReadApi {
 
     // TODO(devx): we can probably cache this given an epoch
     /// Return the reference gas price, or an error upon failure.
-    pub async fn get_reference_gas_price(&self) -> SuiRpcResult<u64> {
+    pub async fn get_reference_gas_price(&self) -> IotaRpcResult<u64> {
         Ok(*self.api.http.get_reference_gas_price().await?)
     }
 
@@ -640,7 +641,7 @@ impl ReadApi {
     pub async fn dry_run_transaction_block(
         &self,
         tx: TransactionData,
-    ) -> SuiRpcResult<DryRunTransactionBlockResponse> {
+    ) -> IotaRpcResult<DryRunTransactionBlockResponse> {
         Ok(self
             .api
             .http
@@ -672,12 +673,12 @@ impl ReadApi {
     /// use the [dry_run_transaction_block](ReadApi::dry_run_transaction_block) function instead.
     pub async fn dev_inspect_transaction_block(
         &self,
-        sender_address: SuiAddress,
+        sender_address: IotaAddress,
         tx: TransactionKind,
         gas_price: Option<BigInt<u64>>,
         epoch: Option<BigInt<u64>>,
         additional_args: Option<DevInspectArgs>,
-    ) -> SuiRpcResult<DevInspectResults> {
+    ) -> IotaRpcResult<DevInspectResults> {
         Ok(self
             .api
             .http
@@ -695,7 +696,7 @@ impl ReadApi {
     pub async fn get_protocol_config(
         &self,
         version: Option<BigInt<u64>>,
-    ) -> SuiRpcResult<ProtocolConfigResponse> {
+    ) -> IotaRpcResult<ProtocolConfigResponse> {
         Ok(self.api.http.get_protocol_config(version).await?)
     }
 
@@ -703,7 +704,7 @@ impl ReadApi {
         &self,
         object_id: ObjectID,
         version: SequenceNumber,
-    ) -> SuiRpcResult<SuiPastObjectResponse> {
+    ) -> IotaRpcResult<IotaPastObjectResponse> {
         Ok(self
             .api
             .http
@@ -711,14 +712,14 @@ impl ReadApi {
             .await?)
     }
 
-    /// Verify a zkLogin signature against bytes that is parsed using intent_scope, and the sui address.
+    /// Verify a zkLogin signature against bytes that is parsed using intent_scope, and the iota address.
     pub async fn verify_zklogin_signature(
         &self,
         bytes: String,
         signature: String,
         intent_scope: ZkLoginIntentScope,
-        address: SuiAddress,
-    ) -> SuiRpcResult<ZkLoginVerifyResult> {
+        address: IotaAddress,
+    ) -> IotaRpcResult<ZkLoginVerifyResult> {
         Ok(self
             .api
             .http
@@ -727,7 +728,7 @@ impl ReadApi {
     }
 }
 
-/// Coin Read API provides the functionality needed to get information from the Sui network regarding the coins owned by an address.
+/// Coin Read API provides the functionality needed to get information from the IOTA network regarding the coins owned by an address.
 #[derive(Debug, Clone)]
 pub struct CoinReadApi {
     api: Arc<RpcClient>,
@@ -741,20 +742,20 @@ impl CoinReadApi {
     /// Return a paginated response with the coins for the given address, or an error upon failure.
     ///
     /// The coins can be filtered by `coin_type` (e.g., 0x168da5bf1f48dafc111b0a488fa454aca95e0b5e::usdc::USDC)
-    /// or use `None` for the default `Coin<SUI>`.
+    /// or use `None` for the default `Coin<IOTA>`.
     ///
     /// # Examples
     ///
     /// ```rust,no_run
-    /// use sui_sdk::SuiClientBuilder;
-    /// use sui_types::base_types::SuiAddress;
+    /// use iota_sdk::IotaClientBuilder;
+    /// use iota_types::base_types::IotaAddress;
     /// use std::str::FromStr;
     ///
     /// #[tokio::main]
     /// async fn main() -> Result<(), anyhow::Error> {
-    ///     let sui = SuiClientBuilder::default().build_localnet().await?;
-    ///     let address = SuiAddress::from_str("0x0000....0000")?;
-    ///     let coins = sui
+    ///     let iota = IotaClientBuilder::default().build_localnet().await?;
+    ///     let address = IotaAddress::from_str("0x0000....0000")?;
+    ///     let coins = iota
     ///         .coin_read_api()
     ///         .get_coins(address, None, None, None)
     ///         .await?;
@@ -763,11 +764,11 @@ impl CoinReadApi {
     /// ```
     pub async fn get_coins(
         &self,
-        owner: SuiAddress,
+        owner: IotaAddress,
         coin_type: Option<String>,
         cursor: Option<String>,
         limit: Option<usize>,
-    ) -> SuiRpcResult<CoinPage> {
+    ) -> IotaRpcResult<CoinPage> {
         Ok(self
             .api
             .http
@@ -781,15 +782,15 @@ impl CoinReadApi {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// use sui_sdk::SuiClientBuilder;
-    /// use sui_types::base_types::SuiAddress;
+    /// use iota_sdk::IotaClientBuilder;
+    /// use iota_types::base_types::IotaAddress;
     /// use std::str::FromStr;
     ///
     /// #[tokio::main]
     /// async fn main() -> Result<(), anyhow::Error> {
-    ///     let sui = SuiClientBuilder::default().build_localnet().await?;
-    ///     let address = SuiAddress::from_str("0x0000....0000")?;
-    ///     let coins = sui
+    ///     let iota = IotaClientBuilder::default().build_localnet().await?;
+    ///     let address = IotaAddress::from_str("0x0000....0000")?;
+    ///     let coins = iota
     ///         .coin_read_api()
     ///         .get_all_coins(address, None, None)
     ///         .await?;
@@ -798,30 +799,30 @@ impl CoinReadApi {
     /// ```
     pub async fn get_all_coins(
         &self,
-        owner: SuiAddress,
+        owner: IotaAddress,
         cursor: Option<String>,
         limit: Option<usize>,
-    ) -> SuiRpcResult<CoinPage> {
+    ) -> IotaRpcResult<CoinPage> {
         Ok(self.api.http.get_all_coins(owner, cursor, limit).await?)
     }
 
     /// Return the coins for the given address as a stream.
     ///
     /// The coins can be filtered by `coin_type` (e.g., 0x168da5bf1f48dafc111b0a488fa454aca95e0b5e::usdc::USDC)
-    /// or use `None` for the default `Coin<SUI>`.
+    /// or use `None` for the default `Coin<IOTA>`.
     ///
     /// # Examples
     ///
     /// ```rust,no_run
-    /// use sui_sdk::SuiClientBuilder;
-    /// use sui_types::base_types::SuiAddress;
+    /// use iota_sdk::IotaClientBuilder;
+    /// use iota_types::base_types::IotaAddress;
     /// use std::str::FromStr;
     ///
     /// #[tokio::main]
     /// async fn main() -> Result<(), anyhow::Error> {
-    ///     let sui = SuiClientBuilder::default().build_localnet().await?;
-    ///     let address = SuiAddress::from_str("0x0000....0000")?;
-    ///     let coins = sui
+    ///     let iota = IotaClientBuilder::default().build_localnet().await?;
+    ///     let address = IotaAddress::from_str("0x0000....0000")?;
+    ///     let coins = iota
     ///         .coin_read_api()
     ///         .get_coins_stream(address, None);
     ///     Ok(())
@@ -829,7 +830,7 @@ impl CoinReadApi {
     /// ```
     pub fn get_coins_stream(
         &self,
-        owner: SuiAddress,
+        owner: IotaAddress,
         coin_type: Option<String>,
     ) -> impl Stream<Item = Coin> + '_ {
         stream::unfold(
@@ -868,20 +869,20 @@ impl CoinReadApi {
     /// If that it is not possible, it will fail with an insufficient fund error.
     ///
     /// The coins can be filtered by `coin_type` (e.g., 0x168da5bf1f48dafc111b0a488fa454aca95e0b5e::usdc::USDC)
-    /// or use `None` to use the default `Coin<SUI>`.
+    /// or use `None` to use the default `Coin<IOTA>`.
     ///
     /// # Examples
     ///
     /// ```rust,no_run
-    /// use sui_sdk::SuiClientBuilder;
-    /// use sui_types::base_types::SuiAddress;
+    /// use iota_sdk::IotaClientBuilder;
+    /// use iota_types::base_types::IotaAddress;
     /// use std::str::FromStr;
     ///
     /// #[tokio::main]
     /// async fn main() -> Result<(), anyhow::Error> {
-    ///     let sui = SuiClientBuilder::default().build_localnet().await?;
-    ///     let address = SuiAddress::from_str("0x0000....0000")?;
-    ///     let coins = sui
+    ///     let iota = IotaClientBuilder::default().build_localnet().await?;
+    ///     let address = IotaAddress::from_str("0x0000....0000")?;
+    ///     let coins = iota
     ///         .coin_read_api()
     ///         .select_coins(address, None, 5, vec![])
     ///         .await?;
@@ -890,11 +891,11 @@ impl CoinReadApi {
     /// ```
     pub async fn select_coins(
         &self,
-        address: SuiAddress,
+        address: IotaAddress,
         coin_type: Option<String>,
         amount: u128,
         exclude: Vec<ObjectID>,
-    ) -> SuiRpcResult<Vec<Coin>> {
+    ) -> IotaRpcResult<Vec<Coin>> {
         let mut total = 0u128;
         let coins = self
             .get_coins_stream(address, coin_type)
@@ -917,20 +918,20 @@ impl CoinReadApi {
     ///
     /// Note that this function sums up all the balances of all the coins matching
     /// the given coin type. By default, if `coin_type` is set to `None`,
-    /// it will use the default `Coin<SUI>`.
+    /// it will use the default `Coin<IOTA>`.
     ///
     /// # Examples
     ///
     /// ```rust,no_run
-    /// use sui_sdk::SuiClientBuilder;
-    /// use sui_types::base_types::SuiAddress;
+    /// use iota_sdk::IotaClientBuilder;
+    /// use iota_types::base_types::IotaAddress;
     /// use std::str::FromStr;
     ///
     /// #[tokio::main]
     /// async fn main() -> Result<(), anyhow::Error> {
-    ///     let sui = SuiClientBuilder::default().build_localnet().await?;
-    ///     let address = SuiAddress::from_str("0x0000....0000")?;
-    ///     let balance = sui
+    ///     let iota = IotaClientBuilder::default().build_localnet().await?;
+    ///     let address = IotaAddress::from_str("0x0000....0000")?;
+    ///     let balance = iota
     ///         .coin_read_api()
     ///         .get_balance(address, None)
     ///         .await?;
@@ -939,9 +940,9 @@ impl CoinReadApi {
     /// ```
     pub async fn get_balance(
         &self,
-        owner: SuiAddress,
+        owner: IotaAddress,
         coin_type: Option<String>,
-    ) -> SuiRpcResult<Balance> {
+    ) -> IotaRpcResult<Balance> {
         Ok(self.api.http.get_balance(owner, coin_type).await?)
     }
 
@@ -953,22 +954,22 @@ impl CoinReadApi {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// use sui_sdk::SuiClientBuilder;
-    /// use sui_types::base_types::SuiAddress;
+    /// use iota_sdk::IotaClientBuilder;
+    /// use iota_types::base_types::IotaAddress;
     /// use std::str::FromStr;
     ///
     /// #[tokio::main]
     /// async fn main() -> Result<(), anyhow::Error> {
-    ///     let sui = SuiClientBuilder::default().build_localnet().await?;
-    ///     let address = SuiAddress::from_str("0x0000....0000")?;
-    ///     let all_balances = sui
+    ///     let iota = IotaClientBuilder::default().build_localnet().await?;
+    ///     let address = IotaAddress::from_str("0x0000....0000")?;
+    ///     let all_balances = iota
     ///         .coin_read_api()
     ///         .get_all_balances(address)
     ///         .await?;
     ///     Ok(())
     /// }
     /// ```
-    pub async fn get_all_balances(&self, owner: SuiAddress) -> SuiRpcResult<Vec<Balance>> {
+    pub async fn get_all_balances(&self, owner: IotaAddress) -> IotaRpcResult<Vec<Balance>> {
         Ok(self.api.http.get_all_balances(owner).await?)
     }
 
@@ -978,13 +979,13 @@ impl CoinReadApi {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// use sui_sdk::SuiClientBuilder;
+    /// use iota_sdk::IotaClientBuilder;
     /// #[tokio::main]
     /// async fn main() -> Result<(), anyhow::Error> {
-    ///     let sui = SuiClientBuilder::default().build_localnet().await?;
-    ///     let coin_metadata = sui
+    ///     let iota = IotaClientBuilder::default().build_localnet().await?;
+    ///     let coin_metadata = iota
     ///         .coin_read_api()
-    ///         .get_coin_metadata("0x2::sui::SUI".to_string())
+    ///         .get_coin_metadata("0x2::iota::IOTA".to_string())
     ///         .await?;
     ///     Ok(())
     /// }
@@ -992,7 +993,7 @@ impl CoinReadApi {
     pub async fn get_coin_metadata(
         &self,
         coin_type: String,
-    ) -> SuiRpcResult<Option<SuiCoinMetadata>> {
+    ) -> IotaRpcResult<Option<IotaCoinMetadata>> {
         Ok(self.api.http.get_coin_metadata(coin_type).await?)
     }
 
@@ -1001,24 +1002,24 @@ impl CoinReadApi {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// use sui_sdk::SuiClientBuilder;
+    /// use iota_sdk::IotaClientBuilder;
     ///
     /// #[tokio::main]
     /// async fn main() -> Result<(), anyhow::Error> {
-    ///     let sui = SuiClientBuilder::default().build_localnet().await?;
-    ///     let total_supply = sui
+    ///     let iota = IotaClientBuilder::default().build_localnet().await?;
+    ///     let total_supply = iota
     ///         .coin_read_api()
-    ///         .get_total_supply("0x2::sui::SUI".to_string())
+    ///         .get_total_supply("0x2::iota::IOTA".to_string())
     ///         .await?;
     ///     Ok(())
     /// }
     /// ```
-    pub async fn get_total_supply(&self, coin_type: String) -> SuiRpcResult<Supply> {
+    pub async fn get_total_supply(&self, coin_type: String) -> IotaRpcResult<Supply> {
         Ok(self.api.http.get_total_supply(coin_type).await?)
     }
 }
 
-/// Event API provides the functionality to fetch, query, or subscribe to events on the Sui network.
+/// Event API provides the functionality to fetch, query, or subscribe to events on the IOTA network.
 #[derive(Clone)]
 pub struct EventApi {
     api: Arc<RpcClient>,
@@ -1039,16 +1040,16 @@ impl EventApi {
     /// ```rust, no_run
     /// use futures::StreamExt;
     /// use std::str::FromStr;
-    /// use sui_json_rpc_types::EventFilter;
-    /// use sui_sdk::SuiClientBuilder;
-    /// use sui_types::base_types::SuiAddress;
+    /// use iota_json_rpc_types::EventFilter;
+    /// use iota_sdk::IotaClientBuilder;
+    /// use iota_types::base_types::IotaAddress;
     /// #[tokio::main]
     /// async fn main() -> Result<(), anyhow::Error> {
-    ///     let sui = SuiClientBuilder::default()
-    ///         .ws_url("wss://rpc.mainnet.sui.io:443")
-    ///         .build("https://fullnode.mainnet.sui.io:443")
+    ///     let iota = IotaClientBuilder::default()
+    ///         .ws_url("wss://rpc.mainnet.iota.io:443")
+    ///         .build("https://fullnode.mainnet.iota.io:443")
     ///         .await?;
-    ///     let mut subscribe_all = sui
+    ///     let mut subscribe_all = iota
     ///         .event_api()
     ///         .subscribe_event(EventFilter::All([]))
     ///         .await?;
@@ -1061,10 +1062,10 @@ impl EventApi {
     pub async fn subscribe_event(
         &self,
         filter: EventFilter,
-    ) -> SuiRpcResult<impl Stream<Item = SuiRpcResult<SuiEvent>>> {
+    ) -> IotaRpcResult<impl Stream<Item = IotaRpcResult<IotaEvent>>> {
         match &self.api.ws {
             Some(c) => {
-                let subscription: Subscription<SuiEvent> = c.subscribe_event(filter).await?;
+                let subscription: Subscription<IotaEvent> = c.subscribe_event(filter).await?;
                 Ok(subscription.map(|item| Ok(item?)))
             }
             _ => Err(Error::Subscription(
@@ -1074,7 +1075,7 @@ impl EventApi {
     }
 
     /// Return a list of events for the given transaction digest, or an error upon failure.
-    pub async fn get_events(&self, digest: TransactionDigest) -> SuiRpcResult<Vec<SuiEvent>> {
+    pub async fn get_events(&self, digest: TransactionDigest) -> IotaRpcResult<Vec<IotaEvent>> {
         Ok(self.api.http.get_events(digest).await?)
     }
 
@@ -1088,7 +1089,7 @@ impl EventApi {
         cursor: Option<EventID>,
         limit: Option<usize>,
         descending_order: bool,
-    ) -> SuiRpcResult<EventPage> {
+    ) -> IotaRpcResult<EventPage> {
         Ok(self
             .api
             .http
@@ -1105,7 +1106,7 @@ impl EventApi {
         query: EventFilter,
         cursor: Option<EventID>,
         descending_order: bool,
-    ) -> impl Stream<Item = SuiEvent> + '_ {
+    ) -> impl Stream<Item = IotaEvent> + '_ {
         stream::unfold(
             (vec![], cursor, true, query),
             move |(mut data, cursor, first, query)| async move {
@@ -1148,9 +1149,9 @@ impl QuorumDriverApi {
     pub async fn execute_transaction_block(
         &self,
         tx: Transaction,
-        options: SuiTransactionBlockResponseOptions,
+        options: IotaTransactionBlockResponseOptions,
         request_type: Option<ExecuteTransactionRequestType>,
-    ) -> SuiRpcResult<SuiTransactionBlockResponse> {
+    ) -> IotaRpcResult<IotaTransactionBlockResponse> {
         let (tx_bytes, signatures) = tx.to_tx_bytes_and_signatures();
         let request_type = request_type.unwrap_or_else(|| options.default_execution_request_type());
 
@@ -1213,23 +1214,23 @@ impl GovernanceApi {
     }
 
     /// Return a list of [DelegatedStake] objects for the given address, or an error upon failure.
-    pub async fn get_stakes(&self, owner: SuiAddress) -> SuiRpcResult<Vec<DelegatedStake>> {
+    pub async fn get_stakes(&self, owner: IotaAddress) -> IotaRpcResult<Vec<DelegatedStake>> {
         Ok(self.api.http.get_stakes(owner).await?)
     }
 
-    /// Return the [SuiCommittee] information for the given `epoch`, or an error upon failure.
+    /// Return the [IotaCommittee] information for the given `epoch`, or an error upon failure.
     ///
     /// The argument `epoch` is the known epoch id or `None` for the current epoch.
     ///
     /// # Examples
     ///
     /// ```rust,no_run
-    /// use sui_sdk::SuiClientBuilder;
+    /// use iota_sdk::IotaClientBuilder;
     ///
     /// #[tokio::main]
     /// async fn main() -> Result<(), anyhow::Error> {
-    ///     let sui = SuiClientBuilder::default().build_localnet().await?;
-    ///     let committee_info = sui
+    ///     let iota = IotaClientBuilder::default().build_localnet().await?;
+    ///     let committee_info = iota
     ///         .governance_api()
     ///         .get_committee_info(None)
     ///         .await?;
@@ -1239,21 +1240,21 @@ impl GovernanceApi {
     pub async fn get_committee_info(
         &self,
         epoch: Option<BigInt<u64>>,
-    ) -> SuiRpcResult<SuiCommittee> {
+    ) -> IotaRpcResult<IotaCommittee> {
         Ok(self.api.http.get_committee_info(epoch).await?)
     }
 
-    /// Return the latest SUI system state object on-chain, or an error upon failure.
+    /// Return the latest IOTA system state object on-chain, or an error upon failure.
     ///
     /// Use this method to access system's information, such as the current epoch,
     /// the protocol version, the reference gas price, the total stake, active validators,
-    /// and much more. See the [SuiSystemStateSummary] for all the available fields.
-    pub async fn get_latest_sui_system_state(&self) -> SuiRpcResult<SuiSystemStateSummary> {
-        Ok(self.api.http.get_latest_sui_system_state().await?)
+    /// and much more. See the [IotaSystemStateSummary] for all the available fields.
+    pub async fn get_latest_iota_system_state(&self) -> IotaRpcResult<IotaSystemStateSummary> {
+        Ok(self.api.http.get_latest_iota_system_state().await?)
     }
 
     /// Return the reference gas price for the network, or an error upon failure.
-    pub async fn get_reference_gas_price(&self) -> SuiRpcResult<u64> {
+    pub async fn get_reference_gas_price(&self) -> IotaRpcResult<u64> {
         Ok(*self.api.http.get_reference_gas_price().await?)
     }
 }

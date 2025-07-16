@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 pub mod error;
@@ -11,13 +12,13 @@ use crate::base_types::{
     ConsensusObjectSequenceKey, FullObjectID, FullObjectRef, TransactionDigest, VersionNumber,
 };
 use crate::committee::EpochId;
-use crate::error::{ExecutionError, SuiError};
+use crate::error::{ExecutionError, IotaError};
 use crate::execution::{DynamicallyLoadedObjectMetadata, ExecutionResults};
 use crate::move_package::MovePackage;
 use crate::transaction::{SenderSignedData, TransactionDataAPI};
 use crate::{
     base_types::{ObjectID, ObjectRef, SequenceNumber},
-    error::SuiResult,
+    error::IotaResult,
     object::Object,
 };
 use itertools::Itertools;
@@ -176,7 +177,7 @@ pub trait ChildObjectResolver {
         parent: &ObjectID,
         child: &ObjectID,
         child_version_upper_bound: SequenceNumber,
-    ) -> SuiResult<Option<Object>>;
+    ) -> IotaResult<Option<Object>>;
 
     /// `receiving_object_id` must have an `AddressOwner` ownership equal to `owner`.
     /// `get_object_received_at_version` must be the exact version at which the object will be received,
@@ -191,7 +192,7 @@ pub trait ChildObjectResolver {
         epoch_id: EpochId,
         // TODO: Delete this parameter once table migration is complete.
         use_object_per_epoch_marker_table_v2: bool,
-    ) -> SuiResult<Option<Object>>;
+    ) -> IotaResult<Option<Object>>;
 }
 
 pub struct DenyListResult {
@@ -254,29 +255,29 @@ impl From<PackageObject> for Object {
 }
 
 pub trait BackingPackageStore {
-    fn get_package_object(&self, package_id: &ObjectID) -> SuiResult<Option<PackageObject>>;
+    fn get_package_object(&self, package_id: &ObjectID) -> IotaResult<Option<PackageObject>>;
 }
 
 impl<S: ?Sized + BackingPackageStore> BackingPackageStore for Box<S> {
-    fn get_package_object(&self, package_id: &ObjectID) -> SuiResult<Option<PackageObject>> {
+    fn get_package_object(&self, package_id: &ObjectID) -> IotaResult<Option<PackageObject>> {
         BackingPackageStore::get_package_object(self.as_ref(), package_id)
     }
 }
 
 impl<S: ?Sized + BackingPackageStore> BackingPackageStore for Arc<S> {
-    fn get_package_object(&self, package_id: &ObjectID) -> SuiResult<Option<PackageObject>> {
+    fn get_package_object(&self, package_id: &ObjectID) -> IotaResult<Option<PackageObject>> {
         BackingPackageStore::get_package_object(self.as_ref(), package_id)
     }
 }
 
 impl<S: ?Sized + BackingPackageStore> BackingPackageStore for &S {
-    fn get_package_object(&self, package_id: &ObjectID) -> SuiResult<Option<PackageObject>> {
+    fn get_package_object(&self, package_id: &ObjectID) -> IotaResult<Option<PackageObject>> {
         BackingPackageStore::get_package_object(*self, package_id)
     }
 }
 
 impl<S: ?Sized + BackingPackageStore> BackingPackageStore for &mut S {
-    fn get_package_object(&self, package_id: &ObjectID) -> SuiResult<Option<PackageObject>> {
+    fn get_package_object(&self, package_id: &ObjectID) -> IotaResult<Option<PackageObject>> {
         BackingPackageStore::get_package_object(*self, package_id)
     }
 }
@@ -284,12 +285,12 @@ impl<S: ?Sized + BackingPackageStore> BackingPackageStore for &mut S {
 pub fn load_package_object_from_object_store(
     store: &impl ObjectStore,
     package_id: &ObjectID,
-) -> SuiResult<Option<PackageObject>> {
+) -> IotaResult<Option<PackageObject>> {
     let package = store.get_object(package_id);
     if let Some(obj) = &package {
         fp_ensure!(
             obj.is_package(),
-            SuiError::BadObjectType {
+            IotaError::BadObjectType {
                 error: format!("Package expected, Move object found: {package_id}"),
             }
         );
@@ -303,7 +304,7 @@ pub fn load_package_object_from_object_store(
 pub fn get_package_objects<'a>(
     store: &impl BackingPackageStore,
     package_ids: impl IntoIterator<Item = &'a ObjectID>,
-) -> SuiResult<PackageFetchResults<PackageObject>> {
+) -> IotaResult<PackageFetchResults<PackageObject>> {
     let packages: Vec<Result<_, _>> = package_ids
         .into_iter()
         .map(|id| match store.get_package_object(id) {
@@ -311,7 +312,7 @@ pub fn get_package_objects<'a>(
             Ok(Some(o)) => Ok(Ok(o)),
             Err(x) => Err(x),
         })
-        .collect::<SuiResult<_>>()?;
+        .collect::<IotaResult<_>>()?;
 
     let (fetched, failed_to_fetch): (Vec<_>, Vec<_>) = packages.into_iter().partition_result();
     if !failed_to_fetch.is_empty() {
@@ -324,7 +325,7 @@ pub fn get_package_objects<'a>(
 pub fn get_module(
     store: impl BackingPackageStore,
     module_id: &ModuleId,
-) -> Result<Option<Vec<u8>>, SuiError> {
+) -> Result<Option<Vec<u8>>, IotaError> {
     Ok(store
         .get_package_object(&ObjectID::from(*module_id.address()))?
         .and_then(|package| {
@@ -339,7 +340,7 @@ pub fn get_module(
 pub fn get_module_by_id<S: BackingPackageStore>(
     store: &S,
     id: &ModuleId,
-) -> anyhow::Result<Option<CompiledModule>, SuiError> {
+) -> anyhow::Result<Option<CompiledModule>, IotaError> {
     Ok(get_module(store, id)?
         .map(|bytes| CompiledModule::deserialize_with_defaults(&bytes).unwrap()))
 }
@@ -377,7 +378,7 @@ impl PostExecutionPackageResolver {
 }
 
 impl BackingPackageStore for PostExecutionPackageResolver {
-    fn get_package_object(&self, package_id: &ObjectID) -> SuiResult<Option<PackageObject>> {
+    fn get_package_object(&self, package_id: &ObjectID) -> IotaResult<Option<PackageObject>> {
         if let Some(package) = self.new_packages.get(package_id) {
             Ok(Some(package.clone()))
         } else {
@@ -416,7 +417,7 @@ impl<S: ChildObjectResolver> ChildObjectResolver for std::sync::Arc<S> {
         parent: &ObjectID,
         child: &ObjectID,
         child_version_upper_bound: SequenceNumber,
-    ) -> SuiResult<Option<Object>> {
+    ) -> IotaResult<Option<Object>> {
         ChildObjectResolver::read_child_object(
             self.as_ref(),
             parent,
@@ -432,7 +433,7 @@ impl<S: ChildObjectResolver> ChildObjectResolver for std::sync::Arc<S> {
         epoch_id: EpochId,
         // TODO: Delete this parameter once table migration is complete.
         use_object_per_epoch_marker_table_v2: bool,
-    ) -> SuiResult<Option<Object>> {
+    ) -> IotaResult<Option<Object>> {
         ChildObjectResolver::get_object_received_at_version(
             self.as_ref(),
             owner,
@@ -450,7 +451,7 @@ impl<S: ChildObjectResolver> ChildObjectResolver for &S {
         parent: &ObjectID,
         child: &ObjectID,
         child_version_upper_bound: SequenceNumber,
-    ) -> SuiResult<Option<Object>> {
+    ) -> IotaResult<Option<Object>> {
         ChildObjectResolver::read_child_object(*self, parent, child, child_version_upper_bound)
     }
     fn get_object_received_at_version(
@@ -461,7 +462,7 @@ impl<S: ChildObjectResolver> ChildObjectResolver for &S {
         epoch_id: EpochId,
         // TODO: Delete this parameter once table migration is complete.
         use_object_per_epoch_marker_table_v2: bool,
-    ) -> SuiResult<Option<Object>> {
+    ) -> IotaResult<Option<Object>> {
         ChildObjectResolver::get_object_received_at_version(
             *self,
             owner,
@@ -479,7 +480,7 @@ impl<S: ChildObjectResolver> ChildObjectResolver for &mut S {
         parent: &ObjectID,
         child: &ObjectID,
         child_version_upper_bound: SequenceNumber,
-    ) -> SuiResult<Option<Object>> {
+    ) -> IotaResult<Option<Object>> {
         ChildObjectResolver::read_child_object(*self, parent, child, child_version_upper_bound)
     }
     fn get_object_received_at_version(
@@ -490,7 +491,7 @@ impl<S: ChildObjectResolver> ChildObjectResolver for &mut S {
         epoch_id: EpochId,
         // TODO: Delete this parameter once table migration is complete.
         use_object_per_epoch_marker_table_v2: bool,
-    ) -> SuiResult<Option<Object>> {
+    ) -> IotaResult<Option<Object>> {
         ChildObjectResolver::get_object_received_at_version(
             *self,
             owner,
@@ -638,7 +639,7 @@ impl From<Object> for ObjectOrTombstone {
 /// and immutable objects as well as the gas objects, but not move packages or shared objects.
 pub fn transaction_non_shared_input_object_keys(
     tx: &SenderSignedData,
-) -> SuiResult<Vec<ObjectKey>> {
+) -> IotaResult<Vec<ObjectKey>> {
     use crate::transaction::InputObjectKind as I;
     Ok(tx
         .intent_message()

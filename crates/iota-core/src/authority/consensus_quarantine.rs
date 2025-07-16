@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::authority::authority_per_epoch_store::{
@@ -13,20 +14,20 @@ use fastcrypto_tbls::{dkg_v1, nodes::PartyId};
 use fastcrypto_zkp::bn254::zk_login::{JwkId, JWK};
 use moka::policy::EvictionPolicy;
 use moka::sync::SegmentedCache as MokaCache;
-use mysten_common::fatal;
+use iota_common::fatal;
 use parking_lot::Mutex;
 use rand::seq::SliceRandom;
 use std::collections::{hash_map, BTreeMap, BTreeSet, HashMap, VecDeque};
-use sui_types::authenticator_state::ActiveJwk;
-use sui_types::base_types::{AuthorityName, SequenceNumber};
-use sui_types::crypto::RandomnessRound;
-use sui_types::error::SuiResult;
-use sui_types::execution::ExecutionTimeObservationKey;
-use sui_types::messages_checkpoint::{CheckpointContents, CheckpointSequenceNumber};
-use sui_types::messages_consensus::{
+use iota_types::authenticator_state::ActiveJwk;
+use iota_types::base_types::{AuthorityName, SequenceNumber};
+use iota_types::crypto::RandomnessRound;
+use iota_types::error::IotaResult;
+use iota_types::execution::ExecutionTimeObservationKey;
+use iota_types::messages_checkpoint::{CheckpointContents, CheckpointSequenceNumber};
+use iota_types::messages_consensus::{
     AuthorityIndex, ConsensusTransaction, ConsensusTransactionKind,
 };
-use sui_types::{
+use iota_types::{
     base_types::{ConsensusObjectSequenceKey, ObjectID},
     digests::TransactionDigest,
     messages_consensus::{Round, TimestampMs, VersionedDkgConfirmation},
@@ -247,7 +248,7 @@ impl ConsensusCommitOutput {
         self,
         epoch_store: &AuthorityPerEpochStore,
         batch: &mut DBBatch,
-    ) -> SuiResult {
+    ) -> IotaResult {
         let tables = epoch_store.tables()?;
         batch.insert_batch(
             &tables.consensus_message_processed,
@@ -403,7 +404,7 @@ impl ConsensusOutputCache {
 
         assert!(
             epoch_start_configuration.is_data_quarantine_active_from_beginning_of_epoch(),
-            "This version of sui-node can only run after data quarantining has been enabled. Please run version 1.45.0 or later to the end of the current epoch and retry"
+            "This version of iota-node can only run after data quarantining has been enabled. Please run version 1.45.0 or later to the end of the current epoch and retry"
         );
 
         let executed_in_epoch_cache_capacity = if cfg!(msim) {
@@ -586,7 +587,7 @@ impl ConsensusOutputQuarantine {
         &mut self,
         output: ConsensusCommitOutput,
         epoch_store: &AuthorityPerEpochStore,
-    ) -> SuiResult {
+    ) -> IotaResult {
         self.insert_shared_object_next_versions(&output);
         self.insert_congestion_control_debts(&output);
         self.insert_processed_consensus_messages(&output);
@@ -627,12 +628,12 @@ impl ConsensusOutputQuarantine {
         checkpoint: CheckpointSequenceNumber,
         epoch_store: &AuthorityPerEpochStore,
         batch: &mut DBBatch,
-    ) -> SuiResult {
+    ) -> IotaResult {
         self.highest_executed_checkpoint = checkpoint;
         self.commit_with_batch(epoch_store, batch)
     }
 
-    pub(super) fn commit(&mut self, epoch_store: &AuthorityPerEpochStore) -> SuiResult {
+    pub(super) fn commit(&mut self, epoch_store: &AuthorityPerEpochStore) -> IotaResult {
         let mut batch = epoch_store.db_batch()?;
         self.commit_with_batch(epoch_store, &mut batch)?;
         batch.write()?;
@@ -644,7 +645,7 @@ impl ConsensusOutputQuarantine {
         &mut self,
         epoch_store: &AuthorityPerEpochStore,
         batch: &mut DBBatch,
-    ) -> SuiResult {
+    ) -> IotaResult {
         // The commit algorithm is simple:
         // 1. First commit all checkpoint builder state which is below the watermark.
         // 2. Determine the consensus commit height that corresponds to the highest committed
@@ -850,7 +851,7 @@ impl ConsensusOutputQuarantine {
         epoch_start_config: &EpochStartConfiguration,
         tables: &AuthorityEpochTables,
         objects_to_init: &[ConsensusObjectSequenceKey],
-    ) -> SuiResult<Vec<Option<SequenceNumber>>> {
+    ) -> IotaResult<Vec<Option<SequenceNumber>>> {
         Ok(do_fallback_lookup(
             objects_to_init,
             |object_key| {
@@ -916,7 +917,7 @@ impl ConsensusOutputQuarantine {
         &self,
         epoch_store: &AuthorityPerEpochStore,
         round: u64,
-    ) -> SuiResult<Vec<ActiveJwk>> {
+    ) -> IotaResult<Vec<ActiveJwk>> {
         let epoch = epoch_store.epoch();
 
         // Check if the requested round is in memory
@@ -974,7 +975,7 @@ impl ConsensusOutputQuarantine {
         current_round: Round,
         for_randomness: bool,
         transactions: &[VerifiedSequencedConsensusTransaction],
-    ) -> SuiResult<impl IntoIterator<Item = (ObjectID, u64)>> {
+    ) -> IotaResult<impl IntoIterator<Item = (ObjectID, u64)>> {
         let protocol_config = epoch_store.protocol_config();
         let tables = epoch_store.tables()?;
         let default_per_commit_budget = protocol_config
