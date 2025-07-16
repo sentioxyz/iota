@@ -1,0 +1,822 @@
+---
+title: Module std::ascii
+sidebar_label: ascii
+slug: ascii
+---
+import Link from '@docusaurus/Link';
+
+<Link id="std_ascii"/>
+The <code>ASCII</code> module defines basic string and char newtypes in Move that verify
+that characters are valid ASCII, and that strings consist of only valid ASCII characters.
+
+
+-  [Struct `String`](#std_ascii_String)
+-  [Struct `Char`](#std_ascii_Char)
+-  [Constants](#@Constants_0)
+-  [Function `char`](#std_ascii_char)
+-  [Function `string`](#std_ascii_string)
+-  [Function `try_string`](#std_ascii_try_string)
+-  [Function `all_characters_printable`](#std_ascii_all_characters_printable)
+-  [Function `push_char`](#std_ascii_push_char)
+-  [Function `pop_char`](#std_ascii_pop_char)
+-  [Function `length`](#std_ascii_length)
+-  [Function `append`](#std_ascii_append)
+-  [Function `insert`](#std_ascii_insert)
+-  [Function `substring`](#std_ascii_substring)
+-  [Function `as_bytes`](#std_ascii_as_bytes)
+-  [Function `into_bytes`](#std_ascii_into_bytes)
+-  [Function `byte`](#std_ascii_byte)
+-  [Function `is_valid_char`](#std_ascii_is_valid_char)
+-  [Function `is_printable_char`](#std_ascii_is_printable_char)
+-  [Function `is_empty`](#std_ascii_is_empty)
+-  [Function `to_uppercase`](#std_ascii_to_uppercase)
+-  [Function `to_lowercase`](#std_ascii_to_lowercase)
+-  [Function `index_of`](#std_ascii_index_of)
+-  [Function `char_to_uppercase`](#std_ascii_char_to_uppercase)
+-  [Function `char_to_lowercase`](#std_ascii_char_to_lowercase)
+
+
+<pre>
+<code>
+<b>use</b> <Link to="../std/option#std_option">std::option</Link>;
+<b>use</b> <Link to="../std/vector#std_vector">std::vector</Link>;
+</code>
+</pre>
+
+
+
+<Link id="std_ascii_String"></Link>
+
+## Struct `String`
+
+The <code><Link to="../std/ascii#std_ascii_String">String</Link></code> struct holds a vector of bytes that all represent
+valid ASCII characters. Note that these ASCII characters may not all
+be printable. To determine if a <code><Link to="../std/ascii#std_ascii_String">String</Link></code> contains only "printable"
+characters you should use the <code><Link to="../std/ascii#std_ascii_all_characters_printable">all_characters_printable</Link></code> predicate
+defined in this module.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../std/ascii#std_ascii_String">String</Link> <b>has</b> <b>copy</b>, drop, store
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code>bytes: <Link to="../std/vector#std_vector">vector</Link>&lt;<Link to="../std/u8#std_u8">u8</Link>&gt;</code>
+</dt>
+<dd>
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="std_ascii_Char"></Link>
+
+## Struct `Char`
+
+An ASCII character.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../std/ascii#std_ascii_Char">Char</Link> <b>has</b> <b>copy</b>, drop, store
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code><Link to="../std/ascii#std_ascii_byte">byte</Link>: <Link to="../std/u8#std_u8">u8</Link></code>
+</dt>
+<dd>
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="@Constants_0"></Link>
+
+## Constants
+
+
+<Link id="std_ascii_EInvalidASCIICharacter"></Link>
+
+An invalid ASCII character was encountered when creating an ASCII string.
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../std/ascii#std_ascii_EInvalidASCIICharacter">EInvalidASCIICharacter</Link>: <Link to="../std/u64#std_u64">u64</Link> = 65536;
+</code>
+</pre>
+
+
+
+<Link id="std_ascii_EInvalidIndex"></Link>
+
+An invalid index was encountered when creating a substring.
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../std/ascii#std_ascii_EInvalidIndex">EInvalidIndex</Link>: <Link to="../std/u64#std_u64">u64</Link> = 65537;
+</code>
+</pre>
+
+
+
+<Link id="std_ascii_char"></Link>
+
+## Function `char`
+
+Convert a <code><Link to="../std/ascii#std_ascii_byte">byte</Link></code> into a <code><Link to="../std/ascii#std_ascii_Char">Char</Link></code> that is checked to make sure it is valid ASCII.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/ascii#std_ascii_char">char</Link>(<Link to="../std/ascii#std_ascii_byte">byte</Link>: <Link to="../std/u8#std_u8">u8</Link>): <Link to="../std/ascii#std_ascii_Char">std::ascii::Char</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/ascii#std_ascii_char">char</Link>(<Link to="../std/ascii#std_ascii_byte">byte</Link>: <Link to="../std/u8#std_u8">u8</Link>): <Link to="../std/ascii#std_ascii_Char">Char</Link> \{
+    <b>assert</b>!(<Link to="../std/ascii#std_ascii_is_valid_char">is_valid_char</Link>(<Link to="../std/ascii#std_ascii_byte">byte</Link>), <Link to="../std/ascii#std_ascii_EInvalidASCIICharacter">EInvalidASCIICharacter</Link>);
+    <Link to="../std/ascii#std_ascii_Char">Char</Link> \{ <Link to="../std/ascii#std_ascii_byte">byte</Link> }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_ascii_string"></Link>
+
+## Function `string`
+
+Convert a vector of bytes <code>bytes</code> into an <code><Link to="../std/ascii#std_ascii_String">String</Link></code>. Aborts if
+<code>bytes</code> contains non-ASCII characters.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/string#std_string">string</Link>(bytes: <Link to="../std/vector#std_vector">vector</Link>&lt;<Link to="../std/u8#std_u8">u8</Link>&gt;): <Link to="../std/ascii#std_ascii_String">std::ascii::String</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/string#std_string">string</Link>(bytes: <Link to="../std/vector#std_vector">vector</Link>&lt;<Link to="../std/u8#std_u8">u8</Link>&gt;): <Link to="../std/ascii#std_ascii_String">String</Link> \{
+    <b>let</b> x = <Link to="../std/ascii#std_ascii_try_string">try_string</Link>(bytes);
+    <b>assert</b>!(x.is_some(), <Link to="../std/ascii#std_ascii_EInvalidASCIICharacter">EInvalidASCIICharacter</Link>);
+    x.destroy_some()
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_ascii_try_string"></Link>
+
+## Function `try_string`
+
+Convert a vector of bytes <code>bytes</code> into an <code><Link to="../std/ascii#std_ascii_String">String</Link></code>. Returns
+<code>Some(&lt;ascii_string&gt;)</code> if the <code>bytes</code> contains all valid ASCII
+characters. Otherwise returns <code>None</code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/ascii#std_ascii_try_string">try_string</Link>(bytes: <Link to="../std/vector#std_vector">vector</Link>&lt;<Link to="../std/u8#std_u8">u8</Link>&gt;): <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;<Link to="../std/ascii#std_ascii_String">std::ascii::String</Link>&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/ascii#std_ascii_try_string">try_string</Link>(bytes: <Link to="../std/vector#std_vector">vector</Link>&lt;<Link to="../std/u8#std_u8">u8</Link>&gt;): Option&lt;<Link to="../std/ascii#std_ascii_String">String</Link>&gt; \{
+    <b>let</b> is_valid = bytes.all!(|<Link to="../std/ascii#std_ascii_byte">byte</Link>| <Link to="../std/ascii#std_ascii_is_valid_char">is_valid_char</Link>(*<Link to="../std/ascii#std_ascii_byte">byte</Link>));
+    <b>if</b> (is_valid) <Link to="../std/option#std_option_some">option::some</Link>(<Link to="../std/ascii#std_ascii_String">String</Link> \{ bytes }) <b>else</b> <Link to="../std/option#std_option_none">option::none</Link>()
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_ascii_all_characters_printable"></Link>
+
+## Function `all_characters_printable`
+
+Returns <code><b>true</b></code> if all characters in <code><Link to="../std/string#std_string">string</Link></code> are printable characters
+Returns <code><b>false</b></code> otherwise. Not all <code><Link to="../std/ascii#std_ascii_String">String</Link></code>s are printable strings.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/ascii#std_ascii_all_characters_printable">all_characters_printable</Link>(<Link to="../std/string#std_string">string</Link>: &<Link to="../std/ascii#std_ascii_String">std::ascii::String</Link>): bool
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/ascii#std_ascii_all_characters_printable">all_characters_printable</Link>(<Link to="../std/string#std_string">string</Link>: &<Link to="../std/ascii#std_ascii_String">String</Link>): bool \{
+    <Link to="../std/string#std_string">string</Link>.bytes.all!(|<Link to="../std/ascii#std_ascii_byte">byte</Link>| <Link to="../std/ascii#std_ascii_is_printable_char">is_printable_char</Link>(*<Link to="../std/ascii#std_ascii_byte">byte</Link>))
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_ascii_push_char"></Link>
+
+## Function `push_char`
+
+Push a <code><Link to="../std/ascii#std_ascii_Char">Char</Link></code> to the end of the <code><Link to="../std/string#std_string">string</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/ascii#std_ascii_push_char">push_char</Link>(<Link to="../std/string#std_string">string</Link>: &<b>mut</b> <Link to="../std/ascii#std_ascii_String">std::ascii::String</Link>, <Link to="../std/ascii#std_ascii_char">char</Link>: <Link to="../std/ascii#std_ascii_Char">std::ascii::Char</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/ascii#std_ascii_push_char">push_char</Link>(<Link to="../std/string#std_string">string</Link>: &<b>mut</b> <Link to="../std/ascii#std_ascii_String">String</Link>, <Link to="../std/ascii#std_ascii_char">char</Link>: <Link to="../std/ascii#std_ascii_Char">Char</Link>) \{
+    <Link to="../std/string#std_string">string</Link>.bytes.push_back(<Link to="../std/ascii#std_ascii_char">char</Link>.<Link to="../std/ascii#std_ascii_byte">byte</Link>);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_ascii_pop_char"></Link>
+
+## Function `pop_char`
+
+Pop a <code><Link to="../std/ascii#std_ascii_Char">Char</Link></code> from the end of the <code><Link to="../std/string#std_string">string</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/ascii#std_ascii_pop_char">pop_char</Link>(<Link to="../std/string#std_string">string</Link>: &<b>mut</b> <Link to="../std/ascii#std_ascii_String">std::ascii::String</Link>): <Link to="../std/ascii#std_ascii_Char">std::ascii::Char</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/ascii#std_ascii_pop_char">pop_char</Link>(<Link to="../std/string#std_string">string</Link>: &<b>mut</b> <Link to="../std/ascii#std_ascii_String">String</Link>): <Link to="../std/ascii#std_ascii_Char">Char</Link> \{
+    <Link to="../std/ascii#std_ascii_Char">Char</Link> \{ <Link to="../std/ascii#std_ascii_byte">byte</Link>: <Link to="../std/string#std_string">string</Link>.bytes.pop_back() }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_ascii_length"></Link>
+
+## Function `length`
+
+Returns the length of the <code><Link to="../std/string#std_string">string</Link></code> in bytes.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/ascii#std_ascii_length">length</Link>(<Link to="../std/string#std_string">string</Link>: &<Link to="../std/ascii#std_ascii_String">std::ascii::String</Link>): <Link to="../std/u64#std_u64">u64</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/ascii#std_ascii_length">length</Link>(<Link to="../std/string#std_string">string</Link>: &<Link to="../std/ascii#std_ascii_String">String</Link>): <Link to="../std/u64#std_u64">u64</Link> \{
+    <Link to="../std/string#std_string">string</Link>.<Link to="../std/ascii#std_ascii_as_bytes">as_bytes</Link>().<Link to="../std/ascii#std_ascii_length">length</Link>()
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_ascii_append"></Link>
+
+## Function `append`
+
+Append the <code>other</code> string to the end of <code><Link to="../std/string#std_string">string</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/ascii#std_ascii_append">append</Link>(<Link to="../std/string#std_string">string</Link>: &<b>mut</b> <Link to="../std/ascii#std_ascii_String">std::ascii::String</Link>, other: <Link to="../std/ascii#std_ascii_String">std::ascii::String</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/ascii#std_ascii_append">append</Link>(<Link to="../std/string#std_string">string</Link>: &<b>mut</b> <Link to="../std/ascii#std_ascii_String">String</Link>, other: <Link to="../std/ascii#std_ascii_String">String</Link>) \{
+    <Link to="../std/string#std_string">string</Link>.bytes.<Link to="../std/ascii#std_ascii_append">append</Link>(other.<Link to="../std/ascii#std_ascii_into_bytes">into_bytes</Link>())
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_ascii_insert"></Link>
+
+## Function `insert`
+
+Insert the <code>other</code> string at the <code>at</code> index of <code><Link to="../std/string#std_string">string</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/ascii#std_ascii_insert">insert</Link>(s: &<b>mut</b> <Link to="../std/ascii#std_ascii_String">std::ascii::String</Link>, at: <Link to="../std/u64#std_u64">u64</Link>, o: <Link to="../std/ascii#std_ascii_String">std::ascii::String</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/ascii#std_ascii_insert">insert</Link>(s: &<b>mut</b> <Link to="../std/ascii#std_ascii_String">String</Link>, at: <Link to="../std/u64#std_u64">u64</Link>, o: <Link to="../std/ascii#std_ascii_String">String</Link>) \{
+    <b>assert</b>!(at &lt;= s.<Link to="../std/ascii#std_ascii_length">length</Link>(), <Link to="../std/ascii#std_ascii_EInvalidIndex">EInvalidIndex</Link>);
+    o.<Link to="../std/ascii#std_ascii_into_bytes">into_bytes</Link>().destroy!(|e| s.bytes.<Link to="../std/ascii#std_ascii_insert">insert</Link>(e, at));
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_ascii_substring"></Link>
+
+## Function `substring`
+
+Copy the slice of the <code><Link to="../std/string#std_string">string</Link></code> from <code>i</code> to <code>j</code> into a new <code><Link to="../std/ascii#std_ascii_String">String</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/ascii#std_ascii_substring">substring</Link>(<Link to="../std/string#std_string">string</Link>: &<Link to="../std/ascii#std_ascii_String">std::ascii::String</Link>, i: <Link to="../std/u64#std_u64">u64</Link>, j: <Link to="../std/u64#std_u64">u64</Link>): <Link to="../std/ascii#std_ascii_String">std::ascii::String</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/ascii#std_ascii_substring">substring</Link>(<Link to="../std/string#std_string">string</Link>: &<Link to="../std/ascii#std_ascii_String">String</Link>, i: <Link to="../std/u64#std_u64">u64</Link>, j: <Link to="../std/u64#std_u64">u64</Link>): <Link to="../std/ascii#std_ascii_String">String</Link> \{
+    <b>assert</b>!(i &lt;= j && j &lt;= <Link to="../std/string#std_string">string</Link>.<Link to="../std/ascii#std_ascii_length">length</Link>(), <Link to="../std/ascii#std_ascii_EInvalidIndex">EInvalidIndex</Link>);
+    <b>let</b> <b>mut</b> bytes = <Link to="../std/vector#std_vector">vector</Link>[];
+    i.range_do!(j, |i| bytes.push_back(<Link to="../std/string#std_string">string</Link>.bytes[i]));
+    <Link to="../std/ascii#std_ascii_String">String</Link> \{ bytes }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_ascii_as_bytes"></Link>
+
+## Function `as_bytes`
+
+Get the inner bytes of the <code><Link to="../std/string#std_string">string</Link></code> as a reference
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/ascii#std_ascii_as_bytes">as_bytes</Link>(<Link to="../std/string#std_string">string</Link>: &<Link to="../std/ascii#std_ascii_String">std::ascii::String</Link>): &<Link to="../std/vector#std_vector">vector</Link>&lt;<Link to="../std/u8#std_u8">u8</Link>&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/ascii#std_ascii_as_bytes">as_bytes</Link>(<Link to="../std/string#std_string">string</Link>: &<Link to="../std/ascii#std_ascii_String">String</Link>): &<Link to="../std/vector#std_vector">vector</Link>&lt;<Link to="../std/u8#std_u8">u8</Link>&gt; \{
+    &<Link to="../std/string#std_string">string</Link>.bytes
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_ascii_into_bytes"></Link>
+
+## Function `into_bytes`
+
+Unpack the <code><Link to="../std/string#std_string">string</Link></code> to get its backing bytes
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/ascii#std_ascii_into_bytes">into_bytes</Link>(<Link to="../std/string#std_string">string</Link>: <Link to="../std/ascii#std_ascii_String">std::ascii::String</Link>): <Link to="../std/vector#std_vector">vector</Link>&lt;<Link to="../std/u8#std_u8">u8</Link>&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/ascii#std_ascii_into_bytes">into_bytes</Link>(<Link to="../std/string#std_string">string</Link>: <Link to="../std/ascii#std_ascii_String">String</Link>): <Link to="../std/vector#std_vector">vector</Link>&lt;<Link to="../std/u8#std_u8">u8</Link>&gt; \{
+    <b>let</b> <Link to="../std/ascii#std_ascii_String">String</Link> \{ bytes } = <Link to="../std/string#std_string">string</Link>;
+    bytes
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_ascii_byte"></Link>
+
+## Function `byte`
+
+Unpack the <code><Link to="../std/ascii#std_ascii_char">char</Link></code> into its underlying bytes.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/ascii#std_ascii_byte">byte</Link>(<Link to="../std/ascii#std_ascii_char">char</Link>: <Link to="../std/ascii#std_ascii_Char">std::ascii::Char</Link>): <Link to="../std/u8#std_u8">u8</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/ascii#std_ascii_byte">byte</Link>(<Link to="../std/ascii#std_ascii_char">char</Link>: <Link to="../std/ascii#std_ascii_Char">Char</Link>): <Link to="../std/u8#std_u8">u8</Link> \{
+    <b>let</b> <Link to="../std/ascii#std_ascii_Char">Char</Link> \{ <Link to="../std/ascii#std_ascii_byte">byte</Link> } = <Link to="../std/ascii#std_ascii_char">char</Link>;
+    <Link to="../std/ascii#std_ascii_byte">byte</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_ascii_is_valid_char"></Link>
+
+## Function `is_valid_char`
+
+Returns <code><b>true</b></code> if <code>b</code> is a valid ASCII character.
+Returns <code><b>false</b></code> otherwise.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/ascii#std_ascii_is_valid_char">is_valid_char</Link>(b: <Link to="../std/u8#std_u8">u8</Link>): bool
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/ascii#std_ascii_is_valid_char">is_valid_char</Link>(b: <Link to="../std/u8#std_u8">u8</Link>): bool \{
+    b &lt;= 0x7F
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_ascii_is_printable_char"></Link>
+
+## Function `is_printable_char`
+
+Returns <code><b>true</b></code> if <code><Link to="../std/ascii#std_ascii_byte">byte</Link></code> is an printable ASCII character.
+Returns <code><b>false</b></code> otherwise.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/ascii#std_ascii_is_printable_char">is_printable_char</Link>(<Link to="../std/ascii#std_ascii_byte">byte</Link>: <Link to="../std/u8#std_u8">u8</Link>): bool
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/ascii#std_ascii_is_printable_char">is_printable_char</Link>(<Link to="../std/ascii#std_ascii_byte">byte</Link>: <Link to="../std/u8#std_u8">u8</Link>): bool \{
+    <Link to="../std/ascii#std_ascii_byte">byte</Link> &gt;= 0x20 && // Disallow metacharacters
+        <Link to="../std/ascii#std_ascii_byte">byte</Link> &lt;= 0x7E // Don't allow DEL metacharacter
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_ascii_is_empty"></Link>
+
+## Function `is_empty`
+
+Returns <code><b>true</b></code> if <code><Link to="../std/string#std_string">string</Link></code> is empty.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/ascii#std_ascii_is_empty">is_empty</Link>(<Link to="../std/string#std_string">string</Link>: &<Link to="../std/ascii#std_ascii_String">std::ascii::String</Link>): bool
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/ascii#std_ascii_is_empty">is_empty</Link>(<Link to="../std/string#std_string">string</Link>: &<Link to="../std/ascii#std_ascii_String">String</Link>): bool \{
+    <Link to="../std/string#std_string">string</Link>.bytes.<Link to="../std/ascii#std_ascii_is_empty">is_empty</Link>()
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_ascii_to_uppercase"></Link>
+
+## Function `to_uppercase`
+
+Convert a <code><Link to="../std/string#std_string">string</Link></code> to its uppercase equivalent.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/ascii#std_ascii_to_uppercase">to_uppercase</Link>(<Link to="../std/string#std_string">string</Link>: &<Link to="../std/ascii#std_ascii_String">std::ascii::String</Link>): <Link to="../std/ascii#std_ascii_String">std::ascii::String</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/ascii#std_ascii_to_uppercase">to_uppercase</Link>(<Link to="../std/string#std_string">string</Link>: &<Link to="../std/ascii#std_ascii_String">String</Link>): <Link to="../std/ascii#std_ascii_String">String</Link> \{
+    <b>let</b> bytes = <Link to="../std/string#std_string">string</Link>.<Link to="../std/ascii#std_ascii_as_bytes">as_bytes</Link>().map_ref!(|<Link to="../std/ascii#std_ascii_byte">byte</Link>| <Link to="../std/ascii#std_ascii_char_to_uppercase">char_to_uppercase</Link>(*<Link to="../std/ascii#std_ascii_byte">byte</Link>));
+    <Link to="../std/ascii#std_ascii_String">String</Link> \{ bytes }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_ascii_to_lowercase"></Link>
+
+## Function `to_lowercase`
+
+Convert a <code><Link to="../std/string#std_string">string</Link></code> to its lowercase equivalent.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/ascii#std_ascii_to_lowercase">to_lowercase</Link>(<Link to="../std/string#std_string">string</Link>: &<Link to="../std/ascii#std_ascii_String">std::ascii::String</Link>): <Link to="../std/ascii#std_ascii_String">std::ascii::String</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/ascii#std_ascii_to_lowercase">to_lowercase</Link>(<Link to="../std/string#std_string">string</Link>: &<Link to="../std/ascii#std_ascii_String">String</Link>): <Link to="../std/ascii#std_ascii_String">String</Link> \{
+    <b>let</b> bytes = <Link to="../std/string#std_string">string</Link>.<Link to="../std/ascii#std_ascii_as_bytes">as_bytes</Link>().map_ref!(|<Link to="../std/ascii#std_ascii_byte">byte</Link>| <Link to="../std/ascii#std_ascii_char_to_lowercase">char_to_lowercase</Link>(*<Link to="../std/ascii#std_ascii_byte">byte</Link>));
+    <Link to="../std/ascii#std_ascii_String">String</Link> \{ bytes }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_ascii_index_of"></Link>
+
+## Function `index_of`
+
+Computes the index of the first occurrence of the <code>substr</code> in the <code><Link to="../std/string#std_string">string</Link></code>.
+Returns the length of the <code><Link to="../std/string#std_string">string</Link></code> if the <code>substr</code> is not found.
+Returns 0 if the <code>substr</code> is empty.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/ascii#std_ascii_index_of">index_of</Link>(<Link to="../std/string#std_string">string</Link>: &<Link to="../std/ascii#std_ascii_String">std::ascii::String</Link>, substr: &<Link to="../std/ascii#std_ascii_String">std::ascii::String</Link>): <Link to="../std/u64#std_u64">u64</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/ascii#std_ascii_index_of">index_of</Link>(<Link to="../std/string#std_string">string</Link>: &<Link to="../std/ascii#std_ascii_String">String</Link>, substr: &<Link to="../std/ascii#std_ascii_String">String</Link>): <Link to="../std/u64#std_u64">u64</Link> \{
+    <b>let</b> <b>mut</b> i = 0;
+    <b>let</b> (n, m) = (<Link to="../std/string#std_string">string</Link>.<Link to="../std/ascii#std_ascii_length">length</Link>(), substr.<Link to="../std/ascii#std_ascii_length">length</Link>());
+    <b>if</b> (n &lt; m) <b>return</b> n;
+    <b>while</b> (i &lt;= n - m) \{
+        <b>let</b> <b>mut</b> j = 0;
+        <b>while</b> (j &lt; m && <Link to="../std/string#std_string">string</Link>.bytes[i + j] == substr.bytes[j]) j = j + 1;
+        <b>if</b> (j == m) <b>return</b> i;
+        i = i + 1;
+    };
+    n
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_ascii_char_to_uppercase"></Link>
+
+## Function `char_to_uppercase`
+
+Convert a <code><Link to="../std/ascii#std_ascii_char">char</Link></code> to its lowercase equivalent.
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../std/ascii#std_ascii_char_to_uppercase">char_to_uppercase</Link>(<Link to="../std/ascii#std_ascii_byte">byte</Link>: <Link to="../std/u8#std_u8">u8</Link>): <Link to="../std/u8#std_u8">u8</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../std/ascii#std_ascii_char_to_uppercase">char_to_uppercase</Link>(<Link to="../std/ascii#std_ascii_byte">byte</Link>: <Link to="../std/u8#std_u8">u8</Link>): <Link to="../std/u8#std_u8">u8</Link> \{
+    <b>if</b> (<Link to="../std/ascii#std_ascii_byte">byte</Link> &gt;= 0x61 && <Link to="../std/ascii#std_ascii_byte">byte</Link> &lt;= 0x7A) <Link to="../std/ascii#std_ascii_byte">byte</Link> - 0x20 <b>else</b> <Link to="../std/ascii#std_ascii_byte">byte</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_ascii_char_to_lowercase"></Link>
+
+## Function `char_to_lowercase`
+
+Convert a <code><Link to="../std/ascii#std_ascii_char">char</Link></code> to its lowercase equivalent.
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../std/ascii#std_ascii_char_to_lowercase">char_to_lowercase</Link>(<Link to="../std/ascii#std_ascii_byte">byte</Link>: <Link to="../std/u8#std_u8">u8</Link>): <Link to="../std/u8#std_u8">u8</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../std/ascii#std_ascii_char_to_lowercase">char_to_lowercase</Link>(<Link to="../std/ascii#std_ascii_byte">byte</Link>: <Link to="../std/u8#std_u8">u8</Link>): <Link to="../std/u8#std_u8">u8</Link> \{
+    <b>if</b> (<Link to="../std/ascii#std_ascii_byte">byte</Link> &gt;= 0x41 && <Link to="../std/ascii#std_ascii_byte">byte</Link> &lt;= 0x5A) <Link to="../std/ascii#std_ascii_byte">byte</Link> + 0x20 <b>else</b> <Link to="../std/ascii#std_ascii_byte">byte</Link>
+}
+</code>
+</pre>
+
+
+
+</details>

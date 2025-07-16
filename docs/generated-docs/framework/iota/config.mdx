@@ -1,0 +1,753 @@
+---
+title: Module iota::config
+sidebar_label: config
+slug: config
+---
+import Link from '@docusaurus/Link';
+
+<Link id="iota_config"/>
+
+
+-  [Struct `Config`](#iota_config_Config)
+-  [Struct `Setting`](#iota_config_Setting)
+-  [Struct `SettingData`](#iota_config_SettingData)
+-  [Constants](#@Constants_0)
+-  [Function `new`](#iota_config_new)
+-  [Function `share`](#iota_config_share)
+-  [Function `transfer`](#iota_config_transfer)
+-  [Function `add_for_next_epoch`](#iota_config_add_for_next_epoch)
+-  [Function `remove_for_next_epoch`](#iota_config_remove_for_next_epoch)
+-  [Function `exists_with_type`](#iota_config_exists_with_type)
+-  [Function `exists_with_type_for_next_epoch`](#iota_config_exists_with_type_for_next_epoch)
+-  [Function `borrow_for_next_epoch_mut`](#iota_config_borrow_for_next_epoch_mut)
+-  [Function `read_setting_for_next_epoch`](#iota_config_read_setting_for_next_epoch)
+-  [Macro function `entry`](#iota_config_entry)
+-  [Macro function `update`](#iota_config_update)
+-  [Function `read_setting`](#iota_config_read_setting)
+-  [Function `read_setting_impl`](#iota_config_read_setting_impl)
+
+
+<pre>
+<code>
+<b>use</b> <Link to="../iota/address#iota_address">iota::address</Link>;
+<b>use</b> <Link to="../iota/dynamic_field#iota_dynamic_field">iota::dynamic_field</Link>;
+<b>use</b> <Link to="../iota/hex#iota_hex">iota::hex</Link>;
+<b>use</b> <Link to="../iota/object#iota_object">iota::object</Link>;
+<b>use</b> <Link to="../iota/transfer#iota_transfer">iota::transfer</Link>;
+<b>use</b> <Link to="../iota/tx_context#iota_tx_context">iota::tx_context</Link>;
+<b>use</b> <Link to="../std/ascii#std_ascii">std::ascii</Link>;
+<b>use</b> <Link to="../std/bcs#std_bcs">std::bcs</Link>;
+<b>use</b> <Link to="../std/option#std_option">std::option</Link>;
+<b>use</b> <Link to="../std/string#std_string">std::string</Link>;
+<b>use</b> <Link to="../std/vector#std_vector">std::vector</Link>;
+</code>
+</pre>
+
+
+
+<Link id="iota_config_Config"></Link>
+
+## Struct `Config`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota/config#iota_config_Config">Config</Link>&lt;<b>phantom</b> WriteCap&gt; <b>has</b> key
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code>id: <Link to="../iota/object#iota_object_UID">iota::object::UID</Link></code>
+</dt>
+<dd>
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="iota_config_Setting"></Link>
+
+## Struct `Setting`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota/config#iota_config_Setting">Setting</Link>&lt;Value: <b>copy</b>, drop, store&gt; <b>has</b> drop, store
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code>data: <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;<Link to="../iota/config#iota_config_SettingData">iota::config::SettingData</Link>&lt;Value&gt;&gt;</code>
+</dt>
+<dd>
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="iota_config_SettingData"></Link>
+
+## Struct `SettingData`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota/config#iota_config_SettingData">SettingData</Link>&lt;Value: <b>copy</b>, drop, store&gt; <b>has</b> drop, store
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code>newer_value_epoch: u64</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>newer_value: <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;Value&gt;</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>older_value_opt: <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;Value&gt;</code>
+</dt>
+<dd>
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="@Constants_0"></Link>
+
+## Constants
+
+
+<Link id="iota_config_EAlreadySetForEpoch"></Link>
+
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota/config#iota_config_EAlreadySetForEpoch">EAlreadySetForEpoch</Link>: u64 = 0;
+</code>
+</pre>
+
+
+
+<Link id="iota_config_EBCSSerializationFailure"></Link>
+
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota/config#iota_config_EBCSSerializationFailure">EBCSSerializationFailure</Link>: u64 = 2;
+</code>
+</pre>
+
+
+
+<Link id="iota_config_ENotSetForEpoch"></Link>
+
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota/config#iota_config_ENotSetForEpoch">ENotSetForEpoch</Link>: u64 = 1;
+</code>
+</pre>
+
+
+
+<Link id="iota_config_new"></Link>
+
+## Function `new`
+
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/config#iota_config_new">new</Link>&lt;WriteCap&gt;(_cap: &<b>mut</b> WriteCap, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): <Link to="../iota/config#iota_config_Config">iota::config::Config</Link>&lt;WriteCap&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/config#iota_config_new">new</Link>&lt;WriteCap&gt;(_cap: &<b>mut</b> WriteCap, ctx: &<b>mut</b> TxContext): <Link to="../iota/config#iota_config_Config">Config</Link>&lt;WriteCap&gt; \{
+    <Link to="../iota/config#iota_config_Config">Config</Link>&lt;WriteCap&gt; \{ id: <Link to="../iota/object#iota_object_new">object::new</Link>(ctx) }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_config_share"></Link>
+
+## Function `share`
+
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/config#iota_config_share">share</Link>&lt;WriteCap&gt;(<Link to="../iota/config#iota_config">config</Link>: <Link to="../iota/config#iota_config_Config">iota::config::Config</Link>&lt;WriteCap&gt;)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/config#iota_config_share">share</Link>&lt;WriteCap&gt;(<Link to="../iota/config#iota_config">config</Link>: <Link to="../iota/config#iota_config_Config">Config</Link>&lt;WriteCap&gt;) \{
+    <Link to="../iota/transfer#iota_transfer_share_object">transfer::share_object</Link>(<Link to="../iota/config#iota_config">config</Link>)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_config_transfer"></Link>
+
+## Function `transfer`
+
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/transfer#iota_transfer">transfer</Link>&lt;WriteCap&gt;(<Link to="../iota/config#iota_config">config</Link>: <Link to="../iota/config#iota_config_Config">iota::config::Config</Link>&lt;WriteCap&gt;, owner: <b>address</b>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/transfer#iota_transfer">transfer</Link>&lt;WriteCap&gt;(<Link to="../iota/config#iota_config">config</Link>: <Link to="../iota/config#iota_config_Config">Config</Link>&lt;WriteCap&gt;, owner: <b>address</b>) \{
+    <Link to="../iota/transfer#iota_transfer_transfer">transfer::transfer</Link>(<Link to="../iota/config#iota_config">config</Link>, owner)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_config_add_for_next_epoch"></Link>
+
+## Function `add_for_next_epoch`
+
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/config#iota_config_add_for_next_epoch">add_for_next_epoch</Link>&lt;WriteCap, Name: <b>copy</b>, drop, store, Value: <b>copy</b>, drop, store&gt;(<Link to="../iota/config#iota_config">config</Link>: &<b>mut</b> <Link to="../iota/config#iota_config_Config">iota::config::Config</Link>&lt;WriteCap&gt;, _cap: &<b>mut</b> WriteCap, name: Name, value: Value, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;Value&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/config#iota_config_add_for_next_epoch">add_for_next_epoch</Link>&lt;
+    WriteCap,
+    Name: <b>copy</b> + drop + store,
+    Value: <b>copy</b> + drop + store,
+&gt;(
+    <Link to="../iota/config#iota_config">config</Link>: &<b>mut</b> <Link to="../iota/config#iota_config_Config">Config</Link>&lt;WriteCap&gt;,
+    _cap: &<b>mut</b> WriteCap,
+    name: Name,
+    value: Value,
+    ctx: &<b>mut</b> TxContext,
+): Option&lt;Value&gt; \{
+    <b>let</b> epoch = ctx.epoch();
+    <b>if</b> (!field::exists_(&<Link to="../iota/config#iota_config">config</Link>.id, name)) \{
+        <b>let</b> sobj = <Link to="../iota/config#iota_config_Setting">Setting</Link> \{
+            data: option::some(<Link to="../iota/config#iota_config_SettingData">SettingData</Link> \{
+                newer_value_epoch: epoch,
+                newer_value: option::some(value),
+                older_value_opt: option::none(),
+            }),
+        };
+        field::add(&<b>mut</b> <Link to="../iota/config#iota_config">config</Link>.id, name, sobj);
+        option::none()
+    } <b>else</b> \{
+        <b>let</b> sobj: &<b>mut</b> <Link to="../iota/config#iota_config_Setting">Setting</Link>&lt;Value&gt; = field::borrow_mut(&<b>mut</b> <Link to="../iota/config#iota_config">config</Link>.id, name);
+        <b>let</b> <Link to="../iota/config#iota_config_SettingData">SettingData</Link> \{
+            newer_value_epoch,
+            newer_value,
+            older_value_opt,
+        } = sobj.data.extract();
+        <b>let</b> (older_value_opt, removed_value) = <b>if</b> (epoch &gt; newer_value_epoch) \{
+            // <b>if</b> the `newer_value` is <b>for</b> a previous epoch, <b>move</b> it to `older_value_opt`
+            (<b>move</b> newer_value, <b>move</b> older_value_opt)
+        } <b>else</b> \{
+            // the current epoch cannot be less than the `newer_value_epoch`
+            <b>assert</b>!(epoch == newer_value_epoch);
+            // <b>if</b> the `newer_value` is <b>for</b> the current epoch, then the option must be `none`
+            <b>assert</b>!(newer_value.is_none(), <Link to="../iota/config#iota_config_EAlreadySetForEpoch">EAlreadySetForEpoch</Link>);
+            (<b>move</b> older_value_opt, option::none())
+        };
+        sobj
+            .data
+            .fill(<Link to="../iota/config#iota_config_SettingData">SettingData</Link> \{
+                newer_value_epoch: epoch,
+                newer_value: option::some(value),
+                older_value_opt,
+            });
+        removed_value
+    }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_config_remove_for_next_epoch"></Link>
+
+## Function `remove_for_next_epoch`
+
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/config#iota_config_remove_for_next_epoch">remove_for_next_epoch</Link>&lt;WriteCap, Name: <b>copy</b>, drop, store, Value: <b>copy</b>, drop, store&gt;(<Link to="../iota/config#iota_config">config</Link>: &<b>mut</b> <Link to="../iota/config#iota_config_Config">iota::config::Config</Link>&lt;WriteCap&gt;, _cap: &<b>mut</b> WriteCap, name: Name, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;Value&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/config#iota_config_remove_for_next_epoch">remove_for_next_epoch</Link>&lt;
+    WriteCap,
+    Name: <b>copy</b> + drop + store,
+    Value: <b>copy</b> + drop + store,
+&gt;(
+    <Link to="../iota/config#iota_config">config</Link>: &<b>mut</b> <Link to="../iota/config#iota_config_Config">Config</Link>&lt;WriteCap&gt;,
+    _cap: &<b>mut</b> WriteCap,
+    name: Name,
+    ctx: &<b>mut</b> TxContext,
+): Option&lt;Value&gt; \{
+    <b>let</b> epoch = ctx.epoch();
+    <b>if</b> (!field::exists_(&<Link to="../iota/config#iota_config">config</Link>.id, name)) <b>return</b> option::none();
+    <b>let</b> sobj: &<b>mut</b> <Link to="../iota/config#iota_config_Setting">Setting</Link>&lt;Value&gt; = field::borrow_mut(&<b>mut</b> <Link to="../iota/config#iota_config">config</Link>.id, name);
+    <b>let</b> <Link to="../iota/config#iota_config_SettingData">SettingData</Link> \{
+        newer_value_epoch,
+        newer_value,
+        older_value_opt,
+    } = sobj.data.extract();
+    <b>let</b> (older_value_opt, removed_value) = <b>if</b> (epoch &gt; newer_value_epoch) \{
+        // <b>if</b> the `newer_value` is <b>for</b> a previous epoch, <b>move</b> it to `older_value_opt`
+        (<b>move</b> newer_value, option::none())
+    } <b>else</b> \{
+        // the current epoch cannot be less than the `newer_value_epoch`
+        <b>assert</b>!(epoch == newer_value_epoch);
+        (<b>move</b> older_value_opt, <b>move</b> newer_value)
+    };
+    <b>let</b> older_value_opt_is_none = older_value_opt.is_none();
+    sobj
+        .data
+        .fill(<Link to="../iota/config#iota_config_SettingData">SettingData</Link> \{
+            newer_value_epoch: epoch,
+            newer_value: option::none(),
+            older_value_opt,
+        });
+    <b>if</b> (older_value_opt_is_none) \{
+        field::remove&lt;_, <Link to="../iota/config#iota_config_Setting">Setting</Link>&lt;Value&gt;&gt;(&<b>mut</b> <Link to="../iota/config#iota_config">config</Link>.id, name);
+    };
+    removed_value
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_config_exists_with_type"></Link>
+
+## Function `exists_with_type`
+
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/config#iota_config_exists_with_type">exists_with_type</Link>&lt;WriteCap, Name: <b>copy</b>, drop, store, Value: <b>copy</b>, drop, store&gt;(<Link to="../iota/config#iota_config">config</Link>: &<Link to="../iota/config#iota_config_Config">iota::config::Config</Link>&lt;WriteCap&gt;, name: Name): bool
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/config#iota_config_exists_with_type">exists_with_type</Link>&lt;
+    WriteCap,
+    Name: <b>copy</b> + drop + store,
+    Value: <b>copy</b> + drop + store,
+&gt;(
+    <Link to="../iota/config#iota_config">config</Link>: &<Link to="../iota/config#iota_config_Config">Config</Link>&lt;WriteCap&gt;,
+    name: Name,
+): bool \{
+    field::exists_with_type&lt;_, <Link to="../iota/config#iota_config_Setting">Setting</Link>&lt;Value&gt;&gt;(&<Link to="../iota/config#iota_config">config</Link>.id, name)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_config_exists_with_type_for_next_epoch"></Link>
+
+## Function `exists_with_type_for_next_epoch`
+
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/config#iota_config_exists_with_type_for_next_epoch">exists_with_type_for_next_epoch</Link>&lt;WriteCap, Name: <b>copy</b>, drop, store, Value: <b>copy</b>, drop, store&gt;(<Link to="../iota/config#iota_config">config</Link>: &<Link to="../iota/config#iota_config_Config">iota::config::Config</Link>&lt;WriteCap&gt;, name: Name, ctx: &<Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): bool
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/config#iota_config_exists_with_type_for_next_epoch">exists_with_type_for_next_epoch</Link>&lt;
+    WriteCap,
+    Name: <b>copy</b> + drop + store,
+    Value: <b>copy</b> + drop + store,
+&gt;(
+    <Link to="../iota/config#iota_config">config</Link>: &<Link to="../iota/config#iota_config_Config">Config</Link>&lt;WriteCap&gt;,
+    name: Name,
+    ctx: &TxContext,
+): bool \{
+    field::exists_with_type&lt;_, <Link to="../iota/config#iota_config_Setting">Setting</Link>&lt;Value&gt;&gt;(&<Link to="../iota/config#iota_config">config</Link>.id, name) && \{
+            <b>let</b> epoch = ctx.epoch();
+            <b>let</b> sobj: &<Link to="../iota/config#iota_config_Setting">Setting</Link>&lt;Value&gt; = field::borrow(&<Link to="../iota/config#iota_config">config</Link>.id, name);
+            epoch == sobj.data.<Link to="../iota/borrow#iota_borrow">borrow</Link>().newer_value_epoch &&
+            sobj.data.<Link to="../iota/borrow#iota_borrow">borrow</Link>().newer_value.is_some()
+        }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_config_borrow_for_next_epoch_mut"></Link>
+
+## Function `borrow_for_next_epoch_mut`
+
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/config#iota_config_borrow_for_next_epoch_mut">borrow_for_next_epoch_mut</Link>&lt;WriteCap, Name: <b>copy</b>, drop, store, Value: <b>copy</b>, drop, store&gt;(<Link to="../iota/config#iota_config">config</Link>: &<b>mut</b> <Link to="../iota/config#iota_config_Config">iota::config::Config</Link>&lt;WriteCap&gt;, _cap: &<b>mut</b> WriteCap, name: Name, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): &<b>mut</b> Value
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/config#iota_config_borrow_for_next_epoch_mut">borrow_for_next_epoch_mut</Link>&lt;
+    WriteCap,
+    Name: <b>copy</b> + drop + store,
+    Value: <b>copy</b> + drop + store,
+&gt;(
+    <Link to="../iota/config#iota_config">config</Link>: &<b>mut</b> <Link to="../iota/config#iota_config_Config">Config</Link>&lt;WriteCap&gt;,
+    _cap: &<b>mut</b> WriteCap,
+    name: Name,
+    ctx: &<b>mut</b> TxContext,
+): &<b>mut</b> Value \{
+    <b>let</b> epoch = ctx.epoch();
+    <b>let</b> sobj: &<b>mut</b> <Link to="../iota/config#iota_config_Setting">Setting</Link>&lt;Value&gt; = field::borrow_mut(&<b>mut</b> <Link to="../iota/config#iota_config">config</Link>.id, name);
+    <b>let</b> data = sobj.data.borrow_mut();
+    <b>assert</b>!(data.newer_value_epoch == epoch, <Link to="../iota/config#iota_config_ENotSetForEpoch">ENotSetForEpoch</Link>);
+    <b>assert</b>!(data.newer_value.is_some(), <Link to="../iota/config#iota_config_ENotSetForEpoch">ENotSetForEpoch</Link>);
+    data.newer_value.borrow_mut()
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_config_read_setting_for_next_epoch"></Link>
+
+## Function `read_setting_for_next_epoch`
+
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/config#iota_config_read_setting_for_next_epoch">read_setting_for_next_epoch</Link>&lt;WriteCap, Name: <b>copy</b>, drop, store, Value: <b>copy</b>, drop, store&gt;(<Link to="../iota/config#iota_config">config</Link>: &<Link to="../iota/config#iota_config_Config">iota::config::Config</Link>&lt;WriteCap&gt;, name: Name): <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;Value&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/config#iota_config_read_setting_for_next_epoch">read_setting_for_next_epoch</Link>&lt;
+    WriteCap,
+    Name: <b>copy</b> + drop + store,
+    Value: <b>copy</b> + drop + store,
+&gt;(
+    <Link to="../iota/config#iota_config">config</Link>: &<Link to="../iota/config#iota_config_Config">Config</Link>&lt;WriteCap&gt;,
+    name: Name,
+): Option&lt;Value&gt; \{
+    <b>if</b> (!field::exists_with_type&lt;_, <Link to="../iota/config#iota_config_Setting">Setting</Link>&lt;Value&gt;&gt;(&<Link to="../iota/config#iota_config">config</Link>.id, name)) <b>return</b> option::none();
+    <b>let</b> sobj: &<Link to="../iota/config#iota_config_Setting">Setting</Link>&lt;Value&gt; = field::borrow(&<Link to="../iota/config#iota_config">config</Link>.id, name);
+    <b>let</b> data = sobj.data.<Link to="../iota/borrow#iota_borrow">borrow</Link>();
+    data.newer_value
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_config_entry"></Link>
+
+## Macro function `entry`
+
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>macro</b> <b>fun</b> <b>entry</b>&lt;$WriteCap, $Name: <b>copy</b>, drop, store, $Value: <b>copy</b>, drop, store&gt;($<Link to="../iota/config#iota_config">config</Link>: &<b>mut</b> <Link to="../iota/config#iota_config_Config">iota::config::Config</Link>&lt;$WriteCap&gt;, $cap: &<b>mut</b> $WriteCap, $name: $Name, $initial_for_next_epoch: |&<b>mut</b> <Link to="../iota/config#iota_config_Config">iota::config::Config</Link>&lt;$WriteCap&gt;, &<b>mut</b> $WriteCap, &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>| -&gt; $Value, $ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): &<b>mut</b> $Value
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>macro</b> <b>fun</b> <b>entry</b>&lt;$WriteCap, $Name: <b>copy</b> + drop + store, $Value: <b>copy</b> + drop + store&gt;(
+    $<Link to="../iota/config#iota_config">config</Link>: &<b>mut</b> <Link to="../iota/config#iota_config_Config">Config</Link>&lt;$WriteCap&gt;,
+    $cap: &<b>mut</b> $WriteCap,
+    $name: $Name,
+    $initial_for_next_epoch: |&<b>mut</b> <Link to="../iota/config#iota_config_Config">Config</Link>&lt;$WriteCap&gt;, &<b>mut</b> $WriteCap, &<b>mut</b> TxContext| -&gt; $Value,
+    $ctx: &<b>mut</b> TxContext,
+): &<b>mut</b> $Value \{
+    <b>let</b> <Link to="../iota/config#iota_config">config</Link> = $<Link to="../iota/config#iota_config">config</Link>;
+    <b>let</b> cap = $cap;
+    <b>let</b> name = $name;
+    <b>let</b> ctx = $ctx;
+    <b>if</b> (!<Link to="../iota/config#iota_config">config</Link>.<Link to="../iota/config#iota_config_exists_with_type_for_next_epoch">exists_with_type_for_next_epoch</Link>&lt;_, _, $Value&gt;(name, ctx)) \{
+        <b>let</b> initial = $initial_for_next_epoch(<Link to="../iota/config#iota_config">config</Link>, cap, ctx);
+        <Link to="../iota/config#iota_config">config</Link>.<Link to="../iota/config#iota_config_add_for_next_epoch">add_for_next_epoch</Link>(cap, name, initial, ctx);
+    };
+    <Link to="../iota/config#iota_config">config</Link>.<Link to="../iota/config#iota_config_borrow_for_next_epoch_mut">borrow_for_next_epoch_mut</Link>(cap, name, ctx)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_config_update"></Link>
+
+## Macro function `update`
+
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>macro</b> <b>fun</b> <Link to="../iota/config#iota_config_update">update</Link>&lt;$WriteCap, $Name: <b>copy</b>, drop, store, $Value: <b>copy</b>, drop, store&gt;($<Link to="../iota/config#iota_config">config</Link>: &<b>mut</b> <Link to="../iota/config#iota_config_Config">iota::config::Config</Link>&lt;$WriteCap&gt;, $cap: &<b>mut</b> $WriteCap, $name: $Name, $initial_for_next_epoch: |&<b>mut</b> <Link to="../iota/config#iota_config_Config">iota::config::Config</Link>&lt;$WriteCap&gt;, &<b>mut</b> $WriteCap, &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>| -&gt; $Value, $update_for_next_epoch: |<Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;$Value&gt;, &<b>mut</b> $Value| -&gt; (), $ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>macro</b> <b>fun</b> <Link to="../iota/config#iota_config_update">update</Link>&lt;
+    $WriteCap,
+    $Name: <b>copy</b> + drop + store,
+    $Value: <b>copy</b> + drop + store,
+&gt;(
+    $<Link to="../iota/config#iota_config">config</Link>: &<b>mut</b> <Link to="../iota/config#iota_config_Config">Config</Link>&lt;$WriteCap&gt;,
+    $cap: &<b>mut</b> $WriteCap,
+    $name: $Name,
+    $initial_for_next_epoch: |&<b>mut</b> <Link to="../iota/config#iota_config_Config">Config</Link>&lt;$WriteCap&gt;, &<b>mut</b> $WriteCap, &<b>mut</b> TxContext| -&gt; $Value,
+    $update_for_next_epoch: |Option&lt;$Value&gt;, &<b>mut</b> $Value|,
+    $ctx: &<b>mut</b> TxContext,
+) \{
+    <b>let</b> <Link to="../iota/config#iota_config">config</Link> = $<Link to="../iota/config#iota_config">config</Link>;
+    <b>let</b> cap = $cap;
+    <b>let</b> name = $name;
+    <b>let</b> ctx = $ctx;
+    <b>let</b> old_value_opt = <b>if</b> (!<Link to="../iota/config#iota_config">config</Link>.<Link to="../iota/config#iota_config_exists_with_type_for_next_epoch">exists_with_type_for_next_epoch</Link>&lt;_, _, $Value&gt;(name, ctx)) \{
+        <b>let</b> initial = $initial_for_next_epoch(<Link to="../iota/config#iota_config">config</Link>, cap, ctx);
+        <Link to="../iota/config#iota_config">config</Link>.<Link to="../iota/config#iota_config_add_for_next_epoch">add_for_next_epoch</Link>(cap, name, initial, ctx)
+    } <b>else</b> \{
+        option::none()
+    };
+    $update_for_next_epoch(old_value_opt, <Link to="../iota/config#iota_config">config</Link>.<Link to="../iota/config#iota_config_borrow_for_next_epoch_mut">borrow_for_next_epoch_mut</Link>(cap, name, ctx));
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_config_read_setting"></Link>
+
+## Function `read_setting`
+
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/config#iota_config_read_setting">read_setting</Link>&lt;Name: <b>copy</b>, drop, store, Value: <b>copy</b>, drop, store&gt;(<Link to="../iota/config#iota_config">config</Link>: <Link to="../iota/object#iota_object_ID">iota::object::ID</Link>, name: Name, ctx: &<Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;Value&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/config#iota_config_read_setting">read_setting</Link>&lt;Name: <b>copy</b> + drop + store, Value: <b>copy</b> + drop + store&gt;(
+    <Link to="../iota/config#iota_config">config</Link>: ID,
+    name: Name,
+    ctx: &TxContext,
+): Option&lt;Value&gt; \{
+    <b>use</b> <Link to="../iota/dynamic_field#iota_dynamic_field_Field">iota::dynamic_field::Field</Link>;
+    <b>let</b> config_id = <Link to="../iota/config#iota_config">config</Link>.to_address();
+    <b>let</b> setting_df = field::hash_type_and_key(config_id, name);
+    <Link to="../iota/config#iota_config_read_setting_impl">read_setting_impl</Link>&lt;Field&lt;Name, <Link to="../iota/config#iota_config_Setting">Setting</Link>&lt;Value&gt;&gt;, <Link to="../iota/config#iota_config_Setting">Setting</Link>&lt;Value&gt;, <Link to="../iota/config#iota_config_SettingData">SettingData</Link>&lt;Value&gt;, Value&gt;(
+        config_id,
+        setting_df,
+        ctx.epoch(),
+    )
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_config_read_setting_impl"></Link>
+
+## Function `read_setting_impl`
+
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota/config#iota_config_read_setting_impl">read_setting_impl</Link>&lt;FieldSettingValue: key, SettingValue: store, SettingDataValue: store, Value: <b>copy</b>, drop, store&gt;(<Link to="../iota/config#iota_config">config</Link>: <b>address</b>, name: <b>address</b>, current_epoch: u64): <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;Value&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>native</b> <b>fun</b> <Link to="../iota/config#iota_config_read_setting_impl">read_setting_impl</Link>&lt;
+    FieldSettingValue: key,
+    SettingValue: store,
+    SettingDataValue: store,
+    Value: <b>copy</b> + drop + store,
+&gt;(
+    <Link to="../iota/config#iota_config">config</Link>: <b>address</b>,
+    name: <b>address</b>,
+    current_epoch: u64,
+): Option&lt;Value&gt;;
+</code>
+</pre>
+
+
+
+</details>

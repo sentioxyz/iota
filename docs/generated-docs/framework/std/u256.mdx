@@ -1,0 +1,567 @@
+---
+title: Module std::u256
+sidebar_label: u256
+slug: u256
+---
+import Link from '@docusaurus/Link';
+
+<Link id="std_u256"/>
+
+
+-  [Function `bitwise_not`](#std_u256_bitwise_not)
+-  [Function `max`](#std_u256_max)
+-  [Function `min`](#std_u256_min)
+-  [Function `diff`](#std_u256_diff)
+-  [Function `divide_and_round_up`](#std_u256_divide_and_round_up)
+-  [Function `pow`](#std_u256_pow)
+-  [Function `try_as_u8`](#std_u256_try_as_u8)
+-  [Function `try_as_u16`](#std_u256_try_as_u16)
+-  [Function `try_as_u32`](#std_u256_try_as_u32)
+-  [Function `try_as_u64`](#std_u256_try_as_u64)
+-  [Function `try_as_u128`](#std_u256_try_as_u128)
+-  [Function `to_string`](#std_u256_to_string)
+-  [Macro function `max_value`](#std_u256_max_value)
+-  [Macro function `range_do`](#std_u256_range_do)
+-  [Macro function `range_do_eq`](#std_u256_range_do_eq)
+-  [Macro function `do`](#std_u256_do)
+-  [Macro function `do_eq`](#std_u256_do_eq)
+
+
+<pre>
+<code>
+<b>use</b> <Link to="../std/ascii#std_ascii">std::ascii</Link>;
+<b>use</b> <Link to="../std/option#std_option">std::option</Link>;
+<b>use</b> <Link to="../std/string#std_string">std::string</Link>;
+<b>use</b> <Link to="../std/vector#std_vector">std::vector</Link>;
+</code>
+</pre>
+
+
+
+<Link id="std_u256_bitwise_not"></Link>
+
+## Function `bitwise_not`
+
+Returns the bitwise not of the value.
+Each bit that is 1 becomes 0. Each bit that is 0 becomes 1.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/u256#std_u256_bitwise_not">bitwise_not</Link>(x: <Link to="../std/u256#std_u256">u256</Link>): <Link to="../std/u256#std_u256">u256</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/u256#std_u256_bitwise_not">bitwise_not</Link>(x: <Link to="../std/u256#std_u256">u256</Link>): <Link to="../std/u256#std_u256">u256</Link> \{
+    x ^ <Link to="../std/u256#std_u256_max_value">max_value</Link>!()
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_u256_max"></Link>
+
+## Function `max`
+
+Return the larger of <code>x</code> and <code>y</code>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/u256#std_u256_max">max</Link>(x: <Link to="../std/u256#std_u256">u256</Link>, y: <Link to="../std/u256#std_u256">u256</Link>): <Link to="../std/u256#std_u256">u256</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/u256#std_u256_max">max</Link>(x: <Link to="../std/u256#std_u256">u256</Link>, y: <Link to="../std/u256#std_u256">u256</Link>): <Link to="../std/u256#std_u256">u256</Link> \{
+    <Link to="../std/macros#std_macros_num_max">std::macros::num_max</Link>!(x, y)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_u256_min"></Link>
+
+## Function `min`
+
+Return the smaller of <code>x</code> and <code>y</code>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/u256#std_u256_min">min</Link>(x: <Link to="../std/u256#std_u256">u256</Link>, y: <Link to="../std/u256#std_u256">u256</Link>): <Link to="../std/u256#std_u256">u256</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/u256#std_u256_min">min</Link>(x: <Link to="../std/u256#std_u256">u256</Link>, y: <Link to="../std/u256#std_u256">u256</Link>): <Link to="../std/u256#std_u256">u256</Link> \{
+    <Link to="../std/macros#std_macros_num_min">std::macros::num_min</Link>!(x, y)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_u256_diff"></Link>
+
+## Function `diff`
+
+Return the absolute value of x - y
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/u256#std_u256_diff">diff</Link>(x: <Link to="../std/u256#std_u256">u256</Link>, y: <Link to="../std/u256#std_u256">u256</Link>): <Link to="../std/u256#std_u256">u256</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/u256#std_u256_diff">diff</Link>(x: <Link to="../std/u256#std_u256">u256</Link>, y: <Link to="../std/u256#std_u256">u256</Link>): <Link to="../std/u256#std_u256">u256</Link> \{
+    <Link to="../std/macros#std_macros_num_diff">std::macros::num_diff</Link>!(x, y)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_u256_divide_and_round_up"></Link>
+
+## Function `divide_and_round_up`
+
+Calculate x / y, but round up the result.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/u256#std_u256_divide_and_round_up">divide_and_round_up</Link>(x: <Link to="../std/u256#std_u256">u256</Link>, y: <Link to="../std/u256#std_u256">u256</Link>): <Link to="../std/u256#std_u256">u256</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/u256#std_u256_divide_and_round_up">divide_and_round_up</Link>(x: <Link to="../std/u256#std_u256">u256</Link>, y: <Link to="../std/u256#std_u256">u256</Link>): <Link to="../std/u256#std_u256">u256</Link> \{
+    <Link to="../std/macros#std_macros_num_divide_and_round_up">std::macros::num_divide_and_round_up</Link>!(x, y)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_u256_pow"></Link>
+
+## Function `pow`
+
+Return the value of a base raised to a power
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/u256#std_u256_pow">pow</Link>(base: <Link to="../std/u256#std_u256">u256</Link>, exponent: <Link to="../std/u8#std_u8">u8</Link>): <Link to="../std/u256#std_u256">u256</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/u256#std_u256_pow">pow</Link>(base: <Link to="../std/u256#std_u256">u256</Link>, exponent: <Link to="../std/u8#std_u8">u8</Link>): <Link to="../std/u256#std_u256">u256</Link> \{
+    <Link to="../std/macros#std_macros_num_pow">std::macros::num_pow</Link>!(base, exponent)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_u256_try_as_u8"></Link>
+
+## Function `try_as_u8`
+
+Try to convert a <code><Link to="../std/u256#std_u256">u256</Link></code> to a <code><Link to="../std/u8#std_u8">u8</Link></code>. Returns <code>None</code> if the value is too large.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/u256#std_u256_try_as_u8">try_as_u8</Link>(x: <Link to="../std/u256#std_u256">u256</Link>): <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;<Link to="../std/u8#std_u8">u8</Link>&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/u256#std_u256_try_as_u8">try_as_u8</Link>(x: <Link to="../std/u256#std_u256">u256</Link>): Option&lt;<Link to="../std/u8#std_u8">u8</Link>&gt; \{
+    <Link to="../std/macros#std_macros_try_as_u8">std::macros::try_as_u8</Link>!(x)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_u256_try_as_u16"></Link>
+
+## Function `try_as_u16`
+
+Try to convert a <code><Link to="../std/u256#std_u256">u256</Link></code> to a <code><Link to="../std/u16#std_u16">u16</Link></code>. Returns <code>None</code> if the value is too large.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/u256#std_u256_try_as_u16">try_as_u16</Link>(x: <Link to="../std/u256#std_u256">u256</Link>): <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;<Link to="../std/u16#std_u16">u16</Link>&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/u256#std_u256_try_as_u16">try_as_u16</Link>(x: <Link to="../std/u256#std_u256">u256</Link>): Option&lt;<Link to="../std/u16#std_u16">u16</Link>&gt; \{
+    <Link to="../std/macros#std_macros_try_as_u16">std::macros::try_as_u16</Link>!(x)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_u256_try_as_u32"></Link>
+
+## Function `try_as_u32`
+
+Try to convert a <code><Link to="../std/u256#std_u256">u256</Link></code> to a <code><Link to="../std/u32#std_u32">u32</Link></code>. Returns <code>None</code> if the value is too large.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/u256#std_u256_try_as_u32">try_as_u32</Link>(x: <Link to="../std/u256#std_u256">u256</Link>): <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;<Link to="../std/u32#std_u32">u32</Link>&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/u256#std_u256_try_as_u32">try_as_u32</Link>(x: <Link to="../std/u256#std_u256">u256</Link>): Option&lt;<Link to="../std/u32#std_u32">u32</Link>&gt; \{
+    <Link to="../std/macros#std_macros_try_as_u32">std::macros::try_as_u32</Link>!(x)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_u256_try_as_u64"></Link>
+
+## Function `try_as_u64`
+
+Try to convert a <code><Link to="../std/u256#std_u256">u256</Link></code> to a <code><Link to="../std/u64#std_u64">u64</Link></code>. Returns <code>None</code> if the value is too large.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/u256#std_u256_try_as_u64">try_as_u64</Link>(x: <Link to="../std/u256#std_u256">u256</Link>): <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;<Link to="../std/u64#std_u64">u64</Link>&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/u256#std_u256_try_as_u64">try_as_u64</Link>(x: <Link to="../std/u256#std_u256">u256</Link>): Option&lt;<Link to="../std/u64#std_u64">u64</Link>&gt; \{
+    <Link to="../std/macros#std_macros_try_as_u64">std::macros::try_as_u64</Link>!(x)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_u256_try_as_u128"></Link>
+
+## Function `try_as_u128`
+
+Try to convert a <code><Link to="../std/u256#std_u256">u256</Link></code> to a <code><Link to="../std/u128#std_u128">u128</Link></code>. Returns <code>None</code> if the value is too large.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/u256#std_u256_try_as_u128">try_as_u128</Link>(x: <Link to="../std/u256#std_u256">u256</Link>): <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;<Link to="../std/u128#std_u128">u128</Link>&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/u256#std_u256_try_as_u128">try_as_u128</Link>(x: <Link to="../std/u256#std_u256">u256</Link>): Option&lt;<Link to="../std/u128#std_u128">u128</Link>&gt; \{
+    <Link to="../std/macros#std_macros_try_as_u128">std::macros::try_as_u128</Link>!(x)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_u256_to_string"></Link>
+
+## Function `to_string`
+
+Convert <code><Link to="../std/u256#std_u256">u256</Link></code> value to string
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/u256#std_u256_to_string">to_string</Link>(x: <Link to="../std/u256#std_u256">u256</Link>): <Link to="../std/string#std_string_String">std::string::String</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/u256#std_u256_to_string">to_string</Link>(x: <Link to="../std/u256#std_u256">u256</Link>): String \{
+    <Link to="../std/macros#std_macros_num_to_string">std::macros::num_to_string</Link>!(x)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_u256_max_value"></Link>
+
+## Macro function `max_value`
+
+Maximum value for a <code><Link to="../std/u256#std_u256">u256</Link></code>
+
+
+<pre>
+<code>
+<b>public</b> <b>macro</b> <b>fun</b> <Link to="../std/u256#std_u256_max_value">max_value</Link>(): <Link to="../std/u256#std_u256">u256</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>macro</b> <b>fun</b> <Link to="../std/u256#std_u256_max_value">max_value</Link>(): <Link to="../std/u256#std_u256">u256</Link> \{
+    0xFFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_u256_range_do"></Link>
+
+## Macro function `range_do`
+
+Loops applying <code>$f</code> to each number from <code>$start</code> to <code>$stop</code> (exclusive)
+
+
+<pre>
+<code>
+<b>public</b> <b>macro</b> <b>fun</b> <Link to="../std/u256#std_u256_range_do">range_do</Link>&lt;$R: drop&gt;($start: <Link to="../std/u256#std_u256">u256</Link>, $stop: <Link to="../std/u256#std_u256">u256</Link>, $f: |<Link to="../std/u256#std_u256">u256</Link>| -&gt; $R)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>macro</b> <b>fun</b> <Link to="../std/u256#std_u256_range_do">range_do</Link>&lt;$R: drop&gt;($start: <Link to="../std/u256#std_u256">u256</Link>, $stop: <Link to="../std/u256#std_u256">u256</Link>, $f: |<Link to="../std/u256#std_u256">u256</Link>| -&gt; $R) \{
+    <Link to="../std/macros#std_macros_range_do">std::macros::range_do</Link>!($start, $stop, $f)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_u256_range_do_eq"></Link>
+
+## Macro function `range_do_eq`
+
+Loops applying <code>$f</code> to each number from <code>$start</code> to <code>$stop</code> (inclusive)
+
+
+<pre>
+<code>
+<b>public</b> <b>macro</b> <b>fun</b> <Link to="../std/u256#std_u256_range_do_eq">range_do_eq</Link>&lt;$R: drop&gt;($start: <Link to="../std/u256#std_u256">u256</Link>, $stop: <Link to="../std/u256#std_u256">u256</Link>, $f: |<Link to="../std/u256#std_u256">u256</Link>| -&gt; $R)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>macro</b> <b>fun</b> <Link to="../std/u256#std_u256_range_do_eq">range_do_eq</Link>&lt;$R: drop&gt;($start: <Link to="../std/u256#std_u256">u256</Link>, $stop: <Link to="../std/u256#std_u256">u256</Link>, $f: |<Link to="../std/u256#std_u256">u256</Link>| -&gt; $R) \{
+    <Link to="../std/macros#std_macros_range_do_eq">std::macros::range_do_eq</Link>!($start, $stop, $f)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_u256_do"></Link>
+
+## Macro function `do`
+
+Loops applying <code>$f</code> to each number from <code>0</code> to <code>$stop</code> (exclusive)
+
+
+<pre>
+<code>
+<b>public</b> <b>macro</b> <b>fun</b> <Link to="../std/u256#std_u256_do">do</Link>&lt;$R: drop&gt;($stop: <Link to="../std/u256#std_u256">u256</Link>, $f: |<Link to="../std/u256#std_u256">u256</Link>| -&gt; $R)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>macro</b> <b>fun</b> <Link to="../std/u256#std_u256_do">do</Link>&lt;$R: drop&gt;($stop: <Link to="../std/u256#std_u256">u256</Link>, $f: |<Link to="../std/u256#std_u256">u256</Link>| -&gt; $R) \{
+    <Link to="../std/macros#std_macros_do">std::macros::do</Link>!($stop, $f)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_u256_do_eq"></Link>
+
+## Macro function `do_eq`
+
+Loops applying <code>$f</code> to each number from <code>0</code> to <code>$stop</code> (inclusive)
+
+
+<pre>
+<code>
+<b>public</b> <b>macro</b> <b>fun</b> <Link to="../std/u256#std_u256_do_eq">do_eq</Link>&lt;$R: drop&gt;($stop: <Link to="../std/u256#std_u256">u256</Link>, $f: |<Link to="../std/u256#std_u256">u256</Link>| -&gt; $R)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>macro</b> <b>fun</b> <Link to="../std/u256#std_u256_do_eq">do_eq</Link>&lt;$R: drop&gt;($stop: <Link to="../std/u256#std_u256">u256</Link>, $f: |<Link to="../std/u256#std_u256">u256</Link>| -&gt; $R) \{
+    <Link to="../std/macros#std_macros_do_eq">std::macros::do_eq</Link>!($stop, $f)
+}
+</code>
+</pre>
+
+
+
+</details>

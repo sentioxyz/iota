@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::{
@@ -31,7 +32,7 @@ pub(crate) const GENESIS_COMMIT_INDEX: CommitIndex = 0;
 /// chance of committing the leader under asynchrony at the cost of latency in
 /// the common case.
 // TODO: merge DEFAULT_WAVE_LENGTH and MINIMUM_WAVE_LENGTH into a single constant,
-// because we are unlikely to change them via config in the forseeable future.
+// because we are unlikely to change them via config in the foreseeable future.
 pub(crate) const DEFAULT_WAVE_LENGTH: Round = MINIMUM_WAVE_LENGTH;
 
 /// We need at least one leader round, one voting round, and one decision round.
@@ -207,6 +208,56 @@ impl Deref for TrustedCommit {
     }
 }
 
+/// `CertifiedCommits` keeps the synchronized certified commits along with the corresponding votes received from the peer that provided these commits.
+/// The `votes` contain the blocks as those provided by the peer, and certify the tip of the synced commits.
+#[derive(Clone, Debug)]
+pub(crate) struct CertifiedCommits {
+    commits: Vec<CertifiedCommit>,
+    votes: Vec<VerifiedBlock>,
+}
+
+impl CertifiedCommits {
+    pub(crate) fn new(commits: Vec<CertifiedCommit>, votes: Vec<VerifiedBlock>) -> Self {
+        Self { commits, votes }
+    }
+
+    pub(crate) fn commits(&self) -> &[CertifiedCommit] {
+        &self.commits
+    }
+
+    pub(crate) fn votes(&self) -> &[VerifiedBlock] {
+        &self.votes
+    }
+}
+
+/// A commit that has been synced and certified by a quorum of authorities.
+#[derive(Clone, Debug)]
+pub(crate) struct CertifiedCommit {
+    commit: Arc<TrustedCommit>,
+    blocks: Vec<VerifiedBlock>,
+}
+
+impl CertifiedCommit {
+    pub(crate) fn new_certified(commit: TrustedCommit, blocks: Vec<VerifiedBlock>) -> Self {
+        Self {
+            commit: Arc::new(commit),
+            blocks,
+        }
+    }
+
+    pub fn blocks(&self) -> &[VerifiedBlock] {
+        &self.blocks
+    }
+}
+
+impl Deref for CertifiedCommit {
+    type Target = TrustedCommit;
+
+    fn deref(&self) -> &Self::Target {
+        &self.commit
+    }
+}
+
 /// Digest of a consensus commit.
 #[derive(Clone, Copy, Default, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
 pub struct CommitDigest([u8; consensus_config::DIGEST_LENGTH]);
@@ -303,8 +354,8 @@ pub struct CommittedSubDag {
     /// First commit after genesis has a index of 1, then every next commit has a
     /// index incremented by 1.
     pub commit_ref: CommitRef,
-    /// Optional scores that are provided as part of the consensus output to Sui
-    /// that can then be used by Sui for future submission to consensus.
+    /// Optional scores that are provided as part of the consensus output to IOTA
+    /// that can then be used by IOTA for future submission to consensus.
     pub reputation_scores_desc: Vec<(AuthorityIndex, u64)>,
 }
 
@@ -411,6 +462,7 @@ pub fn load_committed_subdag_from_store(
 pub(crate) enum Decision {
     Direct,
     Indirect,
+    Certified, // This is a commit certified leader so no commit decision was made locally.
 }
 
 /// The status of a leader slot from the direct and indirect commit rules.

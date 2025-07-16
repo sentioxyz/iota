@@ -1,0 +1,1041 @@
+---
+title: Module iota::transfer_policy
+sidebar_label: transfer_policy
+slug: transfer_policy
+---
+import Link from '@docusaurus/Link';
+
+<Link id="iota_transfer_policy"/>
+Defines the <code><Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">TransferPolicy</Link></code> type and the logic to approve <code><Link to="../iota/transfer_policy#iota_transfer_policy_TransferRequest">TransferRequest</Link></code>s.
+
+- TransferPolicy - is a highly customizable primitive, which provides an
+interface for the type owner to set custom transfer rules for every
+deal performed in the <code>Kiosk</code> or a similar system that integrates with TP.
+
+- Once a <code><Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">TransferPolicy</Link>&lt;T&gt;</code> is created for and shared (or frozen), the
+type <code>T</code> becomes tradable in <code>Kiosk</code>s. On every purchase operation, a
+<code><Link to="../iota/transfer_policy#iota_transfer_policy_TransferRequest">TransferRequest</Link></code> is created and needs to be confirmed by the <code><Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">TransferPolicy</Link></code>
+hot potato or transaction will fail.
+
+- Type owner (creator) can set any Rules as long as the ecosystem supports
+them. All of the Rules need to be resolved within a single transaction (eg
+pay royalty and pay fixed commission). Once required actions are performed,
+the <code><Link to="../iota/transfer_policy#iota_transfer_policy_TransferRequest">TransferRequest</Link></code> can be "confirmed" via <code><Link to="../iota/transfer_policy#iota_transfer_policy_confirm_request">confirm_request</Link></code> call.
+
+- <code><Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">TransferPolicy</Link></code> aims to be the main interface for creators to control trades
+of their types and collect profits if a fee is required on sales. Custom
+policies can be removed at any moment, and the change will affect all instances
+of the type at once.
+
+
+-  [Struct `TransferRequest`](#iota_transfer_policy_TransferRequest)
+-  [Struct `TransferPolicy`](#iota_transfer_policy_TransferPolicy)
+-  [Struct `TransferPolicyCap`](#iota_transfer_policy_TransferPolicyCap)
+-  [Struct `TransferPolicyCreated`](#iota_transfer_policy_TransferPolicyCreated)
+-  [Struct `TransferPolicyDestroyed`](#iota_transfer_policy_TransferPolicyDestroyed)
+-  [Struct `RuleKey`](#iota_transfer_policy_RuleKey)
+-  [Constants](#@Constants_0)
+-  [Function `new_request`](#iota_transfer_policy_new_request)
+-  [Function `new`](#iota_transfer_policy_new)
+-  [Function `default`](#iota_transfer_policy_default)
+-  [Function `withdraw`](#iota_transfer_policy_withdraw)
+-  [Function `destroy_and_withdraw`](#iota_transfer_policy_destroy_and_withdraw)
+-  [Function `confirm_request`](#iota_transfer_policy_confirm_request)
+-  [Function `add_rule`](#iota_transfer_policy_add_rule)
+-  [Function `get_rule`](#iota_transfer_policy_get_rule)
+-  [Function `add_to_balance`](#iota_transfer_policy_add_to_balance)
+-  [Function `add_receipt`](#iota_transfer_policy_add_receipt)
+-  [Function `has_rule`](#iota_transfer_policy_has_rule)
+-  [Function `remove_rule`](#iota_transfer_policy_remove_rule)
+-  [Function `uid`](#iota_transfer_policy_uid)
+-  [Function `uid_mut_as_owner`](#iota_transfer_policy_uid_mut_as_owner)
+-  [Function `rules`](#iota_transfer_policy_rules)
+-  [Function `item`](#iota_transfer_policy_item)
+-  [Function `paid`](#iota_transfer_policy_paid)
+-  [Function `from`](#iota_transfer_policy_from)
+
+
+<pre>
+<code>
+<b>use</b> <Link to="../iota/address#iota_address">iota::address</Link>;
+<b>use</b> <Link to="../iota/bag#iota_bag">iota::bag</Link>;
+<b>use</b> <Link to="../iota/balance#iota_balance">iota::balance</Link>;
+<b>use</b> <Link to="../iota/coin#iota_coin">iota::coin</Link>;
+<b>use</b> <Link to="../iota/config#iota_config">iota::config</Link>;
+<b>use</b> <Link to="../iota/deny_list#iota_deny_list">iota::deny_list</Link>;
+<b>use</b> <Link to="../iota/dynamic_field#iota_dynamic_field">iota::dynamic_field</Link>;
+<b>use</b> <Link to="../iota/dynamic_object_field#iota_dynamic_object_field">iota::dynamic_object_field</Link>;
+<b>use</b> <Link to="../iota/event#iota_event">iota::event</Link>;
+<b>use</b> <Link to="../iota/hex#iota_hex">iota::hex</Link>;
+<b>use</b> <Link to="../iota/iota#iota_iota">iota::iota</Link>;
+<b>use</b> <Link to="../iota/object#iota_object">iota::object</Link>;
+<b>use</b> <Link to="../iota/package#iota_package">iota::package</Link>;
+<b>use</b> <Link to="../iota/transfer#iota_transfer">iota::transfer</Link>;
+<b>use</b> <Link to="../iota/tx_context#iota_tx_context">iota::tx_context</Link>;
+<b>use</b> <Link to="../iota/types#iota_types">iota::types</Link>;
+<b>use</b> <Link to="../iota/url#iota_url">iota::url</Link>;
+<b>use</b> <Link to="../iota/vec_set#iota_vec_set">iota::vec_set</Link>;
+<b>use</b> <Link to="../std/address#std_address">std::address</Link>;
+<b>use</b> <Link to="../std/ascii#std_ascii">std::ascii</Link>;
+<b>use</b> <Link to="../std/bcs#std_bcs">std::bcs</Link>;
+<b>use</b> <Link to="../std/option#std_option">std::option</Link>;
+<b>use</b> <Link to="../std/string#std_string">std::string</Link>;
+<b>use</b> <Link to="../std/type_name#std_type_name">std::type_name</Link>;
+<b>use</b> <Link to="../std/vector#std_vector">std::vector</Link>;
+</code>
+</pre>
+
+
+
+<Link id="iota_transfer_policy_TransferRequest"></Link>
+
+## Struct `TransferRequest`
+
+A "Hot Potato" forcing the buyer to get a transfer permission
+from the item type (<code>T</code>) owner on purchase attempt.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota/transfer_policy#iota_transfer_policy_TransferRequest">TransferRequest</Link>&lt;<b>phantom</b> T&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code><Link to="../iota/transfer_policy#iota_transfer_policy_item">item</Link>: <Link to="../iota/object#iota_object_ID">iota::object::ID</Link></code>
+</dt>
+<dd>
+ The ID of the transferred item. Although the <code>T</code> has no
+ constraints, the main use case for this module is to work
+ with Objects.
+</dd>
+<dt>
+<code><Link to="../iota/transfer_policy#iota_transfer_policy_paid">paid</Link>: u64</code>
+</dt>
+<dd>
+ Amount of IOTA paid for the item. Can be used to
+ calculate the fee / transfer policy enforcement.
+</dd>
+<dt>
+<code><Link to="../iota/transfer_policy#iota_transfer_policy_from">from</Link>: <Link to="../iota/object#iota_object_ID">iota::object::ID</Link></code>
+</dt>
+<dd>
+ The ID of the Kiosk / Safe the object is being sold from.
+ Can be used by the TransferPolicy implementors.
+</dd>
+<dt>
+<code>receipts: <Link to="../iota/vec_set#iota_vec_set_VecSet">iota::vec_set::VecSet</Link>&lt;<Link to="../std/type_name#std_type_name_TypeName">std::type_name::TypeName</Link>&gt;</code>
+</dt>
+<dd>
+ Collected Receipts. Used to verify that all of the rules
+ were followed and <code><Link to="../iota/transfer_policy#iota_transfer_policy_TransferRequest">TransferRequest</Link></code> can be confirmed.
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="iota_transfer_policy_TransferPolicy"></Link>
+
+## Struct `TransferPolicy`
+
+A unique capability that allows the owner of the <code>T</code> to authorize
+transfers. Can only be created with the <code>Publisher</code> object. Although
+there's no limitation to how many policies can be created, for most
+of the cases there's no need to create more than one since any of the
+policies can be used to confirm the <code><Link to="../iota/transfer_policy#iota_transfer_policy_TransferRequest">TransferRequest</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">TransferPolicy</Link>&lt;<b>phantom</b> T&gt; <b>has</b> key, store
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code>id: <Link to="../iota/object#iota_object_UID">iota::object::UID</Link></code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code><Link to="../iota/balance#iota_balance">balance</Link>: <Link to="../iota/balance#iota_balance_Balance">iota::balance::Balance</Link>&lt;<Link to="../iota/iota#iota_iota_IOTA">iota::iota::IOTA</Link>&gt;</code>
+</dt>
+<dd>
+ The Balance of the <code><Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">TransferPolicy</Link></code> which collects <code>IOTA</code>.
+ By default, transfer policy does not collect anything , and it's
+ a matter of an implementation of a specific rule - whether to add
+ to balance and how much.
+</dd>
+<dt>
+<code><Link to="../iota/transfer_policy#iota_transfer_policy_rules">rules</Link>: <Link to="../iota/vec_set#iota_vec_set_VecSet">iota::vec_set::VecSet</Link>&lt;<Link to="../std/type_name#std_type_name_TypeName">std::type_name::TypeName</Link>&gt;</code>
+</dt>
+<dd>
+ Set of types of attached rules - used to verify <code>receipts</code> when
+ a <code><Link to="../iota/transfer_policy#iota_transfer_policy_TransferRequest">TransferRequest</Link></code> is received in <code><Link to="../iota/transfer_policy#iota_transfer_policy_confirm_request">confirm_request</Link></code> function.
+ Additionally provides a way to look up currently attached Rules.
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="iota_transfer_policy_TransferPolicyCap"></Link>
+
+## Struct `TransferPolicyCap`
+
+A Capability granting the owner permission to add/remove rules as well
+as to <code><Link to="../iota/transfer_policy#iota_transfer_policy_withdraw">withdraw</Link></code> and <code><Link to="../iota/transfer_policy#iota_transfer_policy_destroy_and_withdraw">destroy_and_withdraw</Link></code> the <code><Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">TransferPolicy</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicyCap">TransferPolicyCap</Link>&lt;<b>phantom</b> T&gt; <b>has</b> key, store
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code>id: <Link to="../iota/object#iota_object_UID">iota::object::UID</Link></code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>policy_id: <Link to="../iota/object#iota_object_ID">iota::object::ID</Link></code>
+</dt>
+<dd>
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="iota_transfer_policy_TransferPolicyCreated"></Link>
+
+## Struct `TransferPolicyCreated`
+
+Event that is emitted when a publisher creates a new <code><Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicyCap">TransferPolicyCap</Link></code>
+making the discoverability and tracking the supported types easier.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicyCreated">TransferPolicyCreated</Link>&lt;<b>phantom</b> T&gt; <b>has</b> <b>copy</b>, drop
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code>id: <Link to="../iota/object#iota_object_ID">iota::object::ID</Link></code>
+</dt>
+<dd>
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="iota_transfer_policy_TransferPolicyDestroyed"></Link>
+
+## Struct `TransferPolicyDestroyed`
+
+Event that is emitted when a publisher destroys a <code><Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicyCap">TransferPolicyCap</Link></code>.
+Allows for tracking supported policies.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicyDestroyed">TransferPolicyDestroyed</Link>&lt;<b>phantom</b> T&gt; <b>has</b> <b>copy</b>, drop
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code>id: <Link to="../iota/object#iota_object_ID">iota::object::ID</Link></code>
+</dt>
+<dd>
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="iota_transfer_policy_RuleKey"></Link>
+
+## Struct `RuleKey`
+
+Key to store "Rule" configuration for a specific <code><Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">TransferPolicy</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota/transfer_policy#iota_transfer_policy_RuleKey">RuleKey</Link>&lt;<b>phantom</b> T: drop&gt; <b>has</b> <b>copy</b>, drop, store
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+</dl>
+
+
+</details>
+
+<Link id="@Constants_0"></Link>
+
+## Constants
+
+
+<Link id="iota_transfer_policy_EIllegalRule"></Link>
+
+A completed rule is not set in the <code><Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">TransferPolicy</Link></code>.
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota/transfer_policy#iota_transfer_policy_EIllegalRule">EIllegalRule</Link>: u64 = 1;
+</code>
+</pre>
+
+
+
+<Link id="iota_transfer_policy_ENotEnough"></Link>
+
+Trying to <code><Link to="../iota/transfer_policy#iota_transfer_policy_withdraw">withdraw</Link></code> more than there is.
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota/transfer_policy#iota_transfer_policy_ENotEnough">ENotEnough</Link>: u64 = 5;
+</code>
+</pre>
+
+
+
+<Link id="iota_transfer_policy_ENotOwner"></Link>
+
+Trying to <code><Link to="../iota/transfer_policy#iota_transfer_policy_withdraw">withdraw</Link></code> or <code>close_and_withdraw</code> with a wrong Cap.
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota/transfer_policy#iota_transfer_policy_ENotOwner">ENotOwner</Link>: u64 = 4;
+</code>
+</pre>
+
+
+
+<Link id="iota_transfer_policy_EPolicyNotSatisfied"></Link>
+
+The number of receipts does not match the <code><Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">TransferPolicy</Link></code> requirement.
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota/transfer_policy#iota_transfer_policy_EPolicyNotSatisfied">EPolicyNotSatisfied</Link>: u64 = 0;
+</code>
+</pre>
+
+
+
+<Link id="iota_transfer_policy_ERuleAlreadySet"></Link>
+
+Attempting to create a Rule that is already set.
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota/transfer_policy#iota_transfer_policy_ERuleAlreadySet">ERuleAlreadySet</Link>: u64 = 3;
+</code>
+</pre>
+
+
+
+<Link id="iota_transfer_policy_EUnknownRequirement"></Link>
+
+A Rule is not set.
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota/transfer_policy#iota_transfer_policy_EUnknownRequirement">EUnknownRequirement</Link>: u64 = 2;
+</code>
+</pre>
+
+
+
+<Link id="iota_transfer_policy_new_request"></Link>
+
+## Function `new_request`
+
+Construct a new <code><Link to="../iota/transfer_policy#iota_transfer_policy_TransferRequest">TransferRequest</Link></code> hot potato which requires an
+approving action from the creator to be destroyed / resolved. Once
+created, it must be confirmed in the <code><Link to="../iota/transfer_policy#iota_transfer_policy_confirm_request">confirm_request</Link></code> call otherwise
+the transaction will fail.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/transfer_policy#iota_transfer_policy_new_request">new_request</Link>&lt;T&gt;(<Link to="../iota/transfer_policy#iota_transfer_policy_item">item</Link>: <Link to="../iota/object#iota_object_ID">iota::object::ID</Link>, <Link to="../iota/transfer_policy#iota_transfer_policy_paid">paid</Link>: u64, <Link to="../iota/transfer_policy#iota_transfer_policy_from">from</Link>: <Link to="../iota/object#iota_object_ID">iota::object::ID</Link>): <Link to="../iota/transfer_policy#iota_transfer_policy_TransferRequest">iota::transfer_policy::TransferRequest</Link>&lt;T&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/transfer_policy#iota_transfer_policy_new_request">new_request</Link>&lt;T&gt;(<Link to="../iota/transfer_policy#iota_transfer_policy_item">item</Link>: ID, <Link to="../iota/transfer_policy#iota_transfer_policy_paid">paid</Link>: u64, <Link to="../iota/transfer_policy#iota_transfer_policy_from">from</Link>: ID): <Link to="../iota/transfer_policy#iota_transfer_policy_TransferRequest">TransferRequest</Link>&lt;T&gt; \{
+    <Link to="../iota/transfer_policy#iota_transfer_policy_TransferRequest">TransferRequest</Link> \{ <Link to="../iota/transfer_policy#iota_transfer_policy_item">item</Link>, <Link to="../iota/transfer_policy#iota_transfer_policy_paid">paid</Link>, <Link to="../iota/transfer_policy#iota_transfer_policy_from">from</Link>, receipts: <Link to="../iota/vec_set#iota_vec_set_empty">vec_set::empty</Link>() }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_transfer_policy_new"></Link>
+
+## Function `new`
+
+Register a type in the Kiosk system and receive a <code><Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">TransferPolicy</Link></code> and
+a <code><Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicyCap">TransferPolicyCap</Link></code> for the type. The <code><Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">TransferPolicy</Link></code> is required to
+confirm kiosk deals for the <code>T</code>. If there's no <code><Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">TransferPolicy</Link></code>
+available for use, the type can not be traded in kiosks.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/transfer_policy#iota_transfer_policy_new">new</Link>&lt;T&gt;(pub: &<Link to="../iota/package#iota_package_Publisher">iota::package::Publisher</Link>, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): (<Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">iota::transfer_policy::TransferPolicy</Link>&lt;T&gt;, <Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicyCap">iota::transfer_policy::TransferPolicyCap</Link>&lt;T&gt;)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/transfer_policy#iota_transfer_policy_new">new</Link>&lt;T&gt;(pub: &Publisher, ctx: &<b>mut</b> TxContext): (<Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">TransferPolicy</Link>&lt;T&gt;, <Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicyCap">TransferPolicyCap</Link>&lt;T&gt;) \{
+    <b>assert</b>!(<Link to="../iota/package#iota_package_from_package">package::from_package</Link>&lt;T&gt;(pub), 0);
+    <b>let</b> id = <Link to="../iota/object#iota_object_new">object::new</Link>(ctx);
+    <b>let</b> policy_id = id.to_inner();
+    <Link to="../iota/event#iota_event_emit">event::emit</Link>(<Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicyCreated">TransferPolicyCreated</Link>&lt;T&gt; \{ id: policy_id });
+    (
+        <Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">TransferPolicy</Link> \{ id, <Link to="../iota/transfer_policy#iota_transfer_policy_rules">rules</Link>: <Link to="../iota/vec_set#iota_vec_set_empty">vec_set::empty</Link>(), <Link to="../iota/balance#iota_balance">balance</Link>: <Link to="../iota/balance#iota_balance_zero">balance::zero</Link>() },
+        <Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicyCap">TransferPolicyCap</Link> \{ id: <Link to="../iota/object#iota_object_new">object::new</Link>(ctx), policy_id },
+    )
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_transfer_policy_default"></Link>
+
+## Function `default`
+
+Initialize the Transfer Policy in the default scenario: Create and share
+the <code><Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">TransferPolicy</Link></code>, transfer <code><Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicyCap">TransferPolicyCap</Link></code> to the transaction
+sender.
+
+
+<pre>
+<code>
+<b>entry</b> <b>fun</b> <Link to="../iota/transfer_policy#iota_transfer_policy_default">default</Link>&lt;T&gt;(pub: &<Link to="../iota/package#iota_package_Publisher">iota::package::Publisher</Link>, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>entry</b> <b>fun</b> <Link to="../iota/transfer_policy#iota_transfer_policy_default">default</Link>&lt;T&gt;(pub: &Publisher, ctx: &<b>mut</b> TxContext) \{
+    <b>let</b> (policy, cap) = <Link to="../iota/transfer_policy#iota_transfer_policy_new">new</Link>&lt;T&gt;(pub, ctx);
+    <Link to="../iota/transfer#iota_transfer_share_object">iota::transfer::share_object</Link>(policy);
+    <Link to="../iota/transfer#iota_transfer_transfer">iota::transfer::transfer</Link>(cap, ctx.sender());
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_transfer_policy_withdraw"></Link>
+
+## Function `withdraw`
+
+Withdraw some amount of profits from the <code><Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">TransferPolicy</Link></code>. If amount
+is not specified, all profits are withdrawn.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/transfer_policy#iota_transfer_policy_withdraw">withdraw</Link>&lt;T&gt;(self: &<b>mut</b> <Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">iota::transfer_policy::TransferPolicy</Link>&lt;T&gt;, cap: &<Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicyCap">iota::transfer_policy::TransferPolicyCap</Link>&lt;T&gt;, amount: <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;u64&gt;, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): <Link to="../iota/coin#iota_coin_Coin">iota::coin::Coin</Link>&lt;<Link to="../iota/iota#iota_iota_IOTA">iota::iota::IOTA</Link>&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/transfer_policy#iota_transfer_policy_withdraw">withdraw</Link>&lt;T&gt;(
+    self: &<b>mut</b> <Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">TransferPolicy</Link>&lt;T&gt;,
+    cap: &<Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicyCap">TransferPolicyCap</Link>&lt;T&gt;,
+    amount: Option&lt;u64&gt;,
+    ctx: &<b>mut</b> TxContext,
+): Coin&lt;IOTA&gt; \{
+    <b>assert</b>!(<Link to="../iota/object#iota_object_id">object::id</Link>(self) == cap.policy_id, <Link to="../iota/transfer_policy#iota_transfer_policy_ENotOwner">ENotOwner</Link>);
+    <b>let</b> amount = <b>if</b> (amount.is_some()) \{
+        <b>let</b> amt = amount.destroy_some();
+        <b>assert</b>!(amt &lt;= self.<Link to="../iota/balance#iota_balance">balance</Link>.value(), <Link to="../iota/transfer_policy#iota_transfer_policy_ENotEnough">ENotEnough</Link>);
+        amt
+    } <b>else</b> \{
+        self.<Link to="../iota/balance#iota_balance">balance</Link>.value()
+    };
+    <Link to="../iota/coin#iota_coin_take">coin::take</Link>(&<b>mut</b> self.<Link to="../iota/balance#iota_balance">balance</Link>, amount, ctx)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_transfer_policy_destroy_and_withdraw"></Link>
+
+## Function `destroy_and_withdraw`
+
+Destroy a TransferPolicyCap.
+Can be performed by any party as long as they own it.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/transfer_policy#iota_transfer_policy_destroy_and_withdraw">destroy_and_withdraw</Link>&lt;T&gt;(self: <Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">iota::transfer_policy::TransferPolicy</Link>&lt;T&gt;, cap: <Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicyCap">iota::transfer_policy::TransferPolicyCap</Link>&lt;T&gt;, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): <Link to="../iota/coin#iota_coin_Coin">iota::coin::Coin</Link>&lt;<Link to="../iota/iota#iota_iota_IOTA">iota::iota::IOTA</Link>&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/transfer_policy#iota_transfer_policy_destroy_and_withdraw">destroy_and_withdraw</Link>&lt;T&gt;(
+    self: <Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">TransferPolicy</Link>&lt;T&gt;,
+    cap: <Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicyCap">TransferPolicyCap</Link>&lt;T&gt;,
+    ctx: &<b>mut</b> TxContext,
+): Coin&lt;IOTA&gt; \{
+    <b>assert</b>!(<Link to="../iota/object#iota_object_id">object::id</Link>(&self) == cap.policy_id, <Link to="../iota/transfer_policy#iota_transfer_policy_ENotOwner">ENotOwner</Link>);
+    <b>let</b> <Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicyCap">TransferPolicyCap</Link> \{ id: cap_id, policy_id } = cap;
+    <b>let</b> <Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">TransferPolicy</Link> \{ id, <Link to="../iota/transfer_policy#iota_transfer_policy_rules">rules</Link>: _, <Link to="../iota/balance#iota_balance">balance</Link> } = self;
+    id.delete();
+    cap_id.delete();
+    <Link to="../iota/event#iota_event_emit">event::emit</Link>(<Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicyDestroyed">TransferPolicyDestroyed</Link>&lt;T&gt; \{ id: policy_id });
+    <Link to="../iota/balance#iota_balance">balance</Link>.into_coin(ctx)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_transfer_policy_confirm_request"></Link>
+
+## Function `confirm_request`
+
+Allow a <code><Link to="../iota/transfer_policy#iota_transfer_policy_TransferRequest">TransferRequest</Link></code> for the type <code>T</code>. The call is protected
+by the type constraint, as only the publisher of the <code>T</code> can get
+<code><Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">TransferPolicy</Link>&lt;T&gt;</code>.
+
+Note: unless there's a policy for <code>T</code> to allow transfers,
+Kiosk trades will not be possible.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/transfer_policy#iota_transfer_policy_confirm_request">confirm_request</Link>&lt;T&gt;(self: &<Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">iota::transfer_policy::TransferPolicy</Link>&lt;T&gt;, request: <Link to="../iota/transfer_policy#iota_transfer_policy_TransferRequest">iota::transfer_policy::TransferRequest</Link>&lt;T&gt;): (<Link to="../iota/object#iota_object_ID">iota::object::ID</Link>, u64, <Link to="../iota/object#iota_object_ID">iota::object::ID</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/transfer_policy#iota_transfer_policy_confirm_request">confirm_request</Link>&lt;T&gt;(
+    self: &<Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">TransferPolicy</Link>&lt;T&gt;,
+    request: <Link to="../iota/transfer_policy#iota_transfer_policy_TransferRequest">TransferRequest</Link>&lt;T&gt;,
+): (ID, u64, ID) \{
+    <b>let</b> <Link to="../iota/transfer_policy#iota_transfer_policy_TransferRequest">TransferRequest</Link> \{ <Link to="../iota/transfer_policy#iota_transfer_policy_item">item</Link>, <Link to="../iota/transfer_policy#iota_transfer_policy_paid">paid</Link>, <Link to="../iota/transfer_policy#iota_transfer_policy_from">from</Link>, receipts } = request;
+    <b>let</b> <b>mut</b> completed = receipts.into_keys();
+    <b>let</b> <b>mut</b> total = completed.length();
+    <b>assert</b>!(total == self.<Link to="../iota/transfer_policy#iota_transfer_policy_rules">rules</Link>.size(), <Link to="../iota/transfer_policy#iota_transfer_policy_EPolicyNotSatisfied">EPolicyNotSatisfied</Link>);
+    <b>while</b> (total &gt; 0) \{
+        <b>let</b> rule_type = completed.pop_back();
+        <b>assert</b>!(self.<Link to="../iota/transfer_policy#iota_transfer_policy_rules">rules</Link>.contains(&rule_type), <Link to="../iota/transfer_policy#iota_transfer_policy_EIllegalRule">EIllegalRule</Link>);
+        total = total - 1;
+    };
+    (<Link to="../iota/transfer_policy#iota_transfer_policy_item">item</Link>, <Link to="../iota/transfer_policy#iota_transfer_policy_paid">paid</Link>, <Link to="../iota/transfer_policy#iota_transfer_policy_from">from</Link>)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_transfer_policy_add_rule"></Link>
+
+## Function `add_rule`
+
+Add a custom Rule to the <code><Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">TransferPolicy</Link></code>. Once set, <code><Link to="../iota/transfer_policy#iota_transfer_policy_TransferRequest">TransferRequest</Link></code> must
+receive a confirmation of the rule executed so the hot potato can be unpacked.
+
+- T: the type to which `TransferPolicy<T>` is applied.
+- Rule: the witness type for the Custom rule
+- Config: a custom configuration for the rule
+
+Config requires <code>drop</code> to allow creators to remove any policy at any moment,
+even if graceful unpacking has not been implemented in a "rule module".
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/transfer_policy#iota_transfer_policy_add_rule">add_rule</Link>&lt;T, Rule: drop, Config: drop, store&gt;(_: Rule, policy: &<b>mut</b> <Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">iota::transfer_policy::TransferPolicy</Link>&lt;T&gt;, cap: &<Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicyCap">iota::transfer_policy::TransferPolicyCap</Link>&lt;T&gt;, cfg: Config)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/transfer_policy#iota_transfer_policy_add_rule">add_rule</Link>&lt;T, Rule: drop, Config: store + drop&gt;(
+    _: Rule,
+    policy: &<b>mut</b> <Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">TransferPolicy</Link>&lt;T&gt;,
+    cap: &<Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicyCap">TransferPolicyCap</Link>&lt;T&gt;,
+    cfg: Config,
+) \{
+    <b>assert</b>!(<Link to="../iota/object#iota_object_id">object::id</Link>(policy) == cap.policy_id, <Link to="../iota/transfer_policy#iota_transfer_policy_ENotOwner">ENotOwner</Link>);
+    <b>assert</b>!(!<Link to="../iota/transfer_policy#iota_transfer_policy_has_rule">has_rule</Link>&lt;T, Rule&gt;(policy), <Link to="../iota/transfer_policy#iota_transfer_policy_ERuleAlreadySet">ERuleAlreadySet</Link>);
+    df::add(&<b>mut</b> policy.id, <Link to="../iota/transfer_policy#iota_transfer_policy_RuleKey">RuleKey</Link>&lt;Rule&gt; \{}, cfg);
+    policy.<Link to="../iota/transfer_policy#iota_transfer_policy_rules">rules</Link>.insert(type_name::get&lt;Rule&gt;())
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_transfer_policy_get_rule"></Link>
+
+## Function `get_rule`
+
+Get the custom Config for the Rule (can be only one per "Rule" type).
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/transfer_policy#iota_transfer_policy_get_rule">get_rule</Link>&lt;T, Rule: drop, Config: drop, store&gt;(_: Rule, policy: &<Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">iota::transfer_policy::TransferPolicy</Link>&lt;T&gt;): &Config
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/transfer_policy#iota_transfer_policy_get_rule">get_rule</Link>&lt;T, Rule: drop, Config: store + drop&gt;(
+    _: Rule,
+    policy: &<Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">TransferPolicy</Link>&lt;T&gt;,
+): &Config \{
+    df::borrow(&policy.id, <Link to="../iota/transfer_policy#iota_transfer_policy_RuleKey">RuleKey</Link>&lt;Rule&gt; \{})
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_transfer_policy_add_to_balance"></Link>
+
+## Function `add_to_balance`
+
+Add some <code>IOTA</code> to the balance of a <code><Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">TransferPolicy</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/transfer_policy#iota_transfer_policy_add_to_balance">add_to_balance</Link>&lt;T, Rule: drop&gt;(_: Rule, policy: &<b>mut</b> <Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">iota::transfer_policy::TransferPolicy</Link>&lt;T&gt;, <Link to="../iota/coin#iota_coin">coin</Link>: <Link to="../iota/coin#iota_coin_Coin">iota::coin::Coin</Link>&lt;<Link to="../iota/iota#iota_iota_IOTA">iota::iota::IOTA</Link>&gt;)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/transfer_policy#iota_transfer_policy_add_to_balance">add_to_balance</Link>&lt;T, Rule: drop&gt;(
+    _: Rule,
+    policy: &<b>mut</b> <Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">TransferPolicy</Link>&lt;T&gt;,
+    <Link to="../iota/coin#iota_coin">coin</Link>: Coin&lt;IOTA&gt;,
+) \{
+    <b>assert</b>!(<Link to="../iota/transfer_policy#iota_transfer_policy_has_rule">has_rule</Link>&lt;T, Rule&gt;(policy), <Link to="../iota/transfer_policy#iota_transfer_policy_EUnknownRequirement">EUnknownRequirement</Link>);
+    <Link to="../iota/coin#iota_coin_put">coin::put</Link>(&<b>mut</b> policy.<Link to="../iota/balance#iota_balance">balance</Link>, <Link to="../iota/coin#iota_coin">coin</Link>)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_transfer_policy_add_receipt"></Link>
+
+## Function `add_receipt`
+
+Adds a <code>Receipt</code> to the <code><Link to="../iota/transfer_policy#iota_transfer_policy_TransferRequest">TransferRequest</Link></code>, unblocking the request and
+confirming that the policy requirements are satisfied.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/transfer_policy#iota_transfer_policy_add_receipt">add_receipt</Link>&lt;T, Rule: drop&gt;(_: Rule, request: &<b>mut</b> <Link to="../iota/transfer_policy#iota_transfer_policy_TransferRequest">iota::transfer_policy::TransferRequest</Link>&lt;T&gt;)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/transfer_policy#iota_transfer_policy_add_receipt">add_receipt</Link>&lt;T, Rule: drop&gt;(_: Rule, request: &<b>mut</b> <Link to="../iota/transfer_policy#iota_transfer_policy_TransferRequest">TransferRequest</Link>&lt;T&gt;) \{
+    request.receipts.insert(type_name::get&lt;Rule&gt;())
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_transfer_policy_has_rule"></Link>
+
+## Function `has_rule`
+
+Check whether a custom rule has been added to the <code><Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">TransferPolicy</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/transfer_policy#iota_transfer_policy_has_rule">has_rule</Link>&lt;T, Rule: drop&gt;(policy: &<Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">iota::transfer_policy::TransferPolicy</Link>&lt;T&gt;): bool
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/transfer_policy#iota_transfer_policy_has_rule">has_rule</Link>&lt;T, Rule: drop&gt;(policy: &<Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">TransferPolicy</Link>&lt;T&gt;): bool \{
+    df::exists_(&policy.id, <Link to="../iota/transfer_policy#iota_transfer_policy_RuleKey">RuleKey</Link>&lt;Rule&gt; \{})
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_transfer_policy_remove_rule"></Link>
+
+## Function `remove_rule`
+
+Remove the Rule from the <code><Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">TransferPolicy</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/transfer_policy#iota_transfer_policy_remove_rule">remove_rule</Link>&lt;T, Rule: drop, Config: drop, store&gt;(policy: &<b>mut</b> <Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">iota::transfer_policy::TransferPolicy</Link>&lt;T&gt;, cap: &<Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicyCap">iota::transfer_policy::TransferPolicyCap</Link>&lt;T&gt;)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/transfer_policy#iota_transfer_policy_remove_rule">remove_rule</Link>&lt;T, Rule: drop, Config: store + drop&gt;(
+    policy: &<b>mut</b> <Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">TransferPolicy</Link>&lt;T&gt;,
+    cap: &<Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicyCap">TransferPolicyCap</Link>&lt;T&gt;,
+) \{
+    <b>assert</b>!(<Link to="../iota/object#iota_object_id">object::id</Link>(policy) == cap.policy_id, <Link to="../iota/transfer_policy#iota_transfer_policy_ENotOwner">ENotOwner</Link>);
+    <b>let</b> _: Config = df::remove(&<b>mut</b> policy.id, <Link to="../iota/transfer_policy#iota_transfer_policy_RuleKey">RuleKey</Link>&lt;Rule&gt; \{});
+    policy.<Link to="../iota/transfer_policy#iota_transfer_policy_rules">rules</Link>.remove(&type_name::get&lt;Rule&gt;());
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_transfer_policy_uid"></Link>
+
+## Function `uid`
+
+Allows reading custom attachments to the <code><Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">TransferPolicy</Link></code> if there are any.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/transfer_policy#iota_transfer_policy_uid">uid</Link>&lt;T&gt;(self: &<Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">iota::transfer_policy::TransferPolicy</Link>&lt;T&gt;): &<Link to="../iota/object#iota_object_UID">iota::object::UID</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/transfer_policy#iota_transfer_policy_uid">uid</Link>&lt;T&gt;(self: &<Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">TransferPolicy</Link>&lt;T&gt;): &UID \{ &self.id }
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_transfer_policy_uid_mut_as_owner"></Link>
+
+## Function `uid_mut_as_owner`
+
+Get a mutable reference to the <code>self.id</code> to enable custom attachments
+to the <code><Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">TransferPolicy</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/transfer_policy#iota_transfer_policy_uid_mut_as_owner">uid_mut_as_owner</Link>&lt;T&gt;(self: &<b>mut</b> <Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">iota::transfer_policy::TransferPolicy</Link>&lt;T&gt;, cap: &<Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicyCap">iota::transfer_policy::TransferPolicyCap</Link>&lt;T&gt;): &<b>mut</b> <Link to="../iota/object#iota_object_UID">iota::object::UID</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/transfer_policy#iota_transfer_policy_uid_mut_as_owner">uid_mut_as_owner</Link>&lt;T&gt;(self: &<b>mut</b> <Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">TransferPolicy</Link>&lt;T&gt;, cap: &<Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicyCap">TransferPolicyCap</Link>&lt;T&gt;): &<b>mut</b> UID \{
+    <b>assert</b>!(<Link to="../iota/object#iota_object_id">object::id</Link>(self) == cap.policy_id, <Link to="../iota/transfer_policy#iota_transfer_policy_ENotOwner">ENotOwner</Link>);
+    &<b>mut</b> self.id
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_transfer_policy_rules"></Link>
+
+## Function `rules`
+
+Read the <code><Link to="../iota/transfer_policy#iota_transfer_policy_rules">rules</Link></code> field from the <code><Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">TransferPolicy</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/transfer_policy#iota_transfer_policy_rules">rules</Link>&lt;T&gt;(self: &<Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">iota::transfer_policy::TransferPolicy</Link>&lt;T&gt;): &<Link to="../iota/vec_set#iota_vec_set_VecSet">iota::vec_set::VecSet</Link>&lt;<Link to="../std/type_name#std_type_name_TypeName">std::type_name::TypeName</Link>&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/transfer_policy#iota_transfer_policy_rules">rules</Link>&lt;T&gt;(self: &<Link to="../iota/transfer_policy#iota_transfer_policy_TransferPolicy">TransferPolicy</Link>&lt;T&gt;): &VecSet&lt;TypeName&gt; \{
+    &self.<Link to="../iota/transfer_policy#iota_transfer_policy_rules">rules</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_transfer_policy_item"></Link>
+
+## Function `item`
+
+Get the <code><Link to="../iota/transfer_policy#iota_transfer_policy_item">item</Link></code> field of the <code><Link to="../iota/transfer_policy#iota_transfer_policy_TransferRequest">TransferRequest</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/transfer_policy#iota_transfer_policy_item">item</Link>&lt;T&gt;(self: &<Link to="../iota/transfer_policy#iota_transfer_policy_TransferRequest">iota::transfer_policy::TransferRequest</Link>&lt;T&gt;): <Link to="../iota/object#iota_object_ID">iota::object::ID</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/transfer_policy#iota_transfer_policy_item">item</Link>&lt;T&gt;(self: &<Link to="../iota/transfer_policy#iota_transfer_policy_TransferRequest">TransferRequest</Link>&lt;T&gt;): ID \{ self.<Link to="../iota/transfer_policy#iota_transfer_policy_item">item</Link> }
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_transfer_policy_paid"></Link>
+
+## Function `paid`
+
+Get the <code><Link to="../iota/transfer_policy#iota_transfer_policy_paid">paid</Link></code> field of the <code><Link to="../iota/transfer_policy#iota_transfer_policy_TransferRequest">TransferRequest</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/transfer_policy#iota_transfer_policy_paid">paid</Link>&lt;T&gt;(self: &<Link to="../iota/transfer_policy#iota_transfer_policy_TransferRequest">iota::transfer_policy::TransferRequest</Link>&lt;T&gt;): u64
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/transfer_policy#iota_transfer_policy_paid">paid</Link>&lt;T&gt;(self: &<Link to="../iota/transfer_policy#iota_transfer_policy_TransferRequest">TransferRequest</Link>&lt;T&gt;): u64 \{ self.<Link to="../iota/transfer_policy#iota_transfer_policy_paid">paid</Link> }
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_transfer_policy_from"></Link>
+
+## Function `from`
+
+Get the <code><Link to="../iota/transfer_policy#iota_transfer_policy_from">from</Link></code> field of the <code><Link to="../iota/transfer_policy#iota_transfer_policy_TransferRequest">TransferRequest</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/transfer_policy#iota_transfer_policy_from">from</Link>&lt;T&gt;(self: &<Link to="../iota/transfer_policy#iota_transfer_policy_TransferRequest">iota::transfer_policy::TransferRequest</Link>&lt;T&gt;): <Link to="../iota/object#iota_object_ID">iota::object::ID</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/transfer_policy#iota_transfer_policy_from">from</Link>&lt;T&gt;(self: &<Link to="../iota/transfer_policy#iota_transfer_policy_TransferRequest">TransferRequest</Link>&lt;T&gt;): ID \{ self.<Link to="../iota/transfer_policy#iota_transfer_policy_from">from</Link> }
+</code>
+</pre>
+
+
+
+</details>

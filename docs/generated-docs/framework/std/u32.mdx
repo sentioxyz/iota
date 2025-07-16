@@ -1,0 +1,527 @@
+---
+title: Module std::u32
+sidebar_label: u32
+slug: u32
+---
+import Link from '@docusaurus/Link';
+
+<Link id="std_u32"/>
+
+
+-  [Function `bitwise_not`](#std_u32_bitwise_not)
+-  [Function `max`](#std_u32_max)
+-  [Function `min`](#std_u32_min)
+-  [Function `diff`](#std_u32_diff)
+-  [Function `divide_and_round_up`](#std_u32_divide_and_round_up)
+-  [Function `pow`](#std_u32_pow)
+-  [Function `sqrt`](#std_u32_sqrt)
+-  [Function `try_as_u8`](#std_u32_try_as_u8)
+-  [Function `try_as_u16`](#std_u32_try_as_u16)
+-  [Function `to_string`](#std_u32_to_string)
+-  [Macro function `range_do`](#std_u32_range_do)
+-  [Macro function `range_do_eq`](#std_u32_range_do_eq)
+-  [Macro function `do`](#std_u32_do)
+-  [Macro function `do_eq`](#std_u32_do_eq)
+-  [Macro function `max_value`](#std_u32_max_value)
+
+
+<pre>
+<code>
+<b>use</b> <Link to="../std/ascii#std_ascii">std::ascii</Link>;
+<b>use</b> <Link to="../std/option#std_option">std::option</Link>;
+<b>use</b> <Link to="../std/string#std_string">std::string</Link>;
+<b>use</b> <Link to="../std/vector#std_vector">std::vector</Link>;
+</code>
+</pre>
+
+
+
+<Link id="std_u32_bitwise_not"></Link>
+
+## Function `bitwise_not`
+
+Returns the bitwise not of the value.
+Each bit that is 1 becomes 0. Each bit that is 0 becomes 1.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/u32#std_u32_bitwise_not">bitwise_not</Link>(x: <Link to="../std/u32#std_u32">u32</Link>): <Link to="../std/u32#std_u32">u32</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/u32#std_u32_bitwise_not">bitwise_not</Link>(x: <Link to="../std/u32#std_u32">u32</Link>): <Link to="../std/u32#std_u32">u32</Link> \{
+    x ^ <Link to="../std/u32#std_u32_max_value">max_value</Link>!()
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_u32_max"></Link>
+
+## Function `max`
+
+Return the larger of <code>x</code> and <code>y</code>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/u32#std_u32_max">max</Link>(x: <Link to="../std/u32#std_u32">u32</Link>, y: <Link to="../std/u32#std_u32">u32</Link>): <Link to="../std/u32#std_u32">u32</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/u32#std_u32_max">max</Link>(x: <Link to="../std/u32#std_u32">u32</Link>, y: <Link to="../std/u32#std_u32">u32</Link>): <Link to="../std/u32#std_u32">u32</Link> \{
+    <Link to="../std/macros#std_macros_num_max">std::macros::num_max</Link>!(x, y)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_u32_min"></Link>
+
+## Function `min`
+
+Return the smaller of <code>x</code> and <code>y</code>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/u32#std_u32_min">min</Link>(x: <Link to="../std/u32#std_u32">u32</Link>, y: <Link to="../std/u32#std_u32">u32</Link>): <Link to="../std/u32#std_u32">u32</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/u32#std_u32_min">min</Link>(x: <Link to="../std/u32#std_u32">u32</Link>, y: <Link to="../std/u32#std_u32">u32</Link>): <Link to="../std/u32#std_u32">u32</Link> \{
+    <Link to="../std/macros#std_macros_num_min">std::macros::num_min</Link>!(x, y)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_u32_diff"></Link>
+
+## Function `diff`
+
+Return the absolute value of x - y
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/u32#std_u32_diff">diff</Link>(x: <Link to="../std/u32#std_u32">u32</Link>, y: <Link to="../std/u32#std_u32">u32</Link>): <Link to="../std/u32#std_u32">u32</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/u32#std_u32_diff">diff</Link>(x: <Link to="../std/u32#std_u32">u32</Link>, y: <Link to="../std/u32#std_u32">u32</Link>): <Link to="../std/u32#std_u32">u32</Link> \{
+    <Link to="../std/macros#std_macros_num_diff">std::macros::num_diff</Link>!(x, y)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_u32_divide_and_round_up"></Link>
+
+## Function `divide_and_round_up`
+
+Calculate x / y, but round up the result.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/u32#std_u32_divide_and_round_up">divide_and_round_up</Link>(x: <Link to="../std/u32#std_u32">u32</Link>, y: <Link to="../std/u32#std_u32">u32</Link>): <Link to="../std/u32#std_u32">u32</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/u32#std_u32_divide_and_round_up">divide_and_round_up</Link>(x: <Link to="../std/u32#std_u32">u32</Link>, y: <Link to="../std/u32#std_u32">u32</Link>): <Link to="../std/u32#std_u32">u32</Link> \{
+    <Link to="../std/macros#std_macros_num_divide_and_round_up">std::macros::num_divide_and_round_up</Link>!(x, y)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_u32_pow"></Link>
+
+## Function `pow`
+
+Return the value of a base raised to a power
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/u32#std_u32_pow">pow</Link>(base: <Link to="../std/u32#std_u32">u32</Link>, exponent: <Link to="../std/u8#std_u8">u8</Link>): <Link to="../std/u32#std_u32">u32</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/u32#std_u32_pow">pow</Link>(base: <Link to="../std/u32#std_u32">u32</Link>, exponent: <Link to="../std/u8#std_u8">u8</Link>): <Link to="../std/u32#std_u32">u32</Link> \{
+    <Link to="../std/macros#std_macros_num_pow">std::macros::num_pow</Link>!(base, exponent)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_u32_sqrt"></Link>
+
+## Function `sqrt`
+
+Get a nearest lower integer Square Root for <code>x</code>. Given that this
+function can only operate with integers, it is impossible
+to get perfect (or precise) integer square root for some numbers.
+
+Example:
+```
+math::sqrt(9) => 3
+math::sqrt(8) => 2 // the nearest lower square root is 4;
+```
+
+In integer math, one of the possible ways to get results with more
+precision is to use higher values or temporarily multiply the
+value by some bigger number. Ideally if this is a square of 10 or 100.
+
+Example:
+```
+math::sqrt(8) => 2;
+math::sqrt(8 * 10000) => 282;
+// now we can use this value as if it was 2.82;
+// but to get the actual result, this value needs
+// to be divided by 100 (because sqrt(10000)).
+
+
+math::sqrt(8 * 1000000) => 2828; // same as above, 2828 / 1000 (2.828)
+```
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/u32#std_u32_sqrt">sqrt</Link>(x: <Link to="../std/u32#std_u32">u32</Link>): <Link to="../std/u32#std_u32">u32</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/u32#std_u32_sqrt">sqrt</Link>(x: <Link to="../std/u32#std_u32">u32</Link>): <Link to="../std/u32#std_u32">u32</Link> \{
+    <Link to="../std/macros#std_macros_num_sqrt">std::macros::num_sqrt</Link>!&lt;<Link to="../std/u32#std_u32">u32</Link>, <Link to="../std/u64#std_u64">u64</Link>&gt;(x, 32)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_u32_try_as_u8"></Link>
+
+## Function `try_as_u8`
+
+Try to convert a <code><Link to="../std/u32#std_u32">u32</Link></code> to a <code><Link to="../std/u8#std_u8">u8</Link></code>. Returns <code>None</code> if the value is too large.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/u32#std_u32_try_as_u8">try_as_u8</Link>(x: <Link to="../std/u32#std_u32">u32</Link>): <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;<Link to="../std/u8#std_u8">u8</Link>&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/u32#std_u32_try_as_u8">try_as_u8</Link>(x: <Link to="../std/u32#std_u32">u32</Link>): Option&lt;<Link to="../std/u8#std_u8">u8</Link>&gt; \{
+    <Link to="../std/macros#std_macros_try_as_u8">std::macros::try_as_u8</Link>!(x)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_u32_try_as_u16"></Link>
+
+## Function `try_as_u16`
+
+Try to convert a <code><Link to="../std/u32#std_u32">u32</Link></code> to a <code><Link to="../std/u16#std_u16">u16</Link></code>. Returns <code>None</code> if the value is too large.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/u32#std_u32_try_as_u16">try_as_u16</Link>(x: <Link to="../std/u32#std_u32">u32</Link>): <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;<Link to="../std/u16#std_u16">u16</Link>&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/u32#std_u32_try_as_u16">try_as_u16</Link>(x: <Link to="../std/u32#std_u32">u32</Link>): Option&lt;<Link to="../std/u16#std_u16">u16</Link>&gt; \{
+    <Link to="../std/macros#std_macros_try_as_u16">std::macros::try_as_u16</Link>!(x)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_u32_to_string"></Link>
+
+## Function `to_string`
+
+Convert <code><Link to="../std/u32#std_u32">u32</Link></code> value to string
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/u32#std_u32_to_string">to_string</Link>(x: <Link to="../std/u32#std_u32">u32</Link>): <Link to="../std/string#std_string_String">std::string::String</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/u32#std_u32_to_string">to_string</Link>(x: <Link to="../std/u32#std_u32">u32</Link>): String \{
+    <Link to="../std/macros#std_macros_num_to_string">std::macros::num_to_string</Link>!(x)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_u32_range_do"></Link>
+
+## Macro function `range_do`
+
+Loops applying <code>$f</code> to each number from <code>$start</code> to <code>$stop</code> (exclusive)
+
+
+<pre>
+<code>
+<b>public</b> <b>macro</b> <b>fun</b> <Link to="../std/u32#std_u32_range_do">range_do</Link>&lt;$R: drop&gt;($start: <Link to="../std/u32#std_u32">u32</Link>, $stop: <Link to="../std/u32#std_u32">u32</Link>, $f: |<Link to="../std/u32#std_u32">u32</Link>| -&gt; $R)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>macro</b> <b>fun</b> <Link to="../std/u32#std_u32_range_do">range_do</Link>&lt;$R: drop&gt;($start: <Link to="../std/u32#std_u32">u32</Link>, $stop: <Link to="../std/u32#std_u32">u32</Link>, $f: |<Link to="../std/u32#std_u32">u32</Link>| -&gt; $R) \{
+    <Link to="../std/macros#std_macros_range_do">std::macros::range_do</Link>!($start, $stop, $f)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_u32_range_do_eq"></Link>
+
+## Macro function `range_do_eq`
+
+Loops applying <code>$f</code> to each number from <code>$start</code> to <code>$stop</code> (inclusive)
+
+
+<pre>
+<code>
+<b>public</b> <b>macro</b> <b>fun</b> <Link to="../std/u32#std_u32_range_do_eq">range_do_eq</Link>&lt;$R: drop&gt;($start: <Link to="../std/u32#std_u32">u32</Link>, $stop: <Link to="../std/u32#std_u32">u32</Link>, $f: |<Link to="../std/u32#std_u32">u32</Link>| -&gt; $R)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>macro</b> <b>fun</b> <Link to="../std/u32#std_u32_range_do_eq">range_do_eq</Link>&lt;$R: drop&gt;($start: <Link to="../std/u32#std_u32">u32</Link>, $stop: <Link to="../std/u32#std_u32">u32</Link>, $f: |<Link to="../std/u32#std_u32">u32</Link>| -&gt; $R) \{
+    <Link to="../std/macros#std_macros_range_do_eq">std::macros::range_do_eq</Link>!($start, $stop, $f)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_u32_do"></Link>
+
+## Macro function `do`
+
+Loops applying <code>$f</code> to each number from <code>0</code> to <code>$stop</code> (exclusive)
+
+
+<pre>
+<code>
+<b>public</b> <b>macro</b> <b>fun</b> <Link to="../std/u32#std_u32_do">do</Link>&lt;$R: drop&gt;($stop: <Link to="../std/u32#std_u32">u32</Link>, $f: |<Link to="../std/u32#std_u32">u32</Link>| -&gt; $R)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>macro</b> <b>fun</b> <Link to="../std/u32#std_u32_do">do</Link>&lt;$R: drop&gt;($stop: <Link to="../std/u32#std_u32">u32</Link>, $f: |<Link to="../std/u32#std_u32">u32</Link>| -&gt; $R) \{
+    <Link to="../std/macros#std_macros_do">std::macros::do</Link>!($stop, $f)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_u32_do_eq"></Link>
+
+## Macro function `do_eq`
+
+Loops applying <code>$f</code> to each number from <code>0</code> to <code>$stop</code> (inclusive)
+
+
+<pre>
+<code>
+<b>public</b> <b>macro</b> <b>fun</b> <Link to="../std/u32#std_u32_do_eq">do_eq</Link>&lt;$R: drop&gt;($stop: <Link to="../std/u32#std_u32">u32</Link>, $f: |<Link to="../std/u32#std_u32">u32</Link>| -&gt; $R)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>macro</b> <b>fun</b> <Link to="../std/u32#std_u32_do_eq">do_eq</Link>&lt;$R: drop&gt;($stop: <Link to="../std/u32#std_u32">u32</Link>, $f: |<Link to="../std/u32#std_u32">u32</Link>| -&gt; $R) \{
+    <Link to="../std/macros#std_macros_do_eq">std::macros::do_eq</Link>!($stop, $f)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_u32_max_value"></Link>
+
+## Macro function `max_value`
+
+Maximum value for a <code><Link to="../std/u32#std_u32">u32</Link></code>
+
+
+<pre>
+<code>
+<b>public</b> <b>macro</b> <b>fun</b> <Link to="../std/u32#std_u32_max_value">max_value</Link>(): <Link to="../std/u32#std_u32">u32</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>macro</b> <b>fun</b> <Link to="../std/u32#std_u32_max_value">max_value</Link>(): <Link to="../std/u32#std_u32">u32</Link> \{
+    0xFFFF_FFFF
+}
+</code>
+</pre>
+
+
+
+</details>

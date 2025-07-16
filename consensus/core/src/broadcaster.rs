@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::{
@@ -67,7 +68,7 @@ impl Broadcaster {
         self.senders.abort_all();
     }
 
-    /// Runs a loop that continously pushes new blocks received from the rx_block_broadcast
+    /// Runs a loop that continuously pushes new blocks received from the rx_block_broadcast
     /// channel to the target peer.
     ///
     /// The loop does not exit until the validator is shutting down.

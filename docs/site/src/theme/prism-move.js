@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2024 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 /**
@@ -67,7 +68,7 @@
      */
 
     "module-header": {
-      pattern: /\b(module)\s+(\w+)::(\w+)\s*[{;]/,
+      pattern: /\b(module)\s+(\w+)::(\w+)\s*\{/,
       inside: {
         "module-keyword": {
           pattern: /\b(module)\b/,
@@ -308,7 +309,7 @@
     },
 
     /** Just some, non-object, most commonly used */
-    "sui-native-types": {
+    "iota-native-types": {
       pattern: /\b(Option|String|UID|ID|VecSet|VecMap)\b/,
       alias: "symbol",
     },

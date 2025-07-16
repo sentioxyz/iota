@@ -1,0 +1,16 @@
+[package]
+name = "iota-name-service"
+version.workspace = true
+authors = ["IOTA Foundation <info@iota.org>"]
+edition = "2021"
+license = "Apache-2.0"
+publish = false
+
+[dependencies]
+bcs.workspace = true
+serde.workspace = true
+thiserror.workspace = true
+
+move-core-types.workspace = true
+
+iota-types.workspace = true

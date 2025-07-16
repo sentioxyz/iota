@@ -1,4 +1,5 @@
 // Copyright (c) The Move Contributors
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::io::{Cursor, Read};
@@ -371,7 +372,7 @@ pub enum Error {
 /// value structure.
 pub struct NullTraversal;
 
-impl<'b, 'l> Traversal<'b, 'l> for NullTraversal {
+impl Traversal<'_, '_> for NullTraversal {
     type Error = Error;
 }
 

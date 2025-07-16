@@ -1,0 +1,9 @@
+[package]
+name = "vesting"
+edition = "2024.beta"
+
+[dependencies]
+Iota = { local = "../../crates/iota-framework/packages/iota-framework" }
+
+[addresses]
+vesting = "0x0"

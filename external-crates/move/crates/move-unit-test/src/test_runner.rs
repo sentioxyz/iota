@@ -1,5 +1,6 @@
 // Copyright (c) The Diem Core Contributors
 // Copyright (c) The Move Contributors
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::{
@@ -213,7 +214,7 @@ struct TestOutput<'a, 'b, W> {
     test_info: &'a BTreeMap<ModuleId, NamedCompiledModule>,
 }
 
-impl<'a, 'b, W: Write> TestOutput<'a, 'b, W> {
+impl<W: Write> TestOutput<'_, '_, W> {
     fn pass(&self, fn_name: &str) {
         writeln!(
             self.writer.lock().unwrap(),

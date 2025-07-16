@@ -110,8 +110,7 @@ fun debug_script(account: signer) {
 ```
 
 Before we can run this however, we need to import the Move standard library
-nursery in order to have access to the `Debug` module and `Std` [named
-address](https://move-language.github.io/move/address.html#named-addresses).
+nursery in order to have access to the `Debug` module and `Std` [named address](https://move-language.github.io/move/address.html#named-addresses).
 You can specify dependencies locally, or using a Git URL. Here, we will specify
 it using Git, so add the following to the `Move.toml` file in the `readme`
 directory:
@@ -471,7 +470,7 @@ Module 00000000000000000000000000000002::Test
 ```
 
 The output indicates that not only the test is passed, but also that 100%
-instruction coverage is observed in the `publish` funciton. This is expected
+instruction coverage is observed in the `publish` function. This is expected
 as the whole purpose of our `test_script.move` is to run the `publish` function.
 At the same time, the other two functions, `unpublish` and `write`, are never
 executed, making the average coverage 27.78% for the whole `Test` module.

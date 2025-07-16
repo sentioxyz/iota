@@ -1,0 +1,232 @@
+---
+title: Module stardust::basic_output
+sidebar_label: basic_output
+slug: basic_output
+---
+import Link from '@docusaurus/Link';
+
+<Link id="stardust_basic_output"/>
+
+
+-  [Struct `BasicOutput`](#stardust_basic_output_BasicOutput)
+-  [Function `extract_assets`](#stardust_basic_output_extract_assets)
+-  [Function `receive`](#stardust_basic_output_receive)
+
+
+<pre>
+<code>
+<b>use</b> <Link to="../iota/address#iota_address">iota::address</Link>;
+<b>use</b> <Link to="../iota/bag#iota_bag">iota::bag</Link>;
+<b>use</b> <Link to="../iota/balance#iota_balance">iota::balance</Link>;
+<b>use</b> <Link to="../iota/coin#iota_coin">iota::coin</Link>;
+<b>use</b> <Link to="../iota/config#iota_config">iota::config</Link>;
+<b>use</b> <Link to="../iota/deny_list#iota_deny_list">iota::deny_list</Link>;
+<b>use</b> <Link to="../iota/dynamic_field#iota_dynamic_field">iota::dynamic_field</Link>;
+<b>use</b> <Link to="../iota/dynamic_object_field#iota_dynamic_object_field">iota::dynamic_object_field</Link>;
+<b>use</b> <Link to="../iota/event#iota_event">iota::event</Link>;
+<b>use</b> <Link to="../iota/hex#iota_hex">iota::hex</Link>;
+<b>use</b> <Link to="../iota/object#iota_object">iota::object</Link>;
+<b>use</b> <Link to="../iota/transfer#iota_transfer">iota::transfer</Link>;
+<b>use</b> <Link to="../iota/tx_context#iota_tx_context">iota::tx_context</Link>;
+<b>use</b> <Link to="../iota/types#iota_types">iota::types</Link>;
+<b>use</b> <Link to="../iota/url#iota_url">iota::url</Link>;
+<b>use</b> <Link to="../stardust/expiration_unlock_condition#stardust_expiration_unlock_condition">stardust::expiration_unlock_condition</Link>;
+<b>use</b> <Link to="../stardust/storage_deposit_return_unlock_condition#stardust_storage_deposit_return_unlock_condition">stardust::storage_deposit_return_unlock_condition</Link>;
+<b>use</b> <Link to="../stardust/timelock_unlock_condition#stardust_timelock_unlock_condition">stardust::timelock_unlock_condition</Link>;
+<b>use</b> <Link to="../std/address#std_address">std::address</Link>;
+<b>use</b> <Link to="../std/ascii#std_ascii">std::ascii</Link>;
+<b>use</b> <Link to="../std/bcs#std_bcs">std::bcs</Link>;
+<b>use</b> <Link to="../std/option#std_option">std::option</Link>;
+<b>use</b> <Link to="../std/string#std_string">std::string</Link>;
+<b>use</b> <Link to="../std/type_name#std_type_name">std::type_name</Link>;
+<b>use</b> <Link to="../std/vector#std_vector">std::vector</Link>;
+</code>
+</pre>
+
+
+
+<Link id="stardust_basic_output_BasicOutput"></Link>
+
+## Struct `BasicOutput`
+
+A basic output that has unlock conditions/features.
+- basic outputs with expiration unlock condition must be a shared object, since that's the only
+way to handle the two possible addresses that can unlock the output.
+- notice that there is no <code>store</code> ability and there is no custom transfer function:
+-  you can call <code><Link to="../stardust/basic_output#stardust_basic_output_extract_assets">extract_assets</Link></code>,
+-  or you can call <code><Link to="../stardust/basic_output#stardust_basic_output_receive">receive</Link></code> in other models to receive a <code><Link to="../stardust/basic_output#stardust_basic_output_BasicOutput">BasicOutput</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../stardust/basic_output#stardust_basic_output_BasicOutput">BasicOutput</Link>&lt;<b>phantom</b> T&gt; <b>has</b> key
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code>id: <Link to="../iota/object#iota_object_UID">iota::object::UID</Link></code>
+</dt>
+<dd>
+ Hash of the <code>outputId</code> that was migrated.
+</dd>
+<dt>
+<code>balance: <Link to="../iota/balance#iota_balance_Balance">iota::balance::Balance</Link>&lt;T&gt;</code>
+</dt>
+<dd>
+ The amount of coins held by the output.
+</dd>
+<dt>
+<code>native_tokens: <Link to="../iota/bag#iota_bag_Bag">iota::bag::Bag</Link></code>
+</dt>
+<dd>
+ The <code>Bag</code> holds native tokens, key-ed by the stringified type of the asset.
+ Example: key: "0xabcded::soon::SOON", value: `Balance<0xabcded::soon::SOON>`.
+</dd>
+<dt>
+<code>storage_deposit_return_uc: <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;<Link to="../stardust/storage_deposit_return_unlock_condition#stardust_storage_deposit_return_unlock_condition_StorageDepositReturnUnlockCondition">stardust::storage_deposit_return_unlock_condition::StorageDepositReturnUnlockCondition</Link>&gt;</code>
+</dt>
+<dd>
+ The storage deposit return unlock condition.
+</dd>
+<dt>
+<code>timelock_uc: <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;<Link to="../stardust/timelock_unlock_condition#stardust_timelock_unlock_condition_TimelockUnlockCondition">stardust::timelock_unlock_condition::TimelockUnlockCondition</Link>&gt;</code>
+</dt>
+<dd>
+ The timelock unlock condition.
+</dd>
+<dt>
+<code>expiration_uc: <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;<Link to="../stardust/expiration_unlock_condition#stardust_expiration_unlock_condition_ExpirationUnlockCondition">stardust::expiration_unlock_condition::ExpirationUnlockCondition</Link>&gt;</code>
+</dt>
+<dd>
+ The expiration unlock condition.
+</dd>
+<dt>
+<code>metadata: <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;vector&lt;u8&gt;&gt;</code>
+</dt>
+<dd>
+ The metadata feature.
+</dd>
+<dt>
+<code>tag: <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;vector&lt;u8&gt;&gt;</code>
+</dt>
+<dd>
+ The tag feature.
+</dd>
+<dt>
+<code>sender: <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;<b>address</b>&gt;</code>
+</dt>
+<dd>
+ The sender feature.
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="stardust_basic_output_extract_assets"></Link>
+
+## Function `extract_assets`
+
+Extract the assets stored inside the output, respecting the unlock conditions.
+- The object will be deleted.
+- The <code>StorageDepositReturnUnlockCondition</code> will return the deposit.
+- Remaining assets (coins and native tokens) will be returned.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/basic_output#stardust_basic_output_extract_assets">extract_assets</Link>&lt;T&gt;(output: <Link to="../stardust/basic_output#stardust_basic_output_BasicOutput">stardust::basic_output::BasicOutput</Link>&lt;T&gt;, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): (<Link to="../iota/balance#iota_balance_Balance">iota::balance::Balance</Link>&lt;T&gt;, <Link to="../iota/bag#iota_bag_Bag">iota::bag::Bag</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/basic_output#stardust_basic_output_extract_assets">extract_assets</Link>&lt;T&gt;(output: <Link to="../stardust/basic_output#stardust_basic_output_BasicOutput">BasicOutput</Link>&lt;T&gt;, ctx: &<b>mut</b> TxContext): (Balance&lt;T&gt;, Bag) \{
+    // Unpack the output into its basic part.
+    <b>let</b> <Link to="../stardust/basic_output#stardust_basic_output_BasicOutput">BasicOutput</Link> \{
+        id,
+        balance: <b>mut</b> balance,
+        native_tokens,
+        storage_deposit_return_uc: <b>mut</b> storage_deposit_return_uc,
+        timelock_uc: <b>mut</b> timelock_uc,
+        expiration_uc: <b>mut</b> expiration_uc,
+        sender: _,
+        metadata: _,
+        tag: _,
+    } = output;
+    // If the output <b>has</b> a timelock unlock condition, then we need to check <b>if</b> the timelock_uc <b>has</b> expired.
+    <b>if</b> (timelock_uc.is_some()) \{
+        timelock_uc.extract().unlock(ctx);
+    };
+    // If the output <b>has</b> an expiration unlock condition, then we need to check who can unlock the output.
+    <b>if</b> (expiration_uc.is_some()) \{
+        expiration_uc.extract().unlock(ctx);
+    };
+    // If the output <b>has</b> an storage deposit <b>return</b> unlock condition, then we need to <b>return</b> the deposit.
+    <b>if</b> (storage_deposit_return_uc.is_some()) \{
+        storage_deposit_return_uc.extract().unlock(&<b>mut</b> balance, ctx);
+    };
+    // Destroy the unlock conditions.
+    option::destroy_none(timelock_uc);
+    option::destroy_none(expiration_uc);
+    option::destroy_none(storage_deposit_return_uc);
+    // Delete the output.
+    object::delete(id);
+    <b>return</b> (balance, native_tokens)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="stardust_basic_output_receive"></Link>
+
+## Function `receive`
+
+Utility function to receive a basic output in other stardust modules.
+Since <code><Link to="../stardust/basic_output#stardust_basic_output_BasicOutput">BasicOutput</Link></code> only has <code>key</code>, it can not be received via <code>public_receive</code>.
+The private receiver must be implemented in its defining module (here).
+Other modules in the Stardust package can call this function to receive a basic output (alias, NFT).
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../stardust/basic_output#stardust_basic_output_receive">receive</Link>&lt;T&gt;(parent: &<b>mut</b> <Link to="../iota/object#iota_object_UID">iota::object::UID</Link>, output: <Link to="../iota/transfer#iota_transfer_Receiving">iota::transfer::Receiving</Link>&lt;<Link to="../stardust/basic_output#stardust_basic_output_BasicOutput">stardust::basic_output::BasicOutput</Link>&lt;T&gt;&gt;): <Link to="../stardust/basic_output#stardust_basic_output_BasicOutput">stardust::basic_output::BasicOutput</Link>&lt;T&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../stardust/basic_output#stardust_basic_output_receive">receive</Link>&lt;T&gt;(
+    parent: &<b>mut</b> UID,
+    output: Receiving&lt;<Link to="../stardust/basic_output#stardust_basic_output_BasicOutput">BasicOutput</Link>&lt;T&gt;&gt;,
+): <Link to="../stardust/basic_output#stardust_basic_output_BasicOutput">BasicOutput</Link>&lt;T&gt; \{
+    transfer::receive(parent, output)
+}
+</code>
+</pre>
+
+
+
+</details>

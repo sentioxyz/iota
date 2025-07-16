@@ -1,11 +1,12 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-module sui::versioned {
-    use sui::object::{UID, ID};
-    use sui::tx_context::TxContext;
-    use sui::object;
-    use sui::dynamic_field;
+module iota::versioned {
+    use iota::object::{UID, ID};
+    use iota::tx_context::TxContext;
+    use iota::object;
+    use iota::dynamic_field;
 
     /// Failed to upgrade the inner object due to invalid capability or new version.
     const EInvalidUpgrade: u64 = 0;

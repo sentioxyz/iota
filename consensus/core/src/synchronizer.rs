@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 use std::{
     collections::{BTreeMap, BTreeSet, HashMap},
@@ -10,14 +11,14 @@ use bytes::Bytes;
 use consensus_config::AuthorityIndex;
 use futures::{stream::FuturesUnordered, StreamExt as _};
 use itertools::Itertools as _;
-use mysten_metrics::{
+use iota_metrics::{
     monitored_future,
     monitored_mpsc::{channel, Receiver, Sender},
     monitored_scope,
 };
 use parking_lot::{Mutex, RwLock};
 use rand::{prelude::SliceRandom as _, rngs::ThreadRng};
-use sui_macros::fail_point_async;
+use iota_macros::fail_point_async;
 use tap::TapFallible;
 use tokio::{
     runtime::Handle,
@@ -622,12 +623,12 @@ impl<C: NetworkClient, V: BlockVerifier, D: CoreThreadDispatcher> Synchronizer<C
             let signed_block: SignedBlock =
                 bcs::from_bytes(&serialized_block).map_err(ConsensusError::MalformedBlock)?;
 
-            // TODO: dedup block verifications, here and with fetched blocks.
-            if let Err(e) = block_verifier.verify(&signed_block) {
+            // TODO: cache received and verified block refs to avoid duplicated work.
+            let verification_result = block_verifier.verify_and_vote(&signed_block);
+            if let Err(e) = verification_result {
                 // TODO: we might want to use a different metric to track the invalid "served" blocks
                 // from the invalid "proposed" ones.
                 let hostname = context.committee.authority(peer_index).hostname.clone();
-
                 context
                     .metrics
                     .node_metrics
@@ -734,27 +735,27 @@ impl<C: NetworkClient, V: BlockVerifier, D: CoreThreadDispatcher> Synchronizer<C
                 };
 
                 let process_blocks = |blocks: Vec<Bytes>, authority_index: AuthorityIndex| -> ConsensusResult<Vec<VerifiedBlock>> {
-                                    let mut result = Vec::new();
-                                    for serialized_block in blocks {
-                                        let signed_block = bcs::from_bytes(&serialized_block).map_err(ConsensusError::MalformedBlock)?;
-                                        block_verifier.verify(&signed_block).tap_err(|err|{
-                                            let hostname = context.committee.authority(authority_index).hostname.clone();
-                                            context
-                                                .metrics
-                                                .node_metrics
-                                                .invalid_blocks
-                                                .with_label_values(&[&hostname, "synchronizer_own_block", err.clone().name()])
-                                                .inc();
-                                            warn!("Invalid block received from {}: {}", authority_index, err);
-                                        })?;
+                    let mut result = Vec::new();
+                    for serialized_block in blocks {
+                        let signed_block = bcs::from_bytes(&serialized_block).map_err(ConsensusError::MalformedBlock)?;
+                        block_verifier.verify_and_vote(&signed_block).tap_err(|err|{
+                            let hostname = context.committee.authority(authority_index).hostname.clone();
+                            context
+                                .metrics
+                                .node_metrics
+                                .invalid_blocks
+                                .with_label_values(&[&hostname, "synchronizer_own_block", err.clone().name()])
+                                .inc();
+                            warn!("Invalid block received from {}: {}", authority_index, err);
+                        })?;
 
-                                        let verified_block = VerifiedBlock::new_verified(signed_block, serialized_block);
-                                        if verified_block.author() != context.own_index {
-                                            return Err(ConsensusError::UnexpectedLastOwnBlock { index: authority_index, block_ref: verified_block.reference()});
-                                        }
-                                        result.push(verified_block);
-                                    }
-                                    Ok(result)
+                        let verified_block = VerifiedBlock::new_verified(signed_block, serialized_block);
+                        if verified_block.author() != context.own_index {
+                            return Err(ConsensusError::UnexpectedLastOwnBlock { index: authority_index, block_ref: verified_block.reference()});
+                        }
+                        result.push(verified_block);
+                    }
+                    Ok(result)
                 };
 
                 // Get the highest of all the results. Retry until at least `f+1` results have been gathered.
@@ -865,6 +866,12 @@ impl<C: NetworkClient, V: BlockVerifier, D: CoreThreadDispatcher> Synchronizer<C
 
         let (commit_lagging, last_commit_index, quorum_commit_index) = self.is_commit_lagging();
         if commit_lagging {
+            // If gc is enabled and we are commit lagging, then we don't want to enable the scheduler. As the new logic of processing the certified commits
+            // takes place we are guaranteed that commits will happen for all the certified commits.
+            if dag_state.read().gc_enabled() {
+                return Ok(());
+            }
+
             // As node is commit lagging try to sync only the missing blocks that are within the acceptable round thresholds to sync. The rest we don't attempt to
             // sync yet.
             let highest_accepted_round = dag_state.read().highest_accepted_round();
@@ -1512,7 +1519,13 @@ mod tests {
     async fn synchronizer_periodic_task_when_commit_lagging_with_missing_blocks_in_acceptable_thresholds(
     ) {
         // GIVEN
-        let (context, _) = Context::new_for_test(4);
+        let (mut context, _) = Context::new_for_test(4);
+
+        // We want to run this test only when gc is disabled. Once gc gets enabled this logic won't execute any more.
+        context
+            .protocol_config
+            .set_consensus_gc_depth_for_testing(0);
+
         let context = Arc::new(context);
         let block_verifier = Arc::new(NoopBlockVerifier {});
         let core_dispatcher = Arc::new(MockCoreThreadDispatcher::default());

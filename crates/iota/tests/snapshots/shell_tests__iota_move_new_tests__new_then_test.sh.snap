@@ -1,0 +1,27 @@
+---
+source: crates/iota/tests/shell_tests.rs
+description: tests/shell_tests/new_tests/new_then_test.sh
+---
+----- script -----
+# Copyright (c) Mysten Labs, Inc.
+# Modifications Copyright (c) 2025 IOTA Stiftung
+# SPDX-License-Identifier: Apache-2.0
+
+# check that iota move new followed by iota move test succeeds
+iota move new example
+cd example && iota move test
+
+----- results -----
+success: true
+exit_code: 0
+----- stdout -----
+INCLUDING DEPENDENCY Bridge
+INCLUDING DEPENDENCY DeepBook
+INCLUDING DEPENDENCY IotaSystem
+INCLUDING DEPENDENCY IOTA
+INCLUDING DEPENDENCY MoveStdlib
+BUILDING example
+Running Move unit tests
+Test result: OK. Total tests: 0; passed: 0; failed: 0
+
+----- stderr -----

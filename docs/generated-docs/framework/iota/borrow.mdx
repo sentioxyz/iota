@@ -1,0 +1,280 @@
+---
+title: Module iota::borrow
+sidebar_label: borrow
+slug: borrow
+---
+import Link from '@docusaurus/Link';
+
+<Link id="iota_borrow"/>
+A simple library that enables hot-potato-locked borrow mechanics.
+
+With Programmable transactions, it is possible to borrow a value within
+a transaction, use it and put back in the end. Hot-potato <code><Link to="../iota/borrow#iota_borrow_Borrow">Borrow</Link></code> makes
+sure the object is returned and was not swapped for another one.
+
+
+-  [Struct `Referent`](#iota_borrow_Referent)
+-  [Struct `Borrow`](#iota_borrow_Borrow)
+-  [Constants](#@Constants_0)
+-  [Function `new`](#iota_borrow_new)
+-  [Function `borrow`](#iota_borrow_borrow)
+-  [Function `put_back`](#iota_borrow_put_back)
+-  [Function `destroy`](#iota_borrow_destroy)
+
+
+<pre>
+<code>
+<b>use</b> <Link to="../iota/address#iota_address">iota::address</Link>;
+<b>use</b> <Link to="../iota/hex#iota_hex">iota::hex</Link>;
+<b>use</b> <Link to="../iota/object#iota_object">iota::object</Link>;
+<b>use</b> <Link to="../iota/tx_context#iota_tx_context">iota::tx_context</Link>;
+<b>use</b> <Link to="../std/ascii#std_ascii">std::ascii</Link>;
+<b>use</b> <Link to="../std/bcs#std_bcs">std::bcs</Link>;
+<b>use</b> <Link to="../std/option#std_option">std::option</Link>;
+<b>use</b> <Link to="../std/string#std_string">std::string</Link>;
+<b>use</b> <Link to="../std/vector#std_vector">std::vector</Link>;
+</code>
+</pre>
+
+
+
+<Link id="iota_borrow_Referent"></Link>
+
+## Struct `Referent`
+
+An object wrapping a <code>T</code> and providing the borrow API.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota/borrow#iota_borrow_Referent">Referent</Link>&lt;T: key, store&gt; <b>has</b> store
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code>id: <b>address</b></code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>value: <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;T&gt;</code>
+</dt>
+<dd>
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="iota_borrow_Borrow"></Link>
+
+## Struct `Borrow`
+
+A hot potato making sure the object is put back once borrowed.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota/borrow#iota_borrow_Borrow">Borrow</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code>ref: <b>address</b></code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>obj: <Link to="../iota/object#iota_object_ID">iota::object::ID</Link></code>
+</dt>
+<dd>
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="@Constants_0"></Link>
+
+## Constants
+
+
+<Link id="iota_borrow_EWrongBorrow"></Link>
+
+The <code><Link to="../iota/borrow#iota_borrow_Borrow">Borrow</Link></code> does not match the <code><Link to="../iota/borrow#iota_borrow_Referent">Referent</Link></code>.
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota/borrow#iota_borrow_EWrongBorrow">EWrongBorrow</Link>: u64 = 0;
+</code>
+</pre>
+
+
+
+<Link id="iota_borrow_EWrongValue"></Link>
+
+An attempt to swap the <code><Link to="../iota/borrow#iota_borrow_Referent">Referent</Link>.value</code> with another object of the same type.
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota/borrow#iota_borrow_EWrongValue">EWrongValue</Link>: u64 = 1;
+</code>
+</pre>
+
+
+
+<Link id="iota_borrow_new"></Link>
+
+## Function `new`
+
+Create a new <code><Link to="../iota/borrow#iota_borrow_Referent">Referent</Link></code> struct
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/borrow#iota_borrow_new">new</Link>&lt;T: key, store&gt;(value: T, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): <Link to="../iota/borrow#iota_borrow_Referent">iota::borrow::Referent</Link>&lt;T&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/borrow#iota_borrow_new">new</Link>&lt;T: key + store&gt;(value: T, ctx: &<b>mut</b> TxContext): <Link to="../iota/borrow#iota_borrow_Referent">Referent</Link>&lt;T&gt; \{
+    <Link to="../iota/borrow#iota_borrow_Referent">Referent</Link> \{
+        id: <Link to="../iota/tx_context#iota_tx_context_fresh_object_address">tx_context::fresh_object_address</Link>(ctx),
+        value: option::some(value),
+    }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_borrow_borrow"></Link>
+
+## Function `borrow`
+
+Borrow the <code>T</code> from the <code><Link to="../iota/borrow#iota_borrow_Referent">Referent</Link></code> receiving the <code>T</code> and a <code><Link to="../iota/borrow#iota_borrow_Borrow">Borrow</Link></code>
+hot potato.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/borrow#iota_borrow">borrow</Link>&lt;T: key, store&gt;(self: &<b>mut</b> <Link to="../iota/borrow#iota_borrow_Referent">iota::borrow::Referent</Link>&lt;T&gt;): (T, <Link to="../iota/borrow#iota_borrow_Borrow">iota::borrow::Borrow</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/borrow#iota_borrow">borrow</Link>&lt;T: key + store&gt;(self: &<b>mut</b> <Link to="../iota/borrow#iota_borrow_Referent">Referent</Link>&lt;T&gt;): (T, <Link to="../iota/borrow#iota_borrow_Borrow">Borrow</Link>) \{
+    <b>let</b> value = self.value.extract();
+    <b>let</b> id = <Link to="../iota/object#iota_object_id">object::id</Link>(&value);
+    (
+        value,
+        <Link to="../iota/borrow#iota_borrow_Borrow">Borrow</Link> \{
+            ref: self.id,
+            obj: id,
+        },
+    )
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_borrow_put_back"></Link>
+
+## Function `put_back`
+
+Put an object and the <code><Link to="../iota/borrow#iota_borrow_Borrow">Borrow</Link></code> hot potato back.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/borrow#iota_borrow_put_back">put_back</Link>&lt;T: key, store&gt;(self: &<b>mut</b> <Link to="../iota/borrow#iota_borrow_Referent">iota::borrow::Referent</Link>&lt;T&gt;, value: T, <Link to="../iota/borrow#iota_borrow">borrow</Link>: <Link to="../iota/borrow#iota_borrow_Borrow">iota::borrow::Borrow</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/borrow#iota_borrow_put_back">put_back</Link>&lt;T: key + store&gt;(self: &<b>mut</b> <Link to="../iota/borrow#iota_borrow_Referent">Referent</Link>&lt;T&gt;, value: T, <Link to="../iota/borrow#iota_borrow">borrow</Link>: <Link to="../iota/borrow#iota_borrow_Borrow">Borrow</Link>) \{
+    <b>let</b> <Link to="../iota/borrow#iota_borrow_Borrow">Borrow</Link> \{ ref, obj } = <Link to="../iota/borrow#iota_borrow">borrow</Link>;
+    <b>assert</b>!(<Link to="../iota/object#iota_object_id">object::id</Link>(&value) == obj, <Link to="../iota/borrow#iota_borrow_EWrongValue">EWrongValue</Link>);
+    <b>assert</b>!(self.id == ref, <Link to="../iota/borrow#iota_borrow_EWrongBorrow">EWrongBorrow</Link>);
+    self.value.fill(value);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_borrow_destroy"></Link>
+
+## Function `destroy`
+
+Unpack the <code><Link to="../iota/borrow#iota_borrow_Referent">Referent</Link></code> struct and return the value.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/borrow#iota_borrow_destroy">destroy</Link>&lt;T: key, store&gt;(self: <Link to="../iota/borrow#iota_borrow_Referent">iota::borrow::Referent</Link>&lt;T&gt;): T
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/borrow#iota_borrow_destroy">destroy</Link>&lt;T: key + store&gt;(self: <Link to="../iota/borrow#iota_borrow_Referent">Referent</Link>&lt;T&gt;): T \{
+    <b>let</b> <Link to="../iota/borrow#iota_borrow_Referent">Referent</Link> \{ id: _, value } = self;
+    value.destroy_some()
+}
+</code>
+</pre>
+
+
+
+</details>

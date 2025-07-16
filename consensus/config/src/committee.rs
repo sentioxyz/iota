@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::{
@@ -6,7 +7,7 @@ use std::{
     ops::{Index, IndexMut},
 };
 
-use mysten_network::Multiaddr;
+use iota_network_stack::Multiaddr;
 use serde::{Deserialize, Serialize};
 
 use crate::{AuthorityPublicKey, NetworkPublicKey, ProtocolPublicKey};
@@ -14,7 +15,7 @@ use crate::{AuthorityPublicKey, NetworkPublicKey, ProtocolPublicKey};
 /// Committee of the consensus protocol is updated each epoch.
 pub type Epoch = u64;
 
-/// Voting power of an authority, roughly proportional to the actual amount of Sui staked
+/// Voting power of an authority, roughly proportional to the actual amount of IOTA staked
 /// by the authority.
 /// Total stake / voting power of all authorities should sum to 10,000.
 pub type Stake = u64;
@@ -57,8 +58,8 @@ impl Committee {
         }
     }
 
-    /// -----------------------------------------------------------------------
-    /// Accessors to Committee fields.
+    // -----------------------------------------------------------------------
+    // Accessors to Committee fields.
 
     pub fn epoch(&self) -> Epoch {
         self.epoch
@@ -91,8 +92,8 @@ impl Committee {
             .map(|(i, a)| (AuthorityIndex(i as u32), a))
     }
 
-    /// -----------------------------------------------------------------------
-    /// Helpers for Committee properties.
+    // -----------------------------------------------------------------------
+    // Helpers for Committee properties.
 
     /// Returns true if the provided stake has reached quorum (2f+1).
     pub fn reached_quorum(&self, stake: Stake) -> bool {
@@ -104,7 +105,7 @@ impl Committee {
         stake >= self.validity_threshold()
     }
 
-    /// Coverts an index to an AuthorityIndex, if valid.
+    /// Converts an index to an AuthorityIndex, if valid.
     /// Returns None if index is out of bound.
     pub fn to_authority_index(&self, index: usize) -> Option<AuthorityIndex> {
         if index < self.authorities.len() {
@@ -137,7 +138,7 @@ pub struct Authority {
     pub address: Multiaddr,
     /// The authority's hostname, for metrics and logging.
     pub hostname: String,
-    /// The authority's public key as Sui identity.
+    /// The authority's public key as IOTA identity.
     pub authority_key: AuthorityPublicKey,
     /// The authority's public key for verifying blocks.
     pub protocol_key: ProtocolPublicKey,

@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::{
@@ -13,14 +14,14 @@ use async_trait::async_trait;
 use bytes::Bytes;
 use consensus_config::{AuthorityIndex, NetworkKeyPair, NetworkPublicKey};
 use futures::{stream, Stream, StreamExt as _};
-use mysten_network::{
+use iota_network_stack::{
     callback::{CallbackLayer, MakeCallbackHandler, ResponseHandler},
     multiaddr::Protocol,
     Multiaddr,
 };
 use parking_lot::RwLock;
-use sui_http::ServerHandle;
-use sui_tls::AllowPublicKeys;
+use iota_http::ServerHandle;
+use iota_tls::AllowPublicKeys;
 use tokio_stream::{iter, Iter};
 use tonic::{codec::CompressionEncoding, Request, Response, Streaming};
 use tower_http::trace::{DefaultMakeSpan, DefaultOnFailure, TraceLayer};
@@ -301,7 +302,7 @@ impl NetworkClient for TonicClient {
                             "fetch_blocks failed mid-stream: {e:?}"
                         )));
                     } else {
-                        warn!("fetch_blocks failed mid-stream: {e:?}");
+                        warn!("fetch_latest_blocks failed mid-stream: {e:?}");
                         break;
                     }
                 }
@@ -327,7 +328,7 @@ impl NetworkClient for TonicClient {
 }
 
 // Tonic channel wrapped with layers.
-type Channel = mysten_network::callback::Callback<
+type Channel = iota_network_stack::callback::Callback<
     tower_http::trace::Trace<
         tonic_rustls::Channel,
         tower_http::classify::SharedClassifier<tower_http::classify::GrpcErrorsAsFailures>,
@@ -371,7 +372,7 @@ impl ChannelPool {
         let address = format!("https://{address}");
         let config = &self.context.parameters.tonic;
         let buffer_size = config.connection_buffer_size;
-        let client_tls_config = sui_tls::create_rustls_client_config(
+        let client_tls_config = iota_tls::create_rustls_client_config(
             self.context
                 .committee
                 .authority(peer)
@@ -401,7 +402,7 @@ impl ChannelPool {
             match endpoint.connect().await {
                 Ok(channel) => break channel,
                 Err(e) => {
-                    warn!("Failed to connect to endpoint at {address}: {e:?}");
+                    debug!("Failed to connect to endpoint at {address}: {e:?}");
                     if tokio::time::Instant::now() >= deadline {
                         return Err(ConsensusError::NetworkClientConnection(format!(
                             "Timed out connecting to endpoint at {address}: {e:?}"
@@ -717,7 +718,7 @@ impl<S: NetworkService> NetworkManager<S> for TonicManager {
             // Add a layer to extract a peer's PeerInfo from their TLS certs
             .map_request(move |mut request: http::Request<_>| {
                 if let Some(peer_certificates) =
-                    request.extensions().get::<sui_http::PeerCertificates>()
+                    request.extensions().get::<iota_http::PeerCertificates>()
                 {
                     if let Some(peer_info) =
                         peer_info_from_certs(&connections_info, peer_certificates)
@@ -736,7 +737,7 @@ impl<S: NetworkService> NetworkManager<S> for TonicManager {
                     .make_span_with(DefaultMakeSpan::new().level(tracing::Level::TRACE))
                     .on_failure(DefaultOnFailure::new().level(tracing::Level::DEBUG)),
             )
-            .layer_fn(|service| mysten_network::grpc_timeout::GrpcTimeout::new(service, None));
+            .layer_fn(|service| iota_network_stack::grpc_timeout::GrpcTimeout::new(service, None));
 
         let mut consensus_service_server = ConsensusServiceServer::new(service)
             .max_encoding_message_size(config.message_size_limit)
@@ -752,7 +753,7 @@ impl<S: NetworkService> NetworkManager<S> for TonicManager {
             .into_axum_router()
             .route_layer(layers);
 
-        let tls_server_config = sui_tls::create_rustls_server_config_with_client_verifier(
+        let tls_server_config = iota_tls::create_rustls_server_config_with_client_verifier(
             self.network_keypair.clone().private_key().into_inner(),
             certificate_server_name(&self.context),
             AllowPublicKeys::new(
@@ -800,7 +801,7 @@ impl<S: NetworkService> NetworkManager<S> for TonicManager {
             }
         }
 
-        let http_config = sui_http::Config::default()
+        let http_config = iota_http::Config::default()
             .tcp_nodelay(true)
             .initial_connection_window_size(64 << 20)
             .initial_stream_window_size(32 << 20)
@@ -816,7 +817,7 @@ impl<S: NetworkService> NetworkManager<S> for TonicManager {
         // for a short/reasonable period of time before giving up.
         let deadline = Instant::now() + Duration::from_secs(20);
         let server = loop {
-            match sui_http::Builder::new()
+            match iota_http::Builder::new()
                 .config(http_config.clone())
                 .tls_config(tls_server_config.clone())
                 .serve(own_address, consensus_service.clone())
@@ -860,11 +861,11 @@ impl Drop for TonicManager {
     }
 }
 
-// TODO: improve sui-http to allow for providing a MakeService so that this can be done once per
+// TODO: improve iota-http to allow for providing a MakeService so that this can be done once per
 // connection
 fn peer_info_from_certs(
     connections_info: &ConnectionsInfo,
-    peer_certificates: &sui_http::PeerCertificates,
+    peer_certificates: &iota_http::PeerCertificates,
 ) -> Option<PeerInfo> {
     let certs = peer_certificates.peer_certs();
 
@@ -876,7 +877,7 @@ fn peer_info_from_certs(
         return None;
     }
     trace!("Received {} certificates", certs.len());
-    let public_key = sui_tls::public_key_from_certificate(&certs[0])
+    let public_key = iota_tls::public_key_from_certificate(&certs[0])
         .map_err(|e| {
             trace!("Failed to extract public key from certificate: {e:?}");
             e
@@ -892,7 +893,7 @@ fn peer_info_from_certs(
 
 /// Attempts to convert a multiaddr of the form `/[ip4,ip6,dns]/{}/udp/{port}` into
 /// a host:port string.
-fn to_host_port_str(addr: &Multiaddr) -> Result<String, &'static str> {
+fn to_host_port_str(addr: &Multiaddr) -> Result<String, String> {
     let mut iter = addr.iter();
 
     match (iter.next(), iter.next()) {
@@ -906,16 +907,13 @@ fn to_host_port_str(addr: &Multiaddr) -> Result<String, &'static str> {
             Ok(format!("{}:{}", hostname, port))
         }
 
-        _ => {
-            tracing::warn!("unsupported multiaddr: '{addr}'");
-            Err("invalid address")
-        }
+        _ => Err(format!("unsupported multiaddr: {addr}")),
     }
 }
 
 /// Attempts to convert a multiaddr of the form `/[ip4,ip6]/{}/[udp,tcp]/{port}` into
 /// a SocketAddr value.
-pub fn to_socket_addr(addr: &Multiaddr) -> Result<SocketAddr, &'static str> {
+pub fn to_socket_addr(addr: &Multiaddr) -> Result<SocketAddr, String> {
     let mut iter = addr.iter();
 
     match (iter.next(), iter.next()) {
@@ -929,10 +927,7 @@ pub fn to_socket_addr(addr: &Multiaddr) -> Result<SocketAddr, &'static str> {
             Ok(SocketAddr::V6(SocketAddrV6::new(ipaddr, port, 0, 0)))
         }
 
-        _ => {
-            tracing::warn!("unsupported multiaddr: '{addr}'");
-            Err("invalid address")
-        }
+        _ => Err(format!("unsupported multiaddr: {addr}")),
     }
 }
 

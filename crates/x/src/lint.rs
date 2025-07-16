@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use anyhow::anyhow;
@@ -16,6 +17,7 @@ use nexlint_lints::{
 static EXTERNAL_CRATE_DIR: &str = "external-crates/";
 static CREATE_DAPP_TEMPLATE_DIR: &str = "sdk/create-dapp/templates";
 static LICENSE_HEADER: &str = "Copyright (c) Mysten Labs, Inc.\n\
+                               Modifications Copyright (c) 2024 IOTA Stiftung\n\
                                SPDX-License-Identifier: Apache-2.0\n\
                                ";
 #[derive(Debug, Parser)]

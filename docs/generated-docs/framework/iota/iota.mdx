@@ -1,0 +1,374 @@
+---
+title: Module iota::iota
+sidebar_label: iota
+slug: iota
+---
+import Link from '@docusaurus/Link';
+
+<Link id="iota_iota"/>
+`Coin<IOTA>` is the token used to pay for gas in IOTA.
+It has 9 decimals, and the smallest unit (10^-9) is called "nano".
+
+
+-  [Struct `IOTA`](#iota_iota_IOTA)
+-  [Struct `IotaTreasuryCap`](#iota_iota_IotaTreasuryCap)
+-  [Constants](#@Constants_0)
+-  [Function `new`](#iota_iota_new)
+-  [Function `transfer`](#iota_iota_transfer)
+-  [Function `mint`](#iota_iota_mint)
+-  [Function `mint_balance`](#iota_iota_mint_balance)
+-  [Function `burn`](#iota_iota_burn)
+-  [Function `burn_balance`](#iota_iota_burn_balance)
+-  [Function `total_supply`](#iota_iota_total_supply)
+
+
+<pre>
+<code>
+<b>use</b> <Link to="../iota/address#iota_address">iota::address</Link>;
+<b>use</b> <Link to="../iota/bag#iota_bag">iota::bag</Link>;
+<b>use</b> <Link to="../iota/balance#iota_balance">iota::balance</Link>;
+<b>use</b> <Link to="../iota/coin#iota_coin">iota::coin</Link>;
+<b>use</b> <Link to="../iota/config#iota_config">iota::config</Link>;
+<b>use</b> <Link to="../iota/deny_list#iota_deny_list">iota::deny_list</Link>;
+<b>use</b> <Link to="../iota/dynamic_field#iota_dynamic_field">iota::dynamic_field</Link>;
+<b>use</b> <Link to="../iota/dynamic_object_field#iota_dynamic_object_field">iota::dynamic_object_field</Link>;
+<b>use</b> <Link to="../iota/event#iota_event">iota::event</Link>;
+<b>use</b> <Link to="../iota/hex#iota_hex">iota::hex</Link>;
+<b>use</b> <Link to="../iota/object#iota_object">iota::object</Link>;
+<b>use</b> <Link to="../iota/transfer#iota_transfer">iota::transfer</Link>;
+<b>use</b> <Link to="../iota/tx_context#iota_tx_context">iota::tx_context</Link>;
+<b>use</b> <Link to="../iota/types#iota_types">iota::types</Link>;
+<b>use</b> <Link to="../iota/url#iota_url">iota::url</Link>;
+<b>use</b> <Link to="../std/address#std_address">std::address</Link>;
+<b>use</b> <Link to="../std/ascii#std_ascii">std::ascii</Link>;
+<b>use</b> <Link to="../std/bcs#std_bcs">std::bcs</Link>;
+<b>use</b> <Link to="../std/option#std_option">std::option</Link>;
+<b>use</b> <Link to="../std/string#std_string">std::string</Link>;
+<b>use</b> <Link to="../std/type_name#std_type_name">std::type_name</Link>;
+<b>use</b> <Link to="../std/vector#std_vector">std::vector</Link>;
+</code>
+</pre>
+
+
+
+<Link id="iota_iota_IOTA"></Link>
+
+## Struct `IOTA`
+
+Name of the coin
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota/iota#iota_iota_IOTA">IOTA</Link> <b>has</b> drop
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+</dl>
+
+
+</details>
+
+<Link id="iota_iota_IotaTreasuryCap"></Link>
+
+## Struct `IotaTreasuryCap`
+
+The IOTA token treasury capability.
+Protects the token from unauthorized changes.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota/iota#iota_iota_IotaTreasuryCap">IotaTreasuryCap</Link> <b>has</b> store
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code>inner: <Link to="../iota/coin#iota_coin_TreasuryCap">iota::coin::TreasuryCap</Link>&lt;<Link to="../iota/iota#iota_iota_IOTA">iota::iota::IOTA</Link>&gt;</code>
+</dt>
+<dd>
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="@Constants_0"></Link>
+
+## Constants
+
+
+<Link id="iota_iota_EAlreadyMinted"></Link>
+
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota/iota#iota_iota_EAlreadyMinted">EAlreadyMinted</Link>: u64 = 0;
+</code>
+</pre>
+
+
+
+<Link id="iota_iota_ENotSystemAddress"></Link>
+
+Sender is not @0x0 the system address.
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota/iota#iota_iota_ENotSystemAddress">ENotSystemAddress</Link>: u64 = 1;
+</code>
+</pre>
+
+
+
+<Link id="iota_iota_new"></Link>
+
+## Function `new`
+
+Register the <code><Link to="../iota/iota#iota_iota_IOTA">IOTA</Link></code> Coin to acquire <code><Link to="../iota/iota#iota_iota_IotaTreasuryCap">IotaTreasuryCap</Link></code>.
+This should be called only once during genesis creation.
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota/iota#iota_iota_new">new</Link>(ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): <Link to="../iota/iota#iota_iota_IotaTreasuryCap">iota::iota::IotaTreasuryCap</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota/iota#iota_iota_new">new</Link>(ctx: &<b>mut</b> TxContext): <Link to="../iota/iota#iota_iota_IotaTreasuryCap">IotaTreasuryCap</Link> \{
+    <b>assert</b>!(ctx.sender() == @0x0, <Link to="../iota/iota#iota_iota_ENotSystemAddress">ENotSystemAddress</Link>);
+    <b>assert</b>!(ctx.epoch() == 0, <Link to="../iota/iota#iota_iota_EAlreadyMinted">EAlreadyMinted</Link>);
+    <b>let</b> (treasury, metadata) = <Link to="../iota/coin#iota_coin_create_currency">coin::create_currency</Link>(
+        <Link to="../iota/iota#iota_iota_IOTA">IOTA</Link> \{},
+        9,
+        b"<Link to="../iota/iota#iota_iota_IOTA">IOTA</Link>",
+        b"<Link to="../iota/iota#iota_iota_IOTA">IOTA</Link>",
+        b"The main (gas)<Link to="../iota/token#iota_token">token</Link> of the <Link to="../iota/iota#iota_iota_IOTA">IOTA</Link> Network.",
+        option::some(<Link to="../iota/url#iota_url_new_unsafe_from_bytes">url::new_unsafe_from_bytes</Link>(b"https://<Link to="../iota/iota#iota_iota">iota</Link>.org/logo.png")),
+        ctx,
+    );
+    <Link to="../iota/transfer#iota_transfer_public_freeze_object">transfer::public_freeze_object</Link>(metadata);
+    <Link to="../iota/iota#iota_iota_IotaTreasuryCap">IotaTreasuryCap</Link> \{
+        inner: treasury,
+    }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_iota_transfer"></Link>
+
+## Function `transfer`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>entry</b> <b>fun</b> <Link to="../iota/transfer#iota_transfer">transfer</Link>(c: <Link to="../iota/coin#iota_coin_Coin">iota::coin::Coin</Link>&lt;<Link to="../iota/iota#iota_iota_IOTA">iota::iota::IOTA</Link>&gt;, recipient: <b>address</b>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>entry</b> <b>fun</b> <Link to="../iota/transfer#iota_transfer">transfer</Link>(c: <Link to="../iota/coin#iota_coin_Coin">coin::Coin</Link>&lt;<Link to="../iota/iota#iota_iota_IOTA">IOTA</Link>&gt;, recipient: <b>address</b>) \{
+    <Link to="../iota/transfer#iota_transfer_public_transfer">transfer::public_transfer</Link>(c, recipient)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_iota_mint"></Link>
+
+## Function `mint`
+
+Create an IOTA coin worth <code>value</code> and increase the total supply in <code>cap</code> accordingly.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/iota#iota_iota_mint">mint</Link>(cap: &<b>mut</b> <Link to="../iota/iota#iota_iota_IotaTreasuryCap">iota::iota::IotaTreasuryCap</Link>, value: u64, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): <Link to="../iota/coin#iota_coin_Coin">iota::coin::Coin</Link>&lt;<Link to="../iota/iota#iota_iota_IOTA">iota::iota::IOTA</Link>&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/iota#iota_iota_mint">mint</Link>(cap: &<b>mut</b> <Link to="../iota/iota#iota_iota_IotaTreasuryCap">IotaTreasuryCap</Link>, value: u64, ctx: &<b>mut</b> TxContext): Coin&lt;<Link to="../iota/iota#iota_iota_IOTA">IOTA</Link>&gt; \{
+    <b>assert</b>!(ctx.sender() == @0x0, <Link to="../iota/iota#iota_iota_ENotSystemAddress">ENotSystemAddress</Link>);
+    cap.inner.<Link to="../iota/iota#iota_iota_mint">mint</Link>(value, ctx)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_iota_mint_balance"></Link>
+
+## Function `mint_balance`
+
+Mint some amount of IOTA as a <code>Balance</code> and increase the total supply in <code>cap</code> accordingly.
+Aborts if <code>value</code> + <code>cap.inner.<Link to="../iota/iota#iota_iota_total_supply">total_supply</Link></code> >= U64_MAX
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/iota#iota_iota_mint_balance">mint_balance</Link>(cap: &<b>mut</b> <Link to="../iota/iota#iota_iota_IotaTreasuryCap">iota::iota::IotaTreasuryCap</Link>, value: u64, ctx: &<Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): <Link to="../iota/balance#iota_balance_Balance">iota::balance::Balance</Link>&lt;<Link to="../iota/iota#iota_iota_IOTA">iota::iota::IOTA</Link>&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/iota#iota_iota_mint_balance">mint_balance</Link>(cap: &<b>mut</b> <Link to="../iota/iota#iota_iota_IotaTreasuryCap">IotaTreasuryCap</Link>, value: u64, ctx: &TxContext): Balance&lt;<Link to="../iota/iota#iota_iota_IOTA">IOTA</Link>&gt; \{
+    <b>assert</b>!(ctx.sender() == @0x0, <Link to="../iota/iota#iota_iota_ENotSystemAddress">ENotSystemAddress</Link>);
+    cap.inner.<Link to="../iota/iota#iota_iota_mint_balance">mint_balance</Link>(value)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_iota_burn"></Link>
+
+## Function `burn`
+
+Destroy the IOTA coin <code>c</code> and decrease the total supply in <code>cap</code> accordingly.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/iota#iota_iota_burn">burn</Link>(cap: &<b>mut</b> <Link to="../iota/iota#iota_iota_IotaTreasuryCap">iota::iota::IotaTreasuryCap</Link>, c: <Link to="../iota/coin#iota_coin_Coin">iota::coin::Coin</Link>&lt;<Link to="../iota/iota#iota_iota_IOTA">iota::iota::IOTA</Link>&gt;, ctx: &<Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): u64
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/iota#iota_iota_burn">burn</Link>(cap: &<b>mut</b> <Link to="../iota/iota#iota_iota_IotaTreasuryCap">IotaTreasuryCap</Link>, c: Coin&lt;<Link to="../iota/iota#iota_iota_IOTA">IOTA</Link>&gt;, ctx: &TxContext): u64 \{
+    <b>assert</b>!(ctx.sender() == @0x0, <Link to="../iota/iota#iota_iota_ENotSystemAddress">ENotSystemAddress</Link>);
+    cap.inner.<Link to="../iota/iota#iota_iota_burn">burn</Link>(c)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_iota_burn_balance"></Link>
+
+## Function `burn_balance`
+
+Destroy the IOTA balance <code>b</code> and decrease the total supply in <code>cap</code> accordingly.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/iota#iota_iota_burn_balance">burn_balance</Link>(cap: &<b>mut</b> <Link to="../iota/iota#iota_iota_IotaTreasuryCap">iota::iota::IotaTreasuryCap</Link>, b: <Link to="../iota/balance#iota_balance_Balance">iota::balance::Balance</Link>&lt;<Link to="../iota/iota#iota_iota_IOTA">iota::iota::IOTA</Link>&gt;, ctx: &<Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): u64
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/iota#iota_iota_burn_balance">burn_balance</Link>(cap: &<b>mut</b> <Link to="../iota/iota#iota_iota_IotaTreasuryCap">IotaTreasuryCap</Link>, b: Balance&lt;<Link to="../iota/iota#iota_iota_IOTA">IOTA</Link>&gt;, ctx: &TxContext): u64 \{
+    <b>assert</b>!(ctx.sender() == @0x0, <Link to="../iota/iota#iota_iota_ENotSystemAddress">ENotSystemAddress</Link>);
+    cap.inner.supply_mut().decrease_supply(b)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_iota_total_supply"></Link>
+
+## Function `total_supply`
+
+Return the total number of IOTA's in circulation.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/iota#iota_iota_total_supply">total_supply</Link>(cap: &<Link to="../iota/iota#iota_iota_IotaTreasuryCap">iota::iota::IotaTreasuryCap</Link>): u64
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/iota#iota_iota_total_supply">total_supply</Link>(cap: &<Link to="../iota/iota#iota_iota_IotaTreasuryCap">IotaTreasuryCap</Link>): u64 \{
+    cap.inner.<Link to="../iota/iota#iota_iota_total_supply">total_supply</Link>()
+}
+</code>
+</pre>
+
+
+
+</details>

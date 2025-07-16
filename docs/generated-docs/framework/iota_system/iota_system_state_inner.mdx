@@ -1,0 +1,2987 @@
+---
+title: Module iota_system::iota_system_state_inner
+sidebar_label: iota_system_state_inner
+slug: iota_system_state_inner
+---
+import Link from '@docusaurus/Link';
+
+<Link id="iota_system_iota_system_state_inner"/>
+
+
+-  [Struct `SystemParametersV1`](#iota_system_iota_system_state_inner_SystemParametersV1)
+-  [Struct `IotaSystemStateV1`](#iota_system_iota_system_state_inner_IotaSystemStateV1)
+-  [Struct `IotaSystemStateV2`](#iota_system_iota_system_state_inner_IotaSystemStateV2)
+-  [Struct `SystemEpochInfoEventV1`](#iota_system_iota_system_state_inner_SystemEpochInfoEventV1)
+-  [Struct `SystemEpochInfoEventV2`](#iota_system_iota_system_state_inner_SystemEpochInfoEventV2)
+-  [Constants](#@Constants_0)
+-  [Function `create`](#iota_system_iota_system_state_inner_create)
+-  [Function `create_system_parameters`](#iota_system_iota_system_state_inner_create_system_parameters)
+-  [Function `v1_to_v2`](#iota_system_iota_system_state_inner_v1_to_v2)
+-  [Function `request_add_validator_candidate`](#iota_system_iota_system_state_inner_request_add_validator_candidate)
+-  [Function `request_remove_validator_candidate`](#iota_system_iota_system_state_inner_request_remove_validator_candidate)
+-  [Function `request_add_validator`](#iota_system_iota_system_state_inner_request_add_validator)
+-  [Function `request_remove_validator`](#iota_system_iota_system_state_inner_request_remove_validator)
+-  [Function `request_set_commission_rate`](#iota_system_iota_system_state_inner_request_set_commission_rate)
+-  [Function `set_candidate_validator_commission_rate`](#iota_system_iota_system_state_inner_set_candidate_validator_commission_rate)
+-  [Function `request_add_stake`](#iota_system_iota_system_state_inner_request_add_stake)
+-  [Function `request_add_stake_mul_coin`](#iota_system_iota_system_state_inner_request_add_stake_mul_coin)
+-  [Function `request_withdraw_stake`](#iota_system_iota_system_state_inner_request_withdraw_stake)
+-  [Function `report_validator`](#iota_system_iota_system_state_inner_report_validator)
+-  [Function `undo_report_validator`](#iota_system_iota_system_state_inner_undo_report_validator)
+-  [Function `report_validator_impl`](#iota_system_iota_system_state_inner_report_validator_impl)
+-  [Function `undo_report_validator_impl`](#iota_system_iota_system_state_inner_undo_report_validator_impl)
+-  [Function `rotate_operation_cap`](#iota_system_iota_system_state_inner_rotate_operation_cap)
+-  [Function `update_validator_name`](#iota_system_iota_system_state_inner_update_validator_name)
+-  [Function `update_validator_description`](#iota_system_iota_system_state_inner_update_validator_description)
+-  [Function `update_validator_image_url`](#iota_system_iota_system_state_inner_update_validator_image_url)
+-  [Function `update_validator_project_url`](#iota_system_iota_system_state_inner_update_validator_project_url)
+-  [Function `update_validator_next_epoch_network_address`](#iota_system_iota_system_state_inner_update_validator_next_epoch_network_address)
+-  [Function `update_candidate_validator_network_address`](#iota_system_iota_system_state_inner_update_candidate_validator_network_address)
+-  [Function `update_validator_next_epoch_p2p_address`](#iota_system_iota_system_state_inner_update_validator_next_epoch_p2p_address)
+-  [Function `update_candidate_validator_p2p_address`](#iota_system_iota_system_state_inner_update_candidate_validator_p2p_address)
+-  [Function `update_validator_next_epoch_primary_address`](#iota_system_iota_system_state_inner_update_validator_next_epoch_primary_address)
+-  [Function `update_candidate_validator_primary_address`](#iota_system_iota_system_state_inner_update_candidate_validator_primary_address)
+-  [Function `update_validator_next_epoch_authority_pubkey`](#iota_system_iota_system_state_inner_update_validator_next_epoch_authority_pubkey)
+-  [Function `update_candidate_validator_authority_pubkey`](#iota_system_iota_system_state_inner_update_candidate_validator_authority_pubkey)
+-  [Function `update_validator_next_epoch_protocol_pubkey`](#iota_system_iota_system_state_inner_update_validator_next_epoch_protocol_pubkey)
+-  [Function `update_candidate_validator_protocol_pubkey`](#iota_system_iota_system_state_inner_update_candidate_validator_protocol_pubkey)
+-  [Function `update_validator_next_epoch_network_pubkey`](#iota_system_iota_system_state_inner_update_validator_next_epoch_network_pubkey)
+-  [Function `update_candidate_validator_network_pubkey`](#iota_system_iota_system_state_inner_update_candidate_validator_network_pubkey)
+-  [Function `advance_epoch`](#iota_system_iota_system_state_inner_advance_epoch)
+-  [Function `match_computation_charge_burned_to_validator_subsidy`](#iota_system_iota_system_state_inner_match_computation_charge_burned_to_validator_subsidy)
+-  [Function `epoch`](#iota_system_iota_system_state_inner_epoch)
+-  [Function `protocol_version`](#iota_system_iota_system_state_inner_protocol_version)
+-  [Function `system_state_version`](#iota_system_iota_system_state_inner_system_state_version)
+-  [Function `iota_system_admin_cap`](#iota_system_iota_system_state_inner_iota_system_admin_cap)
+-  [Function `genesis_system_state_version`](#iota_system_iota_system_state_inner_genesis_system_state_version)
+-  [Function `epoch_start_timestamp_ms`](#iota_system_iota_system_state_inner_epoch_start_timestamp_ms)
+-  [Function `validator_stake_amount`](#iota_system_iota_system_state_inner_validator_stake_amount)
+-  [Function `committee_validator_voting_powers`](#iota_system_iota_system_state_inner_committee_validator_voting_powers)
+-  [Function `validator_staking_pool_id`](#iota_system_iota_system_state_inner_validator_staking_pool_id)
+-  [Function `validator_staking_pool_mappings`](#iota_system_iota_system_state_inner_validator_staking_pool_mappings)
+-  [Function `get_total_iota_supply`](#iota_system_iota_system_state_inner_get_total_iota_supply)
+-  [Function `get_reporters_of`](#iota_system_iota_system_state_inner_get_reporters_of)
+-  [Function `get_storage_fund_total_balance`](#iota_system_iota_system_state_inner_get_storage_fund_total_balance)
+-  [Function `get_storage_fund_object_rebates`](#iota_system_iota_system_state_inner_get_storage_fund_object_rebates)
+-  [Function `validator_address_by_pool_id`](#iota_system_iota_system_state_inner_validator_address_by_pool_id)
+-  [Function `pool_exchange_rates`](#iota_system_iota_system_state_inner_pool_exchange_rates)
+-  [Function `active_validator_addresses`](#iota_system_iota_system_state_inner_active_validator_addresses)
+-  [Function `committee_validator_addresses`](#iota_system_iota_system_state_inner_committee_validator_addresses)
+-  [Function `extract_coin_balance`](#iota_system_iota_system_state_inner_extract_coin_balance)
+
+
+<pre>
+<code>
+<b>use</b> <Link to="../iota/address#iota_address">iota::address</Link>;
+<b>use</b> <Link to="../iota/bag#iota_bag">iota::bag</Link>;
+<b>use</b> <Link to="../iota/balance#iota_balance">iota::balance</Link>;
+<b>use</b> <Link to="../iota/coin#iota_coin">iota::coin</Link>;
+<b>use</b> <Link to="../iota/config#iota_config">iota::config</Link>;
+<b>use</b> <Link to="../iota/deny_list#iota_deny_list">iota::deny_list</Link>;
+<b>use</b> <Link to="../iota/dynamic_field#iota_dynamic_field">iota::dynamic_field</Link>;
+<b>use</b> <Link to="../iota/dynamic_object_field#iota_dynamic_object_field">iota::dynamic_object_field</Link>;
+<b>use</b> <Link to="../iota/event#iota_event">iota::event</Link>;
+<b>use</b> <Link to="../iota/hex#iota_hex">iota::hex</Link>;
+<b>use</b> <Link to="../iota/iota#iota_iota">iota::iota</Link>;
+<b>use</b> <Link to="../iota/object#iota_object">iota::object</Link>;
+<b>use</b> <Link to="../iota/pay#iota_pay">iota::pay</Link>;
+<b>use</b> <Link to="../iota/priority_queue#iota_priority_queue">iota::priority_queue</Link>;
+<b>use</b> <Link to="../iota/system_admin_cap#iota_system_admin_cap">iota::system_admin_cap</Link>;
+<b>use</b> <Link to="../iota/table#iota_table">iota::table</Link>;
+<b>use</b> <Link to="../iota/table_vec#iota_table_vec">iota::table_vec</Link>;
+<b>use</b> <Link to="../iota/transfer#iota_transfer">iota::transfer</Link>;
+<b>use</b> <Link to="../iota/tx_context#iota_tx_context">iota::tx_context</Link>;
+<b>use</b> <Link to="../iota/types#iota_types">iota::types</Link>;
+<b>use</b> <Link to="../iota/url#iota_url">iota::url</Link>;
+<b>use</b> <Link to="../iota/vec_map#iota_vec_map">iota::vec_map</Link>;
+<b>use</b> <Link to="../iota/vec_set#iota_vec_set">iota::vec_set</Link>;
+<b>use</b> <Link to="../iota/versioned#iota_versioned">iota::versioned</Link>;
+<b>use</b> <Link to="../iota_system/staking_pool#iota_system_staking_pool">iota_system::staking_pool</Link>;
+<b>use</b> <Link to="../iota_system/storage_fund#iota_system_storage_fund">iota_system::storage_fund</Link>;
+<b>use</b> <Link to="../iota_system/validator#iota_system_validator">iota_system::validator</Link>;
+<b>use</b> <Link to="../iota_system/validator_cap#iota_system_validator_cap">iota_system::validator_cap</Link>;
+<b>use</b> <Link to="../iota_system/validator_set#iota_system_validator_set">iota_system::validator_set</Link>;
+<b>use</b> <Link to="../iota_system/validator_wrapper#iota_system_validator_wrapper">iota_system::validator_wrapper</Link>;
+<b>use</b> <Link to="../iota_system/voting_power#iota_system_voting_power">iota_system::voting_power</Link>;
+<b>use</b> <Link to="../std/address#std_address">std::address</Link>;
+<b>use</b> <Link to="../std/ascii#std_ascii">std::ascii</Link>;
+<b>use</b> <Link to="../std/bcs#std_bcs">std::bcs</Link>;
+<b>use</b> <Link to="../std/option#std_option">std::option</Link>;
+<b>use</b> <Link to="../std/string#std_string">std::string</Link>;
+<b>use</b> <Link to="../std/type_name#std_type_name">std::type_name</Link>;
+<b>use</b> <Link to="../std/u64#std_u64">std::u64</Link>;
+<b>use</b> <Link to="../std/vector#std_vector">std::vector</Link>;
+</code>
+</pre>
+
+
+
+<Link id="iota_system_iota_system_state_inner_SystemParametersV1"></Link>
+
+## Struct `SystemParametersV1`
+
+A list of system config parameters.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_SystemParametersV1">SystemParametersV1</Link> <b>has</b> store
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code>epoch_duration_ms: u64</code>
+</dt>
+<dd>
+ The duration of an epoch, in milliseconds.
+</dd>
+<dt>
+<code>min_validator_count: u64</code>
+</dt>
+<dd>
+ Minimum number of active validators at any moment.
+</dd>
+<dt>
+<code>max_validator_count: u64</code>
+</dt>
+<dd>
+ Maximum number of active validators at any moment.
+ We do not allow the number of validators in any epoch to go above this.
+</dd>
+<dt>
+<code>min_validator_joining_stake: u64</code>
+</dt>
+<dd>
+ Lower-bound on the amount of stake required to become a validator.
+</dd>
+<dt>
+<code>validator_low_stake_threshold: u64</code>
+</dt>
+<dd>
+ Validators with stake amount below <code>validator_low_stake_threshold</code> are considered to
+ have low stake and will be escorted out of the validator set after being below this
+ threshold for more than <code>validator_low_stake_grace_period</code> number of epochs.
+</dd>
+<dt>
+<code>validator_very_low_stake_threshold: u64</code>
+</dt>
+<dd>
+ Validators with stake below <code>validator_very_low_stake_threshold</code> will be removed
+ immediately at epoch change, no grace period.
+</dd>
+<dt>
+<code>validator_low_stake_grace_period: u64</code>
+</dt>
+<dd>
+ A validator can have stake below <code>validator_low_stake_threshold</code>
+ for this many epochs before being kicked out.
+</dd>
+<dt>
+<code>extra_fields: <Link to="../iota/bag#iota_bag_Bag">iota::bag::Bag</Link></code>
+</dt>
+<dd>
+ Any extra fields that's not defined statically.
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_IotaSystemStateV1"></Link>
+
+## Struct `IotaSystemStateV1`
+
+The top-level object containing all information of the IOTA system.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV1">IotaSystemStateV1</Link> <b>has</b> store
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code><Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_epoch">epoch</Link>: u64</code>
+</dt>
+<dd>
+ The current epoch ID, starting from 0.
+</dd>
+<dt>
+<code><Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_protocol_version">protocol_version</Link>: u64</code>
+</dt>
+<dd>
+ The current protocol version, starting from 1.
+</dd>
+<dt>
+<code><Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_system_state_version">system_state_version</Link>: u64</code>
+</dt>
+<dd>
+ The current version of the system state data structure type.
+ This is always the same as IotaSystemState.version. Keeping a copy here so that
+ we know what version it is by inspecting IotaSystemStateV1 as well.
+</dd>
+<dt>
+<code>iota_treasury_cap: <Link to="../iota/iota#iota_iota_IotaTreasuryCap">iota::iota::IotaTreasuryCap</Link></code>
+</dt>
+<dd>
+ The IOTA's TreasuryCap.
+</dd>
+<dt>
+<code>validators: <Link to="../iota_system/validator_set#iota_system_validator_set_ValidatorSetV1">iota_system::validator_set::ValidatorSetV1</Link></code>
+</dt>
+<dd>
+ Contains all information about the validators.
+</dd>
+<dt>
+<code><Link to="../iota_system/storage_fund#iota_system_storage_fund">storage_fund</Link>: <Link to="../iota_system/storage_fund#iota_system_storage_fund_StorageFundV1">iota_system::storage_fund::StorageFundV1</Link></code>
+</dt>
+<dd>
+ The storage fund.
+</dd>
+<dt>
+<code>parameters: <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_SystemParametersV1">iota_system::iota_system_state_inner::SystemParametersV1</Link></code>
+</dt>
+<dd>
+ A list of system config parameters.
+</dd>
+<dt>
+<code><Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_iota_system_admin_cap">iota_system_admin_cap</Link>: <Link to="../iota/system_admin_cap#iota_system_admin_cap_IotaSystemAdminCap">iota::system_admin_cap::IotaSystemAdminCap</Link></code>
+</dt>
+<dd>
+ A capability allows to perform privileged IOTA system operations.
+</dd>
+<dt>
+<code>reference_gas_price: u64</code>
+</dt>
+<dd>
+ The reference gas price for the current epoch.
+</dd>
+<dt>
+<code>validator_report_records: <Link to="../iota/vec_map#iota_vec_map_VecMap">iota::vec_map::VecMap</Link>&lt;<b>address</b>, <Link to="../iota/vec_set#iota_vec_set_VecSet">iota::vec_set::VecSet</Link>&lt;<b>address</b>&gt;&gt;</code>
+</dt>
+<dd>
+ A map storing the records of validator reporting each other.
+ There is an entry in the map for each validator that has been reported
+ at least once. The entry VecSet contains all the validators that reported
+ them. If a validator has never been reported they don't have an entry in this map.
+ This map persists across epoch: a peer continues being in a reported state until the
+ reporter doesn't explicitly remove their report.
+ Note that in case we want to support validator address change in future,
+ the reports should be based on validator ids
+</dd>
+<dt>
+<code>safe_mode: bool</code>
+</dt>
+<dd>
+ Whether the system is running in a downgraded safe mode due to a non-recoverable bug.
+ This is set whenever we failed to execute advance_epoch, and ended up executing advance_epoch_safe_mode.
+ It can be reset once we are able to successfully execute advance_epoch.
+ The rest of the fields starting with <code>safe_mode_</code> are accmulated during safe mode
+ when advance_epoch_safe_mode is executed. They will eventually be processed once we
+ are out of safe mode.
+</dd>
+<dt>
+<code>safe_mode_storage_charges: <Link to="../iota/balance#iota_balance_Balance">iota::balance::Balance</Link>&lt;<Link to="../iota/iota#iota_iota_IOTA">iota::iota::IOTA</Link>&gt;</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>safe_mode_computation_rewards: <Link to="../iota/balance#iota_balance_Balance">iota::balance::Balance</Link>&lt;<Link to="../iota/iota#iota_iota_IOTA">iota::iota::IOTA</Link>&gt;</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>safe_mode_storage_rebates: u64</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>safe_mode_non_refundable_storage_fee: u64</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code><Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_epoch_start_timestamp_ms">epoch_start_timestamp_ms</Link>: u64</code>
+</dt>
+<dd>
+ Unix timestamp of the current epoch start
+</dd>
+<dt>
+<code>extra_fields: <Link to="../iota/bag#iota_bag_Bag">iota::bag::Bag</Link></code>
+</dt>
+<dd>
+ Any extra fields that's not defined statically.
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_IotaSystemStateV2"></Link>
+
+## Struct `IotaSystemStateV2`
+
+The top-level object containing all information of the Iota system.
+An additional field <code>safe_mode_computation_charges_burned</code> is added over IotaSystemStateV1 to allow
+for burning of base fees in safe mode when protocol_defined_base_fee is enabled in the protocol config.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link> <b>has</b> store
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code><Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_epoch">epoch</Link>: u64</code>
+</dt>
+<dd>
+ The current epoch ID, starting from 0.
+</dd>
+<dt>
+<code><Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_protocol_version">protocol_version</Link>: u64</code>
+</dt>
+<dd>
+ The current protocol version, starting from 1.
+</dd>
+<dt>
+<code><Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_system_state_version">system_state_version</Link>: u64</code>
+</dt>
+<dd>
+ The current version of the system state data structure type.
+ This is always the same as IotaSystemState.version. Keeping a copy here so that
+ we know what version it is by inspecting IotaSystemStateV2 as well.
+</dd>
+<dt>
+<code>iota_treasury_cap: <Link to="../iota/iota#iota_iota_IotaTreasuryCap">iota::iota::IotaTreasuryCap</Link></code>
+</dt>
+<dd>
+ The IOTA's TreasuryCap.
+</dd>
+<dt>
+<code>validators: <Link to="../iota_system/validator_set#iota_system_validator_set_ValidatorSetV2">iota_system::validator_set::ValidatorSetV2</Link></code>
+</dt>
+<dd>
+ Contains all information about the validators.
+</dd>
+<dt>
+<code><Link to="../iota_system/storage_fund#iota_system_storage_fund">storage_fund</Link>: <Link to="../iota_system/storage_fund#iota_system_storage_fund_StorageFundV1">iota_system::storage_fund::StorageFundV1</Link></code>
+</dt>
+<dd>
+ The storage fund.
+</dd>
+<dt>
+<code>parameters: <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_SystemParametersV1">iota_system::iota_system_state_inner::SystemParametersV1</Link></code>
+</dt>
+<dd>
+ A list of system config parameters.
+</dd>
+<dt>
+<code><Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_iota_system_admin_cap">iota_system_admin_cap</Link>: <Link to="../iota/system_admin_cap#iota_system_admin_cap_IotaSystemAdminCap">iota::system_admin_cap::IotaSystemAdminCap</Link></code>
+</dt>
+<dd>
+ A capability allows to perform privileged IOTA system operations.
+</dd>
+<dt>
+<code>reference_gas_price: u64</code>
+</dt>
+<dd>
+ The reference gas price for the current epoch.
+</dd>
+<dt>
+<code>validator_report_records: <Link to="../iota/vec_map#iota_vec_map_VecMap">iota::vec_map::VecMap</Link>&lt;<b>address</b>, <Link to="../iota/vec_set#iota_vec_set_VecSet">iota::vec_set::VecSet</Link>&lt;<b>address</b>&gt;&gt;</code>
+</dt>
+<dd>
+ A map storing the records of validator reporting each other.
+ There is an entry in the map for each validator that has been reported
+ at least once. The entry VecSet contains all the validators that reported
+ them. If a validator has never been reported they don't have an entry in this map.
+ This map persists across epoch: a peer continues being in a reported state until the
+ reporter doesn't explicitly remove their report.
+ Note that in case we want to support validator address change in future,
+ the reports should be based on validator ids
+</dd>
+<dt>
+<code>safe_mode: bool</code>
+</dt>
+<dd>
+ Whether the system is running in a downgraded safe mode due to a non-recoverable bug.
+ This is set whenever we failed to execute advance_epoch, and ended up executing advance_epoch_safe_mode.
+ It can be reset once we are able to successfully execute advance_epoch.
+ The rest of the fields starting with <code>safe_mode_</code> are accmulated during safe mode
+ when advance_epoch_safe_mode is executed. They will eventually be processed once we
+ are out of safe mode.
+</dd>
+<dt>
+<code>safe_mode_storage_charges: <Link to="../iota/balance#iota_balance_Balance">iota::balance::Balance</Link>&lt;<Link to="../iota/iota#iota_iota_IOTA">iota::iota::IOTA</Link>&gt;</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>safe_mode_computation_charges: <Link to="../iota/balance#iota_balance_Balance">iota::balance::Balance</Link>&lt;<Link to="../iota/iota#iota_iota_IOTA">iota::iota::IOTA</Link>&gt;</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>safe_mode_computation_charges_burned: u64</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>safe_mode_storage_rebates: u64</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>safe_mode_non_refundable_storage_fee: u64</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code><Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_epoch_start_timestamp_ms">epoch_start_timestamp_ms</Link>: u64</code>
+</dt>
+<dd>
+ Unix timestamp of the current epoch start
+</dd>
+<dt>
+<code>extra_fields: <Link to="../iota/bag#iota_bag_Bag">iota::bag::Bag</Link></code>
+</dt>
+<dd>
+ Any extra fields that's not defined statically.
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_SystemEpochInfoEventV1"></Link>
+
+## Struct `SystemEpochInfoEventV1`
+
+The first version of the event containing system-level epoch information,
+emitted during the epoch advancement transaction.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_SystemEpochInfoEventV1">SystemEpochInfoEventV1</Link> <b>has</b> <b>copy</b>, drop
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code><Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_epoch">epoch</Link>: u64</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code><Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_protocol_version">protocol_version</Link>: u64</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>reference_gas_price: u64</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>total_stake: u64</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>storage_charge: u64</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>storage_rebate: u64</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>storage_fund_balance: u64</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>total_gas_fees: u64</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>total_stake_rewards_distributed: u64</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>burnt_tokens_amount: u64</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>minted_tokens_amount: u64</code>
+</dt>
+<dd>
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_SystemEpochInfoEventV2"></Link>
+
+## Struct `SystemEpochInfoEventV2`
+
+The second version of the event containing system-level epoch information,
+emitted during the epoch advancement transaction.
+This version includes the tips_amount field to show how much of the total gas fees were paid to
+validators (tips) rather than burned.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_SystemEpochInfoEventV2">SystemEpochInfoEventV2</Link> <b>has</b> <b>copy</b>, drop
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code><Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_epoch">epoch</Link>: u64</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code><Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_protocol_version">protocol_version</Link>: u64</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>total_stake: u64</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>storage_charge: u64</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>storage_rebate: u64</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>storage_fund_balance: u64</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>total_gas_fees: u64</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>total_stake_rewards_distributed: u64</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>burnt_tokens_amount: u64</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>minted_tokens_amount: u64</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>tips_amount: u64</code>
+</dt>
+<dd>
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="@Constants_0"></Link>
+
+## Constants
+
+
+<Link id="iota_system_iota_system_state_inner_ACTIVE_OR_PENDING_VALIDATOR"></Link>
+
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_ACTIVE_OR_PENDING_VALIDATOR">ACTIVE_OR_PENDING_VALIDATOR</Link>: u8 = 2;
+</code>
+</pre>
+
+
+
+<Link id="iota_system_iota_system_state_inner_ANY_VALIDATOR"></Link>
+
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_ANY_VALIDATOR">ANY_VALIDATOR</Link>: u8 = 3;
+</code>
+</pre>
+
+
+
+<Link id="iota_system_iota_system_state_inner_BASIS_POINT_DENOMINATOR"></Link>
+
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_BASIS_POINT_DENOMINATOR">BASIS_POINT_DENOMINATOR</Link>: u128 = 10000;
+</code>
+</pre>
+
+
+
+<Link id="iota_system_iota_system_state_inner_COMMITTEE_VALIDATOR_ONLY"></Link>
+
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_COMMITTEE_VALIDATOR_ONLY">COMMITTEE_VALIDATOR_ONLY</Link>: u8 = 1;
+</code>
+</pre>
+
+
+
+<Link id="iota_system_iota_system_state_inner_EAdvancedToWrongEpoch"></Link>
+
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_EAdvancedToWrongEpoch">EAdvancedToWrongEpoch</Link>: u64 = 8;
+</code>
+</pre>
+
+
+
+<Link id="iota_system_iota_system_state_inner_EBpsTooLarge"></Link>
+
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_EBpsTooLarge">EBpsTooLarge</Link>: u64 = 5;
+</code>
+</pre>
+
+
+
+<Link id="iota_system_iota_system_state_inner_ECannotReportOneself"></Link>
+
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_ECannotReportOneself">ECannotReportOneself</Link>: u64 = 3;
+</code>
+</pre>
+
+
+
+<Link id="iota_system_iota_system_state_inner_ELimitExceeded"></Link>
+
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_ELimitExceeded">ELimitExceeded</Link>: u64 = 1;
+</code>
+</pre>
+
+
+
+<Link id="iota_system_iota_system_state_inner_ENotCommitteeValidator"></Link>
+
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_ENotCommitteeValidator">ENotCommitteeValidator</Link>: u64 = 0;
+</code>
+</pre>
+
+
+
+<Link id="iota_system_iota_system_state_inner_ENotSystemAddress"></Link>
+
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_ENotSystemAddress">ENotSystemAddress</Link>: u64 = 2;
+</code>
+</pre>
+
+
+
+<Link id="iota_system_iota_system_state_inner_EReportRecordNotFound"></Link>
+
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_EReportRecordNotFound">EReportRecordNotFound</Link>: u64 = 4;
+</code>
+</pre>
+
+
+
+<Link id="iota_system_iota_system_state_inner_ESafeModeGasNotProcessed"></Link>
+
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_ESafeModeGasNotProcessed">ESafeModeGasNotProcessed</Link>: u64 = 7;
+</code>
+</pre>
+
+
+
+<Link id="iota_system_iota_system_state_inner_SYSTEM_STATE_VERSION_V1"></Link>
+
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_SYSTEM_STATE_VERSION_V1">SYSTEM_STATE_VERSION_V1</Link>: u64 = 1;
+</code>
+</pre>
+
+
+
+<Link id="iota_system_iota_system_state_inner_create"></Link>
+
+## Function `create`
+
+Create a new IotaSystemState object and make it shared.
+This function will be called only once in genesis.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_create">create</Link>(iota_treasury_cap: <Link to="../iota/iota#iota_iota_IotaTreasuryCap">iota::iota::IotaTreasuryCap</Link>, validators: vector&lt;<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>&gt;, initial_storage_fund: <Link to="../iota/balance#iota_balance_Balance">iota::balance::Balance</Link>&lt;<Link to="../iota/iota#iota_iota_IOTA">iota::iota::IOTA</Link>&gt;, <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_protocol_version">protocol_version</Link>: u64, <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_epoch_start_timestamp_ms">epoch_start_timestamp_ms</Link>: u64, parameters: <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_SystemParametersV1">iota_system::iota_system_state_inner::SystemParametersV1</Link>, <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_iota_system_admin_cap">iota_system_admin_cap</Link>: <Link to="../iota/system_admin_cap#iota_system_admin_cap_IotaSystemAdminCap">iota::system_admin_cap::IotaSystemAdminCap</Link>, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV1">iota_system::iota_system_state_inner::IotaSystemStateV1</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_create">create</Link>(
+    iota_treasury_cap: IotaTreasuryCap,
+    validators: vector&lt;ValidatorV1&gt;,
+    initial_storage_fund: Balance&lt;IOTA&gt;,
+    <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_protocol_version">protocol_version</Link>: u64,
+    <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_epoch_start_timestamp_ms">epoch_start_timestamp_ms</Link>: u64,
+    parameters: <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_SystemParametersV1">SystemParametersV1</Link>,
+    <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_iota_system_admin_cap">iota_system_admin_cap</Link>: IotaSystemAdminCap,
+    ctx: &<b>mut</b> TxContext,
+): <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV1">IotaSystemStateV1</Link> \{
+    <b>let</b> validators = <Link to="../iota_system/validator_set#iota_system_validator_set_new_v1">validator_set::new_v1</Link>(validators, ctx);
+    <b>let</b> reference_gas_price = validators.derive_reference_gas_price();
+    // This type is fixed <b>as</b> it's created at <Link to="../iota_system/genesis#iota_system_genesis">genesis</Link>. It should not be updated during type upgrade.
+    <b>let</b> system_state = <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV1">IotaSystemStateV1</Link> \{
+        <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_epoch">epoch</Link>: 0,
+        <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_protocol_version">protocol_version</Link>,
+        <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_system_state_version">system_state_version</Link>: <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_genesis_system_state_version">genesis_system_state_version</Link>(),
+        iota_treasury_cap,
+        validators,
+        <Link to="../iota_system/storage_fund#iota_system_storage_fund">storage_fund</Link>: <Link to="../iota_system/storage_fund#iota_system_storage_fund_new">storage_fund::new</Link>(initial_storage_fund),
+        parameters,
+        <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_iota_system_admin_cap">iota_system_admin_cap</Link>,
+        reference_gas_price,
+        validator_report_records: vec_map::empty(),
+        safe_mode: <b>false</b>,
+        safe_mode_storage_charges: balance::zero(),
+        safe_mode_computation_rewards: balance::zero(),
+        safe_mode_storage_rebates: 0,
+        safe_mode_non_refundable_storage_fee: 0,
+        <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_epoch_start_timestamp_ms">epoch_start_timestamp_ms</Link>,
+        extra_fields: bag::new(ctx),
+    };
+    system_state
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_create_system_parameters"></Link>
+
+## Function `create_system_parameters`
+
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_create_system_parameters">create_system_parameters</Link>(epoch_duration_ms: u64, max_validator_count: u64, min_validator_joining_stake: u64, validator_low_stake_threshold: u64, validator_very_low_stake_threshold: u64, validator_low_stake_grace_period: u64, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_SystemParametersV1">iota_system::iota_system_state_inner::SystemParametersV1</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_create_system_parameters">create_system_parameters</Link>(
+    epoch_duration_ms: u64,
+    // ValidatorV1 committee parameters
+    max_validator_count: u64,
+    min_validator_joining_stake: u64,
+    validator_low_stake_threshold: u64,
+    validator_very_low_stake_threshold: u64,
+    validator_low_stake_grace_period: u64,
+    ctx: &<b>mut</b> TxContext,
+): <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_SystemParametersV1">SystemParametersV1</Link> \{
+    <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_SystemParametersV1">SystemParametersV1</Link> \{
+        epoch_duration_ms,
+        min_validator_count: 4,
+        max_validator_count,
+        min_validator_joining_stake,
+        validator_low_stake_threshold,
+        validator_very_low_stake_threshold,
+        validator_low_stake_grace_period,
+        extra_fields: bag::new(ctx),
+    }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_v1_to_v2"></Link>
+
+## Function `v1_to_v2`
+
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_v1_to_v2">v1_to_v2</Link>(self: <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV1">iota_system::iota_system_state_inner::IotaSystemStateV1</Link>): <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_v1_to_v2">v1_to_v2</Link>(self: <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV1">IotaSystemStateV1</Link>): <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link> \{
+    <b>let</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV1">IotaSystemStateV1</Link> \{
+        <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_epoch">epoch</Link>,
+        <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_protocol_version">protocol_version</Link>,
+        <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_system_state_version">system_state_version</Link>: _,
+        iota_treasury_cap,
+        validators,
+        <Link to="../iota_system/storage_fund#iota_system_storage_fund">storage_fund</Link>,
+        parameters,
+        <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_iota_system_admin_cap">iota_system_admin_cap</Link>,
+        reference_gas_price,
+        validator_report_records,
+        safe_mode,
+        safe_mode_storage_charges,
+        safe_mode_computation_rewards,
+        safe_mode_storage_rebates,
+        safe_mode_non_refundable_storage_fee,
+        <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_epoch_start_timestamp_ms">epoch_start_timestamp_ms</Link>,
+        extra_fields,
+    } = self;
+    // all computation charges are burned in protocol v1.
+    <b>let</b> safe_mode_computation_charges_burned = safe_mode_computation_rewards.value();
+    <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link> \{
+        <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_epoch">epoch</Link>,
+        <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_protocol_version">protocol_version</Link>,
+        <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_system_state_version">system_state_version</Link>: 2,
+        iota_treasury_cap,
+        validators: validators.<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_v1_to_v2">v1_to_v2</Link>(),
+        <Link to="../iota_system/storage_fund#iota_system_storage_fund">storage_fund</Link>,
+        parameters,
+        <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_iota_system_admin_cap">iota_system_admin_cap</Link>,
+        reference_gas_price,
+        validator_report_records,
+        safe_mode,
+        safe_mode_storage_charges,
+        safe_mode_computation_charges: safe_mode_computation_rewards,
+        safe_mode_computation_charges_burned,
+        safe_mode_storage_rebates,
+        safe_mode_non_refundable_storage_fee,
+        <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_epoch_start_timestamp_ms">epoch_start_timestamp_ms</Link>,
+        extra_fields,
+    }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_request_add_validator_candidate"></Link>
+
+## Function `request_add_validator_candidate`
+
+Can be called by anyone who wishes to become a validator candidate and starts accuring delegated
+stakes in their staking pool. Once they have at least <code>MIN_VALIDATOR_JOINING_STAKE</code> amount of stake they
+can call <code><Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_request_add_validator">request_add_validator</Link></code> to officially become an active validator at the next epoch.
+Aborts if the caller is already a pending or active validator, or a validator candidate.
+Note: <code>proof_of_possession</code> MUST be a valid signature using iota_address and authority_pubkey_bytes.
+To produce a valid PoP, run [fn test_proof_of_possession].
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_request_add_validator_candidate">request_add_validator_candidate</Link>(self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>, authority_pubkey_bytes: vector&lt;u8&gt;, network_pubkey_bytes: vector&lt;u8&gt;, protocol_pubkey_bytes: vector&lt;u8&gt;, proof_of_possession: vector&lt;u8&gt;, name: vector&lt;u8&gt;, description: vector&lt;u8&gt;, image_url: vector&lt;u8&gt;, project_url: vector&lt;u8&gt;, net_address: vector&lt;u8&gt;, p2p_address: vector&lt;u8&gt;, primary_address: vector&lt;u8&gt;, gas_price: u64, commission_rate: u64, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_request_add_validator_candidate">request_add_validator_candidate</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>,
+    authority_pubkey_bytes: vector&lt;u8&gt;,
+    network_pubkey_bytes: vector&lt;u8&gt;,
+    protocol_pubkey_bytes: vector&lt;u8&gt;,
+    proof_of_possession: vector&lt;u8&gt;,
+    name: vector&lt;u8&gt;,
+    description: vector&lt;u8&gt;,
+    image_url: vector&lt;u8&gt;,
+    project_url: vector&lt;u8&gt;,
+    net_address: vector&lt;u8&gt;,
+    p2p_address: vector&lt;u8&gt;,
+    primary_address: vector&lt;u8&gt;,
+    gas_price: u64,
+    commission_rate: u64,
+    ctx: &<b>mut</b> TxContext,
+) \{
+    <b>let</b> <Link to="../iota_system/validator#iota_system_validator">validator</Link> = <Link to="../iota_system/validator#iota_system_validator_new">validator::new</Link>(
+        ctx.sender(),
+        authority_pubkey_bytes,
+        network_pubkey_bytes,
+        protocol_pubkey_bytes,
+        proof_of_possession,
+        name,
+        description,
+        image_url,
+        project_url,
+        net_address,
+        p2p_address,
+        primary_address,
+        gas_price,
+        commission_rate,
+        ctx,
+    );
+    self.validators.<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_request_add_validator_candidate">request_add_validator_candidate</Link>(<Link to="../iota_system/validator#iota_system_validator">validator</Link>, ctx);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_request_remove_validator_candidate"></Link>
+
+## Function `request_remove_validator_candidate`
+
+Called by a validator candidate to remove themselves from the candidacy. After this call
+their staking pool becomes deactivate.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_request_remove_validator_candidate">request_remove_validator_candidate</Link>(self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_request_remove_validator_candidate">request_remove_validator_candidate</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>,
+    ctx: &<b>mut</b> TxContext,
+) \{
+    self.validators.<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_request_remove_validator_candidate">request_remove_validator_candidate</Link>(ctx);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_request_add_validator"></Link>
+
+## Function `request_add_validator`
+
+Called by a validator candidate to add themselves to the active validator set beginning next epoch.
+Aborts if the validator is a duplicate with one of the pending or active validators, or if the amount of
+stake the validator has doesn't meet the min threshold, or if the number of new validators for the next
+epoch has already reached the maximum.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_request_add_validator">request_add_validator</Link>(self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>, ctx: &<Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_request_add_validator">request_add_validator</Link>(self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>, ctx: &TxContext) \{
+    <b>assert</b>!(
+        self.validators.next_epoch_validator_count() &lt; self.parameters.max_validator_count,
+        <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_ELimitExceeded">ELimitExceeded</Link>,
+    );
+    self.validators.<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_request_add_validator">request_add_validator</Link>(self.parameters.min_validator_joining_stake, ctx);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_request_remove_validator"></Link>
+
+## Function `request_remove_validator`
+
+A validator can call this function to request a removal in the next epoch.
+We use the sender of <code>ctx</code> to look up the validator
+(i.e. sender must match the iota_address in the validator).
+At the end of the epoch, the <code><Link to="../iota_system/validator#iota_system_validator">validator</Link></code> object will be returned to the iota_address
+of the validator.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_request_remove_validator">request_remove_validator</Link>(self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>, ctx: &<Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_request_remove_validator">request_remove_validator</Link>(self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>, ctx: &TxContext) \{
+    // Only check min <Link to="../iota_system/validator#iota_system_validator">validator</Link> condition <b>if</b> the current number of validators satisfy the constraint.
+    // This is so that <b>if</b> we somehow already are in a state where we have less than min validators, it no longer matters
+    // and is ok to stay so. This is useful <b>for</b> a test setup.
+    <b>if</b> (self.validators.active_validators_inner().length() &gt;= self.parameters.min_validator_count) \{
+        <b>assert</b>!(
+            self.validators.next_epoch_validator_count() &gt; self.parameters.min_validator_count,
+            <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_ELimitExceeded">ELimitExceeded</Link>,
+        );
+    };
+    self.validators.<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_request_remove_validator">request_remove_validator</Link>(ctx)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_request_set_commission_rate"></Link>
+
+## Function `request_set_commission_rate`
+
+A validator can call this function to set a new commission rate, updated at the end of
+the epoch.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_request_set_commission_rate">request_set_commission_rate</Link>(self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>, new_commission_rate: u64, ctx: &<Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_request_set_commission_rate">request_set_commission_rate</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>,
+    new_commission_rate: u64,
+    ctx: &TxContext,
+) \{
+    self
+        .validators
+        .<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_request_set_commission_rate">request_set_commission_rate</Link>(
+            new_commission_rate,
+            ctx,
+        )
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_set_candidate_validator_commission_rate"></Link>
+
+## Function `set_candidate_validator_commission_rate`
+
+This function is used to set new commission rate for candidate validators
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_set_candidate_validator_commission_rate">set_candidate_validator_commission_rate</Link>(self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>, new_commission_rate: u64, ctx: &<Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_set_candidate_validator_commission_rate">set_candidate_validator_commission_rate</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>,
+    new_commission_rate: u64,
+    ctx: &TxContext,
+) \{
+    <b>let</b> candidate = self.validators.get_validator_mut_with_ctx_including_candidates(ctx);
+    candidate.set_candidate_commission_rate(new_commission_rate)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_request_add_stake"></Link>
+
+## Function `request_add_stake`
+
+Add stake to a validator's staking pool.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_request_add_stake">request_add_stake</Link>(self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>, stake: <Link to="../iota/coin#iota_coin_Coin">iota::coin::Coin</Link>&lt;<Link to="../iota/iota#iota_iota_IOTA">iota::iota::IOTA</Link>&gt;, validator_address: <b>address</b>, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): <Link to="../iota_system/staking_pool#iota_system_staking_pool_StakedIota">iota_system::staking_pool::StakedIota</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_request_add_stake">request_add_stake</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>,
+    stake: Coin&lt;IOTA&gt;,
+    validator_address: <b>address</b>,
+    ctx: &<b>mut</b> TxContext,
+): StakedIota \{
+    self
+        .validators
+        .<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_request_add_stake">request_add_stake</Link>(
+            validator_address,
+            stake.into_balance(),
+            ctx,
+        )
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_request_add_stake_mul_coin"></Link>
+
+## Function `request_add_stake_mul_coin`
+
+Add stake to a validator's staking pool using multiple coins.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_request_add_stake_mul_coin">request_add_stake_mul_coin</Link>(self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>, stakes: vector&lt;<Link to="../iota/coin#iota_coin_Coin">iota::coin::Coin</Link>&lt;<Link to="../iota/iota#iota_iota_IOTA">iota::iota::IOTA</Link>&gt;&gt;, stake_amount: <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;u64&gt;, validator_address: <b>address</b>, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): <Link to="../iota_system/staking_pool#iota_system_staking_pool_StakedIota">iota_system::staking_pool::StakedIota</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_request_add_stake_mul_coin">request_add_stake_mul_coin</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>,
+    stakes: vector&lt;Coin&lt;IOTA&gt;&gt;,
+    stake_amount: option::Option&lt;u64&gt;,
+    validator_address: <b>address</b>,
+    ctx: &<b>mut</b> TxContext,
+): StakedIota \{
+    <b>let</b> balance = <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_extract_coin_balance">extract_coin_balance</Link>(stakes, stake_amount, ctx);
+    self.validators.<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_request_add_stake">request_add_stake</Link>(validator_address, balance, ctx)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_request_withdraw_stake"></Link>
+
+## Function `request_withdraw_stake`
+
+Withdraw some portion of a stake from a validator's staking pool.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_request_withdraw_stake">request_withdraw_stake</Link>(self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>, staked_iota: <Link to="../iota_system/staking_pool#iota_system_staking_pool_StakedIota">iota_system::staking_pool::StakedIota</Link>, ctx: &<Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): <Link to="../iota/balance#iota_balance_Balance">iota::balance::Balance</Link>&lt;<Link to="../iota/iota#iota_iota_IOTA">iota::iota::IOTA</Link>&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_request_withdraw_stake">request_withdraw_stake</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>,
+    staked_iota: StakedIota,
+    ctx: &TxContext,
+): Balance&lt;IOTA&gt; \{
+    self.validators.<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_request_withdraw_stake">request_withdraw_stake</Link>(staked_iota, ctx)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_report_validator"></Link>
+
+## Function `report_validator`
+
+Report a validator as a bad or non-performant actor in the system.
+Succeeds if all the following are satisfied:
+1. both the reporter in <code>cap</code> and the input <code>reportee_addr</code> are committee validators.
+2. reporter and reportee not the same address.
+3. the cap object is still valid.
+This function is idempotent.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_report_validator">report_validator</Link>(self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>, cap: &<Link to="../iota_system/validator_cap#iota_system_validator_cap_UnverifiedValidatorOperationCap">iota_system::validator_cap::UnverifiedValidatorOperationCap</Link>, reportee_addr: <b>address</b>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_report_validator">report_validator</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>,
+    cap: &UnverifiedValidatorOperationCap,
+    reportee_addr: <b>address</b>,
+) \{
+    // Reportee needs to be a committee <Link to="../iota_system/validator#iota_system_validator">validator</Link>
+    <b>assert</b>!(
+        self.validators.is_committee_validator_by_iota_address(reportee_addr),
+        <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_ENotCommitteeValidator">ENotCommitteeValidator</Link>,
+    );
+    // Verify the represented reporter <b>address</b> is a committee <Link to="../iota_system/validator#iota_system_validator">validator</Link>, and the capability is still valid.
+    <b>let</b> verified_cap = self.validators.verify_cap(cap, <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_COMMITTEE_VALIDATOR_ONLY">COMMITTEE_VALIDATOR_ONLY</Link>);
+    <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_report_validator_impl">report_validator_impl</Link>(verified_cap, reportee_addr, &<b>mut</b> self.validator_report_records);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_undo_report_validator"></Link>
+
+## Function `undo_report_validator`
+
+Undo a <code><Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_report_validator">report_validator</Link></code> action. Aborts if
+1. the reportee is not a currently committee validator or
+2. the sender has not previously reported the <code>reportee_addr</code>, or
+3. the cap is not valid
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_undo_report_validator">undo_report_validator</Link>(self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>, cap: &<Link to="../iota_system/validator_cap#iota_system_validator_cap_UnverifiedValidatorOperationCap">iota_system::validator_cap::UnverifiedValidatorOperationCap</Link>, reportee_addr: <b>address</b>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_undo_report_validator">undo_report_validator</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>,
+    cap: &UnverifiedValidatorOperationCap,
+    reportee_addr: <b>address</b>,
+) \{
+    <b>let</b> verified_cap = self.validators.verify_cap(cap, <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_COMMITTEE_VALIDATOR_ONLY">COMMITTEE_VALIDATOR_ONLY</Link>);
+    <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_undo_report_validator_impl">undo_report_validator_impl</Link>(verified_cap, reportee_addr, &<b>mut</b> self.validator_report_records);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_report_validator_impl"></Link>
+
+## Function `report_validator_impl`
+
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_report_validator_impl">report_validator_impl</Link>(verified_cap: <Link to="../iota_system/validator_cap#iota_system_validator_cap_ValidatorOperationCap">iota_system::validator_cap::ValidatorOperationCap</Link>, reportee_addr: <b>address</b>, validator_report_records: &<b>mut</b> <Link to="../iota/vec_map#iota_vec_map_VecMap">iota::vec_map::VecMap</Link>&lt;<b>address</b>, <Link to="../iota/vec_set#iota_vec_set_VecSet">iota::vec_set::VecSet</Link>&lt;<b>address</b>&gt;&gt;)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_report_validator_impl">report_validator_impl</Link>(
+    verified_cap: ValidatorOperationCap,
+    reportee_addr: <b>address</b>,
+    validator_report_records: &<b>mut</b> VecMap&lt;<b>address</b>, VecSet&lt;<b>address</b>&gt;&gt;,
+) \{
+    <b>let</b> reporter_address = *verified_cap.verified_operation_cap_address();
+    <b>assert</b>!(reporter_address != reportee_addr, <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_ECannotReportOneself">ECannotReportOneself</Link>);
+    <b>if</b> (!validator_report_records.contains(&reportee_addr)) \{
+        validator_report_records.insert(reportee_addr, vec_set::singleton(reporter_address));
+    } <b>else</b> \{
+        <b>let</b> reporters = validator_report_records.get_mut(&reportee_addr);
+        <b>if</b> (!reporters.contains(&reporter_address)) \{
+            reporters.insert(reporter_address);
+        }
+    }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_undo_report_validator_impl"></Link>
+
+## Function `undo_report_validator_impl`
+
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_undo_report_validator_impl">undo_report_validator_impl</Link>(verified_cap: <Link to="../iota_system/validator_cap#iota_system_validator_cap_ValidatorOperationCap">iota_system::validator_cap::ValidatorOperationCap</Link>, reportee_addr: <b>address</b>, validator_report_records: &<b>mut</b> <Link to="../iota/vec_map#iota_vec_map_VecMap">iota::vec_map::VecMap</Link>&lt;<b>address</b>, <Link to="../iota/vec_set#iota_vec_set_VecSet">iota::vec_set::VecSet</Link>&lt;<b>address</b>&gt;&gt;)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_undo_report_validator_impl">undo_report_validator_impl</Link>(
+    verified_cap: ValidatorOperationCap,
+    reportee_addr: <b>address</b>,
+    validator_report_records: &<b>mut</b> VecMap&lt;<b>address</b>, VecSet&lt;<b>address</b>&gt;&gt;,
+) \{
+    <b>assert</b>!(validator_report_records.contains(&reportee_addr), <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_EReportRecordNotFound">EReportRecordNotFound</Link>);
+    <b>let</b> reporters = validator_report_records.get_mut(&reportee_addr);
+    <b>let</b> reporter_addr = *verified_cap.verified_operation_cap_address();
+    <b>assert</b>!(reporters.contains(&reporter_addr), <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_EReportRecordNotFound">EReportRecordNotFound</Link>);
+    reporters.remove(&reporter_addr);
+    <b>if</b> (reporters.is_empty()) \{
+        validator_report_records.remove(&reportee_addr);
+    }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_rotate_operation_cap"></Link>
+
+## Function `rotate_operation_cap`
+
+Create a new <code>UnverifiedValidatorOperationCap</code>, transfer it to the
+validator and registers it. The original object is thus revoked.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_rotate_operation_cap">rotate_operation_cap</Link>(self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_rotate_operation_cap">rotate_operation_cap</Link>(self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>, ctx: &<b>mut</b> TxContext) \{
+    <b>let</b> <Link to="../iota_system/validator#iota_system_validator">validator</Link> = self.validators.get_validator_mut_with_ctx_including_candidates(ctx);
+    <Link to="../iota_system/validator#iota_system_validator">validator</Link>.new_unverified_validator_operation_cap_and_transfer(ctx);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_update_validator_name"></Link>
+
+## Function `update_validator_name`
+
+Update a validator's name.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_update_validator_name">update_validator_name</Link>(self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>, name: vector&lt;u8&gt;, ctx: &<Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_update_validator_name">update_validator_name</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>,
+    name: vector&lt;u8&gt;,
+    ctx: &TxContext,
+) \{
+    <b>let</b> <Link to="../iota_system/validator#iota_system_validator">validator</Link> = self.validators.get_validator_mut_with_ctx_including_candidates(ctx);
+    <Link to="../iota_system/validator#iota_system_validator">validator</Link>.update_name(name);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_update_validator_description"></Link>
+
+## Function `update_validator_description`
+
+Update a validator's description
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_update_validator_description">update_validator_description</Link>(self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>, description: vector&lt;u8&gt;, ctx: &<Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_update_validator_description">update_validator_description</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>,
+    description: vector&lt;u8&gt;,
+    ctx: &TxContext,
+) \{
+    <b>let</b> <Link to="../iota_system/validator#iota_system_validator">validator</Link> = self.validators.get_validator_mut_with_ctx_including_candidates(ctx);
+    <Link to="../iota_system/validator#iota_system_validator">validator</Link>.update_description(description);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_update_validator_image_url"></Link>
+
+## Function `update_validator_image_url`
+
+Update a validator's image url
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_update_validator_image_url">update_validator_image_url</Link>(self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>, image_url: vector&lt;u8&gt;, ctx: &<Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_update_validator_image_url">update_validator_image_url</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>,
+    image_url: vector&lt;u8&gt;,
+    ctx: &TxContext,
+) \{
+    <b>let</b> <Link to="../iota_system/validator#iota_system_validator">validator</Link> = self.validators.get_validator_mut_with_ctx_including_candidates(ctx);
+    <Link to="../iota_system/validator#iota_system_validator">validator</Link>.update_image_url(image_url);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_update_validator_project_url"></Link>
+
+## Function `update_validator_project_url`
+
+Update a validator's project url
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_update_validator_project_url">update_validator_project_url</Link>(self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>, project_url: vector&lt;u8&gt;, ctx: &<Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_update_validator_project_url">update_validator_project_url</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>,
+    project_url: vector&lt;u8&gt;,
+    ctx: &TxContext,
+) \{
+    <b>let</b> <Link to="../iota_system/validator#iota_system_validator">validator</Link> = self.validators.get_validator_mut_with_ctx_including_candidates(ctx);
+    <Link to="../iota_system/validator#iota_system_validator">validator</Link>.update_project_url(project_url);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_update_validator_next_epoch_network_address"></Link>
+
+## Function `update_validator_next_epoch_network_address`
+
+Update a validator's network address.
+The change will only take effects starting from the next epoch.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_update_validator_next_epoch_network_address">update_validator_next_epoch_network_address</Link>(self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>, network_address: vector&lt;u8&gt;, ctx: &<Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_update_validator_next_epoch_network_address">update_validator_next_epoch_network_address</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>,
+    network_address: vector&lt;u8&gt;,
+    ctx: &TxContext,
+) \{
+    <b>let</b> <Link to="../iota_system/validator#iota_system_validator">validator</Link> = self.validators.get_validator_mut_with_ctx(ctx);
+    <Link to="../iota_system/validator#iota_system_validator">validator</Link>.update_next_epoch_network_address(network_address);
+    <b>let</b> <Link to="../iota_system/validator#iota_system_validator">validator</Link>: &ValidatorV1 = <Link to="../iota_system/validator#iota_system_validator">validator</Link>; // Force immutability <b>for</b> the following call
+    self.validators.assert_no_pending_or_active_duplicates(<Link to="../iota_system/validator#iota_system_validator">validator</Link>);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_update_candidate_validator_network_address"></Link>
+
+## Function `update_candidate_validator_network_address`
+
+Update candidate validator's network address.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_update_candidate_validator_network_address">update_candidate_validator_network_address</Link>(self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>, network_address: vector&lt;u8&gt;, ctx: &<Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_update_candidate_validator_network_address">update_candidate_validator_network_address</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>,
+    network_address: vector&lt;u8&gt;,
+    ctx: &TxContext,
+) \{
+    <b>let</b> candidate = self.validators.get_validator_mut_with_ctx_including_candidates(ctx);
+    candidate.update_candidate_network_address(network_address);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_update_validator_next_epoch_p2p_address"></Link>
+
+## Function `update_validator_next_epoch_p2p_address`
+
+Update a validator's p2p address.
+The change will only take effects starting from the next epoch.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_update_validator_next_epoch_p2p_address">update_validator_next_epoch_p2p_address</Link>(self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>, p2p_address: vector&lt;u8&gt;, ctx: &<Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_update_validator_next_epoch_p2p_address">update_validator_next_epoch_p2p_address</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>,
+    p2p_address: vector&lt;u8&gt;,
+    ctx: &TxContext,
+) \{
+    <b>let</b> <Link to="../iota_system/validator#iota_system_validator">validator</Link> = self.validators.get_validator_mut_with_ctx(ctx);
+    <Link to="../iota_system/validator#iota_system_validator">validator</Link>.update_next_epoch_p2p_address(p2p_address);
+    <b>let</b> <Link to="../iota_system/validator#iota_system_validator">validator</Link>: &ValidatorV1 = <Link to="../iota_system/validator#iota_system_validator">validator</Link>; // Force immutability <b>for</b> the following call
+    self.validators.assert_no_pending_or_active_duplicates(<Link to="../iota_system/validator#iota_system_validator">validator</Link>);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_update_candidate_validator_p2p_address"></Link>
+
+## Function `update_candidate_validator_p2p_address`
+
+Update candidate validator's p2p address.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_update_candidate_validator_p2p_address">update_candidate_validator_p2p_address</Link>(self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>, p2p_address: vector&lt;u8&gt;, ctx: &<Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_update_candidate_validator_p2p_address">update_candidate_validator_p2p_address</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>,
+    p2p_address: vector&lt;u8&gt;,
+    ctx: &TxContext,
+) \{
+    <b>let</b> candidate = self.validators.get_validator_mut_with_ctx_including_candidates(ctx);
+    candidate.update_candidate_p2p_address(p2p_address);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_update_validator_next_epoch_primary_address"></Link>
+
+## Function `update_validator_next_epoch_primary_address`
+
+Update a validator's primary address.
+The change will only take effects starting from the next epoch.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_update_validator_next_epoch_primary_address">update_validator_next_epoch_primary_address</Link>(self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>, primary_address: vector&lt;u8&gt;, ctx: &<Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_update_validator_next_epoch_primary_address">update_validator_next_epoch_primary_address</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>,
+    primary_address: vector&lt;u8&gt;,
+    ctx: &TxContext,
+) \{
+    <b>let</b> <Link to="../iota_system/validator#iota_system_validator">validator</Link> = self.validators.get_validator_mut_with_ctx(ctx);
+    <Link to="../iota_system/validator#iota_system_validator">validator</Link>.update_next_epoch_primary_address(primary_address);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_update_candidate_validator_primary_address"></Link>
+
+## Function `update_candidate_validator_primary_address`
+
+Update candidate validator's primary address.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_update_candidate_validator_primary_address">update_candidate_validator_primary_address</Link>(self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>, primary_address: vector&lt;u8&gt;, ctx: &<Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_update_candidate_validator_primary_address">update_candidate_validator_primary_address</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>,
+    primary_address: vector&lt;u8&gt;,
+    ctx: &TxContext,
+) \{
+    <b>let</b> candidate = self.validators.get_validator_mut_with_ctx_including_candidates(ctx);
+    candidate.update_candidate_primary_address(primary_address);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_update_validator_next_epoch_authority_pubkey"></Link>
+
+## Function `update_validator_next_epoch_authority_pubkey`
+
+Update a validator's public key of authority key and proof of possession.
+The change will only take effects starting from the next epoch.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_update_validator_next_epoch_authority_pubkey">update_validator_next_epoch_authority_pubkey</Link>(self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>, authority_pubkey: vector&lt;u8&gt;, proof_of_possession: vector&lt;u8&gt;, ctx: &<Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_update_validator_next_epoch_authority_pubkey">update_validator_next_epoch_authority_pubkey</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>,
+    authority_pubkey: vector&lt;u8&gt;,
+    proof_of_possession: vector&lt;u8&gt;,
+    ctx: &TxContext,
+) \{
+    <b>let</b> <Link to="../iota_system/validator#iota_system_validator">validator</Link> = self.validators.get_validator_mut_with_ctx(ctx);
+    <Link to="../iota_system/validator#iota_system_validator">validator</Link>.update_next_epoch_authority_pubkey(authority_pubkey, proof_of_possession);
+    <b>let</b> <Link to="../iota_system/validator#iota_system_validator">validator</Link>: &ValidatorV1 = <Link to="../iota_system/validator#iota_system_validator">validator</Link>; // Force immutability <b>for</b> the following call
+    self.validators.assert_no_pending_or_active_duplicates(<Link to="../iota_system/validator#iota_system_validator">validator</Link>);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_update_candidate_validator_authority_pubkey"></Link>
+
+## Function `update_candidate_validator_authority_pubkey`
+
+Update candidate validator's public key of authority key and proof of possession.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_update_candidate_validator_authority_pubkey">update_candidate_validator_authority_pubkey</Link>(self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>, authority_pubkey: vector&lt;u8&gt;, proof_of_possession: vector&lt;u8&gt;, ctx: &<Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_update_candidate_validator_authority_pubkey">update_candidate_validator_authority_pubkey</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>,
+    authority_pubkey: vector&lt;u8&gt;,
+    proof_of_possession: vector&lt;u8&gt;,
+    ctx: &TxContext,
+) \{
+    <b>let</b> candidate = self.validators.get_validator_mut_with_ctx_including_candidates(ctx);
+    candidate.update_candidate_authority_pubkey(authority_pubkey, proof_of_possession);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_update_validator_next_epoch_protocol_pubkey"></Link>
+
+## Function `update_validator_next_epoch_protocol_pubkey`
+
+Update a validator's public key of protocol key.
+The change will only take effects starting from the next epoch.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_update_validator_next_epoch_protocol_pubkey">update_validator_next_epoch_protocol_pubkey</Link>(self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>, protocol_pubkey: vector&lt;u8&gt;, ctx: &<Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_update_validator_next_epoch_protocol_pubkey">update_validator_next_epoch_protocol_pubkey</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>,
+    protocol_pubkey: vector&lt;u8&gt;,
+    ctx: &TxContext,
+) \{
+    <b>let</b> <Link to="../iota_system/validator#iota_system_validator">validator</Link> = self.validators.get_validator_mut_with_ctx(ctx);
+    <Link to="../iota_system/validator#iota_system_validator">validator</Link>.update_next_epoch_protocol_pubkey(protocol_pubkey);
+    <b>let</b> <Link to="../iota_system/validator#iota_system_validator">validator</Link>: &ValidatorV1 = <Link to="../iota_system/validator#iota_system_validator">validator</Link>; // Force immutability <b>for</b> the following call
+    self.validators.assert_no_pending_or_active_duplicates(<Link to="../iota_system/validator#iota_system_validator">validator</Link>);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_update_candidate_validator_protocol_pubkey"></Link>
+
+## Function `update_candidate_validator_protocol_pubkey`
+
+Update candidate validator's public key of protocol key.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_update_candidate_validator_protocol_pubkey">update_candidate_validator_protocol_pubkey</Link>(self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>, protocol_pubkey: vector&lt;u8&gt;, ctx: &<Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_update_candidate_validator_protocol_pubkey">update_candidate_validator_protocol_pubkey</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>,
+    protocol_pubkey: vector&lt;u8&gt;,
+    ctx: &TxContext,
+) \{
+    <b>let</b> candidate = self.validators.get_validator_mut_with_ctx_including_candidates(ctx);
+    candidate.update_candidate_protocol_pubkey(protocol_pubkey);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_update_validator_next_epoch_network_pubkey"></Link>
+
+## Function `update_validator_next_epoch_network_pubkey`
+
+Update a validator's public key of network key.
+The change will only take effects starting from the next epoch.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_update_validator_next_epoch_network_pubkey">update_validator_next_epoch_network_pubkey</Link>(self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>, network_pubkey: vector&lt;u8&gt;, ctx: &<Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_update_validator_next_epoch_network_pubkey">update_validator_next_epoch_network_pubkey</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>,
+    network_pubkey: vector&lt;u8&gt;,
+    ctx: &TxContext,
+) \{
+    <b>let</b> <Link to="../iota_system/validator#iota_system_validator">validator</Link> = self.validators.get_validator_mut_with_ctx(ctx);
+    <Link to="../iota_system/validator#iota_system_validator">validator</Link>.update_next_epoch_network_pubkey(network_pubkey);
+    <b>let</b> <Link to="../iota_system/validator#iota_system_validator">validator</Link>: &ValidatorV1 = <Link to="../iota_system/validator#iota_system_validator">validator</Link>; // Force immutability <b>for</b> the following call
+    self.validators.assert_no_pending_or_active_duplicates(<Link to="../iota_system/validator#iota_system_validator">validator</Link>);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_update_candidate_validator_network_pubkey"></Link>
+
+## Function `update_candidate_validator_network_pubkey`
+
+Update candidate validator's public key of network key.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_update_candidate_validator_network_pubkey">update_candidate_validator_network_pubkey</Link>(self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>, network_pubkey: vector&lt;u8&gt;, ctx: &<Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_update_candidate_validator_network_pubkey">update_candidate_validator_network_pubkey</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>,
+    network_pubkey: vector&lt;u8&gt;,
+    ctx: &TxContext,
+) \{
+    <b>let</b> candidate = self.validators.get_validator_mut_with_ctx_including_candidates(ctx);
+    candidate.update_candidate_network_pubkey(network_pubkey);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_advance_epoch"></Link>
+
+## Function `advance_epoch`
+
+This function should be called at the end of an epoch, and advances the system to the next epoch.
+It does the following things:
+1. Add storage charge to the storage fund.
+2. Burn the storage rebates from the storage fund. These are already refunded to transaction sender's
+gas coins.
+3. Mint or burn IOTA tokens depending on whether the validator subsidy is greater
+or smaller than the burned component of the computation charges.
+4. Distribute the rewards to the validators.
+5. Burn any leftover rewards.
+6. Update all validators.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_advance_epoch">advance_epoch</Link>(self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>, new_epoch: u64, next_protocol_version: u64, validator_subsidy: u64, storage_charge: <Link to="../iota/balance#iota_balance_Balance">iota::balance::Balance</Link>&lt;<Link to="../iota/iota#iota_iota_IOTA">iota::iota::IOTA</Link>&gt;, computation_charge: <Link to="../iota/balance#iota_balance_Balance">iota::balance::Balance</Link>&lt;<Link to="../iota/iota#iota_iota_IOTA">iota::iota::IOTA</Link>&gt;, computation_charge_burned: u64, storage_rebate_amount: u64, non_refundable_storage_fee_amount: u64, reward_slashing_rate: u64, <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_epoch_start_timestamp_ms">epoch_start_timestamp_ms</Link>: u64, max_committee_members_count: u64, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): <Link to="../iota/balance#iota_balance_Balance">iota::balance::Balance</Link>&lt;<Link to="../iota/iota#iota_iota_IOTA">iota::iota::IOTA</Link>&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_advance_epoch">advance_epoch</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>,
+    new_epoch: u64,
+    next_protocol_version: u64,
+    validator_subsidy: u64,
+    <b>mut</b> storage_charge: Balance&lt;IOTA&gt;,
+    <b>mut</b> computation_charge: Balance&lt;IOTA&gt;,
+    <b>mut</b> computation_charge_burned: u64,
+    <b>mut</b> storage_rebate_amount: u64,
+    <b>mut</b> non_refundable_storage_fee_amount: u64,
+    reward_slashing_rate: u64, // how much rewards are slashed to punish a <Link to="../iota_system/validator#iota_system_validator">validator</Link>, in bps.
+    <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_epoch_start_timestamp_ms">epoch_start_timestamp_ms</Link>: u64, // Timestamp of the <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_epoch">epoch</Link> start
+    max_committee_members_count: u64,
+    ctx: &<b>mut</b> TxContext,
+): Balance&lt;IOTA&gt; \{
+    self.<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_epoch_start_timestamp_ms">epoch_start_timestamp_ms</Link> = <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_epoch_start_timestamp_ms">epoch_start_timestamp_ms</Link>;
+    <b>let</b> bps_denominator_u64 = <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_BASIS_POINT_DENOMINATOR">BASIS_POINT_DENOMINATOR</Link> <b>as</b> u64;
+    // Rates can't be higher than 100%.
+    <b>assert</b>!(reward_slashing_rate &lt;= bps_denominator_u64, <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_EBpsTooLarge">EBpsTooLarge</Link>);
+    // Accumulate the gas summary during safe_mode before processing any rewards:
+    <b>let</b> safe_mode_storage_charges = self.safe_mode_storage_charges.withdraw_all();
+    storage_charge.join(safe_mode_storage_charges);
+    <b>let</b> safe_mode_computation_charges = self.safe_mode_computation_charges.withdraw_all();
+    computation_charge.join(safe_mode_computation_charges);
+    computation_charge_burned =
+        computation_charge_burned + self.safe_mode_computation_charges_burned;
+    storage_rebate_amount = storage_rebate_amount + self.safe_mode_storage_rebates;
+    self.safe_mode_storage_rebates = 0;
+    non_refundable_storage_fee_amount =
+        non_refundable_storage_fee_amount + self.safe_mode_non_refundable_storage_fee;
+    self.safe_mode_non_refundable_storage_fee = 0;
+    <b>let</b> storage_charge_value = storage_charge.value();
+    <b>let</b> total_gas_fees = computation_charge.value();
+    <b>let</b> tips_amount = total_gas_fees - computation_charge_burned;
+    // Mints or burns tokens depending on the computation charge burned and the minted subsidy.
+    // Since not all rewards are distributed in case of slashed validators,
+    // tokens might be minted here and burnt in the same <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_epoch">epoch</Link> change.
+    <b>let</b> (
+        <b>mut</b> total_validator_rewards,
+        minted_tokens_amount,
+        <b>mut</b> burnt_tokens_amount,
+    ) = <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_match_computation_charge_burned_to_validator_subsidy">match_computation_charge_burned_to_validator_subsidy</Link>(
+        validator_subsidy,
+        computation_charge,
+        computation_charge_burned,
+        &<b>mut</b> self.iota_treasury_cap,
+        ctx,
+    );
+    self.<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_epoch">epoch</Link> = self.<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_epoch">epoch</Link> + 1;
+    // Sanity check to make sure we are advancing to the right <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_epoch">epoch</Link>.
+    <b>assert</b>!(new_epoch == self.<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_epoch">epoch</Link>, <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_EAdvancedToWrongEpoch">EAdvancedToWrongEpoch</Link>);
+    <b>let</b> total_validator_rewards_amount_before_distribution = total_validator_rewards.value();
+    self
+        .validators
+        .<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_advance_epoch">advance_epoch</Link>(
+            &<b>mut</b> total_validator_rewards,
+            &<b>mut</b> self.validator_report_records,
+            reward_slashing_rate,
+            self.parameters.validator_low_stake_threshold,
+            self.parameters.validator_very_low_stake_threshold,
+            self.parameters.validator_low_stake_grace_period,
+            max_committee_members_count,
+            ctx,
+        );
+    <b>let</b> new_total_stake = self.validators.total_stake_inner();
+    <b>let</b> remaining_validator_rewards_amount_after_distribution = total_validator_rewards.value();
+    <b>let</b> total_stake_rewards_distributed =
+        total_validator_rewards_amount_before_distribution - remaining_validator_rewards_amount_after_distribution;
+    self.<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_protocol_version">protocol_version</Link> = next_protocol_version;
+    // Because of precision issues with integer divisions, we expect that there will be some
+    // remaining balance in `total_validator_rewards`.
+    <b>let</b> leftover_staking_rewards = total_validator_rewards;
+    // Burn any remaining leftover rewards.
+    burnt_tokens_amount = burnt_tokens_amount + leftover_staking_rewards.value();
+    self.iota_treasury_cap.burn_balance(leftover_staking_rewards, ctx);
+    <b>let</b> refunded_storage_rebate = self
+        .<Link to="../iota_system/storage_fund#iota_system_storage_fund">storage_fund</Link>
+        .<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_advance_epoch">advance_epoch</Link>(
+            storage_charge,
+            storage_rebate_amount,
+            non_refundable_storage_fee_amount,
+        );
+    event::emit(<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_SystemEpochInfoEventV2">SystemEpochInfoEventV2</Link> \{
+        <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_epoch">epoch</Link>: self.<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_epoch">epoch</Link>,
+        <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_protocol_version">protocol_version</Link>: self.<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_protocol_version">protocol_version</Link>,
+        total_stake: new_total_stake,
+        storage_charge: storage_charge_value,
+        storage_rebate: storage_rebate_amount,
+        storage_fund_balance: self.<Link to="../iota_system/storage_fund#iota_system_storage_fund">storage_fund</Link>.total_balance(),
+        total_gas_fees,
+        total_stake_rewards_distributed,
+        burnt_tokens_amount,
+        minted_tokens_amount,
+        tips_amount,
+    });
+    self.safe_mode = <b>false</b>;
+    // Double check that the gas from safe mode <b>has</b> been processed.
+    <b>assert</b>!(
+        self.safe_mode_storage_rebates == 0
+            && self.safe_mode_storage_charges.value() == 0
+            && self.safe_mode_computation_charges.value() == 0,
+        <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_ESafeModeGasNotProcessed">ESafeModeGasNotProcessed</Link>,
+    );
+    // Return the storage rebate split from storage fund that's already refunded to the transaction senders.
+    // This will be burnt at the last step of <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_epoch">epoch</Link> change programmable transaction.
+    refunded_storage_rebate
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_match_computation_charge_burned_to_validator_subsidy"></Link>
+
+## Function `match_computation_charge_burned_to_validator_subsidy`
+
+Mint or burn IOTA tokens depending on the given subsidy per validator
+and the amount of computation fees burned in this epoch.
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_match_computation_charge_burned_to_validator_subsidy">match_computation_charge_burned_to_validator_subsidy</Link>(validator_subsidy: u64, computation_charges: <Link to="../iota/balance#iota_balance_Balance">iota::balance::Balance</Link>&lt;<Link to="../iota/iota#iota_iota_IOTA">iota::iota::IOTA</Link>&gt;, computation_charge_burned: u64, iota_treasury_cap: &<b>mut</b> <Link to="../iota/iota#iota_iota_IotaTreasuryCap">iota::iota::IotaTreasuryCap</Link>, ctx: &<Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): (<Link to="../iota/balance#iota_balance_Balance">iota::balance::Balance</Link>&lt;<Link to="../iota/iota#iota_iota_IOTA">iota::iota::IOTA</Link>&gt;, u64, u64)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_match_computation_charge_burned_to_validator_subsidy">match_computation_charge_burned_to_validator_subsidy</Link>(
+    validator_subsidy: u64,
+    <b>mut</b> computation_charges: Balance&lt;IOTA&gt;,
+    computation_charge_burned: u64,
+    iota_treasury_cap: &<b>mut</b> <Link to="../iota/iota#iota_iota_IotaTreasuryCap">iota::iota::IotaTreasuryCap</Link>,
+    ctx: &TxContext,
+): (Balance&lt;IOTA&gt;, u64, u64) \{
+    <b>let</b> burnt_tokens_amount = computation_charge_burned;
+    <b>let</b> minted_tokens_amount = validator_subsidy;
+    <b>if</b> (burnt_tokens_amount &lt; minted_tokens_amount) \{
+        <b>let</b> actual_amount_to_mint = minted_tokens_amount - burnt_tokens_amount;
+        <b>let</b> balance_to_mint = iota_treasury_cap.mint_balance(actual_amount_to_mint, ctx);
+        // total <Link to="../iota_system/validator#iota_system_validator">validator</Link> reward
+        // = computation_charge + (minted_balance)
+        // = computation_charge + (validator_subsidy - computation_charge_burned)
+        // = validator_subsidy + (computation_charge - computation_charge_burned)
+        // = validator_subsidy + (tips)
+        computation_charges.join(balance_to_mint);
+    } <b>else</b> <b>if</b> (burnt_tokens_amount &gt; minted_tokens_amount) \{
+        <b>let</b> actual_amount_to_burn = burnt_tokens_amount - minted_tokens_amount;
+        // total <Link to="../iota_system/validator#iota_system_validator">validator</Link> reward
+        // = computation_charge - (amount_to_burn)
+        // = computation_charge - (computation_charge_burned - validator_subsidy)
+        // = validator_subsidy + (computation_charge - computation_charge_burned)
+        // = validator_subsidy + (tips)
+        <b>let</b> balance_to_burn = computation_charges.split(actual_amount_to_burn);
+        iota_treasury_cap.burn_balance(balance_to_burn, ctx);
+    };
+    (computation_charges, minted_tokens_amount, burnt_tokens_amount)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_epoch"></Link>
+
+## Function `epoch`
+
+Return the current epoch number. Useful for applications that need a coarse-grained concept of time,
+since epochs are ever-increasing and epoch changes are intended to happen every 24 hours.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_epoch">epoch</Link>(self: &<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>): u64
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_epoch">epoch</Link>(self: &<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>): u64 \{
+    self.<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_epoch">epoch</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_protocol_version"></Link>
+
+## Function `protocol_version`
+
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_protocol_version">protocol_version</Link>(self: &<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>): u64
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_protocol_version">protocol_version</Link>(self: &<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>): u64 \{
+    self.<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_protocol_version">protocol_version</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_system_state_version"></Link>
+
+## Function `system_state_version`
+
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_system_state_version">system_state_version</Link>(self: &<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>): u64
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_system_state_version">system_state_version</Link>(self: &<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>): u64 \{
+    self.<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_system_state_version">system_state_version</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_iota_system_admin_cap"></Link>
+
+## Function `iota_system_admin_cap`
+
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_iota_system_admin_cap">iota_system_admin_cap</Link>(self: &<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>): &<Link to="../iota/system_admin_cap#iota_system_admin_cap_IotaSystemAdminCap">iota::system_admin_cap::IotaSystemAdminCap</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_iota_system_admin_cap">iota_system_admin_cap</Link>(self: &<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>): &IotaSystemAdminCap \{
+    &self.<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_iota_system_admin_cap">iota_system_admin_cap</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_genesis_system_state_version"></Link>
+
+## Function `genesis_system_state_version`
+
+This function always return the genesis system state version, which is used to create the system state in genesis.
+It should never change for a given network.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_genesis_system_state_version">genesis_system_state_version</Link>(): u64
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_genesis_system_state_version">genesis_system_state_version</Link>(): u64 \{
+    <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_SYSTEM_STATE_VERSION_V1">SYSTEM_STATE_VERSION_V1</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_epoch_start_timestamp_ms"></Link>
+
+## Function `epoch_start_timestamp_ms`
+
+Returns unix timestamp of the start of current epoch
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_epoch_start_timestamp_ms">epoch_start_timestamp_ms</Link>(self: &<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>): u64
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_epoch_start_timestamp_ms">epoch_start_timestamp_ms</Link>(self: &<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>): u64 \{
+    self.<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_epoch_start_timestamp_ms">epoch_start_timestamp_ms</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_validator_stake_amount"></Link>
+
+## Function `validator_stake_amount`
+
+Returns the total amount staked with <code>validator_addr</code>.
+Aborts if <code>validator_addr</code> is not an active validator.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_validator_stake_amount">validator_stake_amount</Link>(self: &<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>, validator_addr: <b>address</b>): u64
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_validator_stake_amount">validator_stake_amount</Link>(self: &<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>, validator_addr: <b>address</b>): u64 \{
+    self.validators.validator_total_stake_amount_inner(validator_addr)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_committee_validator_voting_powers"></Link>
+
+## Function `committee_validator_voting_powers`
+
+Returns the voting power for <code>validator_addr</code>.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_committee_validator_voting_powers">committee_validator_voting_powers</Link>(self: &<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>): <Link to="../iota/vec_map#iota_vec_map_VecMap">iota::vec_map::VecMap</Link>&lt;<b>address</b>, u64&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_committee_validator_voting_powers">committee_validator_voting_powers</Link>(
+    self: &<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>,
+): VecMap&lt;<b>address</b>, u64&gt; \{
+    <b>let</b> <b>mut</b> committee_validators = <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_committee_validator_addresses">committee_validator_addresses</Link>(self);
+    <b>let</b> <b>mut</b> voting_powers = vec_map::empty();
+    <b>while</b> (!vector::is_empty(&committee_validators)) \{
+        <b>let</b> <Link to="../iota_system/validator#iota_system_validator">validator</Link> = vector::pop_back(&<b>mut</b> committee_validators);
+        <b>let</b> <Link to="../iota_system/voting_power#iota_system_voting_power">voting_power</Link> = self.validators.validator_voting_power_inner(<Link to="../iota_system/validator#iota_system_validator">validator</Link>);
+        vec_map::insert(&<b>mut</b> voting_powers, <Link to="../iota_system/validator#iota_system_validator">validator</Link>, <Link to="../iota_system/voting_power#iota_system_voting_power">voting_power</Link>);
+    };
+    voting_powers
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_validator_staking_pool_id"></Link>
+
+## Function `validator_staking_pool_id`
+
+Returns the staking pool id of a given validator.
+Aborts if <code>validator_addr</code> is not an active validator.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_validator_staking_pool_id">validator_staking_pool_id</Link>(self: &<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>, validator_addr: <b>address</b>): <Link to="../iota/object#iota_object_ID">iota::object::ID</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_validator_staking_pool_id">validator_staking_pool_id</Link>(
+    self: &<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>,
+    validator_addr: <b>address</b>,
+): ID \{ self.validators.validator_staking_pool_id_inner(validator_addr) }
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_validator_staking_pool_mappings"></Link>
+
+## Function `validator_staking_pool_mappings`
+
+Returns reference to the staking pool mappings that map pool ids to active validator addresses
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_validator_staking_pool_mappings">validator_staking_pool_mappings</Link>(self: &<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>): &<Link to="../iota/table#iota_table_Table">iota::table::Table</Link>&lt;<Link to="../iota/object#iota_object_ID">iota::object::ID</Link>, <b>address</b>&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_validator_staking_pool_mappings">validator_staking_pool_mappings</Link>(self: &<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>): &Table&lt;ID, <b>address</b>&gt; \{
+    self.validators.staking_pool_mappings_inner()
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_get_total_iota_supply"></Link>
+
+## Function `get_total_iota_supply`
+
+Returns the total iota supply.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_get_total_iota_supply">get_total_iota_supply</Link>(self: &<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>): u64
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_get_total_iota_supply">get_total_iota_supply</Link>(self: &<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>): u64 \{
+    self.iota_treasury_cap.total_supply()
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_get_reporters_of"></Link>
+
+## Function `get_reporters_of`
+
+Returns all the validators who are currently reporting <code>addr</code>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_get_reporters_of">get_reporters_of</Link>(self: &<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>, addr: <b>address</b>): <Link to="../iota/vec_set#iota_vec_set_VecSet">iota::vec_set::VecSet</Link>&lt;<b>address</b>&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_get_reporters_of">get_reporters_of</Link>(self: &<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>, addr: <b>address</b>): VecSet&lt;<b>address</b>&gt; \{
+    <b>if</b> (self.validator_report_records.contains(&addr)) \{
+        self.validator_report_records[&addr]
+    } <b>else</b> \{
+        vec_set::empty()
+    }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_get_storage_fund_total_balance"></Link>
+
+## Function `get_storage_fund_total_balance`
+
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_get_storage_fund_total_balance">get_storage_fund_total_balance</Link>(self: &<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>): u64
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_get_storage_fund_total_balance">get_storage_fund_total_balance</Link>(self: &<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>): u64 \{
+    self.<Link to="../iota_system/storage_fund#iota_system_storage_fund">storage_fund</Link>.total_balance()
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_get_storage_fund_object_rebates"></Link>
+
+## Function `get_storage_fund_object_rebates`
+
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_get_storage_fund_object_rebates">get_storage_fund_object_rebates</Link>(self: &<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>): u64
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_get_storage_fund_object_rebates">get_storage_fund_object_rebates</Link>(self: &<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>): u64 \{
+    self.<Link to="../iota_system/storage_fund#iota_system_storage_fund">storage_fund</Link>.total_object_storage_rebates()
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_validator_address_by_pool_id"></Link>
+
+## Function `validator_address_by_pool_id`
+
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_validator_address_by_pool_id">validator_address_by_pool_id</Link>(self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>, pool_id: &<Link to="../iota/object#iota_object_ID">iota::object::ID</Link>): <b>address</b>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_validator_address_by_pool_id">validator_address_by_pool_id</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>,
+    pool_id: &ID,
+): <b>address</b> \{
+    self.validators.validator_address_by_pool_id_inner(pool_id)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_pool_exchange_rates"></Link>
+
+## Function `pool_exchange_rates`
+
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_pool_exchange_rates">pool_exchange_rates</Link>(self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>, pool_id: &<Link to="../iota/object#iota_object_ID">iota::object::ID</Link>): &<Link to="../iota/table#iota_table_Table">iota::table::Table</Link>&lt;u64, <Link to="../iota_system/staking_pool#iota_system_staking_pool_PoolTokenExchangeRate">iota_system::staking_pool::PoolTokenExchangeRate</Link>&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_pool_exchange_rates">pool_exchange_rates</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>,
+    pool_id: &ID,
+): &Table&lt;u64, PoolTokenExchangeRate&gt; \{
+    <b>let</b> validators = &<b>mut</b> self.validators;
+    validators.<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_pool_exchange_rates">pool_exchange_rates</Link>(pool_id)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_active_validator_addresses"></Link>
+
+## Function `active_validator_addresses`
+
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_active_validator_addresses">active_validator_addresses</Link>(self: &<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>): vector&lt;<b>address</b>&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_active_validator_addresses">active_validator_addresses</Link>(self: &<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>): vector&lt;<b>address</b>&gt; \{
+    <b>let</b> <Link to="../iota_system/validator_set#iota_system_validator_set">validator_set</Link> = &self.validators;
+    <Link to="../iota_system/validator_set#iota_system_validator_set">validator_set</Link>.<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_active_validator_addresses">active_validator_addresses</Link>()
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_committee_validator_addresses"></Link>
+
+## Function `committee_validator_addresses`
+
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_committee_validator_addresses">committee_validator_addresses</Link>(self: &<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">iota_system::iota_system_state_inner::IotaSystemStateV2</Link>): vector&lt;<b>address</b>&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_committee_validator_addresses">committee_validator_addresses</Link>(self: &<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_IotaSystemStateV2">IotaSystemStateV2</Link>): vector&lt;<b>address</b>&gt; \{
+    <b>let</b> <Link to="../iota_system/validator_set#iota_system_validator_set">validator_set</Link> = &self.validators;
+    <Link to="../iota_system/validator_set#iota_system_validator_set">validator_set</Link>.<Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_committee_validator_addresses">committee_validator_addresses</Link>()
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_iota_system_state_inner_extract_coin_balance"></Link>
+
+## Function `extract_coin_balance`
+
+Extract required Balance from vector of `Coin<IOTA>`, transfer the remainder back to sender.
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_extract_coin_balance">extract_coin_balance</Link>(coins: vector&lt;<Link to="../iota/coin#iota_coin_Coin">iota::coin::Coin</Link>&lt;<Link to="../iota/iota#iota_iota_IOTA">iota::iota::IOTA</Link>&gt;&gt;, amount: <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;u64&gt;, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): <Link to="../iota/balance#iota_balance_Balance">iota::balance::Balance</Link>&lt;<Link to="../iota/iota#iota_iota_IOTA">iota::iota::IOTA</Link>&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner_extract_coin_balance">extract_coin_balance</Link>(
+    <b>mut</b> coins: vector&lt;Coin&lt;IOTA&gt;&gt;,
+    amount: option::Option&lt;u64&gt;,
+    ctx: &<b>mut</b> TxContext,
+): Balance&lt;IOTA&gt; \{
+    <b>let</b> <b>mut</b> merged_coin = coins.pop_back();
+    merged_coin.join_vec(coins);
+    <b>let</b> <b>mut</b> total_balance = merged_coin.into_balance();
+    // <b>return</b> the full amount <b>if</b> amount is not specified
+    <b>if</b> (amount.is_some()) \{
+        <b>let</b> amount = amount.destroy_some();
+        <b>let</b> balance = total_balance.split(amount);
+        // transfer back the remainder <b>if</b> non zero.
+        <b>if</b> (total_balance.value() &gt; 0) \{
+            transfer::public_transfer(total_balance.into_coin(ctx), ctx.sender());
+        } <b>else</b> \{
+            total_balance.destroy_zero();
+        };
+        balance
+    } <b>else</b> \{
+        total_balance
+    }
+}
+</code>
+</pre>
+
+
+
+</details>

@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::{
@@ -33,7 +34,7 @@ pub(crate) const GENESIS_ROUND: Round = 0;
 /// Block proposal timestamp in milliseconds.
 pub type BlockTimestampMs = u64;
 
-/// Sui transaction in serialised bytes
+/// IOTA transaction in serialised bytes
 #[derive(Clone, Eq, PartialEq, Serialize, Deserialize, Default, Debug)]
 pub struct Transaction {
     data: Bytes,
@@ -87,6 +88,7 @@ pub trait BlockAPI {
     fn timestamp_ms(&self) -> BlockTimestampMs;
     fn ancestors(&self) -> &[BlockRef];
     fn transactions(&self) -> &[Transaction];
+    fn transactions_data(&self) -> Vec<&[u8]>;
     fn commit_votes(&self) -> &[CommitVote];
     fn transaction_votes(&self) -> &[BlockTransactionVotes];
     fn misbehavior_reports(&self) -> &[MisbehaviorReport];
@@ -168,6 +170,10 @@ impl BlockAPI for BlockV1 {
 
     fn transactions(&self) -> &[Transaction] {
         &self.transactions
+    }
+
+    fn transactions_data(&self) -> Vec<&[u8]> {
+        self.transactions.iter().map(|t| t.data()).collect()
     }
 
     fn commit_votes(&self) -> &[CommitVote] {
@@ -264,6 +270,10 @@ impl BlockAPI for BlockV2 {
 
     fn transactions(&self) -> &[Transaction] {
         &self.transactions
+    }
+
+    fn transactions_data(&self) -> Vec<&[u8]> {
+        self.transactions.iter().map(|t| t.data()).collect()
     }
 
     fn transaction_votes(&self) -> &[BlockTransactionVotes] {
@@ -414,7 +424,7 @@ impl From<BlockRef> for Slot {
 // TODO: re-evaluate formats for production debugging.
 impl fmt::Display for Slot {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}{}", self.authority, self.round,)
+        write!(f, "{}{}", self.authority, self.round)
     }
 }
 
@@ -502,7 +512,7 @@ fn to_consensus_block_intent(digest: InnerBlockDigest) -> IntentMessage<InnerBlo
     IntentMessage::new(Intent::consensus_app(IntentScope::ConsensusBlock), digest)
 }
 
-/// Process for signing & verying a block signature:
+/// Process for signing a block & verifying a block signature:
 /// 1. Compute the digest of `Block`.
 /// 2. Wrap the digest in `IntentMessage`.
 /// 3. Sign the serialized `IntentMessage`, or verify signature against it.
@@ -515,6 +525,7 @@ fn compute_block_signature(
         .map_err(ConsensusError::SerializationFailure)?;
     Ok(protocol_keypair.sign(&message))
 }
+
 fn verify_block_signature(
     block: &Block,
     signature: &[u8],

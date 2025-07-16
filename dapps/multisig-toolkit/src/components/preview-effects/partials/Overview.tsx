@@ -1,7 +1,8 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-import { DryRunTransactionBlockResponse, GasCostSummary } from '@mysten/sui/client';
+import { DryRunTransactionBlockResponse, GasCostSummary } from '@iota/iota-sdk/client';
 import { ReactNode } from 'react';
 
 import { useDryRunContext } from '../DryRunContext';
@@ -28,7 +29,7 @@ export function Overview({ output }: { output: DryRunTransactionBlockResponse })
 		network,
 		status:
 			output.effects.status?.status === 'success'
-				? '✅ Transaction dry run executed succesfully!'
+				? '✅ Transaction dry run executed successfully!'
 				: output.effects.status?.status === 'failure'
 					? '❌ Transaction failed to execute!'
 					: null,
@@ -43,7 +44,7 @@ export function Overview({ output }: { output: DryRunTransactionBlockResponse })
 			</span>
 		),
 		epoch: output.effects.executedEpoch,
-		gas: calculateGas(output.effects.gasUsed) + ' SUI',
+		gas: calculateGas(output.effects.gasUsed) + ' IOTA',
 	};
 
 	return (

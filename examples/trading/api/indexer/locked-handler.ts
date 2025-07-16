@@ -1,6 +1,7 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
-import { SuiEvent } from '@mysten/sui/client';
+import { IotaEvent } from '@iota/iota-sdk/client';
 import { Prisma } from '@prisma/client';
 
 import { prisma } from '../db';
@@ -21,11 +22,11 @@ type LockDestroyed = {
 /**
  * Handles all events emitted by the `lock` module.
  * Data is modelled in a way that allows writing to the db in any order (DESC or ASC) without
- * resulting in data incosistencies.
+ * resulting in data inconsistencies.
  * We're constructing the updates to support multiple events involving a single record
  * as part of the same batch of events (but using a single write/record to the DB).
  * */
-export const handleLockObjects = async (events: SuiEvent[], type: string) => {
+export const handleLockObjects = async (events: IotaEvent[], type: string) => {
 	const updates: Record<string, Prisma.LockedCreateInput> = {};
 
 	for (const event of events) {

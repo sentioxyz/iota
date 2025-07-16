@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 //! RoundProber periodically checks each peer for the latest rounds they received and accepted
@@ -20,8 +21,8 @@ use std::{sync::Arc, time::Duration};
 
 use consensus_config::{AuthorityIndex, Committee};
 use futures::stream::{FuturesUnordered, StreamExt as _};
-use mysten_common::sync::notify_once::NotifyOnce;
-use mysten_metrics::monitored_scope;
+use iota_common::sync::notify_once::NotifyOnce;
+use iota_metrics::monitored_scope;
 use parking_lot::RwLock;
 use tokio::{task::JoinHandle, time::MissedTickBehavior};
 
@@ -206,11 +207,11 @@ impl<C: NetworkClient> RoundProber<C> {
                         // own probing failures and actual propagation issues.
                         Ok(Err(err)) => {
                             node_metrics.round_prober_request_errors.with_label_values(&["failed_fetch"]).inc();
-                            tracing::warn!("Failed to get latest rounds from peer {}: {:?}", peer_name, err);
+                            tracing::debug!("Failed to get latest rounds from peer {}: {:?}", peer_name, err);
                         },
                         Err(_) => {
                             node_metrics.round_prober_request_errors.with_label_values(&["timeout"]).inc();
-                            tracing::warn!("Timeout while getting latest rounds from peer {}", peer_name);
+                            tracing::debug!("Timeout while getting latest rounds from peer {}", peer_name);
                         },
                     }
                 }
@@ -361,7 +362,7 @@ mod test {
     use super::QuorumRound;
     use crate::{
         block::BlockRef,
-        commit::CommitRange,
+        commit::{CertifiedCommits, CommitRange},
         context::Context,
         core_thread::{CoreError, CoreThreadDispatcher},
         dag_state::DagState,
@@ -414,6 +415,13 @@ mod test {
         async fn check_block_refs(
             &self,
             _block_refs: Vec<BlockRef>,
+        ) -> Result<BTreeSet<BlockRef>, CoreError> {
+            unimplemented!()
+        }
+
+        async fn add_certified_commits(
+            &self,
+            _commits: CertifiedCommits,
         ) -> Result<BTreeSet<BlockRef>, CoreError> {
             unimplemented!()
         }

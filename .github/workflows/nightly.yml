@@ -1,12 +1,46 @@
-name: nightly
+name: Nightly checks
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # every day at midnight
+    - cron: "0 22 * * *" # daily at 10:00 PM (UTC)
   workflow_dispatch:
+    inputs:
+      iota_ref:
+        description: "Branch / commit to simtest"
+        type: string
+        required: true
+        default: develop
+      test_num:
+        description: "MSIM_TEST_NUM (test iterations)"
+        type: string
+        required: false
+        default: "2"
+      test_seed:
+        description: "MSIM_TEST_SEED (test seed)"
+        type: string
+        required: false
+        default: ""
+      test_filter:
+        description: "Optional test filter"
+        type: string
+        required: false
+        default: ""
+      rustTestsOnly:
+        description: "Run only Rust tests"
+        type: boolean
+        required: false
+        default: false
+      simTestsOnly:
+        description: "Run only simulation tests"
+        type: boolean
+        required: false
+        default: false
 
 env:
   CARGO_TERM_COLOR: always
+  RUST_LOG: "error"
+  # Don't emit giant backtraces in the CI logs.
+  RUST_BACKTRACE: short
   # Disable incremental compilation.
   #
   # Incremental compilation is useful as part of an edit-build-test-edit cycle,
@@ -24,36 +58,62 @@ env:
   # from transient network timeouts or other issues.
   CARGO_NET_RETRY: 10
   RUSTUP_MAX_RETRIES: 10
-  # Don't emit giant backtraces in the CI logs.
-  RUST_BACKTRACE: short
+  IOTA_REF: "${{ github.event.inputs.iota_ref || 'develop' }}"
+  TEST_NUM: "${{ github.event.inputs.test_num || '2' }}"
+  MSIM_TEST_SEED: "${{ github.event.inputs.test_seed || '' }}"
+  TEST_FILTER: "${{ github.event.inputs.test_filter || '' }}"
 
 jobs:
-  release:
-    name: build release binaries
-    runs-on: [ubuntu-ghcloud]
-    steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # Pin v4.1.1
-      - name: cargo build
-        uses: actions-rs/cargo@ae10961054e4aa8b4aa7dffede299aaf087aa33b # pin@v1.0.3
-        with:
-          command: build
-          args: --all-targets --all-features --release
+  examples:
+    if: ${{ !inputs.rustTestsOnly && !inputs.simTestsOnly }}
+    uses: ./.github/workflows/_rust_examples.yml
 
-  report-status:
-    name: Report Status
-    runs-on: ubuntu-latest
-    if: always()
-    needs: [release]
-    steps:
-      - uses: technote-space/workflow-conclusion-action@45ce8e0eb155657ab8ccf346ade734257fd196a5 # Pin v4.1.1
+  tests:
+    if: ${{ inputs.rustTestsOnly || !inputs.simTestsOnly }}
+    uses: ./.github/workflows/_rust_tests.yml
+    with:
+      isRust: true
+      isPgIntegration: true
+      isMoveExampleUsedByOthers: true
+      # simtest job below runs a superset of these tests
+      runSimtest: false
+      # run all tests by default
+      testOnlyChangedCrates: false
 
-      - name: Post to slack
-        uses: slackapi/slack-github-action@37ebaef184d7626c5f204ab8d3baff4262dd30f0 # pin@v1.27.0
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-        if: env.WORKFLOW_CONCLUSION == 'failure' # notify only if failure
+  deny:
+    if: ${{ !inputs.rustTestsOnly && !inputs.simTestsOnly }}
+    uses: ./.github/workflows/_cargo_deny.yml
+
+  deny-external:
+    if: ${{ !inputs.rustTestsOnly && !inputs.simTestsOnly }}
+    uses: ./.github/workflows/_cargo_deny.yml
+    with:
+      manifest-path: external-crates/move/Cargo.toml
+
+  execution-cut:
+    if: ${{ !inputs.rustTestsOnly && !inputs.simTestsOnly }}
+    uses: ./.github/workflows/_execution_cut.yml
+
+  split-cluster:
+    if: ${{ !inputs.rustTestsOnly && !inputs.simTestsOnly }}
+    uses: ./.github/workflows/_split_cluster.yml
+
+  rosetta:
+    if: ${{ !inputs.rustTestsOnly && !inputs.simTestsOnly }}
+    uses: ./.github/workflows/_rosetta.yml
+
+  simtest:
+    if: ${{ inputs.simTestsOnly || !inputs.rustTestsOnly }}
+    timeout-minutes: 600
+    runs-on: [self-hosted-x64]
+
+    steps:
+      - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
         with:
-          channel-id: 'build-failures-sui'
-          slack-message: |
-            :sui::error-cross: Workflow *${{ github.workflow }}* has failed.
-            Logs are here: <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|${{ github.run_id }}>
+          ref: ${{ env.IOTA_REF }}
+      - name: Get latest simtest script from commit that triggered this workflow
+        run: |
+          git fetch origin ${{ github.sha }}
+          git checkout ${{ github.sha }} -- scripts/simtest/simtest-run.sh
+      - name: Run simtest
+        run: scripts/simtest/simtest-run.sh

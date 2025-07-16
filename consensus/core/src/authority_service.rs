@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::{pin::Pin, sync::Arc, time::Duration};
@@ -8,7 +9,7 @@ use bytes::Bytes;
 use consensus_config::AuthorityIndex;
 use futures::{ready, stream, task, Stream, StreamExt};
 use parking_lot::RwLock;
-use sui_macros::fail_point_async;
+use iota_macros::fail_point_async;
 use tokio::{sync::broadcast, time::sleep};
 use tokio_util::sync::ReusableBoxFuture;
 use tracing::{debug, info, warn};
@@ -103,12 +104,13 @@ impl<C: CoreThreadDispatcher> NetworkService for AuthorityService<C> {
         let peer_hostname = &self.context.committee.authority(peer).hostname;
 
         // Reject blocks failing validations.
-        if let Err(e) = self.block_verifier.verify(&signed_block) {
+        let verification_result = self.block_verifier.verify_and_vote(&signed_block);
+        if let Err(e) = verification_result {
             self.context
                 .metrics
                 .node_metrics
                 .invalid_blocks
-                .with_label_values(&[peer_hostname, "handle_send_block", e.clone().name()])
+                .with_label_values(&[peer_hostname, "handle_send_block", e.name()])
                 .inc();
             info!("Invalid block from {}: {}", peer, e);
             return Err(e);
@@ -423,6 +425,17 @@ impl<C: CoreThreadDispatcher> NetworkService for AuthorityService<C> {
                 certifier_block_refs = votes;
                 break 'commit;
             } else {
+                debug!(
+                    "Commit {} votes did not reach quorum to certify, {} < {}, skipping",
+                    index,
+                    stake_aggregator.stake(),
+                    stake_aggregator.threshold(&self.context.committee)
+                );
+                self.context
+                    .metrics
+                    .node_metrics
+                    .commit_sync_fetch_commits_handler_uncertified_skipped
+                    .inc();
                 commits.pop();
             }
         }
@@ -685,7 +698,7 @@ mod tests {
     use crate::{
         authority_service::AuthorityService,
         block::{BlockAPI, BlockRef, SignedBlock, TestBlock, VerifiedBlock},
-        commit::CommitRange,
+        commit::{CertifiedCommits, CommitRange},
         commit_vote_monitor::CommitVoteMonitor,
         context::Context,
         core_thread::{CoreError, CoreThreadDispatcher},
@@ -740,6 +753,13 @@ mod tests {
             _block_refs: Vec<BlockRef>,
         ) -> Result<BTreeSet<BlockRef>, CoreError> {
             Ok(BTreeSet::new())
+        }
+
+        async fn add_certified_commits(
+            &self,
+            _commits: CertifiedCommits,
+        ) -> Result<BTreeSet<BlockRef>, CoreError> {
+            todo!()
         }
 
         async fn new_block(&self, _round: Round, _force: bool) -> Result<(), CoreError> {

@@ -1,18 +1,19 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 /// Defines the `Coin` type - platform wide representation of fungible
 /// tokens and coins. `Coin` can be described as a secure wrapper around
 /// `Balance` type.
-module sui::coin {
+module iota::coin {
     use std::string;
     use std::ascii;
     use std::option::{Self, Option};
-    use sui::balance::{Self, Balance, Supply};
-    use sui::tx_context::TxContext;
-    use sui::object::{Self, UID};
-    use sui::transfer;
-    use sui::url::{Self, Url};
+    use iota::balance::{Self, Balance, Supply};
+    use iota::tx_context::TxContext;
+    use iota::object::{Self, UID};
+    use iota::transfer;
+    use iota::url::{Self, Url};
     use std::vector;
 
     /// A type passed to create_supply is not a one-time witness.
@@ -242,7 +243,7 @@ module sui::coin {
         ctx: &mut TxContext
     ): (TreasuryCap<T>, CoinMetadata<T>) {
         // Make sure there's only one instance of the type T
-        assert!(sui::types::is_one_time_witness(&witness), EBadWitness);
+        assert!(iota::types::is_one_time_witness(&witness), EBadWitness);
 
         (
             TreasuryCap {

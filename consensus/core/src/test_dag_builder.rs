@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::{
@@ -16,12 +17,12 @@ use crate::{
         genesis_blocks, BlockAPI, BlockDigest, BlockRef, BlockTimestampMs, Round, Slot, TestBlock,
         VerifiedBlock,
     },
-    commit::{CommitDigest, TrustedCommit, DEFAULT_WAVE_LENGTH},
+    commit::{CertifiedCommit, CommitDigest, TrustedCommit, DEFAULT_WAVE_LENGTH},
     context::Context,
     dag_state::DagState,
     leader_schedule::{LeaderSchedule, LeaderSwapTable},
     linearizer::{BlockStoreAPI, Linearizer},
-    CommittedSubDag,
+    CommitRef, CommittedSubDag,
 };
 
 /// DagBuilder API
@@ -141,21 +142,21 @@ impl DagBuilder {
         &mut self,
         leader_rounds: RangeInclusive<Round>,
     ) -> Vec<(CommittedSubDag, TrustedCommit)> {
-        let (last_leader_round, mut last_commit_index, mut last_timestamp_ms) =
+        let (last_leader_round, mut last_commit_ref, mut last_timestamp_ms) =
             if let Some((sub_dag, _)) = self.committed_sub_dags.last() {
                 (
                     sub_dag.leader.round,
-                    sub_dag.commit_ref.index,
+                    sub_dag.commit_ref,
                     sub_dag.timestamp_ms,
                 )
             } else {
-                (0, 0, 0)
+                (0, CommitRef::new(0, CommitDigest::MIN), 0)
             };
 
         struct BlockStorage {
             gc_round: Round,
             context: Arc<Context>,
-            blocks: BTreeMap<BlockRef, (VerifiedBlock, bool)>, // the tuple represends the block and whether it is committed
+            blocks: BTreeMap<BlockRef, (VerifiedBlock, bool)>, // the tuple represents the block and whether it is committed
         }
         impl BlockStoreAPI for BlockStorage {
             fn get_blocks(&self, refs: &[BlockRef]) -> Vec<Option<VerifiedBlock>> {
@@ -218,7 +219,6 @@ impl DagBuilder {
                 .saturating_sub(self.context.protocol_config.gc_depth());
 
             let leader_block_ref = leader_block.reference();
-            last_commit_index += 1;
             last_timestamp_ms = leader_block.timestamp_ms().max(last_timestamp_ms);
 
             let (to_commit, rejected_transactions) = Linearizer::linearize_sub_dag(
@@ -235,8 +235,8 @@ impl DagBuilder {
             }
 
             let commit = TrustedCommit::new_for_test(
-                last_commit_index,
-                CommitDigest::MIN,
+                last_commit_ref.index + 1,
+                last_commit_ref.digest,
                 last_timestamp_ms,
                 leader_block_ref,
                 to_commit
@@ -244,6 +244,8 @@ impl DagBuilder {
                     .map(|block| block.reference())
                     .collect::<Vec<_>>(),
             );
+
+            last_commit_ref = commit.reference();
 
             let sub_dag = CommittedSubDag::new(
                 leader_block_ref,
@@ -261,6 +263,21 @@ impl DagBuilder {
             .clone()
             .into_iter()
             .filter(|(sub_dag, _)| leader_rounds.contains(&sub_dag.leader.round))
+            .collect()
+    }
+
+    pub(crate) fn get_sub_dag_and_certified_commits(
+        &mut self,
+        leader_rounds: RangeInclusive<Round>,
+    ) -> Vec<(CommittedSubDag, CertifiedCommit)> {
+        let commits = self.get_sub_dag_and_commits(leader_rounds);
+        commits
+            .into_iter()
+            .map(|(sub_dag, commit)| {
+                let certified_commit =
+                    CertifiedCommit::new_certified(commit, sub_dag.blocks.clone());
+                (sub_dag, certified_commit)
+            })
             .collect()
     }
 
@@ -639,7 +656,7 @@ impl<'a> LayerBuilder<'a> {
             .map(|authority| {
                 authorities_to_shuffle.shuffle(&mut rng);
 
-                // TODO: handle quroum threshold properly with stake
+                // TODO: handle quorum threshold properly with stake
                 let min_ancestors: HashSet<AuthorityIndex> = authorities_to_shuffle
                     .iter()
                     .take(quorum_threshold)
@@ -766,7 +783,7 @@ impl<'a> LayerBuilder<'a> {
     }
 
     fn should_skip_block(&self, round: Round, authority: AuthorityIndex) -> bool {
-        // Safe to unwrap as specified authorites has to be set before skip
+        // Safe to unwrap as specified authorities has to be set before skip
         // is specified.
         if self.skip_block
             && self

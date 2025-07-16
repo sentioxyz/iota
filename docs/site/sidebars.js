@@ -1,18 +1,18 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2024 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-//const why_sui = require("../content/sidebars/why_sui.js");
-const guides = require("../content/sidebars/guides.js");
-const concepts = require("../content/sidebars/concepts.js");
-const standards = require("../content/sidebars/standards.js");
-const references = require("../content/sidebars/references.js");
+const developer = require("../content/sidebars/developer.js");
+const aboutIota = require("../content/sidebars/about-iota.js");
+const operator = require("../content/sidebars/operator.js");
+const users = require("../content/sidebars/users.js");
+
 
 const sidebars = {
-  //whySuiSidebar: why_sui,
-  guidesSidebar: guides,
-  conceptsSidebar: concepts,
-  standardsSidebar: standards,
-  referencesSidebar: references,
+  developerSidebar: developer,
+  operatorSidebar: operator,
+  aboutIotaSidebar: aboutIota,
+  usersSidebar: users,
 };
 
 module.exports = sidebars;

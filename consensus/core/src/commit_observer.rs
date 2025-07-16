@@ -1,9 +1,10 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::{sync::Arc, time::Duration};
 
-use mysten_metrics::monitored_mpsc::UnboundedSender;
+use iota_metrics::monitored_mpsc::UnboundedSender;
 use parking_lot::RwLock;
 use tokio::time::Instant;
 use tracing::{debug, info};
@@ -27,7 +28,7 @@ use crate::{
 /// - The committed subdags are sent as consensus output via an unbounded tokio channel.
 ///
 /// No back pressure mechanism is needed as backpressure is handled as input into
-/// consenus.
+/// consensus.
 ///
 /// - Commit metadata including index is persisted in store, before the CommittedSubDag
 ///     is sent to the consumer.
@@ -139,7 +140,7 @@ impl CommitObserver {
 
             // On recovery leader schedule will be updated with the current scores
             // and the scores will be passed along with the last commit sent to
-            // sui so that the current scores are available for submission.
+            // iota so that the current scores are available for submission.
             let reputation_scores = if index == num_unsent_commits - 1 {
                 self.leader_schedule
                     .leader_swap_table
@@ -211,7 +212,7 @@ impl CommitObserver {
 
 #[cfg(test)]
 mod tests {
-    use mysten_metrics::monitored_mpsc::UnboundedReceiver;
+    use iota_metrics::monitored_mpsc::UnboundedReceiver;
     use parking_lot::RwLock;
 
     use super::*;

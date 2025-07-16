@@ -1,4 +1,5 @@
 // Copyright (c) The Move Contributors
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::{
@@ -366,7 +367,7 @@ struct ResolutionContext<'ctxt, 'call> {
     arms_loc: Loc,
 }
 
-impl<'ctxt, 'call> ResolutionContext<'ctxt, 'call> {
+impl ResolutionContext<'_, '_> {
     fn arm(&self, index: usize) -> T::Exp {
         self.arms[index].clone()
     }

@@ -1,7 +1,7 @@
 ARG PROFILE=release
 # ARG BUILD_DATE
 # ARG GIT_REVISION
-ARG RUST_VERSION=1.81.0
+ARG RUST_VERSION=1.85.0
 
 FROM scratch AS base
 
@@ -40,7 +40,7 @@ COPY --from=stagex/llvm . /
 COPY --from=stagex/make . /
 COPY --from=stagex/musl . /
 
-# Sui build deps
+# IOTA build deps
 
 COPY --from=stagex/clang . /
 COPY --from=stagex/linux-headers . /

@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::{sync::Arc, time::SystemTime};
@@ -6,7 +7,7 @@ use std::{sync::Arc, time::SystemTime};
 use consensus_config::{AuthorityIndex, Committee, Parameters};
 #[cfg(test)]
 use consensus_config::{NetworkKeyPair, ProtocolKeyPair};
-use sui_protocol_config::ProtocolConfig;
+use iota_protocol_config::ProtocolConfig;
 #[cfg(test)]
 use tempfile::TempDir;
 use tokio::time::Instant;
@@ -92,6 +93,12 @@ impl Context {
     #[cfg(test)]
     pub(crate) fn with_parameters(mut self, parameters: Parameters) -> Self {
         self.parameters = parameters;
+        self
+    }
+
+    #[cfg(test)]
+    pub(crate) fn with_protocol_config(mut self, protocol_config: ProtocolConfig) -> Self {
+        self.protocol_config = protocol_config;
         self
     }
 }

@@ -1,5 +1,6 @@
 // Copyright (c) The Diem Core Contributors
 // Copyright (c) The Move Contributors
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 //! Provides a model for a set of Move modules (and scripts, which
@@ -64,7 +65,7 @@ use crate::{
 };
 
 // =================================================================================================
-/// # Constants
+// # Constants
 
 /// A name we use to represent a script as a module.
 pub const SCRIPT_MODULE_NAME: &str = "<SELF>";
@@ -75,7 +76,7 @@ pub const SCRIPT_BYTECODE_FUN_NAME: &str = "<SELF>";
 /// A prefix used for structs which are backing specification ("ghost") memory.
 pub const GHOST_MEMORY_PREFIX: &str = "Ghost$";
 
-const SUI_FRAMEWORK_ADDRESS: AccountAddress = address_from_single_byte(2);
+const IOTA_FRAMEWORK_ADDRESS: AccountAddress = address_from_single_byte(2);
 
 const fn address_from_single_byte(b: u8) -> AccountAddress {
     let mut addr = [0u8; AccountAddress::LENGTH];
@@ -84,7 +85,7 @@ const fn address_from_single_byte(b: u8) -> AccountAddress {
 }
 
 // =================================================================================================
-/// # Locations
+// # Locations
 
 /// A location, consisting of a FileId and a span in this file.
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone)]
@@ -156,9 +157,9 @@ impl Default for Loc {
     }
 }
 
-/// Return true if `f` is a Sui framework function declared in `module` with a name in `names`
+/// Return true if `f` is a IOTA framework function declared in `module` with a name in `names`
 fn is_framework_function(f: &FunctionRef, module: &str, names: Vec<&str>) -> bool {
-    *f.module_id.address() == SUI_FRAMEWORK_ADDRESS
+    *f.module_id.address() == IOTA_FRAMEWORK_ADDRESS
         && f.module_id.name().to_string() == module
         && names.contains(&f.function_ident.as_str())
 }
@@ -168,17 +169,17 @@ fn is_framework_function(f: &FunctionRef, module: &str, names: Vec<&str>) -> boo
 pub type MoveIrLoc = move_ir_types::location::Loc;
 
 // =================================================================================================
-/// # Identifiers
-///
-/// Identifiers are opaque values used to reference entities in the environment.
-///
-/// We have two kinds of ids: those based on an index, and those based on a symbol. We use
-/// the symbol based ids where we do not have control of the definition index order in bytecode
-/// (i.e. we do not know in which order move-compiler enters functions and structs into file format),
-/// and index based ids where we do have control (for modules, SpecFun and SpecVar).
-///
-/// In any case, ids are opaque in the sense that if someone has a StructId or similar in hand,
-/// it is known to be defined in the environment, as it has been obtained also from the environment.
+// # Identifiers
+//
+// Identifiers are opaque values used to reference entities in the environment.
+//
+// We have two kinds of ids: those based on an index, and those based on a symbol. We use
+// the symbol based ids where we do not have control of the definition index order in bytecode
+// (i.e. we do not know in which order move-compiler enters functions and structs into file format),
+// and index based ids where we do have control (for modules, SpecFun and SpecVar).
+//
+// In any case, ids are opaque in the sense that if someone has a StructId or similar in hand,
+// it is known to be defined in the environment, as it has been obtained also from the environment.
 
 /// Raw index type used in ids. 16 bits are sufficient currently.
 pub type RawIndex = u16;
@@ -387,7 +388,7 @@ impl QualifiedInstId<DatatypeId> {
 }
 
 // =================================================================================================
-/// # Global Environment
+// # Global Environment
 
 /// Global environment for a set of modules.
 #[derive(Debug)]
@@ -1402,7 +1403,7 @@ impl Default for GlobalEnv {
 }
 
 // =================================================================================================
-/// # Module Environment
+// # Module Environment
 
 /// Represents data for a module.
 #[derive(Debug)]
@@ -2921,7 +2922,7 @@ pub struct NamedConstantEnv<'env> {
     data: &'env NamedConstantData,
 }
 
-impl<'env> NamedConstantEnv<'env> {
+impl NamedConstantEnv<'_> {
     /// Returns the name of this constant
     pub fn get_name(&self) -> Symbol {
         self.data.name
@@ -2954,7 +2955,7 @@ impl<'env> NamedConstantEnv<'env> {
 }
 
 // =================================================================================================
-/// # Function Environment
+// # Function Environment
 
 /// Represents a type parameter.
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -3683,7 +3684,7 @@ impl<'env> FunctionEnv<'env> {
 }
 
 // =================================================================================================
-/// # Expression Environment
+// # Expression Environment
 
 /// Represents context for an expression.
 #[derive(Debug, Clone)]
@@ -3707,7 +3708,7 @@ impl ExpInfo {
 }
 
 // =================================================================================================
-/// # Formatting
+// # Formatting
 
 pub struct LocDisplay<'env> {
     loc: &'env Loc,
@@ -3733,7 +3734,7 @@ impl Loc {
     }
 }
 
-impl<'env> fmt::Display for LocDisplay<'env> {
+impl fmt::Display for LocDisplay<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         if let Some((fname, pos)) = self.env.get_file_and_location(self.loc) {
             if self.only_line {
@@ -3771,7 +3772,7 @@ impl GetNameString for QualifiedId<FunId> {
     }
 }
 
-impl<'a, Id: Clone> fmt::Display for EnvDisplay<'a, QualifiedId<Id>>
+impl<Id: Clone> fmt::Display for EnvDisplay<'_, QualifiedId<Id>>
 where
     QualifiedId<Id>: GetNameString,
 {
@@ -3780,7 +3781,7 @@ where
     }
 }
 
-impl<'a, Id: Clone> fmt::Display for EnvDisplay<'a, QualifiedInstId<Id>>
+impl<Id: Clone> fmt::Display for EnvDisplay<'_, QualifiedInstId<Id>>
 where
     QualifiedId<Id>: GetNameString,
 {

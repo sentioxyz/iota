@@ -1,0 +1,18 @@
+[package]
+name = "iota-indexer-alt-schema"
+version.workspace = true
+authors = ["IOTA Foundation <info@iota.org>"]
+edition = "2021"
+license = "Apache-2.0"
+publish = false
+
+[dependencies]
+anyhow.workspace = true
+bcs.workspace = true
+diesel = { workspace = true, features = ["postgres_backend", "chrono"] }
+diesel_migrations.workspace = true
+serde.workspace = true
+
+iota-field-count.workspace = true
+iota-protocol-config.workspace = true
+iota-types.workspace = true

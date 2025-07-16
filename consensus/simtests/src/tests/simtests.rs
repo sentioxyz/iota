@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 #[cfg(msim)]
 mod test {
@@ -7,14 +8,14 @@ mod test {
         Authority, AuthorityIndex, AuthorityKeyPair, Committee, Epoch, NetworkKeyPair,
         ProtocolKeyPair, Stake,
     };
-    use mysten_network::Multiaddr;
+    use iota_network_stack::Multiaddr;
     use prometheus::Registry;
     use rand::{rngs::StdRng, SeedableRng as _};
     use std::{sync::Arc, time::Duration};
-    use sui_config::local_ip_utils;
-    use sui_macros::sim_test;
-    use sui_protocol_config::ProtocolConfig;
-    use sui_simulator::{
+    use iota_config::local_ip_utils;
+    use iota_macros::sim_test;
+    use iota_protocol_config::ProtocolConfig;
+    use iota_simulator::{
         configs::{bimodal_latency_ms, env_config, uniform_latency_ms},
         SimConfig,
     };
@@ -59,7 +60,7 @@ mod test {
                 db_dir: Arc::new(TempDir::new().unwrap()),
                 committee: committee.clone(),
                 keypairs: keypairs.clone(),
-                network_type: sui_protocol_config::ConsensusNetwork::Tonic,
+                network_type: iota_protocol_config::ConsensusNetwork::Tonic,
                 boot_counter: boot_counters[index],
                 protocol_config: protocol_config.clone(),
             };

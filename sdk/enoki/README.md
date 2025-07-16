@@ -1,1 +1,1 @@
-`@mysten/enoki` has moved to https://github.com/MystenLabs/ts-sdks/tree/main/packages/enoki
+`@iota/enoki` has moved to https://github.com/iotaledger/ts-sdks/tree/main/packages/enoki

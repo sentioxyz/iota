@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 /// The Token module which implements a Closed Loop Token with a configurable
@@ -10,7 +11,7 @@
 /// companion to existing open-loop (`Coin`) systems.
 ///
 /// ```
-/// Module:      sui::balance       sui::coin             sui::token
+/// Module:      iota::balance       iota::coin             iota::token
 /// Main type:   Balance<T>         Coin<T>               Token<T>
 /// Capability:  Supply<T>  <---->  TreasuryCap<T> <----> TreasuryCap<T>
 /// Abilities:   store              key + store           key
@@ -19,19 +20,19 @@
 /// The Token system allows for fine-grained control over the actions performed
 /// on the token. And hence it is highly suitable for applications that require
 /// control over the currency which a simple open-loop system can't provide.
-module sui::token {
+module iota::token {
     use std::vector;
     use std::string::{Self, String};
     use std::option::{Self, Option};
     use std::type_name::{Self, TypeName};
-    use sui::tx_context::{Self, TxContext};
-    use sui::coin::{Self, Coin, TreasuryCap};
-    use sui::balance::{Self, Balance};
-    use sui::object::{Self, ID, UID};
-    use sui::vec_map::{Self, VecMap};
-    use sui::vec_set::{Self, VecSet};
-    use sui::dynamic_field as df;
-    use sui::transfer;
+    use iota::tx_context::{Self, TxContext};
+    use iota::coin::{Self, Coin, TreasuryCap};
+    use iota::balance::{Self, Balance};
+    use iota::object::{Self, ID, UID};
+    use iota::vec_map::{Self, VecMap};
+    use iota::vec_set::{Self, VecSet};
+    use iota::dynamic_field as df;
+    use iota::transfer;
 
     /// The action is not allowed (defined) in the policy.
     const EUnknownAction: u64 = 0;

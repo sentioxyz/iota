@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::{collections::HashSet, sync::Arc};
@@ -51,7 +52,6 @@ use crate::{
 /// dag_builder.print(); // print the parsed DAG
 /// dag_builder.persist_all_blocks(dag_state.clone()); // persist all blocks to DagState
 /// ```
-
 pub(crate) fn parse_dag(dag_string: &str) -> IResult<&str, DagBuilder> {
     let (input, _) = tuple((tag("DAG"), multispace0, char('{')))(dag_string)?;
 

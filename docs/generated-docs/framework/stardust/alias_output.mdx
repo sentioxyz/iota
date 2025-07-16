@@ -1,0 +1,244 @@
+---
+title: Module stardust::alias_output
+sidebar_label: alias_output
+slug: alias_output
+---
+import Link from '@docusaurus/Link';
+
+<Link id="stardust_alias_output"/>
+
+
+-  [Struct `AliasOutput`](#stardust_alias_output_AliasOutput)
+-  [Constants](#@Constants_0)
+-  [Function `extract_assets`](#stardust_alias_output_extract_assets)
+-  [Function `receive`](#stardust_alias_output_receive)
+-  [Function `attach_alias`](#stardust_alias_output_attach_alias)
+-  [Function `load_alias`](#stardust_alias_output_load_alias)
+
+
+<pre>
+<code>
+<b>use</b> <Link to="../iota/address#iota_address">iota::address</Link>;
+<b>use</b> <Link to="../iota/bag#iota_bag">iota::bag</Link>;
+<b>use</b> <Link to="../iota/balance#iota_balance">iota::balance</Link>;
+<b>use</b> <Link to="../iota/dynamic_field#iota_dynamic_field">iota::dynamic_field</Link>;
+<b>use</b> <Link to="../iota/dynamic_object_field#iota_dynamic_object_field">iota::dynamic_object_field</Link>;
+<b>use</b> <Link to="../iota/hex#iota_hex">iota::hex</Link>;
+<b>use</b> <Link to="../iota/object#iota_object">iota::object</Link>;
+<b>use</b> <Link to="../iota/transfer#iota_transfer">iota::transfer</Link>;
+<b>use</b> <Link to="../iota/tx_context#iota_tx_context">iota::tx_context</Link>;
+<b>use</b> <Link to="../stardust/alias#stardust_alias">stardust::alias</Link>;
+<b>use</b> <Link to="../std/address#std_address">std::address</Link>;
+<b>use</b> <Link to="../std/ascii#std_ascii">std::ascii</Link>;
+<b>use</b> <Link to="../std/bcs#std_bcs">std::bcs</Link>;
+<b>use</b> <Link to="../std/option#std_option">std::option</Link>;
+<b>use</b> <Link to="../std/string#std_string">std::string</Link>;
+<b>use</b> <Link to="../std/type_name#std_type_name">std::type_name</Link>;
+<b>use</b> <Link to="../std/vector#std_vector">std::vector</Link>;
+</code>
+</pre>
+
+
+
+<Link id="stardust_alias_output_AliasOutput"></Link>
+
+## Struct `AliasOutput`
+
+Owned Object controlled by the Governor Address.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../stardust/alias_output#stardust_alias_output_AliasOutput">AliasOutput</Link>&lt;<b>phantom</b> T&gt; <b>has</b> key
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code>id: <Link to="../iota/object#iota_object_UID">iota::object::UID</Link></code>
+</dt>
+<dd>
+ This is a "random" UID, not the AliasID from Stardust.
+</dd>
+<dt>
+<code>balance: <Link to="../iota/balance#iota_balance_Balance">iota::balance::Balance</Link>&lt;T&gt;</code>
+</dt>
+<dd>
+ The amount of coins held by the output.
+</dd>
+<dt>
+<code>native_tokens: <Link to="../iota/bag#iota_bag_Bag">iota::bag::Bag</Link></code>
+</dt>
+<dd>
+ The <code>Bag</code> holds native tokens, key-ed by the stringified type of the asset.
+ Example: key: "0xabcded::soon::SOON", value: `Balance<0xabcded::soon::SOON>`.
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="@Constants_0"></Link>
+
+## Constants
+
+
+<Link id="stardust_alias_output_ALIAS_NAME"></Link>
+
+The Alias dynamic object field name.
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../stardust/alias_output#stardust_alias_output_ALIAS_NAME">ALIAS_NAME</Link>: vector&lt;u8&gt; = vector[97, 108, 105, 97, 115];
+</code>
+</pre>
+
+
+
+<Link id="stardust_alias_output_extract_assets"></Link>
+
+## Function `extract_assets`
+
+The function extracts assets from a legacy <code><Link to="../stardust/alias_output#stardust_alias_output_AliasOutput">AliasOutput</Link></code>.
+- returns the coin Balance,
+- the native tokens Bag,
+- and the <code>Alias</code> object that persists the AliasID=ObjectID from Stardust.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/alias_output#stardust_alias_output_extract_assets">extract_assets</Link>&lt;T&gt;(output: <Link to="../stardust/alias_output#stardust_alias_output_AliasOutput">stardust::alias_output::AliasOutput</Link>&lt;T&gt;): (<Link to="../iota/balance#iota_balance_Balance">iota::balance::Balance</Link>&lt;T&gt;, <Link to="../iota/bag#iota_bag_Bag">iota::bag::Bag</Link>, <Link to="../stardust/alias#stardust_alias_Alias">stardust::alias::Alias</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/alias_output#stardust_alias_output_extract_assets">extract_assets</Link>&lt;T&gt;(<b>mut</b> output: <Link to="../stardust/alias_output#stardust_alias_output_AliasOutput">AliasOutput</Link>&lt;T&gt;): (Balance&lt;T&gt;, Bag, Alias) \{
+    // Load the related <Link to="../stardust/alias#stardust_alias">alias</Link> object.
+    <b>let</b> <Link to="../stardust/alias#stardust_alias">alias</Link> = <Link to="../stardust/alias_output#stardust_alias_output_load_alias">load_alias</Link>(&<b>mut</b> output);
+    // Unpack the output into its basic part.
+    <b>let</b> <Link to="../stardust/alias_output#stardust_alias_output_AliasOutput">AliasOutput</Link> \{
+        id,
+        balance,
+        native_tokens,
+    } = output;
+    // Delete the output.
+    object::delete(id);
+    (balance, native_tokens, <Link to="../stardust/alias#stardust_alias">alias</Link>)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="stardust_alias_output_receive"></Link>
+
+## Function `receive`
+
+Utility function to receive an <code><Link to="../stardust/alias_output#stardust_alias_output_AliasOutput">AliasOutput</Link></code> object in other Stardust modules.
+Other modules in the Stardust package can call this function to receive an <code><Link to="../stardust/alias_output#stardust_alias_output_AliasOutput">AliasOutput</Link></code> object (nft).
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../stardust/alias_output#stardust_alias_output_receive">receive</Link>&lt;T&gt;(parent: &<b>mut</b> <Link to="../iota/object#iota_object_UID">iota::object::UID</Link>, output: <Link to="../iota/transfer#iota_transfer_Receiving">iota::transfer::Receiving</Link>&lt;<Link to="../stardust/alias_output#stardust_alias_output_AliasOutput">stardust::alias_output::AliasOutput</Link>&lt;T&gt;&gt;): <Link to="../stardust/alias_output#stardust_alias_output_AliasOutput">stardust::alias_output::AliasOutput</Link>&lt;T&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../stardust/alias_output#stardust_alias_output_receive">receive</Link>&lt;T&gt;(
+    parent: &<b>mut</b> UID,
+    output: Receiving&lt;<Link to="../stardust/alias_output#stardust_alias_output_AliasOutput">AliasOutput</Link>&lt;T&gt;&gt;,
+): <Link to="../stardust/alias_output#stardust_alias_output_AliasOutput">AliasOutput</Link>&lt;T&gt; \{
+    transfer::receive(parent, output)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="stardust_alias_output_attach_alias"></Link>
+
+## Function `attach_alias`
+
+Utility function to attach an <code>Alias</code> to an <code><Link to="../stardust/alias_output#stardust_alias_output_AliasOutput">AliasOutput</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/alias_output#stardust_alias_output_attach_alias">attach_alias</Link>&lt;T&gt;(output: &<b>mut</b> <Link to="../stardust/alias_output#stardust_alias_output_AliasOutput">stardust::alias_output::AliasOutput</Link>&lt;T&gt;, <Link to="../stardust/alias#stardust_alias">alias</Link>: <Link to="../stardust/alias#stardust_alias_Alias">stardust::alias::Alias</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/alias_output#stardust_alias_output_attach_alias">attach_alias</Link>&lt;T&gt;(output: &<b>mut</b> <Link to="../stardust/alias_output#stardust_alias_output_AliasOutput">AliasOutput</Link>&lt;T&gt;, <Link to="../stardust/alias#stardust_alias">alias</Link>: Alias) \{
+    dynamic_object_field::add(&<b>mut</b> output.id, <Link to="../stardust/alias_output#stardust_alias_output_ALIAS_NAME">ALIAS_NAME</Link>, <Link to="../stardust/alias#stardust_alias">alias</Link>)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="stardust_alias_output_load_alias"></Link>
+
+## Function `load_alias`
+
+Loads the <code>Alias</code> object from the dynamic object field.
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../stardust/alias_output#stardust_alias_output_load_alias">load_alias</Link>&lt;T&gt;(output: &<b>mut</b> <Link to="../stardust/alias_output#stardust_alias_output_AliasOutput">stardust::alias_output::AliasOutput</Link>&lt;T&gt;): <Link to="../stardust/alias#stardust_alias_Alias">stardust::alias::Alias</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../stardust/alias_output#stardust_alias_output_load_alias">load_alias</Link>&lt;T&gt;(output: &<b>mut</b> <Link to="../stardust/alias_output#stardust_alias_output_AliasOutput">AliasOutput</Link>&lt;T&gt;): Alias \{
+    dynamic_object_field::remove(&<b>mut</b> output.id, <Link to="../stardust/alias_output#stardust_alias_output_ALIAS_NAME">ALIAS_NAME</Link>)
+}
+</code>
+</pre>
+
+
+
+</details>

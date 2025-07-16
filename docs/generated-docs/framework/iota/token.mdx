@@ -1,0 +1,2233 @@
+---
+title: Module iota::token
+sidebar_label: token
+slug: token
+---
+import Link from '@docusaurus/Link';
+
+<Link id="iota_token"/>
+The Token module which implements a Closed Loop Token with a configurable
+policy. The policy is defined by a set of rules that must be satisfied for
+an action to be performed on the token.
+
+The module is designed to be used with a <code>TreasuryCap</code> to allow for minting
+and burning of the <code><Link to="../iota/token#iota_token_Token">Token</Link></code>s. And can act as a replacement / extension or a
+companion to existing open-loop (<code>Coin</code>) systems.
+
+```
+Module:      iota::balance       iota::coin             iota::token
+Main type:   `Balance<T>`         `Coin<T>`               `Token<T>`
+Capability:  `Supply<T>`  <---->  `TreasuryCap<T>` <----> `TreasuryCap<T>`
+Abilities:   store              key + store           key
+```
+
+The Token system allows for fine-grained control over the actions performed
+on the token. And hence it is highly suitable for applications that require
+control over the currency which a simple open-loop system can't provide.
+
+
+-  [Struct `Token`](#iota_token_Token)
+-  [Struct `TokenPolicyCap`](#iota_token_TokenPolicyCap)
+-  [Struct `TokenPolicy`](#iota_token_TokenPolicy)
+-  [Struct `ActionRequest`](#iota_token_ActionRequest)
+-  [Struct `RuleKey`](#iota_token_RuleKey)
+-  [Struct `TokenPolicyCreated`](#iota_token_TokenPolicyCreated)
+-  [Constants](#@Constants_0)
+-  [Function `new_policy`](#iota_token_new_policy)
+-  [Function `share_policy`](#iota_token_share_policy)
+-  [Function `transfer`](#iota_token_transfer)
+-  [Function `spend`](#iota_token_spend)
+-  [Function `to_coin`](#iota_token_to_coin)
+-  [Function `from_coin`](#iota_token_from_coin)
+-  [Function `join`](#iota_token_join)
+-  [Function `split`](#iota_token_split)
+-  [Function `zero`](#iota_token_zero)
+-  [Function `destroy_zero`](#iota_token_destroy_zero)
+-  [Function `keep`](#iota_token_keep)
+-  [Function `new_request`](#iota_token_new_request)
+-  [Function `confirm_request`](#iota_token_confirm_request)
+-  [Function `confirm_request_mut`](#iota_token_confirm_request_mut)
+-  [Function `confirm_with_policy_cap`](#iota_token_confirm_with_policy_cap)
+-  [Function `confirm_with_treasury_cap`](#iota_token_confirm_with_treasury_cap)
+-  [Function `add_approval`](#iota_token_add_approval)
+-  [Function `add_rule_config`](#iota_token_add_rule_config)
+-  [Function `rule_config`](#iota_token_rule_config)
+-  [Function `rule_config_mut`](#iota_token_rule_config_mut)
+-  [Function `remove_rule_config`](#iota_token_remove_rule_config)
+-  [Function `has_rule_config`](#iota_token_has_rule_config)
+-  [Function `has_rule_config_with_type`](#iota_token_has_rule_config_with_type)
+-  [Function `allow`](#iota_token_allow)
+-  [Function `disallow`](#iota_token_disallow)
+-  [Function `add_rule_for_action`](#iota_token_add_rule_for_action)
+-  [Function `remove_rule_for_action`](#iota_token_remove_rule_for_action)
+-  [Function `mint`](#iota_token_mint)
+-  [Function `burn`](#iota_token_burn)
+-  [Function `flush`](#iota_token_flush)
+-  [Function `is_allowed`](#iota_token_is_allowed)
+-  [Function `rules`](#iota_token_rules)
+-  [Function `spent_balance`](#iota_token_spent_balance)
+-  [Function `value`](#iota_token_value)
+-  [Function `transfer_action`](#iota_token_transfer_action)
+-  [Function `spend_action`](#iota_token_spend_action)
+-  [Function `to_coin_action`](#iota_token_to_coin_action)
+-  [Function `from_coin_action`](#iota_token_from_coin_action)
+-  [Function `action`](#iota_token_action)
+-  [Function `amount`](#iota_token_amount)
+-  [Function `sender`](#iota_token_sender)
+-  [Function `recipient`](#iota_token_recipient)
+-  [Function `approvals`](#iota_token_approvals)
+-  [Function `spent`](#iota_token_spent)
+-  [Function `key`](#iota_token_key)
+
+
+<pre>
+<code>
+<b>use</b> <Link to="../iota/address#iota_address">iota::address</Link>;
+<b>use</b> <Link to="../iota/bag#iota_bag">iota::bag</Link>;
+<b>use</b> <Link to="../iota/balance#iota_balance">iota::balance</Link>;
+<b>use</b> <Link to="../iota/coin#iota_coin">iota::coin</Link>;
+<b>use</b> <Link to="../iota/config#iota_config">iota::config</Link>;
+<b>use</b> <Link to="../iota/deny_list#iota_deny_list">iota::deny_list</Link>;
+<b>use</b> <Link to="../iota/dynamic_field#iota_dynamic_field">iota::dynamic_field</Link>;
+<b>use</b> <Link to="../iota/dynamic_object_field#iota_dynamic_object_field">iota::dynamic_object_field</Link>;
+<b>use</b> <Link to="../iota/event#iota_event">iota::event</Link>;
+<b>use</b> <Link to="../iota/hex#iota_hex">iota::hex</Link>;
+<b>use</b> <Link to="../iota/object#iota_object">iota::object</Link>;
+<b>use</b> <Link to="../iota/transfer#iota_transfer">iota::transfer</Link>;
+<b>use</b> <Link to="../iota/tx_context#iota_tx_context">iota::tx_context</Link>;
+<b>use</b> <Link to="../iota/types#iota_types">iota::types</Link>;
+<b>use</b> <Link to="../iota/url#iota_url">iota::url</Link>;
+<b>use</b> <Link to="../iota/vec_map#iota_vec_map">iota::vec_map</Link>;
+<b>use</b> <Link to="../iota/vec_set#iota_vec_set">iota::vec_set</Link>;
+<b>use</b> <Link to="../std/address#std_address">std::address</Link>;
+<b>use</b> <Link to="../std/ascii#std_ascii">std::ascii</Link>;
+<b>use</b> <Link to="../std/bcs#std_bcs">std::bcs</Link>;
+<b>use</b> <Link to="../std/option#std_option">std::option</Link>;
+<b>use</b> <Link to="../std/string#std_string">std::string</Link>;
+<b>use</b> <Link to="../std/type_name#std_type_name">std::type_name</Link>;
+<b>use</b> <Link to="../std/vector#std_vector">std::vector</Link>;
+</code>
+</pre>
+
+
+
+<Link id="iota_token_Token"></Link>
+
+## Struct `Token`
+
+A single <code><Link to="../iota/token#iota_token_Token">Token</Link></code> with <code>Balance</code> inside. Can only be owned by an address,
+and actions performed on it must be confirmed in a matching <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota/token#iota_token_Token">Token</Link>&lt;<b>phantom</b> T&gt; <b>has</b> <Link to="../iota/token#iota_token_key">key</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code>id: <Link to="../iota/object#iota_object_UID">iota::object::UID</Link></code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code><Link to="../iota/balance#iota_balance">balance</Link>: <Link to="../iota/balance#iota_balance_Balance">iota::balance::Balance</Link>&lt;T&gt;</code>
+</dt>
+<dd>
+ The Balance of the <code><Link to="../iota/token#iota_token_Token">Token</Link></code>.
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="iota_token_TokenPolicyCap"></Link>
+
+## Struct `TokenPolicyCap`
+
+A Capability that manages a single <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link></code> specified in the <code><b>for</b></code>
+field. Created together with <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link></code> in the <code>new</code> function.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota/token#iota_token_TokenPolicyCap">TokenPolicyCap</Link>&lt;<b>phantom</b> T&gt; <b>has</b> <Link to="../iota/token#iota_token_key">key</Link>, store
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code>id: <Link to="../iota/object#iota_object_UID">iota::object::UID</Link></code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code><b>for</b>: <Link to="../iota/object#iota_object_ID">iota::object::ID</Link></code>
+</dt>
+<dd>
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="iota_token_TokenPolicy"></Link>
+
+## Struct `TokenPolicy`
+
+<code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link></code> represents a set of rules that define what actions can be
+performed on a <code><Link to="../iota/token#iota_token_Token">Token</Link></code> and which <code>Rules</code> must be satisfied for the
+action to succeed.
+
+- For the sake of availability, <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link></code> is a <code><Link to="../iota/token#iota_token_key">key</Link></code>-only object.
+- Each <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link></code> is managed by a matching <code><Link to="../iota/token#iota_token_TokenPolicyCap">TokenPolicyCap</Link></code>.
+- For an action to become available, there needs to be a record in the
+<code><Link to="../iota/token#iota_token_rules">rules</Link></code> VecMap. To allow an action to be performed freely, there's an
+<code><Link to="../iota/token#iota_token_allow">allow</Link></code> function that can be called by the <code><Link to="../iota/token#iota_token_TokenPolicyCap">TokenPolicyCap</Link></code> owner.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link>&lt;<b>phantom</b> T&gt; <b>has</b> <Link to="../iota/token#iota_token_key">key</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code>id: <Link to="../iota/object#iota_object_UID">iota::object::UID</Link></code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code><Link to="../iota/token#iota_token_spent_balance">spent_balance</Link>: <Link to="../iota/balance#iota_balance_Balance">iota::balance::Balance</Link>&lt;T&gt;</code>
+</dt>
+<dd>
+ The balance that is effectively spent by the user on the "spend"
+ action. However, actual decrease of the supply can only be done by
+ the <code>TreasuryCap</code> owner when <code><Link to="../iota/token#iota_token_flush">flush</Link></code> is called.
+ This balance is effectively spent and cannot be accessed by anyone
+ but the <code>TreasuryCap</code> owner.
+</dd>
+<dt>
+<code><Link to="../iota/token#iota_token_rules">rules</Link>: <Link to="../iota/vec_map#iota_vec_map_VecMap">iota::vec_map::VecMap</Link>&lt;<Link to="../std/string#std_string_String">std::string::String</Link>, <Link to="../iota/vec_set#iota_vec_set_VecSet">iota::vec_set::VecSet</Link>&lt;<Link to="../std/type_name#std_type_name_TypeName">std::type_name::TypeName</Link>&gt;&gt;</code>
+</dt>
+<dd>
+ The set of rules that define what actions can be performed on the
+ token. For each "action" there's a set of Rules that must be
+ satisfied for the <code><Link to="../iota/token#iota_token_ActionRequest">ActionRequest</Link></code> to be confirmed.
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="iota_token_ActionRequest"></Link>
+
+## Struct `ActionRequest`
+
+A request to perform an "Action" on a token. Stores the information
+about the action to be performed and must be consumed by the <code><Link to="../iota/token#iota_token_confirm_request">confirm_request</Link></code>
+or <code><Link to="../iota/token#iota_token_confirm_request_mut">confirm_request_mut</Link></code> functions when the Rules are satisfied.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota/token#iota_token_ActionRequest">ActionRequest</Link>&lt;<b>phantom</b> T&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code>name: <Link to="../std/string#std_string_String">std::string::String</Link></code>
+</dt>
+<dd>
+ Name of the Action to look up in the Policy. Name can be one of the
+ default actions: <code><Link to="../iota/transfer#iota_transfer">transfer</Link></code>, <code><Link to="../iota/token#iota_token_spend">spend</Link></code>, <code><Link to="../iota/token#iota_token_to_coin">to_coin</Link></code>, <code><Link to="../iota/token#iota_token_from_coin">from_coin</Link></code> or a
+ custom action.
+</dd>
+<dt>
+<code><Link to="../iota/token#iota_token_amount">amount</Link>: u64</code>
+</dt>
+<dd>
+ Amount is present in all of the txs
+</dd>
+<dt>
+<code><Link to="../iota/token#iota_token_sender">sender</Link>: <b>address</b></code>
+</dt>
+<dd>
+ Sender is a permanent field always
+</dd>
+<dt>
+<code><Link to="../iota/token#iota_token_recipient">recipient</Link>: <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;<b>address</b>&gt;</code>
+</dt>
+<dd>
+ Recipient is only available in <code><Link to="../iota/transfer#iota_transfer">transfer</Link></code> action.
+</dd>
+<dt>
+<code><Link to="../iota/token#iota_token_spent_balance">spent_balance</Link>: <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;<Link to="../iota/balance#iota_balance_Balance">iota::balance::Balance</Link>&lt;T&gt;&gt;</code>
+</dt>
+<dd>
+ The balance to be "spent" in the <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link></code>, only available
+ in the <code><Link to="../iota/token#iota_token_spend">spend</Link></code> action.
+</dd>
+<dt>
+<code><Link to="../iota/token#iota_token_approvals">approvals</Link>: <Link to="../iota/vec_set#iota_vec_set_VecSet">iota::vec_set::VecSet</Link>&lt;<Link to="../std/type_name#std_type_name_TypeName">std::type_name::TypeName</Link>&gt;</code>
+</dt>
+<dd>
+ Collected approvals (stamps) from completed <code>Rules</code>. They're matched
+ against <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link>.<Link to="../iota/token#iota_token_rules">rules</Link></code> to determine if the request can be
+ confirmed.
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="iota_token_RuleKey"></Link>
+
+## Struct `RuleKey`
+
+Dynamic field key for the <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link></code> to store the <code>Config</code> for a
+specific action <code>Rule</code>. There can be only one configuration per
+<code>Rule</code> per <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota/token#iota_token_RuleKey">RuleKey</Link>&lt;<b>phantom</b> T&gt; <b>has</b> <b>copy</b>, drop, store
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code>is_protected: bool</code>
+</dt>
+<dd>
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="iota_token_TokenPolicyCreated"></Link>
+
+## Struct `TokenPolicyCreated`
+
+An event emitted when a <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link></code> is created and shared. Because
+<code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link></code> can only be shared (and potentially frozen in the future),
+we emit this event in the <code><Link to="../iota/token#iota_token_share_policy">share_policy</Link></code> function and mark it as mutable.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota/token#iota_token_TokenPolicyCreated">TokenPolicyCreated</Link>&lt;<b>phantom</b> T&gt; <b>has</b> <b>copy</b>, drop
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code>id: <Link to="../iota/object#iota_object_ID">iota::object::ID</Link></code>
+</dt>
+<dd>
+ ID of the <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link></code> that was created.
+</dd>
+<dt>
+<code>is_mutable: bool</code>
+</dt>
+<dd>
+ Whether the <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link></code> is "shared" (mutable) or "frozen"
+ (immutable) - TBD.
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="@Constants_0"></Link>
+
+## Constants
+
+
+<Link id="iota_token_EBalanceTooLow"></Link>
+
+The balance is too low to perform the action.
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota/token#iota_token_EBalanceTooLow">EBalanceTooLow</Link>: u64 = 3;
+</code>
+</pre>
+
+
+
+<Link id="iota_token_ECantConsumeBalance"></Link>
+
+The balance is not zero when trying to confirm with <code>TransferPolicyCap</code>.
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota/token#iota_token_ECantConsumeBalance">ECantConsumeBalance</Link>: u64 = 5;
+</code>
+</pre>
+
+
+
+<Link id="iota_token_ENoConfig"></Link>
+
+Rule is trying to access a missing config (with type).
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota/token#iota_token_ENoConfig">ENoConfig</Link>: u64 = 6;
+</code>
+</pre>
+
+
+
+<Link id="iota_token_ENotApproved"></Link>
+
+The rule was not approved.
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota/token#iota_token_ENotApproved">ENotApproved</Link>: u64 = 1;
+</code>
+</pre>
+
+
+
+<Link id="iota_token_ENotAuthorized"></Link>
+
+Trying to perform an admin action with a wrong cap.
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota/token#iota_token_ENotAuthorized">ENotAuthorized</Link>: u64 = 2;
+</code>
+</pre>
+
+
+
+<Link id="iota_token_ENotZero"></Link>
+
+The balance is not zero.
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota/token#iota_token_ENotZero">ENotZero</Link>: u64 = 4;
+</code>
+</pre>
+
+
+
+<Link id="iota_token_EUnknownAction"></Link>
+
+The action is not allowed (defined) in the policy.
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota/token#iota_token_EUnknownAction">EUnknownAction</Link>: u64 = 0;
+</code>
+</pre>
+
+
+
+<Link id="iota_token_EUseImmutableConfirm"></Link>
+
+Using <code><Link to="../iota/token#iota_token_confirm_request_mut">confirm_request_mut</Link></code> without <code><Link to="../iota/token#iota_token_spent_balance">spent_balance</Link></code>. Immutable version
+of the function must be used instead.
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota/token#iota_token_EUseImmutableConfirm">EUseImmutableConfirm</Link>: u64 = 7;
+</code>
+</pre>
+
+
+
+<Link id="iota_token_FROM_COIN"></Link>
+
+A Tag for the <code><Link to="../iota/token#iota_token_from_coin">from_coin</Link></code> action.
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota/token#iota_token_FROM_COIN">FROM_COIN</Link>: vector&lt;u8&gt; = vector[102, 114, 111, 109, 95, 99, 111, 105, 110];
+</code>
+</pre>
+
+
+
+<Link id="iota_token_SPEND"></Link>
+
+A Tag for the <code><Link to="../iota/token#iota_token_spend">spend</Link></code> action.
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota/token#iota_token_SPEND">SPEND</Link>: vector&lt;u8&gt; = vector[115, 112, 101, 110, 100];
+</code>
+</pre>
+
+
+
+<Link id="iota_token_TO_COIN"></Link>
+
+A Tag for the <code><Link to="../iota/token#iota_token_to_coin">to_coin</Link></code> action.
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota/token#iota_token_TO_COIN">TO_COIN</Link>: vector&lt;u8&gt; = vector[116, 111, 95, 99, 111, 105, 110];
+</code>
+</pre>
+
+
+
+<Link id="iota_token_TRANSFER"></Link>
+
+A Tag for the <code><Link to="../iota/transfer#iota_transfer">transfer</Link></code> action.
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota/token#iota_token_TRANSFER">TRANSFER</Link>: vector&lt;u8&gt; = vector[116, 114, 97, 110, 115, 102, 101, 114];
+</code>
+</pre>
+
+
+
+<Link id="iota_token_new_policy"></Link>
+
+## Function `new_policy`
+
+Create a new <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link></code> and a matching <code><Link to="../iota/token#iota_token_TokenPolicyCap">TokenPolicyCap</Link></code>.
+The <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link></code> must then be shared using the <code><Link to="../iota/token#iota_token_share_policy">share_policy</Link></code> method.
+
+<code>TreasuryCap</code> guarantees full ownership over the currency, and is unique,
+hence it is safe to use it for authorization.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_new_policy">new_policy</Link>&lt;T&gt;(_treasury_cap: &<Link to="../iota/coin#iota_coin_TreasuryCap">iota::coin::TreasuryCap</Link>&lt;T&gt;, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): (<Link to="../iota/token#iota_token_TokenPolicy">iota::token::TokenPolicy</Link>&lt;T&gt;, <Link to="../iota/token#iota_token_TokenPolicyCap">iota::token::TokenPolicyCap</Link>&lt;T&gt;)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_new_policy">new_policy</Link>&lt;T&gt;(
+    _treasury_cap: &TreasuryCap&lt;T&gt;,
+    ctx: &<b>mut</b> TxContext,
+): (<Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link>&lt;T&gt;, <Link to="../iota/token#iota_token_TokenPolicyCap">TokenPolicyCap</Link>&lt;T&gt;) \{
+    <b>let</b> policy = <Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link> \{
+        id: <Link to="../iota/object#iota_object_new">object::new</Link>(ctx),
+        <Link to="../iota/token#iota_token_spent_balance">spent_balance</Link>: <Link to="../iota/balance#iota_balance_zero">balance::zero</Link>(),
+        <Link to="../iota/token#iota_token_rules">rules</Link>: <Link to="../iota/vec_map#iota_vec_map_empty">vec_map::empty</Link>(),
+    };
+    <b>let</b> cap = <Link to="../iota/token#iota_token_TokenPolicyCap">TokenPolicyCap</Link> \{
+        id: <Link to="../iota/object#iota_object_new">object::new</Link>(ctx),
+        `<b>for</b>`: <Link to="../iota/object#iota_object_id">object::id</Link>(&policy),
+    };
+    (policy, cap)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_token_share_policy"></Link>
+
+## Function `share_policy`
+
+Share the <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link></code>. Due to <code><Link to="../iota/token#iota_token_key">key</Link></code>-only restriction, it must be
+shared after initialization.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_share_policy">share_policy</Link>&lt;T&gt;(policy: <Link to="../iota/token#iota_token_TokenPolicy">iota::token::TokenPolicy</Link>&lt;T&gt;)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_share_policy">share_policy</Link>&lt;T&gt;(policy: <Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link>&lt;T&gt;) \{
+    <Link to="../iota/event#iota_event_emit">event::emit</Link>(<Link to="../iota/token#iota_token_TokenPolicyCreated">TokenPolicyCreated</Link>&lt;T&gt; \{
+        id: <Link to="../iota/object#iota_object_id">object::id</Link>(&policy),
+        is_mutable: <b>true</b>,
+    });
+    <Link to="../iota/transfer#iota_transfer_share_object">transfer::share_object</Link>(policy)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_token_transfer"></Link>
+
+## Function `transfer`
+
+Transfer a <code><Link to="../iota/token#iota_token_Token">Token</Link></code> to a <code><Link to="../iota/token#iota_token_recipient">recipient</Link></code>. Creates an <code><Link to="../iota/token#iota_token_ActionRequest">ActionRequest</Link></code> for the
+"transfer" action. The <code><Link to="../iota/token#iota_token_ActionRequest">ActionRequest</Link></code> contains the <code><Link to="../iota/token#iota_token_recipient">recipient</Link></code> field
+to be used in verification.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/transfer#iota_transfer">transfer</Link>&lt;T&gt;(t: <Link to="../iota/token#iota_token_Token">iota::token::Token</Link>&lt;T&gt;, <Link to="../iota/token#iota_token_recipient">recipient</Link>: <b>address</b>, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): <Link to="../iota/token#iota_token_ActionRequest">iota::token::ActionRequest</Link>&lt;T&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/transfer#iota_transfer">transfer</Link>&lt;T&gt;(t: <Link to="../iota/token#iota_token_Token">Token</Link>&lt;T&gt;, <Link to="../iota/token#iota_token_recipient">recipient</Link>: <b>address</b>, ctx: &<b>mut</b> TxContext): <Link to="../iota/token#iota_token_ActionRequest">ActionRequest</Link>&lt;T&gt; \{
+    <b>let</b> <Link to="../iota/token#iota_token_amount">amount</Link> = t.<Link to="../iota/balance#iota_balance">balance</Link>.<Link to="../iota/token#iota_token_value">value</Link>();
+    <Link to="../iota/transfer#iota_transfer_transfer">transfer::transfer</Link>(t, <Link to="../iota/token#iota_token_recipient">recipient</Link>);
+    <Link to="../iota/token#iota_token_new_request">new_request</Link>(
+        <Link to="../iota/token#iota_token_transfer_action">transfer_action</Link>(),
+        <Link to="../iota/token#iota_token_amount">amount</Link>,
+        option::some(<Link to="../iota/token#iota_token_recipient">recipient</Link>),
+        option::none(),
+        ctx,
+    )
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_token_spend"></Link>
+
+## Function `spend`
+
+Spend a <code><Link to="../iota/token#iota_token_Token">Token</Link></code> by unwrapping it and storing the <code>Balance</code> in the
+<code><Link to="../iota/token#iota_token_ActionRequest">ActionRequest</Link></code> for the "spend" action. The <code><Link to="../iota/token#iota_token_ActionRequest">ActionRequest</Link></code> contains
+the <code><Link to="../iota/token#iota_token_spent_balance">spent_balance</Link></code> field to be used in verification.
+
+Spend action requires <code><Link to="../iota/token#iota_token_confirm_request_mut">confirm_request_mut</Link></code> to be called to confirm the
+request and join the spent balance with the <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link>.<Link to="../iota/token#iota_token_spent_balance">spent_balance</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_spend">spend</Link>&lt;T&gt;(t: <Link to="../iota/token#iota_token_Token">iota::token::Token</Link>&lt;T&gt;, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): <Link to="../iota/token#iota_token_ActionRequest">iota::token::ActionRequest</Link>&lt;T&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_spend">spend</Link>&lt;T&gt;(t: <Link to="../iota/token#iota_token_Token">Token</Link>&lt;T&gt;, ctx: &<b>mut</b> TxContext): <Link to="../iota/token#iota_token_ActionRequest">ActionRequest</Link>&lt;T&gt; \{
+    <b>let</b> <Link to="../iota/token#iota_token_Token">Token</Link> \{ id, <Link to="../iota/balance#iota_balance">balance</Link> } = t;
+    id.delete();
+    <Link to="../iota/token#iota_token_new_request">new_request</Link>(
+        <Link to="../iota/token#iota_token_spend_action">spend_action</Link>(),
+        <Link to="../iota/balance#iota_balance">balance</Link>.<Link to="../iota/token#iota_token_value">value</Link>(),
+        option::none(),
+        option::some(<Link to="../iota/balance#iota_balance">balance</Link>),
+        ctx,
+    )
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_token_to_coin"></Link>
+
+## Function `to_coin`
+
+Convert <code><Link to="../iota/token#iota_token_Token">Token</Link></code> into an open <code>Coin</code>. Creates an <code><Link to="../iota/token#iota_token_ActionRequest">ActionRequest</Link></code> for the
+"to_coin" action.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_to_coin">to_coin</Link>&lt;T&gt;(t: <Link to="../iota/token#iota_token_Token">iota::token::Token</Link>&lt;T&gt;, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): (<Link to="../iota/coin#iota_coin_Coin">iota::coin::Coin</Link>&lt;T&gt;, <Link to="../iota/token#iota_token_ActionRequest">iota::token::ActionRequest</Link>&lt;T&gt;)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_to_coin">to_coin</Link>&lt;T&gt;(t: <Link to="../iota/token#iota_token_Token">Token</Link>&lt;T&gt;, ctx: &<b>mut</b> TxContext): (Coin&lt;T&gt;, <Link to="../iota/token#iota_token_ActionRequest">ActionRequest</Link>&lt;T&gt;) \{
+    <b>let</b> <Link to="../iota/token#iota_token_Token">Token</Link> \{ id, <Link to="../iota/balance#iota_balance">balance</Link> } = t;
+    <b>let</b> <Link to="../iota/token#iota_token_amount">amount</Link> = <Link to="../iota/balance#iota_balance">balance</Link>.<Link to="../iota/token#iota_token_value">value</Link>();
+    id.delete();
+    (
+        <Link to="../iota/balance#iota_balance">balance</Link>.into_coin(ctx),
+        <Link to="../iota/token#iota_token_new_request">new_request</Link>(
+            <Link to="../iota/token#iota_token_to_coin_action">to_coin_action</Link>(),
+            <Link to="../iota/token#iota_token_amount">amount</Link>,
+            option::none(),
+            option::none(),
+            ctx,
+        ),
+    )
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_token_from_coin"></Link>
+
+## Function `from_coin`
+
+Convert an open <code>Coin</code> into a <code><Link to="../iota/token#iota_token_Token">Token</Link></code>. Creates an <code><Link to="../iota/token#iota_token_ActionRequest">ActionRequest</Link></code> for
+the "from_coin" action.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_from_coin">from_coin</Link>&lt;T&gt;(<Link to="../iota/coin#iota_coin">coin</Link>: <Link to="../iota/coin#iota_coin_Coin">iota::coin::Coin</Link>&lt;T&gt;, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): (<Link to="../iota/token#iota_token_Token">iota::token::Token</Link>&lt;T&gt;, <Link to="../iota/token#iota_token_ActionRequest">iota::token::ActionRequest</Link>&lt;T&gt;)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_from_coin">from_coin</Link>&lt;T&gt;(<Link to="../iota/coin#iota_coin">coin</Link>: Coin&lt;T&gt;, ctx: &<b>mut</b> TxContext): (<Link to="../iota/token#iota_token_Token">Token</Link>&lt;T&gt;, <Link to="../iota/token#iota_token_ActionRequest">ActionRequest</Link>&lt;T&gt;) \{
+    <b>let</b> <Link to="../iota/token#iota_token_amount">amount</Link> = <Link to="../iota/coin#iota_coin">coin</Link>.<Link to="../iota/token#iota_token_value">value</Link>();
+    <b>let</b> <Link to="../iota/token#iota_token">token</Link> = <Link to="../iota/token#iota_token_Token">Token</Link> \{
+        id: <Link to="../iota/object#iota_object_new">object::new</Link>(ctx),
+        <Link to="../iota/balance#iota_balance">balance</Link>: <Link to="../iota/coin#iota_coin">coin</Link>.into_balance(),
+    };
+    (
+        <Link to="../iota/token#iota_token">token</Link>,
+        <Link to="../iota/token#iota_token_new_request">new_request</Link>(
+            <Link to="../iota/token#iota_token_from_coin_action">from_coin_action</Link>(),
+            <Link to="../iota/token#iota_token_amount">amount</Link>,
+            option::none(),
+            option::none(),
+            ctx,
+        ),
+    )
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_token_join"></Link>
+
+## Function `join`
+
+Join two <code><Link to="../iota/token#iota_token_Token">Token</Link></code>s into one, always available.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_join">join</Link>&lt;T&gt;(<Link to="../iota/token#iota_token">token</Link>: &<b>mut</b> <Link to="../iota/token#iota_token_Token">iota::token::Token</Link>&lt;T&gt;, another: <Link to="../iota/token#iota_token_Token">iota::token::Token</Link>&lt;T&gt;)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_join">join</Link>&lt;T&gt;(<Link to="../iota/token#iota_token">token</Link>: &<b>mut</b> <Link to="../iota/token#iota_token_Token">Token</Link>&lt;T&gt;, another: <Link to="../iota/token#iota_token_Token">Token</Link>&lt;T&gt;) \{
+    <b>let</b> <Link to="../iota/token#iota_token_Token">Token</Link> \{ id, <Link to="../iota/balance#iota_balance">balance</Link> } = another;
+    <Link to="../iota/token#iota_token">token</Link>.<Link to="../iota/balance#iota_balance">balance</Link>.<Link to="../iota/token#iota_token_join">join</Link>(<Link to="../iota/balance#iota_balance">balance</Link>);
+    id.delete();
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_token_split"></Link>
+
+## Function `split`
+
+Split a <code><Link to="../iota/token#iota_token_Token">Token</Link></code> with <code><Link to="../iota/token#iota_token_amount">amount</Link></code>.
+Aborts if the <code><Link to="../iota/token#iota_token_Token">Token</Link>.<Link to="../iota/balance#iota_balance">balance</Link></code> is lower than <code><Link to="../iota/token#iota_token_amount">amount</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_split">split</Link>&lt;T&gt;(<Link to="../iota/token#iota_token">token</Link>: &<b>mut</b> <Link to="../iota/token#iota_token_Token">iota::token::Token</Link>&lt;T&gt;, <Link to="../iota/token#iota_token_amount">amount</Link>: u64, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): <Link to="../iota/token#iota_token_Token">iota::token::Token</Link>&lt;T&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_split">split</Link>&lt;T&gt;(<Link to="../iota/token#iota_token">token</Link>: &<b>mut</b> <Link to="../iota/token#iota_token_Token">Token</Link>&lt;T&gt;, <Link to="../iota/token#iota_token_amount">amount</Link>: u64, ctx: &<b>mut</b> TxContext): <Link to="../iota/token#iota_token_Token">Token</Link>&lt;T&gt; \{
+    <b>assert</b>!(<Link to="../iota/token#iota_token">token</Link>.<Link to="../iota/balance#iota_balance">balance</Link>.<Link to="../iota/token#iota_token_value">value</Link>() &gt;= <Link to="../iota/token#iota_token_amount">amount</Link>, <Link to="../iota/token#iota_token_EBalanceTooLow">EBalanceTooLow</Link>);
+    <Link to="../iota/token#iota_token_Token">Token</Link> \{
+        id: <Link to="../iota/object#iota_object_new">object::new</Link>(ctx),
+        <Link to="../iota/balance#iota_balance">balance</Link>: <Link to="../iota/token#iota_token">token</Link>.<Link to="../iota/balance#iota_balance">balance</Link>.<Link to="../iota/token#iota_token_split">split</Link>(<Link to="../iota/token#iota_token_amount">amount</Link>),
+    }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_token_zero"></Link>
+
+## Function `zero`
+
+Create a zero <code><Link to="../iota/token#iota_token_Token">Token</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_zero">zero</Link>&lt;T&gt;(ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): <Link to="../iota/token#iota_token_Token">iota::token::Token</Link>&lt;T&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_zero">zero</Link>&lt;T&gt;(ctx: &<b>mut</b> TxContext): <Link to="../iota/token#iota_token_Token">Token</Link>&lt;T&gt; \{
+    <Link to="../iota/token#iota_token_Token">Token</Link> \{
+        id: <Link to="../iota/object#iota_object_new">object::new</Link>(ctx),
+        <Link to="../iota/balance#iota_balance">balance</Link>: <Link to="../iota/balance#iota_balance_zero">balance::zero</Link>(),
+    }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_token_destroy_zero"></Link>
+
+## Function `destroy_zero`
+
+Destroy an empty <code><Link to="../iota/token#iota_token_Token">Token</Link></code>, fails if the balance is non-zero.
+Aborts if the <code><Link to="../iota/token#iota_token_Token">Token</Link>.<Link to="../iota/balance#iota_balance">balance</Link></code> is not zero.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_destroy_zero">destroy_zero</Link>&lt;T&gt;(<Link to="../iota/token#iota_token">token</Link>: <Link to="../iota/token#iota_token_Token">iota::token::Token</Link>&lt;T&gt;)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_destroy_zero">destroy_zero</Link>&lt;T&gt;(<Link to="../iota/token#iota_token">token</Link>: <Link to="../iota/token#iota_token_Token">Token</Link>&lt;T&gt;) \{
+    <b>let</b> <Link to="../iota/token#iota_token_Token">Token</Link> \{ id, <Link to="../iota/balance#iota_balance">balance</Link> } = <Link to="../iota/token#iota_token">token</Link>;
+    <b>assert</b>!(<Link to="../iota/balance#iota_balance">balance</Link>.<Link to="../iota/token#iota_token_value">value</Link>() == 0, <Link to="../iota/token#iota_token_ENotZero">ENotZero</Link>);
+    <Link to="../iota/balance#iota_balance">balance</Link>.<Link to="../iota/token#iota_token_destroy_zero">destroy_zero</Link>();
+    id.delete();
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_token_keep"></Link>
+
+## Function `keep`
+
+Transfer the <code><Link to="../iota/token#iota_token_Token">Token</Link></code> to the transaction sender.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_keep">keep</Link>&lt;T&gt;(<Link to="../iota/token#iota_token">token</Link>: <Link to="../iota/token#iota_token_Token">iota::token::Token</Link>&lt;T&gt;, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_keep">keep</Link>&lt;T&gt;(<Link to="../iota/token#iota_token">token</Link>: <Link to="../iota/token#iota_token_Token">Token</Link>&lt;T&gt;, ctx: &<b>mut</b> TxContext) \{
+    <Link to="../iota/transfer#iota_transfer_transfer">transfer::transfer</Link>(<Link to="../iota/token#iota_token">token</Link>, ctx.<Link to="../iota/token#iota_token_sender">sender</Link>())
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_token_new_request"></Link>
+
+## Function `new_request`
+
+Create a new <code><Link to="../iota/token#iota_token_ActionRequest">ActionRequest</Link></code>.
+Publicly available method to allow for custom actions.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_new_request">new_request</Link>&lt;T&gt;(name: <Link to="../std/string#std_string_String">std::string::String</Link>, <Link to="../iota/token#iota_token_amount">amount</Link>: u64, <Link to="../iota/token#iota_token_recipient">recipient</Link>: <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;<b>address</b>&gt;, <Link to="../iota/token#iota_token_spent_balance">spent_balance</Link>: <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;<Link to="../iota/balance#iota_balance_Balance">iota::balance::Balance</Link>&lt;T&gt;&gt;, ctx: &<Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): <Link to="../iota/token#iota_token_ActionRequest">iota::token::ActionRequest</Link>&lt;T&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_new_request">new_request</Link>&lt;T&gt;(
+    name: String,
+    <Link to="../iota/token#iota_token_amount">amount</Link>: u64,
+    <Link to="../iota/token#iota_token_recipient">recipient</Link>: Option&lt;<b>address</b>&gt;,
+    <Link to="../iota/token#iota_token_spent_balance">spent_balance</Link>: Option&lt;Balance&lt;T&gt;&gt;,
+    ctx: &TxContext,
+): <Link to="../iota/token#iota_token_ActionRequest">ActionRequest</Link>&lt;T&gt; \{
+    <Link to="../iota/token#iota_token_ActionRequest">ActionRequest</Link> \{
+        name,
+        <Link to="../iota/token#iota_token_amount">amount</Link>,
+        <Link to="../iota/token#iota_token_recipient">recipient</Link>,
+        <Link to="../iota/token#iota_token_spent_balance">spent_balance</Link>,
+        <Link to="../iota/token#iota_token_sender">sender</Link>: ctx.<Link to="../iota/token#iota_token_sender">sender</Link>(),
+        <Link to="../iota/token#iota_token_approvals">approvals</Link>: <Link to="../iota/vec_set#iota_vec_set_empty">vec_set::empty</Link>(),
+    }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_token_confirm_request"></Link>
+
+## Function `confirm_request`
+
+Confirm the request against the <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link></code> and return the parameters
+of the request: (Name, Amount, Sender, Recipient).
+
+Cannot be used for <code><Link to="../iota/token#iota_token_spend">spend</Link></code> and similar actions that deliver <code><Link to="../iota/token#iota_token_spent_balance">spent_balance</Link></code>
+to the <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link></code>. For those actions use <code><Link to="../iota/token#iota_token_confirm_request_mut">confirm_request_mut</Link></code>.
+
+Aborts if:
+- the action is not allowed (missing record in <code><Link to="../iota/token#iota_token_rules">rules</Link></code>)
+- action contains <code><Link to="../iota/token#iota_token_spent_balance">spent_balance</Link></code> (use <code><Link to="../iota/token#iota_token_confirm_request_mut">confirm_request_mut</Link></code>)
+- the <code><Link to="../iota/token#iota_token_ActionRequest">ActionRequest</Link></code> does not meet the <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link></code> rules for the action
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_confirm_request">confirm_request</Link>&lt;T&gt;(policy: &<Link to="../iota/token#iota_token_TokenPolicy">iota::token::TokenPolicy</Link>&lt;T&gt;, request: <Link to="../iota/token#iota_token_ActionRequest">iota::token::ActionRequest</Link>&lt;T&gt;, _ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): (<Link to="../std/string#std_string_String">std::string::String</Link>, u64, <b>address</b>, <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;<b>address</b>&gt;)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_confirm_request">confirm_request</Link>&lt;T&gt;(
+    policy: &<Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link>&lt;T&gt;,
+    request: <Link to="../iota/token#iota_token_ActionRequest">ActionRequest</Link>&lt;T&gt;,
+    _ctx: &<b>mut</b> TxContext,
+): (String, u64, <b>address</b>, Option&lt;<b>address</b>&gt;) \{
+    <b>assert</b>!(request.<Link to="../iota/token#iota_token_spent_balance">spent_balance</Link>.is_none(), <Link to="../iota/token#iota_token_ECantConsumeBalance">ECantConsumeBalance</Link>);
+    <b>assert</b>!(policy.<Link to="../iota/token#iota_token_rules">rules</Link>.contains(&request.name), <Link to="../iota/token#iota_token_EUnknownAction">EUnknownAction</Link>);
+    <b>let</b> <Link to="../iota/token#iota_token_ActionRequest">ActionRequest</Link> \{
+        name,
+        <Link to="../iota/token#iota_token_approvals">approvals</Link>,
+        <Link to="../iota/token#iota_token_spent_balance">spent_balance</Link>,
+        <Link to="../iota/token#iota_token_amount">amount</Link>,
+        <Link to="../iota/token#iota_token_sender">sender</Link>,
+        <Link to="../iota/token#iota_token_recipient">recipient</Link>,
+    } = request;
+    <Link to="../iota/token#iota_token_spent_balance">spent_balance</Link>.destroy_none();
+    <b>let</b> <Link to="../iota/token#iota_token_rules">rules</Link> = &(*policy.<Link to="../iota/token#iota_token_rules">rules</Link>.get(&name)).into_keys();
+    <b>let</b> rules_len = <Link to="../iota/token#iota_token_rules">rules</Link>.length();
+    <b>let</b> <b>mut</b> i = 0;
+    <b>while</b> (i &lt; rules_len) \{
+        <b>let</b> rule = &<Link to="../iota/token#iota_token_rules">rules</Link>[i];
+        <b>assert</b>!(<Link to="../iota/token#iota_token_approvals">approvals</Link>.contains(rule), <Link to="../iota/token#iota_token_ENotApproved">ENotApproved</Link>);
+        i = i + 1;
+    };
+    (name, <Link to="../iota/token#iota_token_amount">amount</Link>, <Link to="../iota/token#iota_token_sender">sender</Link>, <Link to="../iota/token#iota_token_recipient">recipient</Link>)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_token_confirm_request_mut"></Link>
+
+## Function `confirm_request_mut`
+
+Confirm the request against the <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link></code> and return the parameters
+of the request: (Name, Amount, Sender, Recipient).
+
+Unlike <code><Link to="../iota/token#iota_token_confirm_request">confirm_request</Link></code> this function requires mutable access to the
+<code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link></code> and must be used on <code><Link to="../iota/token#iota_token_spend">spend</Link></code> action. After dealing with the
+spent balance it calls <code><Link to="../iota/token#iota_token_confirm_request">confirm_request</Link></code> internally.
+
+See <code><Link to="../iota/token#iota_token_confirm_request">confirm_request</Link></code> for the list of abort conditions.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_confirm_request_mut">confirm_request_mut</Link>&lt;T&gt;(policy: &<b>mut</b> <Link to="../iota/token#iota_token_TokenPolicy">iota::token::TokenPolicy</Link>&lt;T&gt;, request: <Link to="../iota/token#iota_token_ActionRequest">iota::token::ActionRequest</Link>&lt;T&gt;, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): (<Link to="../std/string#std_string_String">std::string::String</Link>, u64, <b>address</b>, <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;<b>address</b>&gt;)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_confirm_request_mut">confirm_request_mut</Link>&lt;T&gt;(
+    policy: &<b>mut</b> <Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link>&lt;T&gt;,
+    <b>mut</b> request: <Link to="../iota/token#iota_token_ActionRequest">ActionRequest</Link>&lt;T&gt;,
+    ctx: &<b>mut</b> TxContext,
+): (String, u64, <b>address</b>, Option&lt;<b>address</b>&gt;) \{
+    <b>assert</b>!(policy.<Link to="../iota/token#iota_token_rules">rules</Link>.contains(&request.name), <Link to="../iota/token#iota_token_EUnknownAction">EUnknownAction</Link>);
+    <b>assert</b>!(request.<Link to="../iota/token#iota_token_spent_balance">spent_balance</Link>.is_some(), <Link to="../iota/token#iota_token_EUseImmutableConfirm">EUseImmutableConfirm</Link>);
+    policy.<Link to="../iota/token#iota_token_spent_balance">spent_balance</Link>.<Link to="../iota/token#iota_token_join">join</Link>(request.<Link to="../iota/token#iota_token_spent_balance">spent_balance</Link>.extract());
+    <Link to="../iota/token#iota_token_confirm_request">confirm_request</Link>(policy, request, ctx)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_token_confirm_with_policy_cap"></Link>
+
+## Function `confirm_with_policy_cap`
+
+Confirm an <code><Link to="../iota/token#iota_token_ActionRequest">ActionRequest</Link></code> as the <code><Link to="../iota/token#iota_token_TokenPolicyCap">TokenPolicyCap</Link></code> owner. This function
+allows <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link></code> owner to perform Capability-gated actions ignoring
+the ruleset specified in the <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link></code>.
+
+Aborts if request contains <code><Link to="../iota/token#iota_token_spent_balance">spent_balance</Link></code> due to inability of the
+<code><Link to="../iota/token#iota_token_TokenPolicyCap">TokenPolicyCap</Link></code> to decrease supply. For scenarios like this a
+<code>TreasuryCap</code> is required (see <code><Link to="../iota/token#iota_token_confirm_with_treasury_cap">confirm_with_treasury_cap</Link></code>).
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_confirm_with_policy_cap">confirm_with_policy_cap</Link>&lt;T&gt;(_policy_cap: &<Link to="../iota/token#iota_token_TokenPolicyCap">iota::token::TokenPolicyCap</Link>&lt;T&gt;, request: <Link to="../iota/token#iota_token_ActionRequest">iota::token::ActionRequest</Link>&lt;T&gt;, _ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): (<Link to="../std/string#std_string_String">std::string::String</Link>, u64, <b>address</b>, <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;<b>address</b>&gt;)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_confirm_with_policy_cap">confirm_with_policy_cap</Link>&lt;T&gt;(
+    _policy_cap: &<Link to="../iota/token#iota_token_TokenPolicyCap">TokenPolicyCap</Link>&lt;T&gt;,
+    request: <Link to="../iota/token#iota_token_ActionRequest">ActionRequest</Link>&lt;T&gt;,
+    _ctx: &<b>mut</b> TxContext,
+): (String, u64, <b>address</b>, Option&lt;<b>address</b>&gt;) \{
+    <b>assert</b>!(request.<Link to="../iota/token#iota_token_spent_balance">spent_balance</Link>.is_none(), <Link to="../iota/token#iota_token_ECantConsumeBalance">ECantConsumeBalance</Link>);
+    <b>let</b> <Link to="../iota/token#iota_token_ActionRequest">ActionRequest</Link> \{
+        name,
+        <Link to="../iota/token#iota_token_amount">amount</Link>,
+        <Link to="../iota/token#iota_token_sender">sender</Link>,
+        <Link to="../iota/token#iota_token_recipient">recipient</Link>,
+        <Link to="../iota/token#iota_token_approvals">approvals</Link>: _,
+        <Link to="../iota/token#iota_token_spent_balance">spent_balance</Link>,
+    } = request;
+    <Link to="../iota/token#iota_token_spent_balance">spent_balance</Link>.destroy_none();
+    (name, <Link to="../iota/token#iota_token_amount">amount</Link>, <Link to="../iota/token#iota_token_sender">sender</Link>, <Link to="../iota/token#iota_token_recipient">recipient</Link>)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_token_confirm_with_treasury_cap"></Link>
+
+## Function `confirm_with_treasury_cap`
+
+Confirm an <code><Link to="../iota/token#iota_token_ActionRequest">ActionRequest</Link></code> as the <code>TreasuryCap</code> owner. This function
+allows <code>TreasuryCap</code> owner to perform Capability-gated actions ignoring
+the ruleset specified in the <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link></code>.
+
+Unlike <code><Link to="../iota/token#iota_token_confirm_with_policy_cap">confirm_with_policy_cap</Link></code> this function allows <code><Link to="../iota/token#iota_token_spent_balance">spent_balance</Link></code>
+to be consumed, decreasing the <code>total_supply</code> of the <code><Link to="../iota/token#iota_token_Token">Token</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_confirm_with_treasury_cap">confirm_with_treasury_cap</Link>&lt;T&gt;(treasury_cap: &<b>mut</b> <Link to="../iota/coin#iota_coin_TreasuryCap">iota::coin::TreasuryCap</Link>&lt;T&gt;, request: <Link to="../iota/token#iota_token_ActionRequest">iota::token::ActionRequest</Link>&lt;T&gt;, _ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): (<Link to="../std/string#std_string_String">std::string::String</Link>, u64, <b>address</b>, <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;<b>address</b>&gt;)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_confirm_with_treasury_cap">confirm_with_treasury_cap</Link>&lt;T&gt;(
+    treasury_cap: &<b>mut</b> TreasuryCap&lt;T&gt;,
+    request: <Link to="../iota/token#iota_token_ActionRequest">ActionRequest</Link>&lt;T&gt;,
+    _ctx: &<b>mut</b> TxContext,
+): (String, u64, <b>address</b>, Option&lt;<b>address</b>&gt;) \{
+    <b>let</b> <Link to="../iota/token#iota_token_ActionRequest">ActionRequest</Link> \{
+        name,
+        <Link to="../iota/token#iota_token_amount">amount</Link>,
+        <Link to="../iota/token#iota_token_sender">sender</Link>,
+        <Link to="../iota/token#iota_token_recipient">recipient</Link>,
+        <Link to="../iota/token#iota_token_approvals">approvals</Link>: _,
+        <Link to="../iota/token#iota_token_spent_balance">spent_balance</Link>,
+    } = request;
+    <b>if</b> (<Link to="../iota/token#iota_token_spent_balance">spent_balance</Link>.is_some()) \{
+        treasury_cap.supply_mut().decrease_supply(<Link to="../iota/token#iota_token_spent_balance">spent_balance</Link>.destroy_some());
+    } <b>else</b> \{
+        <Link to="../iota/token#iota_token_spent_balance">spent_balance</Link>.destroy_none();
+    };
+    (name, <Link to="../iota/token#iota_token_amount">amount</Link>, <Link to="../iota/token#iota_token_sender">sender</Link>, <Link to="../iota/token#iota_token_recipient">recipient</Link>)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_token_add_approval"></Link>
+
+## Function `add_approval`
+
+Add an "approval" to the <code><Link to="../iota/token#iota_token_ActionRequest">ActionRequest</Link></code> by providing a Witness.
+Intended to be used by Rules to add their own approvals, however, can
+be used to add arbitrary approvals to the request (not only the ones
+required by the <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link></code>).
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_add_approval">add_approval</Link>&lt;T, W: drop&gt;(_t: W, request: &<b>mut</b> <Link to="../iota/token#iota_token_ActionRequest">iota::token::ActionRequest</Link>&lt;T&gt;, _ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_add_approval">add_approval</Link>&lt;T, W: drop&gt;(_t: W, request: &<b>mut</b> <Link to="../iota/token#iota_token_ActionRequest">ActionRequest</Link>&lt;T&gt;, _ctx: &<b>mut</b> TxContext) \{
+    request.<Link to="../iota/token#iota_token_approvals">approvals</Link>.insert(type_name::get&lt;W&gt;())
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_token_add_rule_config"></Link>
+
+## Function `add_rule_config`
+
+Add a <code>Config</code> for a <code>Rule</code> in the <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link></code>. Rule configuration is
+independent from the <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link>.<Link to="../iota/token#iota_token_rules">rules</Link></code> and needs to be managed by the
+Rule itself. Configuration is stored per <code>Rule</code> and not per <code>Rule</code> per
+<code>Action</code> to allow reuse in different actions.
+
+- Rule witness guarantees that the <code>Config</code> is approved by the Rule.
+- <code><Link to="../iota/token#iota_token_TokenPolicyCap">TokenPolicyCap</Link></code> guarantees that the <code>Config</code> setup is initiated by
+the <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link></code> owner.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_add_rule_config">add_rule_config</Link>&lt;T, Rule: drop, Config: store&gt;(_rule: Rule, self: &<b>mut</b> <Link to="../iota/token#iota_token_TokenPolicy">iota::token::TokenPolicy</Link>&lt;T&gt;, cap: &<Link to="../iota/token#iota_token_TokenPolicyCap">iota::token::TokenPolicyCap</Link>&lt;T&gt;, <Link to="../iota/config#iota_config">config</Link>: Config, _ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_add_rule_config">add_rule_config</Link>&lt;T, Rule: drop, Config: store&gt;(
+    _rule: Rule,
+    self: &<b>mut</b> <Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link>&lt;T&gt;,
+    cap: &<Link to="../iota/token#iota_token_TokenPolicyCap">TokenPolicyCap</Link>&lt;T&gt;,
+    <Link to="../iota/config#iota_config">config</Link>: Config,
+    _ctx: &<b>mut</b> TxContext,
+) \{
+    <b>assert</b>!(<Link to="../iota/object#iota_object_id">object::id</Link>(self) == cap.`<b>for</b>`, <Link to="../iota/token#iota_token_ENotAuthorized">ENotAuthorized</Link>);
+    df::add(&<b>mut</b> self.id, <Link to="../iota/token#iota_token_key">key</Link>&lt;Rule&gt;(), <Link to="../iota/config#iota_config">config</Link>)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_token_rule_config"></Link>
+
+## Function `rule_config`
+
+Get a <code>Config</code> for a <code>Rule</code> in the <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link></code>. Requires <code>Rule</code>
+witness, hence can only be read by the <code>Rule</code> itself. This requirement
+guarantees safety of the stored <code>Config</code> and allows for simpler dynamic
+field management inside the Rule Config (custom type keys are not needed
+for access gating).
+
+Aborts if the Config is not present.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_rule_config">rule_config</Link>&lt;T, Rule: drop, Config: store&gt;(_rule: Rule, self: &<Link to="../iota/token#iota_token_TokenPolicy">iota::token::TokenPolicy</Link>&lt;T&gt;): &Config
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_rule_config">rule_config</Link>&lt;T, Rule: drop, Config: store&gt;(_rule: Rule, self: &<Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link>&lt;T&gt;): &Config \{
+    <b>assert</b>!(<Link to="../iota/token#iota_token_has_rule_config_with_type">has_rule_config_with_type</Link>&lt;T, Rule, Config&gt;(self), <Link to="../iota/token#iota_token_ENoConfig">ENoConfig</Link>);
+    df::borrow(&self.id, <Link to="../iota/token#iota_token_key">key</Link>&lt;Rule&gt;())
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_token_rule_config_mut"></Link>
+
+## Function `rule_config_mut`
+
+Get mutable access to the <code>Config</code> for a <code>Rule</code> in the <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link></code>.
+Requires <code>Rule</code> witness, hence can only be read by the <code>Rule</code> itself,
+as well as <code><Link to="../iota/token#iota_token_TokenPolicyCap">TokenPolicyCap</Link></code> to guarantee that the <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link></code> owner
+is the one who initiated the <code>Config</code> modification.
+
+Aborts if:
+- the Config is not present
+- <code><Link to="../iota/token#iota_token_TokenPolicyCap">TokenPolicyCap</Link></code> is not matching the <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link></code>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_rule_config_mut">rule_config_mut</Link>&lt;T, Rule: drop, Config: store&gt;(_rule: Rule, self: &<b>mut</b> <Link to="../iota/token#iota_token_TokenPolicy">iota::token::TokenPolicy</Link>&lt;T&gt;, cap: &<Link to="../iota/token#iota_token_TokenPolicyCap">iota::token::TokenPolicyCap</Link>&lt;T&gt;): &<b>mut</b> Config
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_rule_config_mut">rule_config_mut</Link>&lt;T, Rule: drop, Config: store&gt;(
+    _rule: Rule,
+    self: &<b>mut</b> <Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link>&lt;T&gt;,
+    cap: &<Link to="../iota/token#iota_token_TokenPolicyCap">TokenPolicyCap</Link>&lt;T&gt;,
+): &<b>mut</b> Config \{
+    <b>assert</b>!(<Link to="../iota/token#iota_token_has_rule_config_with_type">has_rule_config_with_type</Link>&lt;T, Rule, Config&gt;(self), <Link to="../iota/token#iota_token_ENoConfig">ENoConfig</Link>);
+    <b>assert</b>!(<Link to="../iota/object#iota_object_id">object::id</Link>(self) == cap.`<b>for</b>`, <Link to="../iota/token#iota_token_ENotAuthorized">ENotAuthorized</Link>);
+    df::borrow_mut(&<b>mut</b> self.id, <Link to="../iota/token#iota_token_key">key</Link>&lt;Rule&gt;())
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_token_remove_rule_config"></Link>
+
+## Function `remove_rule_config`
+
+Remove a <code>Config</code> for a <code>Rule</code> in the <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link></code>.
+Unlike the <code><Link to="../iota/token#iota_token_add_rule_config">add_rule_config</Link></code>, this function does not require a <code>Rule</code>
+witness, hence can be performed by the <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link></code> owner on their own.
+
+Rules need to make sure that the <code>Config</code> is present when performing
+verification of the <code><Link to="../iota/token#iota_token_ActionRequest">ActionRequest</Link></code>.
+
+Aborts if:
+- the Config is not present
+- <code><Link to="../iota/token#iota_token_TokenPolicyCap">TokenPolicyCap</Link></code> is not matching the <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link></code>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_remove_rule_config">remove_rule_config</Link>&lt;T, Rule, Config: store&gt;(self: &<b>mut</b> <Link to="../iota/token#iota_token_TokenPolicy">iota::token::TokenPolicy</Link>&lt;T&gt;, cap: &<Link to="../iota/token#iota_token_TokenPolicyCap">iota::token::TokenPolicyCap</Link>&lt;T&gt;, _ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): Config
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_remove_rule_config">remove_rule_config</Link>&lt;T, Rule, Config: store&gt;(
+    self: &<b>mut</b> <Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link>&lt;T&gt;,
+    cap: &<Link to="../iota/token#iota_token_TokenPolicyCap">TokenPolicyCap</Link>&lt;T&gt;,
+    _ctx: &<b>mut</b> TxContext,
+): Config \{
+    <b>assert</b>!(<Link to="../iota/token#iota_token_has_rule_config_with_type">has_rule_config_with_type</Link>&lt;T, Rule, Config&gt;(self), <Link to="../iota/token#iota_token_ENoConfig">ENoConfig</Link>);
+    <b>assert</b>!(<Link to="../iota/object#iota_object_id">object::id</Link>(self) == cap.`<b>for</b>`, <Link to="../iota/token#iota_token_ENotAuthorized">ENotAuthorized</Link>);
+    df::remove(&<b>mut</b> self.id, <Link to="../iota/token#iota_token_key">key</Link>&lt;Rule&gt;())
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_token_has_rule_config"></Link>
+
+## Function `has_rule_config`
+
+Check if a config for a <code>Rule</code> is set in the <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link></code> without
+checking the type of the <code>Config</code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_has_rule_config">has_rule_config</Link>&lt;T, Rule&gt;(self: &<Link to="../iota/token#iota_token_TokenPolicy">iota::token::TokenPolicy</Link>&lt;T&gt;): bool
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_has_rule_config">has_rule_config</Link>&lt;T, Rule&gt;(self: &<Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link>&lt;T&gt;): bool \{
+    df::exists_&lt;<Link to="../iota/token#iota_token_RuleKey">RuleKey</Link>&lt;Rule&gt;&gt;(&self.id, <Link to="../iota/token#iota_token_key">key</Link>&lt;Rule&gt;())
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_token_has_rule_config_with_type"></Link>
+
+## Function `has_rule_config_with_type`
+
+Check if a <code>Config</code> for a <code>Rule</code> is set in the <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link></code> and that
+it matches the type provided.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_has_rule_config_with_type">has_rule_config_with_type</Link>&lt;T, Rule, Config: store&gt;(self: &<Link to="../iota/token#iota_token_TokenPolicy">iota::token::TokenPolicy</Link>&lt;T&gt;): bool
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_has_rule_config_with_type">has_rule_config_with_type</Link>&lt;T, Rule, Config: store&gt;(self: &<Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link>&lt;T&gt;): bool \{
+    df::exists_with_type&lt;<Link to="../iota/token#iota_token_RuleKey">RuleKey</Link>&lt;Rule&gt;, Config&gt;(&self.id, <Link to="../iota/token#iota_token_key">key</Link>&lt;Rule&gt;())
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_token_allow"></Link>
+
+## Function `allow`
+
+Allows an <code><Link to="../iota/token#iota_token_action">action</Link></code> to be performed on the <code><Link to="../iota/token#iota_token_Token">Token</Link></code> freely by adding an
+empty set of <code>Rules</code> for the <code><Link to="../iota/token#iota_token_action">action</Link></code>.
+
+Aborts if the <code><Link to="../iota/token#iota_token_TokenPolicyCap">TokenPolicyCap</Link></code> is not matching the <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_allow">allow</Link>&lt;T&gt;(self: &<b>mut</b> <Link to="../iota/token#iota_token_TokenPolicy">iota::token::TokenPolicy</Link>&lt;T&gt;, cap: &<Link to="../iota/token#iota_token_TokenPolicyCap">iota::token::TokenPolicyCap</Link>&lt;T&gt;, <Link to="../iota/token#iota_token_action">action</Link>: <Link to="../std/string#std_string_String">std::string::String</Link>, _ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_allow">allow</Link>&lt;T&gt;(
+    self: &<b>mut</b> <Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link>&lt;T&gt;,
+    cap: &<Link to="../iota/token#iota_token_TokenPolicyCap">TokenPolicyCap</Link>&lt;T&gt;,
+    <Link to="../iota/token#iota_token_action">action</Link>: String,
+    _ctx: &<b>mut</b> TxContext,
+) \{
+    <b>assert</b>!(<Link to="../iota/object#iota_object_id">object::id</Link>(self) == cap.`<b>for</b>`, <Link to="../iota/token#iota_token_ENotAuthorized">ENotAuthorized</Link>);
+    self.<Link to="../iota/token#iota_token_rules">rules</Link>.insert(<Link to="../iota/token#iota_token_action">action</Link>, <Link to="../iota/vec_set#iota_vec_set_empty">vec_set::empty</Link>());
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_token_disallow"></Link>
+
+## Function `disallow`
+
+Completely disallows an <code><Link to="../iota/token#iota_token_action">action</Link></code> on the <code><Link to="../iota/token#iota_token_Token">Token</Link></code> by removing the record
+from the <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link>.<Link to="../iota/token#iota_token_rules">rules</Link></code>.
+
+Aborts if the <code><Link to="../iota/token#iota_token_TokenPolicyCap">TokenPolicyCap</Link></code> is not matching the <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_disallow">disallow</Link>&lt;T&gt;(self: &<b>mut</b> <Link to="../iota/token#iota_token_TokenPolicy">iota::token::TokenPolicy</Link>&lt;T&gt;, cap: &<Link to="../iota/token#iota_token_TokenPolicyCap">iota::token::TokenPolicyCap</Link>&lt;T&gt;, <Link to="../iota/token#iota_token_action">action</Link>: <Link to="../std/string#std_string_String">std::string::String</Link>, _ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_disallow">disallow</Link>&lt;T&gt;(
+    self: &<b>mut</b> <Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link>&lt;T&gt;,
+    cap: &<Link to="../iota/token#iota_token_TokenPolicyCap">TokenPolicyCap</Link>&lt;T&gt;,
+    <Link to="../iota/token#iota_token_action">action</Link>: String,
+    _ctx: &<b>mut</b> TxContext,
+) \{
+    <b>assert</b>!(<Link to="../iota/object#iota_object_id">object::id</Link>(self) == cap.`<b>for</b>`, <Link to="../iota/token#iota_token_ENotAuthorized">ENotAuthorized</Link>);
+    self.<Link to="../iota/token#iota_token_rules">rules</Link>.remove(&<Link to="../iota/token#iota_token_action">action</Link>);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_token_add_rule_for_action"></Link>
+
+## Function `add_rule_for_action`
+
+Adds a Rule for an action with <code>name</code> in the <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link></code>.
+
+Aborts if the <code><Link to="../iota/token#iota_token_TokenPolicyCap">TokenPolicyCap</Link></code> is not matching the <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_add_rule_for_action">add_rule_for_action</Link>&lt;T, Rule: drop&gt;(self: &<b>mut</b> <Link to="../iota/token#iota_token_TokenPolicy">iota::token::TokenPolicy</Link>&lt;T&gt;, cap: &<Link to="../iota/token#iota_token_TokenPolicyCap">iota::token::TokenPolicyCap</Link>&lt;T&gt;, <Link to="../iota/token#iota_token_action">action</Link>: <Link to="../std/string#std_string_String">std::string::String</Link>, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_add_rule_for_action">add_rule_for_action</Link>&lt;T, Rule: drop&gt;(
+    self: &<b>mut</b> <Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link>&lt;T&gt;,
+    cap: &<Link to="../iota/token#iota_token_TokenPolicyCap">TokenPolicyCap</Link>&lt;T&gt;,
+    <Link to="../iota/token#iota_token_action">action</Link>: String,
+    ctx: &<b>mut</b> TxContext,
+) \{
+    <b>assert</b>!(<Link to="../iota/object#iota_object_id">object::id</Link>(self) == cap.`<b>for</b>`, <Link to="../iota/token#iota_token_ENotAuthorized">ENotAuthorized</Link>);
+    <b>if</b> (!self.<Link to="../iota/token#iota_token_rules">rules</Link>.contains(&<Link to="../iota/token#iota_token_action">action</Link>)) \{
+        <Link to="../iota/token#iota_token_allow">allow</Link>(self, cap, <Link to="../iota/token#iota_token_action">action</Link>, ctx);
+    };
+    self.<Link to="../iota/token#iota_token_rules">rules</Link>.get_mut(&<Link to="../iota/token#iota_token_action">action</Link>).insert(type_name::get&lt;Rule&gt;())
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_token_remove_rule_for_action"></Link>
+
+## Function `remove_rule_for_action`
+
+Removes a rule for an action with <code>name</code> in the <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link></code>. Returns
+the config object to be handled by the sender (or a Rule itself).
+
+Aborts if the <code><Link to="../iota/token#iota_token_TokenPolicyCap">TokenPolicyCap</Link></code> is not matching the <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_remove_rule_for_action">remove_rule_for_action</Link>&lt;T, Rule: drop&gt;(self: &<b>mut</b> <Link to="../iota/token#iota_token_TokenPolicy">iota::token::TokenPolicy</Link>&lt;T&gt;, cap: &<Link to="../iota/token#iota_token_TokenPolicyCap">iota::token::TokenPolicyCap</Link>&lt;T&gt;, <Link to="../iota/token#iota_token_action">action</Link>: <Link to="../std/string#std_string_String">std::string::String</Link>, _ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_remove_rule_for_action">remove_rule_for_action</Link>&lt;T, Rule: drop&gt;(
+    self: &<b>mut</b> <Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link>&lt;T&gt;,
+    cap: &<Link to="../iota/token#iota_token_TokenPolicyCap">TokenPolicyCap</Link>&lt;T&gt;,
+    <Link to="../iota/token#iota_token_action">action</Link>: String,
+    _ctx: &<b>mut</b> TxContext,
+) \{
+    <b>assert</b>!(<Link to="../iota/object#iota_object_id">object::id</Link>(self) == cap.`<b>for</b>`, <Link to="../iota/token#iota_token_ENotAuthorized">ENotAuthorized</Link>);
+    self.<Link to="../iota/token#iota_token_rules">rules</Link>.get_mut(&<Link to="../iota/token#iota_token_action">action</Link>).remove(&type_name::get&lt;Rule&gt;())
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_token_mint"></Link>
+
+## Function `mint`
+
+Mint a <code><Link to="../iota/token#iota_token_Token">Token</Link></code> with a given <code><Link to="../iota/token#iota_token_amount">amount</Link></code> using the <code>TreasuryCap</code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_mint">mint</Link>&lt;T&gt;(cap: &<b>mut</b> <Link to="../iota/coin#iota_coin_TreasuryCap">iota::coin::TreasuryCap</Link>&lt;T&gt;, <Link to="../iota/token#iota_token_amount">amount</Link>: u64, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): <Link to="../iota/token#iota_token_Token">iota::token::Token</Link>&lt;T&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_mint">mint</Link>&lt;T&gt;(cap: &<b>mut</b> TreasuryCap&lt;T&gt;, <Link to="../iota/token#iota_token_amount">amount</Link>: u64, ctx: &<b>mut</b> TxContext): <Link to="../iota/token#iota_token_Token">Token</Link>&lt;T&gt; \{
+    <b>let</b> <Link to="../iota/balance#iota_balance">balance</Link> = cap.supply_mut().increase_supply(<Link to="../iota/token#iota_token_amount">amount</Link>);
+    <Link to="../iota/token#iota_token_Token">Token</Link> \{ id: <Link to="../iota/object#iota_object_new">object::new</Link>(ctx), <Link to="../iota/balance#iota_balance">balance</Link> }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_token_burn"></Link>
+
+## Function `burn`
+
+Burn a <code><Link to="../iota/token#iota_token_Token">Token</Link></code> using the <code>TreasuryCap</code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_burn">burn</Link>&lt;T&gt;(cap: &<b>mut</b> <Link to="../iota/coin#iota_coin_TreasuryCap">iota::coin::TreasuryCap</Link>&lt;T&gt;, <Link to="../iota/token#iota_token">token</Link>: <Link to="../iota/token#iota_token_Token">iota::token::Token</Link>&lt;T&gt;)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_burn">burn</Link>&lt;T&gt;(cap: &<b>mut</b> TreasuryCap&lt;T&gt;, <Link to="../iota/token#iota_token">token</Link>: <Link to="../iota/token#iota_token_Token">Token</Link>&lt;T&gt;) \{
+    <b>let</b> <Link to="../iota/token#iota_token_Token">Token</Link> \{ id, <Link to="../iota/balance#iota_balance">balance</Link> } = <Link to="../iota/token#iota_token">token</Link>;
+    cap.supply_mut().decrease_supply(<Link to="../iota/balance#iota_balance">balance</Link>);
+    id.delete();
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_token_flush"></Link>
+
+## Function `flush`
+
+Flush the <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link>.<Link to="../iota/token#iota_token_spent_balance">spent_balance</Link></code> into the <code>TreasuryCap</code>. This
+action is only available to the <code>TreasuryCap</code> owner.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_flush">flush</Link>&lt;T&gt;(self: &<b>mut</b> <Link to="../iota/token#iota_token_TokenPolicy">iota::token::TokenPolicy</Link>&lt;T&gt;, cap: &<b>mut</b> <Link to="../iota/coin#iota_coin_TreasuryCap">iota::coin::TreasuryCap</Link>&lt;T&gt;, _ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): u64
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_flush">flush</Link>&lt;T&gt;(
+    self: &<b>mut</b> <Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link>&lt;T&gt;,
+    cap: &<b>mut</b> TreasuryCap&lt;T&gt;,
+    _ctx: &<b>mut</b> TxContext,
+): u64 \{
+    <b>let</b> <Link to="../iota/token#iota_token_amount">amount</Link> = self.<Link to="../iota/token#iota_token_spent_balance">spent_balance</Link>.<Link to="../iota/token#iota_token_value">value</Link>();
+    <b>let</b> <Link to="../iota/balance#iota_balance">balance</Link> = self.<Link to="../iota/token#iota_token_spent_balance">spent_balance</Link>.<Link to="../iota/token#iota_token_split">split</Link>(<Link to="../iota/token#iota_token_amount">amount</Link>);
+    cap.supply_mut().decrease_supply(<Link to="../iota/balance#iota_balance">balance</Link>)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_token_is_allowed"></Link>
+
+## Function `is_allowed`
+
+Check whether an action is present in the rules VecMap.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_is_allowed">is_allowed</Link>&lt;T&gt;(self: &<Link to="../iota/token#iota_token_TokenPolicy">iota::token::TokenPolicy</Link>&lt;T&gt;, <Link to="../iota/token#iota_token_action">action</Link>: &<Link to="../std/string#std_string_String">std::string::String</Link>): bool
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_is_allowed">is_allowed</Link>&lt;T&gt;(self: &<Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link>&lt;T&gt;, <Link to="../iota/token#iota_token_action">action</Link>: &String): bool \{
+    self.<Link to="../iota/token#iota_token_rules">rules</Link>.contains(<Link to="../iota/token#iota_token_action">action</Link>)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_token_rules"></Link>
+
+## Function `rules`
+
+Returns the rules required for a specific action.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_rules">rules</Link>&lt;T&gt;(self: &<Link to="../iota/token#iota_token_TokenPolicy">iota::token::TokenPolicy</Link>&lt;T&gt;, <Link to="../iota/token#iota_token_action">action</Link>: &<Link to="../std/string#std_string_String">std::string::String</Link>): <Link to="../iota/vec_set#iota_vec_set_VecSet">iota::vec_set::VecSet</Link>&lt;<Link to="../std/type_name#std_type_name_TypeName">std::type_name::TypeName</Link>&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_rules">rules</Link>&lt;T&gt;(self: &<Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link>&lt;T&gt;, <Link to="../iota/token#iota_token_action">action</Link>: &String): VecSet&lt;TypeName&gt; \{
+    *self.<Link to="../iota/token#iota_token_rules">rules</Link>.get(<Link to="../iota/token#iota_token_action">action</Link>)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_token_spent_balance"></Link>
+
+## Function `spent_balance`
+
+Returns the <code><Link to="../iota/token#iota_token_spent_balance">spent_balance</Link></code> of the <code><Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_spent_balance">spent_balance</Link>&lt;T&gt;(self: &<Link to="../iota/token#iota_token_TokenPolicy">iota::token::TokenPolicy</Link>&lt;T&gt;): u64
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_spent_balance">spent_balance</Link>&lt;T&gt;(self: &<Link to="../iota/token#iota_token_TokenPolicy">TokenPolicy</Link>&lt;T&gt;): u64 \{
+    self.<Link to="../iota/token#iota_token_spent_balance">spent_balance</Link>.<Link to="../iota/token#iota_token_value">value</Link>()
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_token_value"></Link>
+
+## Function `value`
+
+Returns the <code><Link to="../iota/balance#iota_balance">balance</Link></code> of the <code><Link to="../iota/token#iota_token_Token">Token</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_value">value</Link>&lt;T&gt;(t: &<Link to="../iota/token#iota_token_Token">iota::token::Token</Link>&lt;T&gt;): u64
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_value">value</Link>&lt;T&gt;(t: &<Link to="../iota/token#iota_token_Token">Token</Link>&lt;T&gt;): u64 \{
+    t.<Link to="../iota/balance#iota_balance">balance</Link>.<Link to="../iota/token#iota_token_value">value</Link>()
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_token_transfer_action"></Link>
+
+## Function `transfer_action`
+
+Name of the Transfer action.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_transfer_action">transfer_action</Link>(): <Link to="../std/string#std_string_String">std::string::String</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_transfer_action">transfer_action</Link>(): String \{
+    <b>let</b> transfer_str = <Link to="../iota/token#iota_token_TRANSFER">TRANSFER</Link>;
+    transfer_str.to_string()
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_token_spend_action"></Link>
+
+## Function `spend_action`
+
+Name of the <code>Spend</code> action.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_spend_action">spend_action</Link>(): <Link to="../std/string#std_string_String">std::string::String</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_spend_action">spend_action</Link>(): String \{
+    <b>let</b> spend_str = <Link to="../iota/token#iota_token_SPEND">SPEND</Link>;
+    spend_str.to_string()
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_token_to_coin_action"></Link>
+
+## Function `to_coin_action`
+
+Name of the <code>ToCoin</code> action.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_to_coin_action">to_coin_action</Link>(): <Link to="../std/string#std_string_String">std::string::String</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_to_coin_action">to_coin_action</Link>(): String \{
+    <b>let</b> to_coin_str = <Link to="../iota/token#iota_token_TO_COIN">TO_COIN</Link>;
+    to_coin_str.to_string()
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_token_from_coin_action"></Link>
+
+## Function `from_coin_action`
+
+Name of the <code>FromCoin</code> action.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_from_coin_action">from_coin_action</Link>(): <Link to="../std/string#std_string_String">std::string::String</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_from_coin_action">from_coin_action</Link>(): String \{
+    <b>let</b> from_coin_str = <Link to="../iota/token#iota_token_FROM_COIN">FROM_COIN</Link>;
+    from_coin_str.to_string()
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_token_action"></Link>
+
+## Function `action`
+
+The Action in the <code><Link to="../iota/token#iota_token_ActionRequest">ActionRequest</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_action">action</Link>&lt;T&gt;(self: &<Link to="../iota/token#iota_token_ActionRequest">iota::token::ActionRequest</Link>&lt;T&gt;): <Link to="../std/string#std_string_String">std::string::String</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_action">action</Link>&lt;T&gt;(self: &<Link to="../iota/token#iota_token_ActionRequest">ActionRequest</Link>&lt;T&gt;): String \{ self.name }
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_token_amount"></Link>
+
+## Function `amount`
+
+Amount of the <code><Link to="../iota/token#iota_token_ActionRequest">ActionRequest</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_amount">amount</Link>&lt;T&gt;(self: &<Link to="../iota/token#iota_token_ActionRequest">iota::token::ActionRequest</Link>&lt;T&gt;): u64
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_amount">amount</Link>&lt;T&gt;(self: &<Link to="../iota/token#iota_token_ActionRequest">ActionRequest</Link>&lt;T&gt;): u64 \{ self.<Link to="../iota/token#iota_token_amount">amount</Link> }
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_token_sender"></Link>
+
+## Function `sender`
+
+Sender of the <code><Link to="../iota/token#iota_token_ActionRequest">ActionRequest</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_sender">sender</Link>&lt;T&gt;(self: &<Link to="../iota/token#iota_token_ActionRequest">iota::token::ActionRequest</Link>&lt;T&gt;): <b>address</b>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_sender">sender</Link>&lt;T&gt;(self: &<Link to="../iota/token#iota_token_ActionRequest">ActionRequest</Link>&lt;T&gt;): <b>address</b> \{ self.<Link to="../iota/token#iota_token_sender">sender</Link> }
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_token_recipient"></Link>
+
+## Function `recipient`
+
+Recipient of the <code><Link to="../iota/token#iota_token_ActionRequest">ActionRequest</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_recipient">recipient</Link>&lt;T&gt;(self: &<Link to="../iota/token#iota_token_ActionRequest">iota::token::ActionRequest</Link>&lt;T&gt;): <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;<b>address</b>&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_recipient">recipient</Link>&lt;T&gt;(self: &<Link to="../iota/token#iota_token_ActionRequest">ActionRequest</Link>&lt;T&gt;): Option&lt;<b>address</b>&gt; \{
+    self.<Link to="../iota/token#iota_token_recipient">recipient</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_token_approvals"></Link>
+
+## Function `approvals`
+
+Approvals of the <code><Link to="../iota/token#iota_token_ActionRequest">ActionRequest</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_approvals">approvals</Link>&lt;T&gt;(self: &<Link to="../iota/token#iota_token_ActionRequest">iota::token::ActionRequest</Link>&lt;T&gt;): <Link to="../iota/vec_set#iota_vec_set_VecSet">iota::vec_set::VecSet</Link>&lt;<Link to="../std/type_name#std_type_name_TypeName">std::type_name::TypeName</Link>&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_approvals">approvals</Link>&lt;T&gt;(self: &<Link to="../iota/token#iota_token_ActionRequest">ActionRequest</Link>&lt;T&gt;): VecSet&lt;TypeName&gt; \{
+    self.<Link to="../iota/token#iota_token_approvals">approvals</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_token_spent"></Link>
+
+## Function `spent`
+
+Burned balance of the <code><Link to="../iota/token#iota_token_ActionRequest">ActionRequest</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_spent">spent</Link>&lt;T&gt;(self: &<Link to="../iota/token#iota_token_ActionRequest">iota::token::ActionRequest</Link>&lt;T&gt;): <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;u64&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/token#iota_token_spent">spent</Link>&lt;T&gt;(self: &<Link to="../iota/token#iota_token_ActionRequest">ActionRequest</Link>&lt;T&gt;): Option&lt;u64&gt; \{
+    <b>if</b> (self.<Link to="../iota/token#iota_token_spent_balance">spent_balance</Link>.is_some()) \{
+        option::some(self.<Link to="../iota/token#iota_token_spent_balance">spent_balance</Link>.<Link to="../iota/borrow#iota_borrow">borrow</Link>().<Link to="../iota/token#iota_token_value">value</Link>())
+    } <b>else</b> \{
+        option::none()
+    }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_token_key"></Link>
+
+## Function `key`
+
+Create a new <code><Link to="../iota/token#iota_token_RuleKey">RuleKey</Link></code> for a <code>Rule</code>. The <code>is_protected</code> field is kept
+for potential future use, if Rules were to have a freely modifiable
+storage as addition / replacement for the <code>Config</code> system.
+
+The goal of <code>is_protected</code> is to potentially allow Rules store a mutable
+version of their configuration and mutate state on user action.
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota/token#iota_token_key">key</Link>&lt;Rule&gt;(): <Link to="../iota/token#iota_token_RuleKey">iota::token::RuleKey</Link>&lt;Rule&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota/token#iota_token_key">key</Link>&lt;Rule&gt;(): <Link to="../iota/token#iota_token_RuleKey">RuleKey</Link>&lt;Rule&gt; \{ <Link to="../iota/token#iota_token_RuleKey">RuleKey</Link> \{ is_protected: <b>true</b> } }
+</code>
+</pre>
+
+
+
+</details>

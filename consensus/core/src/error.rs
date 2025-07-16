@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use consensus_config::{AuthorityIndex, Epoch, Stake};
@@ -159,6 +160,14 @@ pub(crate) enum ConsensusError {
         peer: AuthorityIndex,
         requested: BlockRef,
         received: BlockRef,
+    },
+
+    #[error(
+        "Unexpected certified commit index and last committed index. Expected next commit index to be {expected_commit_index}, but found {commit_index}"
+    )]
+    UnexpectedCertifiedCommitIndex {
+        expected_commit_index: CommitIndex,
+        commit_index: CommitIndex,
     },
 
     #[error("RocksDB failure: {0}")]

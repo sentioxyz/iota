@@ -1,16 +1,17 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 #[test_only]
 module ibe::tests;
 
 use ibe::example;
-use sui::{bcs, bls12381};
+use iota::{bcs, bls12381};
 
 #[test_only]
 use std::hash::sha2_256;
 #[test_only]
-use sui::test_utils::assert_eq;
+use iota::test_utils::assert_eq;
 
 // This test emulates drand based timelock encryption (using quicknet).
 #[test]
@@ -52,13 +53,13 @@ fun test_ibe_decrypt_drand() {
 }
 
 #[test]
-fun test_try_substract_and_modulo() {
+fun test_try_subtract_and_modulo() {
     let smaller: vector<u8> = x"73eda753299d7d483339d80809a1d80553bda402fffe5bfeffffffff00000000";
-    let res = example::try_substract(&smaller);
+    let res = example::try_subtract(&smaller);
     assert!(option::is_none(&res), 0);
 
     let bigger: vector<u8> = x"8c1258acd66282b7ccc627f7f65e27faac425bfd0001a40100000000fffffff5";
-    let res = example::try_substract(&bigger);
+    let res = example::try_subtract(&bigger);
     assert!(option::is_some(&res), 0);
     let bigger_minus_order = *option::borrow(&res);
     let expected: vector<u8> = x"1824b159acc5056f998c4fefecbc4ff55884b7fa0003480200000001fffffff4";

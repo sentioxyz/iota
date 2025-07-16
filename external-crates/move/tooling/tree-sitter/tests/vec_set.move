@@ -1,7 +1,8 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-module sui::vec_set {
+module iota::vec_set {
     use std::option::{Self, Option};
     use std::vector;
 

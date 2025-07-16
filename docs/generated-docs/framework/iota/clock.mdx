@@ -1,0 +1,202 @@
+---
+title: Module iota::clock
+sidebar_label: clock
+slug: clock
+---
+import Link from '@docusaurus/Link';
+
+<Link id="iota_clock"/>
+APIs for accessing time from move calls, via the <code><Link to="../iota/clock#iota_clock_Clock">Clock</Link></code>: a unique
+shared object that is created at 0x6 during genesis.
+
+
+-  [Struct `Clock`](#iota_clock_Clock)
+-  [Constants](#@Constants_0)
+-  [Function `timestamp_ms`](#iota_clock_timestamp_ms)
+-  [Function `create`](#iota_clock_create)
+-  [Function `consensus_commit_prologue`](#iota_clock_consensus_commit_prologue)
+
+
+<pre>
+<code>
+<b>use</b> <Link to="../iota/address#iota_address">iota::address</Link>;
+<b>use</b> <Link to="../iota/hex#iota_hex">iota::hex</Link>;
+<b>use</b> <Link to="../iota/object#iota_object">iota::object</Link>;
+<b>use</b> <Link to="../iota/transfer#iota_transfer">iota::transfer</Link>;
+<b>use</b> <Link to="../iota/tx_context#iota_tx_context">iota::tx_context</Link>;
+<b>use</b> <Link to="../std/ascii#std_ascii">std::ascii</Link>;
+<b>use</b> <Link to="../std/bcs#std_bcs">std::bcs</Link>;
+<b>use</b> <Link to="../std/option#std_option">std::option</Link>;
+<b>use</b> <Link to="../std/string#std_string">std::string</Link>;
+<b>use</b> <Link to="../std/vector#std_vector">std::vector</Link>;
+</code>
+</pre>
+
+
+
+<Link id="iota_clock_Clock"></Link>
+
+## Struct `Clock`
+
+Singleton shared object that exposes time to Move calls.  This
+object is found at address 0x6, and can only be read (accessed
+via an immutable reference) by entry functions.
+
+Entry Functions that attempt to accept <code><Link to="../iota/clock#iota_clock_Clock">Clock</Link></code> by mutable
+reference or value will fail to verify, and honest validators
+will not sign or execute transactions that use <code><Link to="../iota/clock#iota_clock_Clock">Clock</Link></code> as an
+input parameter, unless it is passed by immutable reference.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota/clock#iota_clock_Clock">Clock</Link> <b>has</b> key
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code>id: <Link to="../iota/object#iota_object_UID">iota::object::UID</Link></code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code><Link to="../iota/clock#iota_clock_timestamp_ms">timestamp_ms</Link>: u64</code>
+</dt>
+<dd>
+ The clock's timestamp, which is set automatically by a
+ system transaction every time consensus commits a
+ schedule, or by <code>iota::clock::increment_for_testing</code> during
+ testing.
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="@Constants_0"></Link>
+
+## Constants
+
+
+<Link id="iota_clock_ENotSystemAddress"></Link>
+
+Sender is not @0x0 the system address.
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota/clock#iota_clock_ENotSystemAddress">ENotSystemAddress</Link>: u64 = 0;
+</code>
+</pre>
+
+
+
+<Link id="iota_clock_timestamp_ms"></Link>
+
+## Function `timestamp_ms`
+
+The <code><Link to="../iota/clock#iota_clock">clock</Link></code>'s current timestamp as a running total of
+milliseconds since an arbitrary point in the past.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/clock#iota_clock_timestamp_ms">timestamp_ms</Link>(<Link to="../iota/clock#iota_clock">clock</Link>: &<Link to="../iota/clock#iota_clock_Clock">iota::clock::Clock</Link>): u64
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/clock#iota_clock_timestamp_ms">timestamp_ms</Link>(<Link to="../iota/clock#iota_clock">clock</Link>: &<Link to="../iota/clock#iota_clock_Clock">Clock</Link>): u64 \{
+    <Link to="../iota/clock#iota_clock">clock</Link>.<Link to="../iota/clock#iota_clock_timestamp_ms">timestamp_ms</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_clock_create"></Link>
+
+## Function `create`
+
+Create and share the singleton Clock -- this function is
+called exactly once, during genesis.
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota/clock#iota_clock_create">create</Link>(ctx: &<Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota/clock#iota_clock_create">create</Link>(ctx: &TxContext) \{
+    <b>assert</b>!(ctx.sender() == @0x0, <Link to="../iota/clock#iota_clock_ENotSystemAddress">ENotSystemAddress</Link>);
+    <Link to="../iota/transfer#iota_transfer_share_object">transfer::share_object</Link>(<Link to="../iota/clock#iota_clock_Clock">Clock</Link> \{
+        id: <Link to="../iota/object#iota_object_clock">object::clock</Link>(),
+        // Initialised to zero, but set to a real timestamp by a
+        // system transaction before it can be witnessed by a <b>move</b>
+        // call.
+        <Link to="../iota/clock#iota_clock_timestamp_ms">timestamp_ms</Link>: 0,
+    })
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_clock_consensus_commit_prologue"></Link>
+
+## Function `consensus_commit_prologue`
+
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota/clock#iota_clock_consensus_commit_prologue">consensus_commit_prologue</Link>(<Link to="../iota/clock#iota_clock">clock</Link>: &<b>mut</b> <Link to="../iota/clock#iota_clock_Clock">iota::clock::Clock</Link>, <Link to="../iota/clock#iota_clock_timestamp_ms">timestamp_ms</Link>: u64, ctx: &<Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota/clock#iota_clock_consensus_commit_prologue">consensus_commit_prologue</Link>(<Link to="../iota/clock#iota_clock">clock</Link>: &<b>mut</b> <Link to="../iota/clock#iota_clock_Clock">Clock</Link>, <Link to="../iota/clock#iota_clock_timestamp_ms">timestamp_ms</Link>: u64, ctx: &TxContext) \{
+    // Validator will make a special system call with sender set <b>as</b> 0x0.
+    <b>assert</b>!(ctx.sender() == @0x0, <Link to="../iota/clock#iota_clock_ENotSystemAddress">ENotSystemAddress</Link>);
+    <Link to="../iota/clock#iota_clock">clock</Link>.<Link to="../iota/clock#iota_clock_timestamp_ms">timestamp_ms</Link> = <Link to="../iota/clock#iota_clock_timestamp_ms">timestamp_ms</Link>
+}
+</code>
+</pre>
+
+
+
+</details>

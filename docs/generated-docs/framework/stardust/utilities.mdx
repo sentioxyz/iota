@@ -1,0 +1,165 @@
+---
+title: Module stardust::utilities
+sidebar_label: utilities
+slug: utilities
+---
+import Link from '@docusaurus/Link';
+
+<Link id="stardust_utilities"/>
+
+
+-  [Constants](#@Constants_0)
+-  [Function `extract_and_send_to`](#stardust_utilities_extract_and_send_to)
+-  [Function `extract`](#stardust_utilities_extract)
+-  [Function `extract_`](#stardust_utilities_extract_)
+
+
+<pre>
+<code>
+<b>use</b> <Link to="../iota/address#iota_address">iota::address</Link>;
+<b>use</b> <Link to="../iota/bag#iota_bag">iota::bag</Link>;
+<b>use</b> <Link to="../iota/balance#iota_balance">iota::balance</Link>;
+<b>use</b> <Link to="../iota/coin#iota_coin">iota::coin</Link>;
+<b>use</b> <Link to="../iota/config#iota_config">iota::config</Link>;
+<b>use</b> <Link to="../iota/deny_list#iota_deny_list">iota::deny_list</Link>;
+<b>use</b> <Link to="../iota/dynamic_field#iota_dynamic_field">iota::dynamic_field</Link>;
+<b>use</b> <Link to="../iota/dynamic_object_field#iota_dynamic_object_field">iota::dynamic_object_field</Link>;
+<b>use</b> <Link to="../iota/event#iota_event">iota::event</Link>;
+<b>use</b> <Link to="../iota/hex#iota_hex">iota::hex</Link>;
+<b>use</b> <Link to="../iota/object#iota_object">iota::object</Link>;
+<b>use</b> <Link to="../iota/transfer#iota_transfer">iota::transfer</Link>;
+<b>use</b> <Link to="../iota/tx_context#iota_tx_context">iota::tx_context</Link>;
+<b>use</b> <Link to="../iota/types#iota_types">iota::types</Link>;
+<b>use</b> <Link to="../iota/url#iota_url">iota::url</Link>;
+<b>use</b> <Link to="../std/address#std_address">std::address</Link>;
+<b>use</b> <Link to="../std/ascii#std_ascii">std::ascii</Link>;
+<b>use</b> <Link to="../std/bcs#std_bcs">std::bcs</Link>;
+<b>use</b> <Link to="../std/option#std_option">std::option</Link>;
+<b>use</b> <Link to="../std/string#std_string">std::string</Link>;
+<b>use</b> <Link to="../std/type_name#std_type_name">std::type_name</Link>;
+<b>use</b> <Link to="../std/vector#std_vector">std::vector</Link>;
+</code>
+</pre>
+
+
+
+<Link id="@Constants_0"></Link>
+
+## Constants
+
+
+<Link id="stardust_utilities_EZeroNativeTokenBalance"></Link>
+
+Returned when trying to extract a <code>Balance&lt;T&gt;</code> from a <code>Bag</code> and the balance is zero.
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../stardust/utilities#stardust_utilities_EZeroNativeTokenBalance">EZeroNativeTokenBalance</Link>: u64 = 0;
+</code>
+</pre>
+
+
+
+<Link id="stardust_utilities_extract_and_send_to"></Link>
+
+## Function `extract_and_send_to`
+
+Extract a <code>Balance&lt;T&gt;</code> from a <code>Bag</code>, create a <code>Coin</code> out of it and send it to the address.
+NOTE: We return the <code>Bag</code> by value so the function can be called repeatedly in a PTB.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/utilities#stardust_utilities_extract_and_send_to">extract_and_send_to</Link>&lt;T&gt;(bag: <Link to="../iota/bag#iota_bag_Bag">iota::bag::Bag</Link>, to: <b>address</b>, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): <Link to="../iota/bag#iota_bag_Bag">iota::bag::Bag</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/utilities#stardust_utilities_extract_and_send_to">extract_and_send_to</Link>&lt;T&gt;(<b>mut</b> bag: Bag, to: <b>address</b>, ctx: &<b>mut</b> TxContext): Bag \{
+    <b>let</b> coin = coin::from_balance(<Link to="../stardust/utilities#stardust_utilities_extract_">extract_</Link>&lt;T&gt;(&<b>mut</b> bag), ctx);
+    transfer::public_transfer(coin, to);
+    bag
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="stardust_utilities_extract"></Link>
+
+## Function `extract`
+
+Extract a <code>Balance&lt;T&gt;</code> from a <code>Bag</code> and return it. Caller can decide what to do with it.
+NOTE: We return the <code>Bag</code> by value so the function can be called repeatedly in a PTB.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/utilities#stardust_utilities_extract">extract</Link>&lt;T&gt;(bag: <Link to="../iota/bag#iota_bag_Bag">iota::bag::Bag</Link>): (<Link to="../iota/bag#iota_bag_Bag">iota::bag::Bag</Link>, <Link to="../iota/balance#iota_balance_Balance">iota::balance::Balance</Link>&lt;T&gt;)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/utilities#stardust_utilities_extract">extract</Link>&lt;T&gt;(<b>mut</b> bag: Bag): (Bag, Balance&lt;T&gt;) \{
+    <b>let</b> balance = <Link to="../stardust/utilities#stardust_utilities_extract_">extract_</Link>&lt;T&gt;(&<b>mut</b> bag);
+    (bag, balance)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="stardust_utilities_extract_"></Link>
+
+## Function `extract_`
+
+Get a <code>Balance&lt;T&gt;</code> from a <code>Bag</code>.
+Aborts if the balance is zero or if there is no balance for the type <code>T</code>.
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../stardust/utilities#stardust_utilities_extract_">extract_</Link>&lt;T&gt;(bag: &<b>mut</b> <Link to="../iota/bag#iota_bag_Bag">iota::bag::Bag</Link>): <Link to="../iota/balance#iota_balance_Balance">iota::balance::Balance</Link>&lt;T&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../stardust/utilities#stardust_utilities_extract_">extract_</Link>&lt;T&gt;(bag: &<b>mut</b> Bag): Balance&lt;T&gt; \{
+    <b>let</b> key = type_name::get&lt;T&gt;().into_string();
+    // This call aborts <b>if</b> the key doesn't exist.
+    <b>let</b> balance: Balance&lt;T&gt; = bag.remove(key);
+    <b>assert</b>!(balance.value() != 0, <Link to="../stardust/utilities#stardust_utilities_EZeroNativeTokenBalance">EZeroNativeTokenBalance</Link>);
+    balance
+}
+</code>
+</pre>
+
+
+
+</details>

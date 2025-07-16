@@ -1,0 +1,9 @@
+[package]
+name = "type_limits"
+edition = "2024.beta"
+
+[dependencies]
+Iota = { local = "../../../iota-framework/packages/iota-framework" }
+
+[addresses]
+type_limits = "0x0"

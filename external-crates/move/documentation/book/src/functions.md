@@ -105,7 +105,7 @@ In addition to `public` functions, you might have some functions in your modules
 use as the entry point to execution. The `entry` modifier is designed to allow module functions to
 initiate execution, without having to expose the functionality to other modules.
 
-Essentially, the combination of `pbulic` and `entry` functions define the "main" functions of a
+Essentially, the combination of `public` and `entry` functions define the "main" functions of a
 module, and they specify where Move programs can start executing.
 
 Keep in mind though, an `entry` function _can_ still be called by other Move functions. So while
@@ -130,7 +130,7 @@ module a::n {
 `entry` functions may have restrictions on their parameters and return types. Although, these
 restrictions are specific to each individual deployment of Move.
 
-[The documentation for `entry` functions on Sui can be found here.](https://docs.sui.io/concepts/sui-move-concepts/entry-functions).
+[The documentation for `entry` functions on IOTA can be found here.](https://docs.iota.org/concepts/iota-move-concepts/entry-functions).
 
 ### Name
 

@@ -1,23 +1,5 @@
-## Description 
+Please go to the `Preview` tab and select the appropriate sub-template:
 
-Describe the changes or additions included in this PR.
-
-## Test plan 
-
-How did you test the new or updated feature?
-
----
-
-## Release notes
-
-Check each box that your changes affect. If none of the boxes relate to your changes, release notes aren't required.
-
-For each box you select, include information after the relevant heading that describes the impact of your changes that a user might notice and any actions they must take to implement updates. 
-
-- [ ] Protocol: 
-- [ ] Nodes (Validators and Full nodes): 
-- [ ] gRPC:
-- [ ] JSON-RPC: 
-- [ ] GraphQL: 
-- [ ] CLI: 
-- [ ] Rust SDK:
+- [Default PR Template for External Contributors](?expand=1&template=default_external_contributors.md)
+- [Default PR Template for Internal Contributors](?expand=1&template=default_internal_contributors.md)
+- [Infrastructure Team](?expand=1&template=infra.md)

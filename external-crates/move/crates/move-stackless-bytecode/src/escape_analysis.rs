@@ -1,5 +1,6 @@
 // Copyright (c) The Diem Core Contributors
 // Copyright (c) The Move Contributors
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 //! This escape analysis flags procedures that return a reference pointing inside of a struct type
@@ -137,7 +138,7 @@ impl EscapeAnalysis<'_> {
     }
 }
 
-impl<'a> TransferFunctions for EscapeAnalysis<'a> {
+impl TransferFunctions for EscapeAnalysis<'_> {
     type State = EscapeAnalysisState;
     const BACKWARD: bool = false;
 
@@ -239,7 +240,7 @@ impl<'a> TransferFunctions for EscapeAnalysis<'a> {
     }
 }
 
-impl<'a> DataflowAnalysis for EscapeAnalysis<'a> {}
+impl DataflowAnalysis for EscapeAnalysis<'_> {}
 pub struct EscapeAnalysisProcessor();
 impl EscapeAnalysisProcessor {
     pub fn new() -> Box<Self> {

@@ -1,0 +1,114 @@
+---
+title: Module iota::system_admin_cap
+sidebar_label: system_admin_cap
+slug: system_admin_cap
+---
+import Link from '@docusaurus/Link';
+
+<Link id="iota_system_admin_cap"/>
+A system admin capability implementation.
+
+
+-  [Struct `IotaSystemAdminCap`](#iota_system_admin_cap_IotaSystemAdminCap)
+-  [Constants](#@Constants_0)
+-  [Function `new_system_admin_cap`](#iota_system_admin_cap_new_system_admin_cap)
+
+
+<pre>
+<code>
+<b>use</b> <Link to="../iota/tx_context#iota_tx_context">iota::tx_context</Link>;
+</code>
+</pre>
+
+
+
+<Link id="iota_system_admin_cap_IotaSystemAdminCap"></Link>
+
+## Struct `IotaSystemAdminCap`
+
+<code><Link to="../iota/system_admin_cap#iota_system_admin_cap_IotaSystemAdminCap">IotaSystemAdminCap</Link></code> allows to perform privileged IOTA system operations.
+For example, packing and unpacking <code>TimeLock</code>s during staking, etc.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota/system_admin_cap#iota_system_admin_cap_IotaSystemAdminCap">IotaSystemAdminCap</Link> <b>has</b> store
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+</dl>
+
+
+</details>
+
+<Link id="@Constants_0"></Link>
+
+## Constants
+
+
+<Link id="iota_system_admin_cap_ENotCalledAtGenesis"></Link>
+
+The <code>new</code> function was called at a non-genesis epoch.
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota/system_admin_cap#iota_system_admin_cap_ENotCalledAtGenesis">ENotCalledAtGenesis</Link>: u64 = 0;
+</code>
+</pre>
+
+
+
+<Link id="iota_system_admin_cap_ENotSystemAddress"></Link>
+
+Sender is not @0x0 the system address.
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota/system_admin_cap#iota_system_admin_cap_ENotSystemAddress">ENotSystemAddress</Link>: u64 = 1;
+</code>
+</pre>
+
+
+
+<Link id="iota_system_admin_cap_new_system_admin_cap"></Link>
+
+## Function `new_system_admin_cap`
+
+Create a <code><Link to="../iota/system_admin_cap#iota_system_admin_cap_IotaSystemAdminCap">IotaSystemAdminCap</Link></code>.
+This should be called only once during genesis creation.
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota/system_admin_cap#iota_system_admin_cap_new_system_admin_cap">new_system_admin_cap</Link>(ctx: &<Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): <Link to="../iota/system_admin_cap#iota_system_admin_cap_IotaSystemAdminCap">iota::system_admin_cap::IotaSystemAdminCap</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota/system_admin_cap#iota_system_admin_cap_new_system_admin_cap">new_system_admin_cap</Link>(ctx: &TxContext): <Link to="../iota/system_admin_cap#iota_system_admin_cap_IotaSystemAdminCap">IotaSystemAdminCap</Link> \{
+    <b>assert</b>!(ctx.sender() == @0x0, <Link to="../iota/system_admin_cap#iota_system_admin_cap_ENotSystemAddress">ENotSystemAddress</Link>);
+    <b>assert</b>!(ctx.epoch() == 0, <Link to="../iota/system_admin_cap#iota_system_admin_cap_ENotCalledAtGenesis">ENotCalledAtGenesis</Link>);
+    <Link to="../iota/system_admin_cap#iota_system_admin_cap_IotaSystemAdminCap">IotaSystemAdminCap</Link> \{}
+}
+</code>
+</pre>
+
+
+
+</details>

@@ -1,0 +1,843 @@
+---
+title: Module iota::group_ops
+sidebar_label: group_ops
+slug: group_ops
+---
+import Link from '@docusaurus/Link';
+
+<Link id="iota_group_ops"/>
+Generic Move and native functions for group operations.
+
+
+-  [Struct `Element`](#iota_group_ops_Element)
+-  [Constants](#@Constants_0)
+-  [Function `bytes`](#iota_group_ops_bytes)
+-  [Function `equal`](#iota_group_ops_equal)
+-  [Function `from_bytes`](#iota_group_ops_from_bytes)
+-  [Function `add`](#iota_group_ops_add)
+-  [Function `sub`](#iota_group_ops_sub)
+-  [Function `mul`](#iota_group_ops_mul)
+-  [Function `div`](#iota_group_ops_div)
+-  [Function `hash_to`](#iota_group_ops_hash_to)
+-  [Function `multi_scalar_multiplication`](#iota_group_ops_multi_scalar_multiplication)
+-  [Function `pairing`](#iota_group_ops_pairing)
+-  [Function `convert`](#iota_group_ops_convert)
+-  [Function `sum`](#iota_group_ops_sum)
+-  [Function `internal_validate`](#iota_group_ops_internal_validate)
+-  [Function `internal_add`](#iota_group_ops_internal_add)
+-  [Function `internal_sub`](#iota_group_ops_internal_sub)
+-  [Function `internal_mul`](#iota_group_ops_internal_mul)
+-  [Function `internal_div`](#iota_group_ops_internal_div)
+-  [Function `internal_hash_to`](#iota_group_ops_internal_hash_to)
+-  [Function `internal_multi_scalar_mul`](#iota_group_ops_internal_multi_scalar_mul)
+-  [Function `internal_pairing`](#iota_group_ops_internal_pairing)
+-  [Function `internal_convert`](#iota_group_ops_internal_convert)
+-  [Function `internal_sum`](#iota_group_ops_internal_sum)
+-  [Function `set_as_prefix`](#iota_group_ops_set_as_prefix)
+
+
+<pre>
+<code>
+<b>use</b> <Link to="../iota/address#iota_address">iota::address</Link>;
+<b>use</b> <Link to="../iota/bcs#iota_bcs">iota::bcs</Link>;
+<b>use</b> <Link to="../iota/hex#iota_hex">iota::hex</Link>;
+<b>use</b> <Link to="../std/ascii#std_ascii">std::ascii</Link>;
+<b>use</b> <Link to="../std/bcs#std_bcs">std::bcs</Link>;
+<b>use</b> <Link to="../std/option#std_option">std::option</Link>;
+<b>use</b> <Link to="../std/string#std_string">std::string</Link>;
+<b>use</b> <Link to="../std/vector#std_vector">std::vector</Link>;
+</code>
+</pre>
+
+
+
+<Link id="iota_group_ops_Element"></Link>
+
+## Struct `Element`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota/group_ops#iota_group_ops_Element">Element</Link>&lt;<b>phantom</b> T&gt; <b>has</b> <b>copy</b>, drop, store
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code><Link to="../iota/group_ops#iota_group_ops_bytes">bytes</Link>: vector&lt;u8&gt;</code>
+</dt>
+<dd>
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="@Constants_0"></Link>
+
+## Constants
+
+
+<Link id="iota_group_ops_EInputTooLong"></Link>
+
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota/group_ops#iota_group_ops_EInputTooLong">EInputTooLong</Link>: u64 = 2;
+</code>
+</pre>
+
+
+
+<Link id="iota_group_ops_EInvalidBufferLength"></Link>
+
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota/group_ops#iota_group_ops_EInvalidBufferLength">EInvalidBufferLength</Link>: u64 = 3;
+</code>
+</pre>
+
+
+
+<Link id="iota_group_ops_EInvalidInput"></Link>
+
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota/group_ops#iota_group_ops_EInvalidInput">EInvalidInput</Link>: u64 = 1;
+</code>
+</pre>
+
+
+
+<Link id="iota_group_ops_ENotSupported"></Link>
+
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota/group_ops#iota_group_ops_ENotSupported">ENotSupported</Link>: u64 = 0;
+</code>
+</pre>
+
+
+
+<Link id="iota_group_ops_bytes"></Link>
+
+## Function `bytes`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/group_ops#iota_group_ops_bytes">bytes</Link>&lt;G&gt;(e: &<Link to="../iota/group_ops#iota_group_ops_Element">iota::group_ops::Element</Link>&lt;G&gt;): &vector&lt;u8&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/group_ops#iota_group_ops_bytes">bytes</Link>&lt;G&gt;(e: &<Link to="../iota/group_ops#iota_group_ops_Element">Element</Link>&lt;G&gt;): &vector&lt;u8&gt; \{
+    &e.<Link to="../iota/group_ops#iota_group_ops_bytes">bytes</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_group_ops_equal"></Link>
+
+## Function `equal`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/group_ops#iota_group_ops_equal">equal</Link>&lt;G&gt;(e1: &<Link to="../iota/group_ops#iota_group_ops_Element">iota::group_ops::Element</Link>&lt;G&gt;, e2: &<Link to="../iota/group_ops#iota_group_ops_Element">iota::group_ops::Element</Link>&lt;G&gt;): bool
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/group_ops#iota_group_ops_equal">equal</Link>&lt;G&gt;(e1: &<Link to="../iota/group_ops#iota_group_ops_Element">Element</Link>&lt;G&gt;, e2: &<Link to="../iota/group_ops#iota_group_ops_Element">Element</Link>&lt;G&gt;): bool \{
+    &e1.<Link to="../iota/group_ops#iota_group_ops_bytes">bytes</Link> == &e2.<Link to="../iota/group_ops#iota_group_ops_bytes">bytes</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_group_ops_from_bytes"></Link>
+
+## Function `from_bytes`
+
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/group_ops#iota_group_ops_from_bytes">from_bytes</Link>&lt;G&gt;(type_: u8, <Link to="../iota/group_ops#iota_group_ops_bytes">bytes</Link>: &vector&lt;u8&gt;, is_trusted: bool): <Link to="../iota/group_ops#iota_group_ops_Element">iota::group_ops::Element</Link>&lt;G&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/group_ops#iota_group_ops_from_bytes">from_bytes</Link>&lt;G&gt;(type_: u8, <Link to="../iota/group_ops#iota_group_ops_bytes">bytes</Link>: &vector&lt;u8&gt;, is_trusted: bool): <Link to="../iota/group_ops#iota_group_ops_Element">Element</Link>&lt;G&gt; \{
+    <b>assert</b>!(is_trusted || <Link to="../iota/group_ops#iota_group_ops_internal_validate">internal_validate</Link>(type_, <Link to="../iota/group_ops#iota_group_ops_bytes">bytes</Link>), <Link to="../iota/group_ops#iota_group_ops_EInvalidInput">EInvalidInput</Link>);
+    <Link to="../iota/group_ops#iota_group_ops_Element">Element</Link>&lt;G&gt; \{ <Link to="../iota/group_ops#iota_group_ops_bytes">bytes</Link>: *<Link to="../iota/group_ops#iota_group_ops_bytes">bytes</Link> }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_group_ops_add"></Link>
+
+## Function `add`
+
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/group_ops#iota_group_ops_add">add</Link>&lt;G&gt;(type_: u8, e1: &<Link to="../iota/group_ops#iota_group_ops_Element">iota::group_ops::Element</Link>&lt;G&gt;, e2: &<Link to="../iota/group_ops#iota_group_ops_Element">iota::group_ops::Element</Link>&lt;G&gt;): <Link to="../iota/group_ops#iota_group_ops_Element">iota::group_ops::Element</Link>&lt;G&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/group_ops#iota_group_ops_add">add</Link>&lt;G&gt;(type_: u8, e1: &<Link to="../iota/group_ops#iota_group_ops_Element">Element</Link>&lt;G&gt;, e2: &<Link to="../iota/group_ops#iota_group_ops_Element">Element</Link>&lt;G&gt;): <Link to="../iota/group_ops#iota_group_ops_Element">Element</Link>&lt;G&gt; \{
+    <Link to="../iota/group_ops#iota_group_ops_Element">Element</Link>&lt;G&gt; \{ <Link to="../iota/group_ops#iota_group_ops_bytes">bytes</Link>: <Link to="../iota/group_ops#iota_group_ops_internal_add">internal_add</Link>(type_, &e1.<Link to="../iota/group_ops#iota_group_ops_bytes">bytes</Link>, &e2.<Link to="../iota/group_ops#iota_group_ops_bytes">bytes</Link>) }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_group_ops_sub"></Link>
+
+## Function `sub`
+
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/group_ops#iota_group_ops_sub">sub</Link>&lt;G&gt;(type_: u8, e1: &<Link to="../iota/group_ops#iota_group_ops_Element">iota::group_ops::Element</Link>&lt;G&gt;, e2: &<Link to="../iota/group_ops#iota_group_ops_Element">iota::group_ops::Element</Link>&lt;G&gt;): <Link to="../iota/group_ops#iota_group_ops_Element">iota::group_ops::Element</Link>&lt;G&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/group_ops#iota_group_ops_sub">sub</Link>&lt;G&gt;(type_: u8, e1: &<Link to="../iota/group_ops#iota_group_ops_Element">Element</Link>&lt;G&gt;, e2: &<Link to="../iota/group_ops#iota_group_ops_Element">Element</Link>&lt;G&gt;): <Link to="../iota/group_ops#iota_group_ops_Element">Element</Link>&lt;G&gt; \{
+    <Link to="../iota/group_ops#iota_group_ops_Element">Element</Link>&lt;G&gt; \{ <Link to="../iota/group_ops#iota_group_ops_bytes">bytes</Link>: <Link to="../iota/group_ops#iota_group_ops_internal_sub">internal_sub</Link>(type_, &e1.<Link to="../iota/group_ops#iota_group_ops_bytes">bytes</Link>, &e2.<Link to="../iota/group_ops#iota_group_ops_bytes">bytes</Link>) }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_group_ops_mul"></Link>
+
+## Function `mul`
+
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/group_ops#iota_group_ops_mul">mul</Link>&lt;S, G&gt;(type_: u8, scalar: &<Link to="../iota/group_ops#iota_group_ops_Element">iota::group_ops::Element</Link>&lt;S&gt;, e: &<Link to="../iota/group_ops#iota_group_ops_Element">iota::group_ops::Element</Link>&lt;G&gt;): <Link to="../iota/group_ops#iota_group_ops_Element">iota::group_ops::Element</Link>&lt;G&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/group_ops#iota_group_ops_mul">mul</Link>&lt;S, G&gt;(type_: u8, scalar: &<Link to="../iota/group_ops#iota_group_ops_Element">Element</Link>&lt;S&gt;, e: &<Link to="../iota/group_ops#iota_group_ops_Element">Element</Link>&lt;G&gt;): <Link to="../iota/group_ops#iota_group_ops_Element">Element</Link>&lt;G&gt; \{
+    <Link to="../iota/group_ops#iota_group_ops_Element">Element</Link>&lt;G&gt; \{ <Link to="../iota/group_ops#iota_group_ops_bytes">bytes</Link>: <Link to="../iota/group_ops#iota_group_ops_internal_mul">internal_mul</Link>(type_, &scalar.<Link to="../iota/group_ops#iota_group_ops_bytes">bytes</Link>, &e.<Link to="../iota/group_ops#iota_group_ops_bytes">bytes</Link>) }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_group_ops_div"></Link>
+
+## Function `div`
+
+Fails if scalar = 0. Else returns 1/scalar * e.
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/group_ops#iota_group_ops_div">div</Link>&lt;S, G&gt;(type_: u8, scalar: &<Link to="../iota/group_ops#iota_group_ops_Element">iota::group_ops::Element</Link>&lt;S&gt;, e: &<Link to="../iota/group_ops#iota_group_ops_Element">iota::group_ops::Element</Link>&lt;G&gt;): <Link to="../iota/group_ops#iota_group_ops_Element">iota::group_ops::Element</Link>&lt;G&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/group_ops#iota_group_ops_div">div</Link>&lt;S, G&gt;(type_: u8, scalar: &<Link to="../iota/group_ops#iota_group_ops_Element">Element</Link>&lt;S&gt;, e: &<Link to="../iota/group_ops#iota_group_ops_Element">Element</Link>&lt;G&gt;): <Link to="../iota/group_ops#iota_group_ops_Element">Element</Link>&lt;G&gt; \{
+    <Link to="../iota/group_ops#iota_group_ops_Element">Element</Link>&lt;G&gt; \{ <Link to="../iota/group_ops#iota_group_ops_bytes">bytes</Link>: <Link to="../iota/group_ops#iota_group_ops_internal_div">internal_div</Link>(type_, &scalar.<Link to="../iota/group_ops#iota_group_ops_bytes">bytes</Link>, &e.<Link to="../iota/group_ops#iota_group_ops_bytes">bytes</Link>) }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_group_ops_hash_to"></Link>
+
+## Function `hash_to`
+
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/group_ops#iota_group_ops_hash_to">hash_to</Link>&lt;G&gt;(type_: u8, m: &vector&lt;u8&gt;): <Link to="../iota/group_ops#iota_group_ops_Element">iota::group_ops::Element</Link>&lt;G&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/group_ops#iota_group_ops_hash_to">hash_to</Link>&lt;G&gt;(type_: u8, m: &vector&lt;u8&gt;): <Link to="../iota/group_ops#iota_group_ops_Element">Element</Link>&lt;G&gt; \{
+    <Link to="../iota/group_ops#iota_group_ops_Element">Element</Link>&lt;G&gt; \{ <Link to="../iota/group_ops#iota_group_ops_bytes">bytes</Link>: <Link to="../iota/group_ops#iota_group_ops_internal_hash_to">internal_hash_to</Link>(type_, m) }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_group_ops_multi_scalar_multiplication"></Link>
+
+## Function `multi_scalar_multiplication`
+
+Aborts with <code><Link to="../iota/group_ops#iota_group_ops_EInputTooLong">EInputTooLong</Link></code> if the vectors are too long.
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/group_ops#iota_group_ops_multi_scalar_multiplication">multi_scalar_multiplication</Link>&lt;S, G&gt;(type_: u8, scalars: &vector&lt;<Link to="../iota/group_ops#iota_group_ops_Element">iota::group_ops::Element</Link>&lt;S&gt;&gt;, elements: &vector&lt;<Link to="../iota/group_ops#iota_group_ops_Element">iota::group_ops::Element</Link>&lt;G&gt;&gt;): <Link to="../iota/group_ops#iota_group_ops_Element">iota::group_ops::Element</Link>&lt;G&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/group_ops#iota_group_ops_multi_scalar_multiplication">multi_scalar_multiplication</Link>&lt;S, G&gt;(
+    type_: u8,
+    scalars: &vector&lt;<Link to="../iota/group_ops#iota_group_ops_Element">Element</Link>&lt;S&gt;&gt;,
+    elements: &vector&lt;<Link to="../iota/group_ops#iota_group_ops_Element">Element</Link>&lt;G&gt;&gt;,
+): <Link to="../iota/group_ops#iota_group_ops_Element">Element</Link>&lt;G&gt; \{
+    <b>assert</b>!(scalars.length() &gt; 0, <Link to="../iota/group_ops#iota_group_ops_EInvalidInput">EInvalidInput</Link>);
+    <b>assert</b>!(scalars.length() == elements.length(), <Link to="../iota/group_ops#iota_group_ops_EInvalidInput">EInvalidInput</Link>);
+    <b>let</b> <b>mut</b> scalars_bytes: vector&lt;u8&gt; = vector[];
+    <b>let</b> <b>mut</b> elements_bytes: vector&lt;u8&gt; = vector[];
+    <b>let</b> <b>mut</b> i = 0;
+    <b>while</b> (i &lt; scalars.length()) \{
+        <b>let</b> scalar_vec = scalars[i];
+        scalars_bytes.append(scalar_vec.<Link to="../iota/group_ops#iota_group_ops_bytes">bytes</Link>);
+        <b>let</b> element_vec = elements[i];
+        elements_bytes.append(element_vec.<Link to="../iota/group_ops#iota_group_ops_bytes">bytes</Link>);
+        i = i + 1;
+    };
+    <Link to="../iota/group_ops#iota_group_ops_Element">Element</Link>&lt;G&gt; \{ <Link to="../iota/group_ops#iota_group_ops_bytes">bytes</Link>: <Link to="../iota/group_ops#iota_group_ops_internal_multi_scalar_mul">internal_multi_scalar_mul</Link>(type_, &scalars_bytes, &elements_bytes) }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_group_ops_pairing"></Link>
+
+## Function `pairing`
+
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/group_ops#iota_group_ops_pairing">pairing</Link>&lt;G1, G2, G3&gt;(type_: u8, e1: &<Link to="../iota/group_ops#iota_group_ops_Element">iota::group_ops::Element</Link>&lt;G1&gt;, e2: &<Link to="../iota/group_ops#iota_group_ops_Element">iota::group_ops::Element</Link>&lt;G2&gt;): <Link to="../iota/group_ops#iota_group_ops_Element">iota::group_ops::Element</Link>&lt;G3&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/group_ops#iota_group_ops_pairing">pairing</Link>&lt;G1, G2, G3&gt;(
+    type_: u8,
+    e1: &<Link to="../iota/group_ops#iota_group_ops_Element">Element</Link>&lt;G1&gt;,
+    e2: &<Link to="../iota/group_ops#iota_group_ops_Element">Element</Link>&lt;G2&gt;,
+): <Link to="../iota/group_ops#iota_group_ops_Element">Element</Link>&lt;G3&gt; \{
+    <Link to="../iota/group_ops#iota_group_ops_Element">Element</Link>&lt;G3&gt; \{ <Link to="../iota/group_ops#iota_group_ops_bytes">bytes</Link>: <Link to="../iota/group_ops#iota_group_ops_internal_pairing">internal_pairing</Link>(type_, &e1.<Link to="../iota/group_ops#iota_group_ops_bytes">bytes</Link>, &e2.<Link to="../iota/group_ops#iota_group_ops_bytes">bytes</Link>) }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_group_ops_convert"></Link>
+
+## Function `convert`
+
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/group_ops#iota_group_ops_convert">convert</Link>&lt;From, To&gt;(from_type_: u8, to_type_: u8, e: &<Link to="../iota/group_ops#iota_group_ops_Element">iota::group_ops::Element</Link>&lt;From&gt;): <Link to="../iota/group_ops#iota_group_ops_Element">iota::group_ops::Element</Link>&lt;To&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/group_ops#iota_group_ops_convert">convert</Link>&lt;From, To&gt;(
+    from_type_: u8,
+    to_type_: u8,
+    e: &<Link to="../iota/group_ops#iota_group_ops_Element">Element</Link>&lt;From&gt;,
+): <Link to="../iota/group_ops#iota_group_ops_Element">Element</Link>&lt;To&gt; \{
+    <Link to="../iota/group_ops#iota_group_ops_Element">Element</Link>&lt;To&gt; \{ <Link to="../iota/group_ops#iota_group_ops_bytes">bytes</Link>: <Link to="../iota/group_ops#iota_group_ops_internal_convert">internal_convert</Link>(from_type_, to_type_, &e.<Link to="../iota/group_ops#iota_group_ops_bytes">bytes</Link>) }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_group_ops_sum"></Link>
+
+## Function `sum`
+
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/group_ops#iota_group_ops_sum">sum</Link>&lt;G&gt;(type_: u8, terms: &vector&lt;<Link to="../iota/group_ops#iota_group_ops_Element">iota::group_ops::Element</Link>&lt;G&gt;&gt;): <Link to="../iota/group_ops#iota_group_ops_Element">iota::group_ops::Element</Link>&lt;G&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/group_ops#iota_group_ops_sum">sum</Link>&lt;G&gt;(type_: u8, terms: &vector&lt;<Link to="../iota/group_ops#iota_group_ops_Element">Element</Link>&lt;G&gt;&gt;): <Link to="../iota/group_ops#iota_group_ops_Element">Element</Link>&lt;G&gt; \{
+    <Link to="../iota/group_ops#iota_group_ops_Element">Element</Link>&lt;G&gt; \{ <Link to="../iota/group_ops#iota_group_ops_bytes">bytes</Link>: <Link to="../iota/group_ops#iota_group_ops_internal_sum">internal_sum</Link>(type_, &(*terms).map!(|x| x.<Link to="../iota/group_ops#iota_group_ops_bytes">bytes</Link>)) }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_group_ops_internal_validate"></Link>
+
+## Function `internal_validate`
+
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota/group_ops#iota_group_ops_internal_validate">internal_validate</Link>(type_: u8, <Link to="../iota/group_ops#iota_group_ops_bytes">bytes</Link>: &vector&lt;u8&gt;): bool
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>native</b> <b>fun</b> <Link to="../iota/group_ops#iota_group_ops_internal_validate">internal_validate</Link>(type_: u8, <Link to="../iota/group_ops#iota_group_ops_bytes">bytes</Link>: &vector&lt;u8&gt;): bool;
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_group_ops_internal_add"></Link>
+
+## Function `internal_add`
+
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota/group_ops#iota_group_ops_internal_add">internal_add</Link>(type_: u8, e1: &vector&lt;u8&gt;, e2: &vector&lt;u8&gt;): vector&lt;u8&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>native</b> <b>fun</b> <Link to="../iota/group_ops#iota_group_ops_internal_add">internal_add</Link>(type_: u8, e1: &vector&lt;u8&gt;, e2: &vector&lt;u8&gt;): vector&lt;u8&gt;;
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_group_ops_internal_sub"></Link>
+
+## Function `internal_sub`
+
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota/group_ops#iota_group_ops_internal_sub">internal_sub</Link>(type_: u8, e1: &vector&lt;u8&gt;, e2: &vector&lt;u8&gt;): vector&lt;u8&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>native</b> <b>fun</b> <Link to="../iota/group_ops#iota_group_ops_internal_sub">internal_sub</Link>(type_: u8, e1: &vector&lt;u8&gt;, e2: &vector&lt;u8&gt;): vector&lt;u8&gt;;
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_group_ops_internal_mul"></Link>
+
+## Function `internal_mul`
+
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota/group_ops#iota_group_ops_internal_mul">internal_mul</Link>(type_: u8, e1: &vector&lt;u8&gt;, e2: &vector&lt;u8&gt;): vector&lt;u8&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>native</b> <b>fun</b> <Link to="../iota/group_ops#iota_group_ops_internal_mul">internal_mul</Link>(type_: u8, e1: &vector&lt;u8&gt;, e2: &vector&lt;u8&gt;): vector&lt;u8&gt;;
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_group_ops_internal_div"></Link>
+
+## Function `internal_div`
+
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota/group_ops#iota_group_ops_internal_div">internal_div</Link>(type_: u8, e1: &vector&lt;u8&gt;, e2: &vector&lt;u8&gt;): vector&lt;u8&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>native</b> <b>fun</b> <Link to="../iota/group_ops#iota_group_ops_internal_div">internal_div</Link>(type_: u8, e1: &vector&lt;u8&gt;, e2: &vector&lt;u8&gt;): vector&lt;u8&gt;;
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_group_ops_internal_hash_to"></Link>
+
+## Function `internal_hash_to`
+
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota/group_ops#iota_group_ops_internal_hash_to">internal_hash_to</Link>(type_: u8, m: &vector&lt;u8&gt;): vector&lt;u8&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>native</b> <b>fun</b> <Link to="../iota/group_ops#iota_group_ops_internal_hash_to">internal_hash_to</Link>(type_: u8, m: &vector&lt;u8&gt;): vector&lt;u8&gt;;
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_group_ops_internal_multi_scalar_mul"></Link>
+
+## Function `internal_multi_scalar_mul`
+
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota/group_ops#iota_group_ops_internal_multi_scalar_mul">internal_multi_scalar_mul</Link>(type_: u8, scalars: &vector&lt;u8&gt;, elements: &vector&lt;u8&gt;): vector&lt;u8&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>native</b> <b>fun</b> <Link to="../iota/group_ops#iota_group_ops_internal_multi_scalar_mul">internal_multi_scalar_mul</Link>(
+    type_: u8,
+    scalars: &vector&lt;u8&gt;,
+    elements: &vector&lt;u8&gt;,
+): vector&lt;u8&gt;;
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_group_ops_internal_pairing"></Link>
+
+## Function `internal_pairing`
+
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota/group_ops#iota_group_ops_internal_pairing">internal_pairing</Link>(type_: u8, e1: &vector&lt;u8&gt;, e2: &vector&lt;u8&gt;): vector&lt;u8&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>native</b> <b>fun</b> <Link to="../iota/group_ops#iota_group_ops_internal_pairing">internal_pairing</Link>(type_: u8, e1: &vector&lt;u8&gt;, e2: &vector&lt;u8&gt;): vector&lt;u8&gt;;
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_group_ops_internal_convert"></Link>
+
+## Function `internal_convert`
+
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota/group_ops#iota_group_ops_internal_convert">internal_convert</Link>(from_type_: u8, to_type_: u8, e: &vector&lt;u8&gt;): vector&lt;u8&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>native</b> <b>fun</b> <Link to="../iota/group_ops#iota_group_ops_internal_convert">internal_convert</Link>(from_type_: u8, to_type_: u8, e: &vector&lt;u8&gt;): vector&lt;u8&gt;;
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_group_ops_internal_sum"></Link>
+
+## Function `internal_sum`
+
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota/group_ops#iota_group_ops_internal_sum">internal_sum</Link>(type_: u8, e: &vector&lt;vector&lt;u8&gt;&gt;): vector&lt;u8&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>native</b> <b>fun</b> <Link to="../iota/group_ops#iota_group_ops_internal_sum">internal_sum</Link>(type_: u8, e: &vector&lt;vector&lt;u8&gt;&gt;): vector&lt;u8&gt;;
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_group_ops_set_as_prefix"></Link>
+
+## Function `set_as_prefix`
+
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/group_ops#iota_group_ops_set_as_prefix">set_as_prefix</Link>(x: u64, big_endian: bool, buffer: &<b>mut</b> vector&lt;u8&gt;)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/group_ops#iota_group_ops_set_as_prefix">set_as_prefix</Link>(x: u64, big_endian: bool, buffer: &<b>mut</b> vector&lt;u8&gt;) \{
+    <b>let</b> buffer_len = buffer.length();
+    <b>assert</b>!(buffer_len &gt; 7, <Link to="../iota/group_ops#iota_group_ops_EInvalidBufferLength">EInvalidBufferLength</Link>);
+    <b>let</b> x_as_bytes = <Link to="../iota/bcs#iota_bcs_to_bytes">bcs::to_bytes</Link>(&x); // little endian
+    <b>let</b> <b>mut</b> i = 0;
+    <b>while</b> (i &lt; 8) \{
+        <b>let</b> position = <b>if</b> (big_endian) \{ buffer_len - i - 1 } <b>else</b> \{ i };
+        *(&<b>mut</b> buffer[position]) = x_as_bytes[i];
+        i = i + 1;
+    };
+}
+</code>
+</pre>
+
+
+
+</details>

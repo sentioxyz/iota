@@ -1,0 +1,432 @@
+---
+title: Module stardust::nft
+sidebar_label: nft
+slug: nft
+---
+import Link from '@docusaurus/Link';
+
+<Link id="stardust_nft"/>
+
+
+-  [Struct `NFT`](#stardust_nft_NFT)
+-  [Struct `Nft`](#stardust_nft_Nft)
+-  [Function `init`](#stardust_nft_init)
+-  [Function `destroy`](#stardust_nft_destroy)
+-  [Function `legacy_sender`](#stardust_nft_legacy_sender)
+-  [Function `metadata`](#stardust_nft_metadata)
+-  [Function `tag`](#stardust_nft_tag)
+-  [Function `immutable_issuer`](#stardust_nft_immutable_issuer)
+-  [Function `immutable_metadata`](#stardust_nft_immutable_metadata)
+-  [Function `id`](#stardust_nft_id)
+
+
+<pre>
+<code>
+<b>use</b> <Link to="../iota/address#iota_address">iota::address</Link>;
+<b>use</b> <Link to="../iota/display#iota_display">iota::display</Link>;
+<b>use</b> <Link to="../iota/event#iota_event">iota::event</Link>;
+<b>use</b> <Link to="../iota/hex#iota_hex">iota::hex</Link>;
+<b>use</b> <Link to="../iota/object#iota_object">iota::object</Link>;
+<b>use</b> <Link to="../iota/package#iota_package">iota::package</Link>;
+<b>use</b> <Link to="../iota/transfer#iota_transfer">iota::transfer</Link>;
+<b>use</b> <Link to="../iota/tx_context#iota_tx_context">iota::tx_context</Link>;
+<b>use</b> <Link to="../iota/types#iota_types">iota::types</Link>;
+<b>use</b> <Link to="../iota/url#iota_url">iota::url</Link>;
+<b>use</b> <Link to="../iota/vec_map#iota_vec_map">iota::vec_map</Link>;
+<b>use</b> <Link to="../stardust/irc27#stardust_irc27">stardust::irc27</Link>;
+<b>use</b> <Link to="../std/address#std_address">std::address</Link>;
+<b>use</b> <Link to="../std/ascii#std_ascii">std::ascii</Link>;
+<b>use</b> <Link to="../std/bcs#std_bcs">std::bcs</Link>;
+<b>use</b> <Link to="../std/fixed_point32#std_fixed_point32">std::fixed_point32</Link>;
+<b>use</b> <Link to="../std/option#std_option">std::option</Link>;
+<b>use</b> <Link to="../std/string#std_string">std::string</Link>;
+<b>use</b> <Link to="../std/type_name#std_type_name">std::type_name</Link>;
+<b>use</b> <Link to="../std/vector#std_vector">std::vector</Link>;
+</code>
+</pre>
+
+
+
+<Link id="stardust_nft_NFT"></Link>
+
+## Struct `NFT`
+
+One Time Witness.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../stardust/nft#stardust_nft_NFT">NFT</Link> <b>has</b> drop
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+</dl>
+
+
+</details>
+
+<Link id="stardust_nft_Nft"></Link>
+
+## Struct `Nft`
+
+The Stardust NFT representation.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../stardust/nft#stardust_nft_Nft">Nft</Link> <b>has</b> key, store
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code><Link to="../stardust/nft#stardust_nft_id">id</Link>: <Link to="../iota/object#iota_object_UID">iota::object::UID</Link></code>
+</dt>
+<dd>
+ The Nft's ID is nested from Stardust.
+</dd>
+<dt>
+<code><Link to="../stardust/nft#stardust_nft_legacy_sender">legacy_sender</Link>: <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;<b>address</b>&gt;</code>
+</dt>
+<dd>
+ The sender feature holds the last sender address assigned before the migration and
+ is not supported by the protocol after it.
+</dd>
+<dt>
+<code><Link to="../stardust/nft#stardust_nft_metadata">metadata</Link>: <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;vector&lt;u8&gt;&gt;</code>
+</dt>
+<dd>
+ The metadata feature.
+</dd>
+<dt>
+<code><Link to="../stardust/nft#stardust_nft_tag">tag</Link>: <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;vector&lt;u8&gt;&gt;</code>
+</dt>
+<dd>
+ The tag feature.
+</dd>
+<dt>
+<code><Link to="../stardust/nft#stardust_nft_immutable_issuer">immutable_issuer</Link>: <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;<b>address</b>&gt;</code>
+</dt>
+<dd>
+ The immutable issuer feature.
+</dd>
+<dt>
+<code><Link to="../stardust/nft#stardust_nft_immutable_metadata">immutable_metadata</Link>: <Link to="../stardust/irc27#stardust_irc27_Irc27Metadata">stardust::irc27::Irc27Metadata</Link></code>
+</dt>
+<dd>
+ The immutable metadata feature.
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="stardust_nft_init"></Link>
+
+## Function `init`
+
+The <code><Link to="../stardust/nft#stardust_nft_Nft">Nft</Link></code> module initializer.
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../stardust/nft#stardust_nft_init">init</Link>(otw: <Link to="../stardust/nft#stardust_nft_NFT">stardust::nft::NFT</Link>, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../stardust/nft#stardust_nft_init">init</Link>(otw: <Link to="../stardust/nft#stardust_nft_NFT">NFT</Link>, ctx: &<b>mut</b> TxContext) \{
+    // Claim the <b>module</b> publisher.
+    <b>let</b> publisher = package::claim(otw, ctx);
+    // Build a `Display` object.
+    <b>let</b> keys = vector[
+        // The IOTA standard fields.
+        string::utf8(b"name"),
+        string::utf8(b"image_url"),
+        string::utf8(b"description"),
+        string::utf8(b"creator"),
+        // The extra IRC27-nested fields.
+        string::utf8(b"version"),
+        string::utf8(b"media_type"),
+        string::utf8(b"collection_name"),
+        // The issuer of the <Link to="../stardust/nft#stardust_nft_NFT">NFT</Link>. Equivalent to IRC-27 `collectionId`.
+        string::utf8(b"<Link to="../stardust/nft#stardust_nft_immutable_issuer">immutable_issuer</Link>"),
+    ];
+    <b>let</b> values = vector[
+        // The IOTA standard fields.
+        string::utf8(b"\{<Link to="../stardust/nft#stardust_nft_immutable_metadata">immutable_metadata</Link>.name}"),
+        string::utf8(b"\{<Link to="../stardust/nft#stardust_nft_immutable_metadata">immutable_metadata</Link>.uri}"),
+        string::utf8(b"\{<Link to="../stardust/nft#stardust_nft_immutable_metadata">immutable_metadata</Link>.description}"),
+        string::utf8(b"\{<Link to="../stardust/nft#stardust_nft_immutable_metadata">immutable_metadata</Link>.issuer_name}"),
+        // The extra IRC27-nested fields.
+        string::utf8(b"\{<Link to="../stardust/nft#stardust_nft_immutable_metadata">immutable_metadata</Link>.version}"),
+        string::utf8(b"\{<Link to="../stardust/nft#stardust_nft_immutable_metadata">immutable_metadata</Link>.media_type}"),
+        string::utf8(b"\{<Link to="../stardust/nft#stardust_nft_immutable_metadata">immutable_metadata</Link>.collection_name}"),
+        // The issuer of the <Link to="../stardust/nft#stardust_nft_NFT">NFT</Link>. Equivalent to IRC-27 `collectionId`.
+        string::utf8(b"\{<Link to="../stardust/nft#stardust_nft_immutable_issuer">immutable_issuer</Link>}"),
+    ];
+    <b>let</b> <b>mut</b> display = display::new_with_fields&lt;<Link to="../stardust/nft#stardust_nft_Nft">Nft</Link>&gt;(
+        &publisher,
+        keys,
+        values,
+        ctx,
+    );
+    // Commit the first version of `Display` to apply changes.
+    display.update_version();
+    // Burn the publisher object.
+    package::burn_publisher(publisher);
+    // Freeze the display object.
+    <Link to="../iota/transfer#iota_transfer_public_freeze_object">iota::transfer::public_freeze_object</Link>(display);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="stardust_nft_destroy"></Link>
+
+## Function `destroy`
+
+Permanently destroy an <code><Link to="../stardust/nft#stardust_nft_Nft">Nft</Link></code> object.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/nft#stardust_nft_destroy">destroy</Link>(<Link to="../stardust/nft#stardust_nft">nft</Link>: <Link to="../stardust/nft#stardust_nft_Nft">stardust::nft::Nft</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/nft#stardust_nft_destroy">destroy</Link>(<Link to="../stardust/nft#stardust_nft">nft</Link>: <Link to="../stardust/nft#stardust_nft_Nft">Nft</Link>) \{
+    <b>let</b> <Link to="../stardust/nft#stardust_nft_Nft">Nft</Link> \{
+        <Link to="../stardust/nft#stardust_nft_id">id</Link>,
+        <Link to="../stardust/nft#stardust_nft_legacy_sender">legacy_sender</Link>: _,
+        <Link to="../stardust/nft#stardust_nft_metadata">metadata</Link>: _,
+        <Link to="../stardust/nft#stardust_nft_tag">tag</Link>: _,
+        <Link to="../stardust/nft#stardust_nft_immutable_issuer">immutable_issuer</Link>: _,
+        <Link to="../stardust/nft#stardust_nft_immutable_metadata">immutable_metadata</Link>,
+    } = <Link to="../stardust/nft#stardust_nft">nft</Link>;
+    <Link to="../stardust/irc27#stardust_irc27_destroy">irc27::destroy</Link>(<Link to="../stardust/nft#stardust_nft_immutable_metadata">immutable_metadata</Link>);
+    object::delete(<Link to="../stardust/nft#stardust_nft_id">id</Link>);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="stardust_nft_legacy_sender"></Link>
+
+## Function `legacy_sender`
+
+Get the Nft's <code><Link to="../stardust/nft#stardust_nft_legacy_sender">legacy_sender</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/nft#stardust_nft_legacy_sender">legacy_sender</Link>(<Link to="../stardust/nft#stardust_nft">nft</Link>: &<Link to="../stardust/nft#stardust_nft_Nft">stardust::nft::Nft</Link>): &<Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;<b>address</b>&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/nft#stardust_nft_legacy_sender">legacy_sender</Link>(<Link to="../stardust/nft#stardust_nft">nft</Link>: &<Link to="../stardust/nft#stardust_nft_Nft">Nft</Link>): &Option&lt;<b>address</b>&gt; \{
+    &<Link to="../stardust/nft#stardust_nft">nft</Link>.<Link to="../stardust/nft#stardust_nft_legacy_sender">legacy_sender</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="stardust_nft_metadata"></Link>
+
+## Function `metadata`
+
+Get the Nft's <code><Link to="../stardust/nft#stardust_nft_metadata">metadata</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/nft#stardust_nft_metadata">metadata</Link>(<Link to="../stardust/nft#stardust_nft">nft</Link>: &<Link to="../stardust/nft#stardust_nft_Nft">stardust::nft::Nft</Link>): &<Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;vector&lt;u8&gt;&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/nft#stardust_nft_metadata">metadata</Link>(<Link to="../stardust/nft#stardust_nft">nft</Link>: &<Link to="../stardust/nft#stardust_nft_Nft">Nft</Link>): &Option&lt;vector&lt;u8&gt;&gt; \{
+    &<Link to="../stardust/nft#stardust_nft">nft</Link>.<Link to="../stardust/nft#stardust_nft_metadata">metadata</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="stardust_nft_tag"></Link>
+
+## Function `tag`
+
+Get the Nft's <code><Link to="../stardust/nft#stardust_nft_tag">tag</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/nft#stardust_nft_tag">tag</Link>(<Link to="../stardust/nft#stardust_nft">nft</Link>: &<Link to="../stardust/nft#stardust_nft_Nft">stardust::nft::Nft</Link>): &<Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;vector&lt;u8&gt;&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/nft#stardust_nft_tag">tag</Link>(<Link to="../stardust/nft#stardust_nft">nft</Link>: &<Link to="../stardust/nft#stardust_nft_Nft">Nft</Link>): &Option&lt;vector&lt;u8&gt;&gt; \{
+    &<Link to="../stardust/nft#stardust_nft">nft</Link>.<Link to="../stardust/nft#stardust_nft_tag">tag</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="stardust_nft_immutable_issuer"></Link>
+
+## Function `immutable_issuer`
+
+Get the Nft's <code>immutable_sender</code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/nft#stardust_nft_immutable_issuer">immutable_issuer</Link>(<Link to="../stardust/nft#stardust_nft">nft</Link>: &<Link to="../stardust/nft#stardust_nft_Nft">stardust::nft::Nft</Link>): &<Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;<b>address</b>&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/nft#stardust_nft_immutable_issuer">immutable_issuer</Link>(<Link to="../stardust/nft#stardust_nft">nft</Link>: &<Link to="../stardust/nft#stardust_nft_Nft">Nft</Link>): &Option&lt;<b>address</b>&gt; \{
+    &<Link to="../stardust/nft#stardust_nft">nft</Link>.<Link to="../stardust/nft#stardust_nft_immutable_issuer">immutable_issuer</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="stardust_nft_immutable_metadata"></Link>
+
+## Function `immutable_metadata`
+
+Get the Nft's <code><Link to="../stardust/nft#stardust_nft_immutable_metadata">immutable_metadata</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/nft#stardust_nft_immutable_metadata">immutable_metadata</Link>(<Link to="../stardust/nft#stardust_nft">nft</Link>: &<Link to="../stardust/nft#stardust_nft_Nft">stardust::nft::Nft</Link>): &<Link to="../stardust/irc27#stardust_irc27_Irc27Metadata">stardust::irc27::Irc27Metadata</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/nft#stardust_nft_immutable_metadata">immutable_metadata</Link>(<Link to="../stardust/nft#stardust_nft">nft</Link>: &<Link to="../stardust/nft#stardust_nft_Nft">Nft</Link>): &Irc27Metadata \{
+    &<Link to="../stardust/nft#stardust_nft">nft</Link>.<Link to="../stardust/nft#stardust_nft_immutable_metadata">immutable_metadata</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="stardust_nft_id"></Link>
+
+## Function `id`
+
+Get the Nft's id.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../stardust/nft#stardust_nft_id">id</Link>(self: &<b>mut</b> <Link to="../stardust/nft#stardust_nft_Nft">stardust::nft::Nft</Link>): &<b>mut</b> <Link to="../iota/object#iota_object_UID">iota::object::UID</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../stardust/nft#stardust_nft_id">id</Link>(self: &<b>mut</b> <Link to="../stardust/nft#stardust_nft_Nft">Nft</Link>): &<b>mut</b> UID \{
+    &<b>mut</b> self.<Link to="../stardust/nft#stardust_nft_id">id</Link>
+}
+</code>
+</pre>
+
+
+
+</details>

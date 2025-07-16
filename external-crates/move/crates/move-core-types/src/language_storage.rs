@@ -1,5 +1,6 @@
 // Copyright (c) The Diem Core Contributors
 // Copyright (c) The Move Contributors
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::{
@@ -303,7 +304,7 @@ impl ModuleId {
             with_prefix: bool,
         }
 
-        impl<'a> Display for IdDisplay<'a> {
+        impl Display for IdDisplay<'_> {
             fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
                 write!(
                     f,

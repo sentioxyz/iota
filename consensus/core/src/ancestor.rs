@@ -1,4 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::sync::Arc;
@@ -279,7 +280,7 @@ impl AncestorStateManager {
     /// The authority high quorum round is the lowest round higher or equal to rounds  
     /// from a quorum of authorities. The network high quorum round is using the high
     /// quorum round of each authority as reported by the [`RoundProber`] and then
-    /// finding the high quroum round of those high quorum rounds.
+    /// finding the high quorum round of those high quorum rounds.
     fn calculate_network_high_quorum_round_internal(
         &self,
         mut high_quorum_rounds_with_stake: Vec<(u32, u64)>,
@@ -458,7 +459,7 @@ mod test {
             .set_quorum_rounds_per_authority(received_quorum_rounds, accepted_quorum_rounds);
         ancestor_state_manager.update_all_ancestors_state();
 
-        // Ancestor 1 can transtion to the INCLUDE state. Ancestor 0 is still locked
+        // Ancestor 1 can transition to the INCLUDE state. Ancestor 0 is still locked
         // in the INCLUDE state until a score update is performed which is why
         // even though the scores are still low it has not moved to the EXCLUDE
         // state.
@@ -570,7 +571,7 @@ mod test {
             .set_quorum_rounds_per_authority(received_quorum_rounds, accepted_quorum_rounds);
         ancestor_state_manager.update_all_ancestors_state();
 
-        // Ancestor 1 can transtion to the INCLUDE state. Ancestor 0 is still locked
+        // Ancestor 1 can transition to the INCLUDE state. Ancestor 0 is still locked
         // in the INCLUDE state until a score update is performed which is why
         // even though the scores are still low it has not moved to the EXCLUDE
         // state.

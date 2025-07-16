@@ -1,5 +1,6 @@
 // Copyright (c) The Diem Core Contributors
 // Copyright (c) The Move Contributors
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::module_cache::GetModule;
@@ -591,10 +592,7 @@ impl DatatypeLayoutBuilder {
                     .zip(layouts)
                     .map(|(name, layout)| A::MoveFieldLayout::new(name, layout))
                     .collect();
-                Ok(A::MoveStructLayout {
-                    type_,
-                    fields: Box::new(fields),
-                })
+                Ok(A::MoveStructLayout { type_, fields })
             }
         }
     }

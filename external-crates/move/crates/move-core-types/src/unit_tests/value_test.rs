@@ -1,5 +1,6 @@
 // Copyright (c) The Diem Core Contributors
 // Copyright (c) The Move Contributors
+// Modifications Copyright (c) 2025 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::{
@@ -43,14 +44,12 @@ fn struct_deserialization() {
 
     let struct_type_layout = A::MoveStructLayout {
         type_: struct_type.clone(),
-        fields: Box::new(
-            vec![
-                A::MoveFieldLayout::new(ident_str!("f").to_owned(), A::MoveTypeLayout::U64),
-                A::MoveFieldLayout::new(ident_str!("g").to_owned(), A::MoveTypeLayout::Bool),
-            ]
-            .into_iter()
-            .collect(),
-        ),
+        fields: vec![
+            A::MoveFieldLayout::new(ident_str!("f").to_owned(), A::MoveTypeLayout::U64),
+            A::MoveFieldLayout::new(ident_str!("g").to_owned(), A::MoveTypeLayout::Bool),
+        ]
+        .into_iter()
+        .collect(),
     };
 
     let deser_typed_value = A::MoveValue::simple_deserialize(

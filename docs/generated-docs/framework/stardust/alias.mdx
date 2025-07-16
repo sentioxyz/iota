@@ -1,0 +1,402 @@
+---
+title: Module stardust::alias
+sidebar_label: alias
+slug: alias
+---
+import Link from '@docusaurus/Link';
+
+<Link id="stardust_alias"/>
+
+
+-  [Struct `Alias`](#stardust_alias_Alias)
+-  [Function `destroy`](#stardust_alias_destroy)
+-  [Function `legacy_state_controller`](#stardust_alias_legacy_state_controller)
+-  [Function `state_index`](#stardust_alias_state_index)
+-  [Function `state_metadata`](#stardust_alias_state_metadata)
+-  [Function `sender`](#stardust_alias_sender)
+-  [Function `metadata`](#stardust_alias_metadata)
+-  [Function `immutable_issuer`](#stardust_alias_immutable_issuer)
+-  [Function `immutable_metadata`](#stardust_alias_immutable_metadata)
+-  [Function `id`](#stardust_alias_id)
+
+
+<pre>
+<code>
+<b>use</b> <Link to="../iota/address#iota_address">iota::address</Link>;
+<b>use</b> <Link to="../iota/hex#iota_hex">iota::hex</Link>;
+<b>use</b> <Link to="../iota/object#iota_object">iota::object</Link>;
+<b>use</b> <Link to="../iota/tx_context#iota_tx_context">iota::tx_context</Link>;
+<b>use</b> <Link to="../std/ascii#std_ascii">std::ascii</Link>;
+<b>use</b> <Link to="../std/bcs#std_bcs">std::bcs</Link>;
+<b>use</b> <Link to="../std/option#std_option">std::option</Link>;
+<b>use</b> <Link to="../std/string#std_string">std::string</Link>;
+<b>use</b> <Link to="../std/vector#std_vector">std::vector</Link>;
+</code>
+</pre>
+
+
+
+<Link id="stardust_alias_Alias"></Link>
+
+## Struct `Alias`
+
+The persisted Alias object from Stardust, without tokens and assets.
+Outputs owned the AliasID/Address in Stardust will be sent to this object and
+have to be received via this object once extracted from <code>AliasOutput</code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../stardust/alias#stardust_alias_Alias">Alias</Link> <b>has</b> key, store
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code><Link to="../stardust/alias#stardust_alias_id">id</Link>: <Link to="../iota/object#iota_object_UID">iota::object::UID</Link></code>
+</dt>
+<dd>
+ The ID of the Alias = hash of the Output ID that created the Alias Output in Stardust.
+ This is the AliasID from Stardust.
+</dd>
+<dt>
+<code><Link to="../stardust/alias#stardust_alias_legacy_state_controller">legacy_state_controller</Link>: <b>address</b></code>
+</dt>
+<dd>
+ The last State Controller address assigned before the migration.
+</dd>
+<dt>
+<code><Link to="../stardust/alias#stardust_alias_state_index">state_index</Link>: u32</code>
+</dt>
+<dd>
+ A counter increased by 1 every time the alias was state transitioned.
+</dd>
+<dt>
+<code><Link to="../stardust/alias#stardust_alias_state_metadata">state_metadata</Link>: <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;vector&lt;u8&gt;&gt;</code>
+</dt>
+<dd>
+ State metadata that can be used to store additional information.
+</dd>
+<dt>
+<code><Link to="../stardust/alias#stardust_alias_sender">sender</Link>: <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;<b>address</b>&gt;</code>
+</dt>
+<dd>
+ The sender feature.
+</dd>
+<dt>
+<code><Link to="../stardust/alias#stardust_alias_metadata">metadata</Link>: <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;vector&lt;u8&gt;&gt;</code>
+</dt>
+<dd>
+ The metadata feature.
+</dd>
+<dt>
+<code><Link to="../stardust/alias#stardust_alias_immutable_issuer">immutable_issuer</Link>: <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;<b>address</b>&gt;</code>
+</dt>
+<dd>
+ The immutable issuer feature.
+</dd>
+<dt>
+<code><Link to="../stardust/alias#stardust_alias_immutable_metadata">immutable_metadata</Link>: <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;vector&lt;u8&gt;&gt;</code>
+</dt>
+<dd>
+ The immutable metadata feature.
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="stardust_alias_destroy"></Link>
+
+## Function `destroy`
+
+Destroy the <code><Link to="../stardust/alias#stardust_alias_Alias">Alias</Link></code> object, equivalent to <code>burning</code> an Alias Output in Stardust.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/alias#stardust_alias_destroy">destroy</Link>(self: <Link to="../stardust/alias#stardust_alias_Alias">stardust::alias::Alias</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/alias#stardust_alias_destroy">destroy</Link>(self: <Link to="../stardust/alias#stardust_alias_Alias">Alias</Link>) \{
+    <b>let</b> <Link to="../stardust/alias#stardust_alias_Alias">Alias</Link> \{
+        <Link to="../stardust/alias#stardust_alias_id">id</Link>,
+        <Link to="../stardust/alias#stardust_alias_legacy_state_controller">legacy_state_controller</Link>: _,
+        <Link to="../stardust/alias#stardust_alias_state_index">state_index</Link>: _,
+        <Link to="../stardust/alias#stardust_alias_state_metadata">state_metadata</Link>: _,
+        <Link to="../stardust/alias#stardust_alias_sender">sender</Link>: _,
+        <Link to="../stardust/alias#stardust_alias_metadata">metadata</Link>: _,
+        <Link to="../stardust/alias#stardust_alias_immutable_issuer">immutable_issuer</Link>: _,
+        <Link to="../stardust/alias#stardust_alias_immutable_metadata">immutable_metadata</Link>: _,
+    } = self;
+    object::delete(<Link to="../stardust/alias#stardust_alias_id">id</Link>);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="stardust_alias_legacy_state_controller"></Link>
+
+## Function `legacy_state_controller`
+
+Get the Alias's <code><Link to="../stardust/alias#stardust_alias_legacy_state_controller">legacy_state_controller</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/alias#stardust_alias_legacy_state_controller">legacy_state_controller</Link>(self: &<Link to="../stardust/alias#stardust_alias_Alias">stardust::alias::Alias</Link>): &<b>address</b>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/alias#stardust_alias_legacy_state_controller">legacy_state_controller</Link>(self: &<Link to="../stardust/alias#stardust_alias_Alias">Alias</Link>): &<b>address</b> \{
+    &self.<Link to="../stardust/alias#stardust_alias_legacy_state_controller">legacy_state_controller</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="stardust_alias_state_index"></Link>
+
+## Function `state_index`
+
+Get the Alias's <code><Link to="../stardust/alias#stardust_alias_state_index">state_index</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/alias#stardust_alias_state_index">state_index</Link>(self: &<Link to="../stardust/alias#stardust_alias_Alias">stardust::alias::Alias</Link>): u32
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/alias#stardust_alias_state_index">state_index</Link>(self: &<Link to="../stardust/alias#stardust_alias_Alias">Alias</Link>): u32 \{
+    self.<Link to="../stardust/alias#stardust_alias_state_index">state_index</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="stardust_alias_state_metadata"></Link>
+
+## Function `state_metadata`
+
+Get the Alias's <code><Link to="../stardust/alias#stardust_alias_state_metadata">state_metadata</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/alias#stardust_alias_state_metadata">state_metadata</Link>(self: &<Link to="../stardust/alias#stardust_alias_Alias">stardust::alias::Alias</Link>): &<Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;vector&lt;u8&gt;&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/alias#stardust_alias_state_metadata">state_metadata</Link>(self: &<Link to="../stardust/alias#stardust_alias_Alias">Alias</Link>): &Option&lt;vector&lt;u8&gt;&gt; \{
+    &self.<Link to="../stardust/alias#stardust_alias_state_metadata">state_metadata</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="stardust_alias_sender"></Link>
+
+## Function `sender`
+
+Get the Alias's <code><Link to="../stardust/alias#stardust_alias_sender">sender</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/alias#stardust_alias_sender">sender</Link>(self: &<Link to="../stardust/alias#stardust_alias_Alias">stardust::alias::Alias</Link>): &<Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;<b>address</b>&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/alias#stardust_alias_sender">sender</Link>(self: &<Link to="../stardust/alias#stardust_alias_Alias">Alias</Link>): &Option&lt;<b>address</b>&gt; \{
+    &self.<Link to="../stardust/alias#stardust_alias_sender">sender</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="stardust_alias_metadata"></Link>
+
+## Function `metadata`
+
+Get the Alias's <code><Link to="../stardust/alias#stardust_alias_metadata">metadata</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/alias#stardust_alias_metadata">metadata</Link>(self: &<Link to="../stardust/alias#stardust_alias_Alias">stardust::alias::Alias</Link>): &<Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;vector&lt;u8&gt;&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/alias#stardust_alias_metadata">metadata</Link>(self: &<Link to="../stardust/alias#stardust_alias_Alias">Alias</Link>): &Option&lt;vector&lt;u8&gt;&gt; \{
+    &self.<Link to="../stardust/alias#stardust_alias_metadata">metadata</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="stardust_alias_immutable_issuer"></Link>
+
+## Function `immutable_issuer`
+
+Get the Alias's <code>immutable_sender</code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/alias#stardust_alias_immutable_issuer">immutable_issuer</Link>(self: &<Link to="../stardust/alias#stardust_alias_Alias">stardust::alias::Alias</Link>): &<Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;<b>address</b>&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/alias#stardust_alias_immutable_issuer">immutable_issuer</Link>(self: &<Link to="../stardust/alias#stardust_alias_Alias">Alias</Link>): &Option&lt;<b>address</b>&gt; \{
+    &self.<Link to="../stardust/alias#stardust_alias_immutable_issuer">immutable_issuer</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="stardust_alias_immutable_metadata"></Link>
+
+## Function `immutable_metadata`
+
+Get the Alias's <code><Link to="../stardust/alias#stardust_alias_immutable_metadata">immutable_metadata</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/alias#stardust_alias_immutable_metadata">immutable_metadata</Link>(self: &<Link to="../stardust/alias#stardust_alias_Alias">stardust::alias::Alias</Link>): &<Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;vector&lt;u8&gt;&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/alias#stardust_alias_immutable_metadata">immutable_metadata</Link>(self: &<Link to="../stardust/alias#stardust_alias_Alias">Alias</Link>): &Option&lt;vector&lt;u8&gt;&gt; \{
+    &self.<Link to="../stardust/alias#stardust_alias_immutable_metadata">immutable_metadata</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="stardust_alias_id"></Link>
+
+## Function `id`
+
+Get the Alias's id.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../stardust/alias#stardust_alias_id">id</Link>(self: &<b>mut</b> <Link to="../stardust/alias#stardust_alias_Alias">stardust::alias::Alias</Link>): &<b>mut</b> <Link to="../iota/object#iota_object_UID">iota::object::UID</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../stardust/alias#stardust_alias_id">id</Link>(self: &<b>mut</b> <Link to="../stardust/alias#stardust_alias_Alias">Alias</Link>): &<b>mut</b> UID \{
+    &<b>mut</b> self.<Link to="../stardust/alias#stardust_alias_id">id</Link>
+}
+</code>
+</pre>
+
+
+
+</details>

@@ -1,0 +1,299 @@
+---
+title: Module stardust::address_unlock_condition
+sidebar_label: address_unlock_condition
+slug: address_unlock_condition
+---
+import Link from '@docusaurus/Link';
+
+<Link id="stardust_address_unlock_condition"/>
+
+
+-  [Function `unlock_alias_address_owned_basic`](#stardust_address_unlock_condition_unlock_alias_address_owned_basic)
+-  [Function `unlock_alias_address_owned_nft`](#stardust_address_unlock_condition_unlock_alias_address_owned_nft)
+-  [Function `unlock_alias_address_owned_alias`](#stardust_address_unlock_condition_unlock_alias_address_owned_alias)
+-  [Function `unlock_alias_address_owned_coinmanager_treasury`](#stardust_address_unlock_condition_unlock_alias_address_owned_coinmanager_treasury)
+-  [Function `unlock_nft_address_owned_basic`](#stardust_address_unlock_condition_unlock_nft_address_owned_basic)
+-  [Function `unlock_nft_address_owned_nft`](#stardust_address_unlock_condition_unlock_nft_address_owned_nft)
+-  [Function `unlock_nft_address_owned_alias`](#stardust_address_unlock_condition_unlock_nft_address_owned_alias)
+
+
+<pre>
+<code>
+<b>use</b> <Link to="../iota/address#iota_address">iota::address</Link>;
+<b>use</b> <Link to="../iota/bag#iota_bag">iota::bag</Link>;
+<b>use</b> <Link to="../iota/balance#iota_balance">iota::balance</Link>;
+<b>use</b> <Link to="../iota/coin#iota_coin">iota::coin</Link>;
+<b>use</b> <Link to="../iota/coin_manager#iota_coin_manager">iota::coin_manager</Link>;
+<b>use</b> <Link to="../iota/config#iota_config">iota::config</Link>;
+<b>use</b> <Link to="../iota/deny_list#iota_deny_list">iota::deny_list</Link>;
+<b>use</b> <Link to="../iota/display#iota_display">iota::display</Link>;
+<b>use</b> <Link to="../iota/dynamic_field#iota_dynamic_field">iota::dynamic_field</Link>;
+<b>use</b> <Link to="../iota/dynamic_object_field#iota_dynamic_object_field">iota::dynamic_object_field</Link>;
+<b>use</b> <Link to="../iota/event#iota_event">iota::event</Link>;
+<b>use</b> <Link to="../iota/hex#iota_hex">iota::hex</Link>;
+<b>use</b> <Link to="../iota/object#iota_object">iota::object</Link>;
+<b>use</b> <Link to="../iota/package#iota_package">iota::package</Link>;
+<b>use</b> <Link to="../iota/transfer#iota_transfer">iota::transfer</Link>;
+<b>use</b> <Link to="../iota/tx_context#iota_tx_context">iota::tx_context</Link>;
+<b>use</b> <Link to="../iota/types#iota_types">iota::types</Link>;
+<b>use</b> <Link to="../iota/url#iota_url">iota::url</Link>;
+<b>use</b> <Link to="../iota/vec_map#iota_vec_map">iota::vec_map</Link>;
+<b>use</b> <Link to="../stardust/alias#stardust_alias">stardust::alias</Link>;
+<b>use</b> <Link to="../stardust/alias_output#stardust_alias_output">stardust::alias_output</Link>;
+<b>use</b> <Link to="../stardust/basic_output#stardust_basic_output">stardust::basic_output</Link>;
+<b>use</b> <Link to="../stardust/expiration_unlock_condition#stardust_expiration_unlock_condition">stardust::expiration_unlock_condition</Link>;
+<b>use</b> <Link to="../stardust/irc27#stardust_irc27">stardust::irc27</Link>;
+<b>use</b> <Link to="../stardust/nft#stardust_nft">stardust::nft</Link>;
+<b>use</b> <Link to="../stardust/nft_output#stardust_nft_output">stardust::nft_output</Link>;
+<b>use</b> <Link to="../stardust/storage_deposit_return_unlock_condition#stardust_storage_deposit_return_unlock_condition">stardust::storage_deposit_return_unlock_condition</Link>;
+<b>use</b> <Link to="../stardust/timelock_unlock_condition#stardust_timelock_unlock_condition">stardust::timelock_unlock_condition</Link>;
+<b>use</b> <Link to="../std/address#std_address">std::address</Link>;
+<b>use</b> <Link to="../std/ascii#std_ascii">std::ascii</Link>;
+<b>use</b> <Link to="../std/bcs#std_bcs">std::bcs</Link>;
+<b>use</b> <Link to="../std/fixed_point32#std_fixed_point32">std::fixed_point32</Link>;
+<b>use</b> <Link to="../std/option#std_option">std::option</Link>;
+<b>use</b> <Link to="../std/string#std_string">std::string</Link>;
+<b>use</b> <Link to="../std/type_name#std_type_name">std::type_name</Link>;
+<b>use</b> <Link to="../std/vector#std_vector">std::vector</Link>;
+</code>
+</pre>
+
+
+
+<Link id="stardust_address_unlock_condition_unlock_alias_address_owned_basic"></Link>
+
+## Function `unlock_alias_address_owned_basic`
+
+Unlock a <code>BasicOutput</code> locked to the alias address.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/address_unlock_condition#stardust_address_unlock_condition_unlock_alias_address_owned_basic">unlock_alias_address_owned_basic</Link>&lt;T&gt;(self: &<b>mut</b> <Link to="../stardust/alias#stardust_alias_Alias">stardust::alias::Alias</Link>, output_to_unlock: <Link to="../iota/transfer#iota_transfer_Receiving">iota::transfer::Receiving</Link>&lt;<Link to="../stardust/basic_output#stardust_basic_output_BasicOutput">stardust::basic_output::BasicOutput</Link>&lt;T&gt;&gt;): <Link to="../stardust/basic_output#stardust_basic_output_BasicOutput">stardust::basic_output::BasicOutput</Link>&lt;T&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/address_unlock_condition#stardust_address_unlock_condition_unlock_alias_address_owned_basic">unlock_alias_address_owned_basic</Link>&lt;T&gt;(
+    self: &<b>mut</b> Alias,
+    output_to_unlock: Receiving&lt;BasicOutput&lt;T&gt;&gt;,
+): BasicOutput&lt;T&gt; \{
+    <Link to="../stardust/basic_output#stardust_basic_output_receive">basic_output::receive</Link>(self.id(), output_to_unlock)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="stardust_address_unlock_condition_unlock_alias_address_owned_nft"></Link>
+
+## Function `unlock_alias_address_owned_nft`
+
+Unlock an <code>NftOutput</code> locked to the alias address.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/address_unlock_condition#stardust_address_unlock_condition_unlock_alias_address_owned_nft">unlock_alias_address_owned_nft</Link>&lt;T&gt;(self: &<b>mut</b> <Link to="../stardust/alias#stardust_alias_Alias">stardust::alias::Alias</Link>, output_to_unlock: <Link to="../iota/transfer#iota_transfer_Receiving">iota::transfer::Receiving</Link>&lt;<Link to="../stardust/nft_output#stardust_nft_output_NftOutput">stardust::nft_output::NftOutput</Link>&lt;T&gt;&gt;): <Link to="../stardust/nft_output#stardust_nft_output_NftOutput">stardust::nft_output::NftOutput</Link>&lt;T&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/address_unlock_condition#stardust_address_unlock_condition_unlock_alias_address_owned_nft">unlock_alias_address_owned_nft</Link>&lt;T&gt;(
+    self: &<b>mut</b> Alias,
+    output_to_unlock: Receiving&lt;NftOutput&lt;T&gt;&gt;,
+): NftOutput&lt;T&gt; \{
+    <Link to="../stardust/nft_output#stardust_nft_output_receive">nft_output::receive</Link>(self.id(), output_to_unlock)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="stardust_address_unlock_condition_unlock_alias_address_owned_alias"></Link>
+
+## Function `unlock_alias_address_owned_alias`
+
+Unlock an <code>AliasOutput</code> locked to the alias address.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/address_unlock_condition#stardust_address_unlock_condition_unlock_alias_address_owned_alias">unlock_alias_address_owned_alias</Link>&lt;T&gt;(self: &<b>mut</b> <Link to="../stardust/alias#stardust_alias_Alias">stardust::alias::Alias</Link>, output_to_unlock: <Link to="../iota/transfer#iota_transfer_Receiving">iota::transfer::Receiving</Link>&lt;<Link to="../stardust/alias_output#stardust_alias_output_AliasOutput">stardust::alias_output::AliasOutput</Link>&lt;T&gt;&gt;): <Link to="../stardust/alias_output#stardust_alias_output_AliasOutput">stardust::alias_output::AliasOutput</Link>&lt;T&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/address_unlock_condition#stardust_address_unlock_condition_unlock_alias_address_owned_alias">unlock_alias_address_owned_alias</Link>&lt;T&gt;(
+    self: &<b>mut</b> Alias,
+    output_to_unlock: Receiving&lt;AliasOutput&lt;T&gt;&gt;,
+): AliasOutput&lt;T&gt; \{
+    <Link to="../stardust/alias_output#stardust_alias_output_receive">alias_output::receive</Link>(self.id(), output_to_unlock)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="stardust_address_unlock_condition_unlock_alias_address_owned_coinmanager_treasury"></Link>
+
+## Function `unlock_alias_address_owned_coinmanager_treasury`
+
+Unlock a <code>CoinManagerTreasuryCap</code> locked to the alias address.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/address_unlock_condition#stardust_address_unlock_condition_unlock_alias_address_owned_coinmanager_treasury">unlock_alias_address_owned_coinmanager_treasury</Link>&lt;T&gt;(self: &<b>mut</b> <Link to="../stardust/alias#stardust_alias_Alias">stardust::alias::Alias</Link>, treasury_to_unlock: <Link to="../iota/transfer#iota_transfer_Receiving">iota::transfer::Receiving</Link>&lt;<Link to="../iota/coin_manager#iota_coin_manager_CoinManagerTreasuryCap">iota::coin_manager::CoinManagerTreasuryCap</Link>&lt;T&gt;&gt;): <Link to="../iota/coin_manager#iota_coin_manager_CoinManagerTreasuryCap">iota::coin_manager::CoinManagerTreasuryCap</Link>&lt;T&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/address_unlock_condition#stardust_address_unlock_condition_unlock_alias_address_owned_coinmanager_treasury">unlock_alias_address_owned_coinmanager_treasury</Link>&lt;T&gt;(
+    self: &<b>mut</b> Alias,
+    treasury_to_unlock: Receiving&lt;CoinManagerTreasuryCap&lt;T&gt;&gt;,
+): CoinManagerTreasuryCap&lt;T&gt; \{
+    transfer::public_receive(self.id(), treasury_to_unlock)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="stardust_address_unlock_condition_unlock_nft_address_owned_basic"></Link>
+
+## Function `unlock_nft_address_owned_basic`
+
+Unlock a <code>BasicOutput</code> locked to the <code>Nft</code> address.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/address_unlock_condition#stardust_address_unlock_condition_unlock_nft_address_owned_basic">unlock_nft_address_owned_basic</Link>&lt;T&gt;(self: &<b>mut</b> <Link to="../stardust/nft#stardust_nft_Nft">stardust::nft::Nft</Link>, output_to_unlock: <Link to="../iota/transfer#iota_transfer_Receiving">iota::transfer::Receiving</Link>&lt;<Link to="../stardust/basic_output#stardust_basic_output_BasicOutput">stardust::basic_output::BasicOutput</Link>&lt;T&gt;&gt;): <Link to="../stardust/basic_output#stardust_basic_output_BasicOutput">stardust::basic_output::BasicOutput</Link>&lt;T&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/address_unlock_condition#stardust_address_unlock_condition_unlock_nft_address_owned_basic">unlock_nft_address_owned_basic</Link>&lt;T&gt;(
+    self: &<b>mut</b> Nft,
+    output_to_unlock: Receiving&lt;BasicOutput&lt;T&gt;&gt;,
+): BasicOutput&lt;T&gt; \{
+    <Link to="../stardust/basic_output#stardust_basic_output_receive">basic_output::receive</Link>(self.id(), output_to_unlock)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="stardust_address_unlock_condition_unlock_nft_address_owned_nft"></Link>
+
+## Function `unlock_nft_address_owned_nft`
+
+Unlock an <code>NftOutput</code> locked to the <code>Nft</code> address.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/address_unlock_condition#stardust_address_unlock_condition_unlock_nft_address_owned_nft">unlock_nft_address_owned_nft</Link>&lt;T&gt;(self: &<b>mut</b> <Link to="../stardust/nft#stardust_nft_Nft">stardust::nft::Nft</Link>, output_to_unlock: <Link to="../iota/transfer#iota_transfer_Receiving">iota::transfer::Receiving</Link>&lt;<Link to="../stardust/nft_output#stardust_nft_output_NftOutput">stardust::nft_output::NftOutput</Link>&lt;T&gt;&gt;): <Link to="../stardust/nft_output#stardust_nft_output_NftOutput">stardust::nft_output::NftOutput</Link>&lt;T&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/address_unlock_condition#stardust_address_unlock_condition_unlock_nft_address_owned_nft">unlock_nft_address_owned_nft</Link>&lt;T&gt;(
+    self: &<b>mut</b> Nft,
+    output_to_unlock: Receiving&lt;NftOutput&lt;T&gt;&gt;,
+): NftOutput&lt;T&gt; \{
+    <Link to="../stardust/nft_output#stardust_nft_output_receive">nft_output::receive</Link>(self.id(), output_to_unlock)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="stardust_address_unlock_condition_unlock_nft_address_owned_alias"></Link>
+
+## Function `unlock_nft_address_owned_alias`
+
+Unlock an <code>AliasOutput</code> locked to the <code>Nft</code> address.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/address_unlock_condition#stardust_address_unlock_condition_unlock_nft_address_owned_alias">unlock_nft_address_owned_alias</Link>&lt;T&gt;(self: &<b>mut</b> <Link to="../stardust/nft#stardust_nft_Nft">stardust::nft::Nft</Link>, output_to_unlock: <Link to="../iota/transfer#iota_transfer_Receiving">iota::transfer::Receiving</Link>&lt;<Link to="../stardust/alias_output#stardust_alias_output_AliasOutput">stardust::alias_output::AliasOutput</Link>&lt;T&gt;&gt;): <Link to="../stardust/alias_output#stardust_alias_output_AliasOutput">stardust::alias_output::AliasOutput</Link>&lt;T&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/address_unlock_condition#stardust_address_unlock_condition_unlock_nft_address_owned_alias">unlock_nft_address_owned_alias</Link>&lt;T&gt;(
+    self: &<b>mut</b> Nft,
+    output_to_unlock: Receiving&lt;AliasOutput&lt;T&gt;&gt;,
+): AliasOutput&lt;T&gt; \{
+    <Link to="../stardust/alias_output#stardust_alias_output_receive">alias_output::receive</Link>(self.id(), output_to_unlock)
+}
+</code>
+</pre>
+
+
+
+</details>
