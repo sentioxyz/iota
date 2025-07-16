@@ -33,7 +33,7 @@ pub struct IndexerConfig {
     /// override individual settings in their own configuration sections.
     pub committer: CommitterLayer,
 
-    /// Default configuration for pruners that is shared by all concurrent pipelines. Pipelies can
+    /// Default configuration for pruners that is shared by all concurrent pipelines. Pipelines can
     /// override individual settings in their own configuration sections. Concurrent pipelines
     /// still need to specify a pruner configuration (although it can be empty) to indicate that
     /// they want to enable pruning, but when they do, any missing values will be filled in by this

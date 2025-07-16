@@ -1322,7 +1322,7 @@ impl CoreSignals {
 }
 
 /// Receivers of signals from Core.
-/// Intentionally un-clonable. Comonents should only subscribe to channels they need.
+/// Intentionally un-cloneable. Components should only subscribe to channels they need.
 pub(crate) struct CoreSignalsReceivers {
     rx_block_broadcast: broadcast::Receiver<ExtendedBlock>,
     new_round_receiver: watch::Receiver<Round>,
@@ -3142,7 +3142,7 @@ mod test {
         assert_eq!(certified_commits.len(), 1);
         assert_eq!(certified_commits.first().unwrap().reference().index, 5);
 
-        println!("Case 3. Provide certified commits where the first certified commit index is not the last_commited_index + 1.");
+        println!("Case 3. Provide certified commits where the first certified commit index is not the last_committed_index + 1.");
 
         // Highest certified commit should be for leader of round 4.
         let certified_commits = sub_dags_and_commits

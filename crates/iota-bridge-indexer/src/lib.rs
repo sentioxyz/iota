@@ -20,7 +20,7 @@ use std::str::FromStr;
 use std::sync::Arc;
 use strum_macros::Display;
 use iota_bridge::eth_client::EthClient;
-use iota_bridge::metered_eth_provider::MeteredEthHttpProvier;
+use iota_bridge::metered_eth_provider::MeteredEthHttpProvider;
 use iota_bridge::metrics::BridgeMetrics;
 use iota_bridge::utils::get_eth_contract_addresses;
 use iota_data_ingestion_core::DataIngestionMetrics;
@@ -252,7 +252,7 @@ pub async fn create_eth_sync_indexer(
     metrics: BridgeIndexerMetrics,
     bridge_metrics: Arc<BridgeMetrics>,
     config: &IndexerConfig,
-    eth_client: Arc<EthClient<MeteredEthHttpProvier>>,
+    eth_client: Arc<EthClient<MeteredEthHttpProvider>>,
 ) -> Result<Indexer<PgBridgePersistent, EthFinalizedSyncDatasource, EthDataMapper>, anyhow::Error> {
     let bridge_addresses = get_eth_bridge_contract_addresses(config).await?;
     // Start the eth sync data source
@@ -280,7 +280,7 @@ pub async fn create_eth_subscription_indexer(
     pool: PgPool,
     metrics: BridgeIndexerMetrics,
     config: &IndexerConfig,
-    eth_client: Arc<EthClient<MeteredEthHttpProvier>>,
+    eth_client: Arc<EthClient<MeteredEthHttpProvider>>,
 ) -> Result<Indexer<PgBridgePersistent, EthSubscriptionDatasource, EthDataMapper>, anyhow::Error> {
     // Start the eth subscription indexer
     let bridge_addresses = get_eth_bridge_contract_addresses(config).await?;

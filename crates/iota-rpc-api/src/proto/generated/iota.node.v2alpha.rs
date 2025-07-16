@@ -138,9 +138,9 @@ pub struct GetProtocolConfigResponse {
         ::prost::alloc::string::String,
     >,
     #[prost(uint64, optional, tag = "4")]
-    pub max_suppported_protocol_version: ::core::option::Option<u64>,
+    pub max_supported_protocol_version: ::core::option::Option<u64>,
     #[prost(uint64, optional, tag = "5")]
-    pub min_suppported_protocol_version: ::core::option::Option<u64>,
+    pub min_supported_protocol_version: ::core::option::Option<u64>,
 }
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct GetGasInfoRequest {}
@@ -1003,7 +1003,7 @@ pub mod node_service_server {
 /// Request message for SubscriptionService.SubscribeCheckpoints
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct SubscribeCheckpointsRequest {
-    /// Optional. Mask for specifiying which parts of the
+    /// Optional. Mask for specifying which parts of the
     /// SubscribeCheckpointsResponse should be returned.
     #[prost(message, optional, tag = "3")]
     pub read_mask: ::core::option::Option<::prost_types::FieldMask>,
@@ -1116,10 +1116,10 @@ pub mod subscription_service_client {
         /// This API provides a subscription to the checkpoint stream for the IOTA
         /// blockchain. When a subscription is initialized the stream will begin with
         /// the latest executed checkpoint as seen by the server. Responses are
-        /// gaurenteed to return checkpoints in-order and without gaps. This enables
+        /// guaranteed to return checkpoints in-order and without gaps. This enables
         /// clients to know exactly the last checkpoint they have processed and in the
         /// event the subscription terminates (either by the client/server or by the
-        /// connection breaking), clients will be able to reinitailize a subscription
+        /// connection breaking), clients will be able to reinitialize a subscription
         /// and then leverage other APIs (e.g.
         /// iota.node.v2.NodeService.GetFullCheckpoint) in order to request data for
         /// the checkpoints they missed.
@@ -1183,10 +1183,10 @@ pub mod subscription_service_server {
         /// This API provides a subscription to the checkpoint stream for the IOTA
         /// blockchain. When a subscription is initialized the stream will begin with
         /// the latest executed checkpoint as seen by the server. Responses are
-        /// gaurenteed to return checkpoints in-order and without gaps. This enables
+        /// guaranteed to return checkpoints in-order and without gaps. This enables
         /// clients to know exactly the last checkpoint they have processed and in the
         /// event the subscription terminates (either by the client/server or by the
-        /// connection breaking), clients will be able to reinitailize a subscription
+        /// connection breaking), clients will be able to reinitialize a subscription
         /// and then leverage other APIs (e.g.
         /// iota.node.v2.NodeService.GetFullCheckpoint) in order to request data for
         /// the checkpoints they missed.

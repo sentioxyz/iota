@@ -4,7 +4,7 @@
 
 use crate::config::WatchdogConfig;
 use crate::crypto::BridgeAuthorityPublicKeyBytes;
-use crate::metered_eth_provider::MeteredEthHttpProvier;
+use crate::metered_eth_provider::MeteredEthHttpProvider;
 use crate::iota_bridge_watchdog::eth_bridge_status::EthBridgeStatus;
 use crate::iota_bridge_watchdog::eth_vault_balance::{EthereumVaultBalance, VaultAsset};
 use crate::iota_bridge_watchdog::metrics::WatchdogMetrics;
@@ -154,7 +154,7 @@ pub async fn run_bridge_node(
 async fn start_watchdog(
     watchdog_config: Option<WatchdogConfig>,
     registry: &prometheus::Registry,
-    eth_provider: Arc<Provider<MeteredEthHttpProvier>>,
+    eth_provider: Arc<Provider<MeteredEthHttpProvider>>,
     eth_bridge_proxy_address: EthAddress,
     iota_client: Arc<IotaBridgeClient>,
 ) {

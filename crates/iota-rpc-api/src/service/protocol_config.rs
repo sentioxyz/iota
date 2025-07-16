@@ -79,7 +79,7 @@ fn config_to_proto(config: ProtocolConfig) -> GetProtocolConfigResponse {
         protocol_version: Some(protocol_version),
         feature_flags,
         attributes,
-        max_suppported_protocol_version: Some(ProtocolVersion::MAX.as_u64()),
-        min_suppported_protocol_version: Some(ProtocolVersion::MIN.as_u64()),
+        max_supported_protocol_version: Some(ProtocolVersion::MAX.as_u64()),
+        min_supported_protocol_version: Some(ProtocolVersion::MIN.as_u64()),
     }
 }

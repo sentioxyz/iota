@@ -189,7 +189,7 @@ impl IsNewer for LatestObjectCacheEntry {
 
 type MarkerKey = (EpochId, FullObjectID);
 
-/// UncommitedData stores execution outputs that are not yet written to the db. Entries in this
+/// UncommittedData stores execution outputs that are not yet written to the db. Entries in this
 /// struct can only be purged after they are committed.
 struct UncommittedData {
     /// The object dirty set. All writes go into this table first. After we flush the data to the
@@ -931,7 +931,7 @@ impl WritebackCache {
                 // This can happen in the following rare case:
                 // All transactions in the checkpoint are committed to the db (by commit_transaction_outputs,
                 // called in CheckpointExecutor::process_executed_transactions), but the process crashes before
-                // the checkpoint water mark is bumped. We will then re-commit thhe checkpoint at startup,
+                // the checkpoint water mark is bumped. We will then re-commit the checkpoint at startup,
                 // despite that all transactions are already executed.
                 warn!("Attempt to commit unknown transaction {:?}", tx);
                 continue;
@@ -1195,7 +1195,7 @@ impl WritebackCache {
     fn revert_state_update_impl(&self, tx: &TransactionDigest) {
         // TODO: remove revert_state_update_impl entirely, and simply drop all dirty
         // state when clear_state_end_of_epoch_impl is called.
-        // Futher, once we do this, we can delay the insertion of the transaction into
+        // Further, once we do this, we can delay the insertion of the transaction into
         // pending_consensus_transactions until after the transaction has executed.
         let Some((_, outputs)) = self.dirty.pending_transaction_writes.remove(tx) else {
             assert!(

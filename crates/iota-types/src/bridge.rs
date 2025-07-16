@@ -29,7 +29,7 @@ use serde_with::serde_as;
 use strum_macros::Display;
 
 pub type BridgeInnerDynamicField = Field<u64, BridgeInnerV1>;
-pub type BridgeRecordDyanmicField = Field<
+pub type BridgeRecordDynamicField = Field<
     MoveTypeBridgeMessageKey,
     LinkedTableNode<MoveTypeBridgeMessageKey, MoveTypeBridgeRecord>,
 >;

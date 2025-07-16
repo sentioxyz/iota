@@ -299,8 +299,8 @@ async fn indirect_skip() {
     tracing::info!("Leader index wave 1: {leader_index}");
 
     let leader_status_wave1 = committer.try_direct_decide(leader);
-    if let LeaderStatus::Commit(commited) = leader_status_wave1 {
-        tracing::info!("Direct undecided leader at wave 1: {commited}");
+    if let LeaderStatus::Commit(committed) = leader_status_wave1 {
+        tracing::info!("Direct undecided leader at wave 1: {committed}");
     } else {
         panic!("Expected LeaderStatus::Commit for a leader in wave 1, applying a direct decicion rule, got {leader_status_wave1}");
     }

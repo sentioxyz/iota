@@ -62,7 +62,7 @@ impl RpcService {
             .collect::<Result<Vec<_>, _>>()?;
         let next_page_token = if object_info.len() > page_size {
             // SAFETY: We've already verified that object_info is greater than limit, which is
-            // gaurenteed to be >= 1.
+            // guaranteed to be >= 1.
             object_info
                 .pop()
                 .unwrap()

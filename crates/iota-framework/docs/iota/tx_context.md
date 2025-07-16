@@ -257,7 +257,7 @@ Return the epoch start time as a unix timestamp in milliseconds.
 
 ## Function `sponsor`
 
-Return the adress of the transaction sponsor or <code>None</code> if there was no sponsor.
+Return the address of the transaction sponsor or <code>None</code> if there was no sponsor.
 
 
 <pre><code><b>public</b> <b>fun</b> <a href="../iota/tx_context.md#iota_tx_context_sponsor">sponsor</a>(_self: &<a href="../iota/tx_context.md#iota_tx_context_TxContext">iota::tx_context::TxContext</a>): <a href="../std/option.md#std_option_Option">std::option::Option</a>&lt;<b>address</b>&gt;

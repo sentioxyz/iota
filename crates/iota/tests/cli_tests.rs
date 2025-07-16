@@ -3748,7 +3748,7 @@ async fn test_pay_iota() -> Result<(), anyhow::Error> {
     .await?;
 
     // pay iota takes the input coins and transfers from each of them (in order) the amounts to the
-    // respective receipients.
+    // respective recipients.
     // check if each recipient has one object, if the tx status is success,
     // and if the gas object used was the first object in the input coins
     // we also check if the balances of each recipient are right!
@@ -4578,7 +4578,7 @@ async fn test_tree_shaking_package_deps_on_pkg_upgrade_2() -> Result<(), anyhow:
 async fn test_tree_shaking_package_deps_on_pkg_upgrade_3() -> Result<(), anyhow::Error> {
     let mut test = TreeShakingTest::new().await?;
 
-    // This test is identic to #2, except it uses the old test-transaction-builder infrastructure
+    // This test is identical to #2, except it uses the old test-transaction-builder infrastructure
     // to publish a package without tree shaking. It is also unaware of automated address mgmt,
     // so this test sets up the published-at fields and addresses sections accordingly.
 

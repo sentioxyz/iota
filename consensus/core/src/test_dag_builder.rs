@@ -156,7 +156,7 @@ impl DagBuilder {
         struct BlockStorage {
             gc_round: Round,
             context: Arc<Context>,
-            blocks: BTreeMap<BlockRef, (VerifiedBlock, bool)>, // the tuple represends the block and whether it is committed
+            blocks: BTreeMap<BlockRef, (VerifiedBlock, bool)>, // the tuple represents the block and whether it is committed
         }
         impl BlockStoreAPI for BlockStorage {
             fn get_blocks(&self, refs: &[BlockRef]) -> Vec<Option<VerifiedBlock>> {
@@ -656,7 +656,7 @@ impl<'a> LayerBuilder<'a> {
             .map(|authority| {
                 authorities_to_shuffle.shuffle(&mut rng);
 
-                // TODO: handle quroum threshold properly with stake
+                // TODO: handle quorum threshold properly with stake
                 let min_ancestors: HashSet<AuthorityIndex> = authorities_to_shuffle
                     .iter()
                     .take(quorum_threshold)
@@ -783,7 +783,7 @@ impl<'a> LayerBuilder<'a> {
     }
 
     fn should_skip_block(&self, round: Round, authority: AuthorityIndex) -> bool {
-        // Safe to unwrap as specified authorites has to be set before skip
+        // Safe to unwrap as specified authorities has to be set before skip
         // is specified.
         if self.skip_block
             && self

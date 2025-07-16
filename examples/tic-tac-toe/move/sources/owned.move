@@ -111,7 +111,7 @@ const EInvalidEndState: vector<u8> = b"Game reached an end state that wasn't exp
 // === Public Functions ===
 
 /// Create a new game, played by `x` and `o`. The game should be
-/// transfered to the address that will administrate the game. If
+/// transferred to the address that will administrate the game. If
 /// that address is a multi-sig of the two players, its public key
 /// should be passed as `admin`.
 public fun new(x: address, o: address, admin: vector<u8>, ctx: &mut TxContext): Game {

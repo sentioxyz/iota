@@ -1236,8 +1236,8 @@ Note: You must provide only one of `transaction` or `transaction_bcs`.
 | ----- | ---- | ----- | ----------- |
 | transaction | [iota.types.Transaction](#iota-types-Transaction) | optional | Optional. The transaction to execute. |
 | transaction_bcs | [iota.types.Bcs](#iota-types-Bcs) | optional | Optional. The transaction to execute, encoded as BCS bytes. |
-| signatures | [iota.types.UserSignature](#iota-types-UserSignature) | repeated | Optional. Set of `UserSiganture`s authorizing the execution of the provided transaction. |
-| signatures_bytes | [bytes](#bytes) | repeated | Optional. Set of `UserSiganture`s authorizing the execution of the provided transaction, encoded as bytes. |
+| signatures | [iota.types.UserSignature](#iota-types-UserSignature) | repeated | Optional. Set of `UserSignature`s authorizing the execution of the provided transaction. |
+| signatures_bytes | [bytes](#bytes) | repeated | Optional. Set of `UserSignature`s authorizing the execution of the provided transaction, encoded as bytes. |
 | read_mask | [google.protobuf.FieldMask](#google-protobuf-FieldMask) | optional | Optional. Mask for specifying which parts of the `ExecuteTransactionResponse` should be returned. |
 
 
@@ -1591,7 +1591,7 @@ Due to storage limitations, implementers of this service might prune older histo
 The iota.node.v2alpha package contains experimental services that have yet to
 stabilize
 
-Everything in here is subject to change and there is no gaurentee about
+Everything in here is subject to change and there is no guarantee about
 stability or breaking changes.
 
 
@@ -1753,8 +1753,8 @@ Response message for `NodeService.GetCoinInfo`.
 | protocol_version | [uint64](#uint64) | optional |  |
 | feature_flags | [GetProtocolConfigResponse.FeatureFlagsEntry](#iota-node-v2alpha-GetProtocolConfigResponse-FeatureFlagsEntry) | repeated |  |
 | attributes | [GetProtocolConfigResponse.AttributesEntry](#iota-node-v2alpha-GetProtocolConfigResponse-AttributesEntry) | repeated |  |
-| max_suppported_protocol_version | [uint64](#uint64) | optional |  |
-| min_suppported_protocol_version | [uint64](#uint64) | optional |  |
+| max_supported_protocol_version | [uint64](#uint64) | optional |  |
+| min_supported_protocol_version | [uint64](#uint64) | optional |  |
 
 
 
@@ -1977,7 +1977,7 @@ Service for reading data from a IOTA Full node.
 The iota.node.v2alpha package contains experimental services that have yet to
 stabilize
 
-Everything in here is subject to change and there is no gaurentee about
+Everything in here is subject to change and there is no guarantee about
 stability or breaking changes.
 
 
@@ -1989,7 +1989,7 @@ Request message for SubscriptionService.SubscribeCheckpoints
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| read_mask | [google.protobuf.FieldMask](#google-protobuf-FieldMask) | optional | Optional. Mask for specifiying which parts of the SubscribeCheckpointsResponse should be returned. |
+| read_mask | [google.protobuf.FieldMask](#google-protobuf-FieldMask) | optional | Optional. Mask for specifying which parts of the SubscribeCheckpointsResponse should be returned. |
 
 
 
@@ -2027,7 +2027,7 @@ Service for subscribing to data from a IOTA Fullnode
 | ----------- | ------------ | ------------- | ------------|
 | SubscribeCheckpoints | [SubscribeCheckpointsRequest](#iota-node-v2alpha-SubscribeCheckpointsRequest) | [SubscribeCheckpointsResponse](#iota-node-v2alpha-SubscribeCheckpointsResponse) stream | Subscribe to the stream of checkpoints.
 
-This API provides a subscription to the checkpoint stream for the IOTA blockchain. When a subscription is initialized the stream will begin with the latest executed checkpoint as seen by the server. Responses are gaurenteed to return checkpoints in-order and without gaps. This enables clients to know exactly the last checkpoint they have processed and in the event the subscription terminates (either by the client/server or by the connection breaking), clients will be able to reinitailize a subscription and then leverage other APIs (e.g. iota.node.v2.NodeService.GetFullCheckpoint) in order to request data for the checkpoints they missed. |
+This API provides a subscription to the checkpoint stream for the IOTA blockchain. When a subscription is initialized the stream will begin with the latest executed checkpoint as seen by the server. Responses are guaranteed to return checkpoints in-order and without gaps. This enables clients to know exactly the last checkpoint they have processed and in the event the subscription terminates (either by the client/server or by the connection breaking), clients will be able to reinitialize a subscription and then leverage other APIs (e.g. iota.node.v2.NodeService.GetFullCheckpoint) in order to request data for the checkpoints they missed. |
 
  
 

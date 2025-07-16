@@ -34,7 +34,7 @@ use tokio::{sync::mpsc, time::Instant};
 use tracing::{debug, info, warn};
 
 // TODO: Move this into ExecutionTimeObserverConfig, if we switch to a moving average
-// implmentation without the window size in the type.
+// implementation without the window size in the type.
 const LOCAL_OBSERVATION_WINDOW_SIZE: usize = 10;
 
 // Collects local execution time estimates to share via consensus.

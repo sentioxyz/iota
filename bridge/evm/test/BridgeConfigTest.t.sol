@@ -194,7 +194,7 @@ contract BridgeConfigTest is BridgeBaseTest {
         signatures[2] = getSignature(messageHash, committeeMemberPkC);
         signatures[3] = getSignature(messageHash, committeeMemberPkD);
 
-        // add token shoudl fail because the iota decimal is greater than the eth decimal
+        // add token should fail because the iota decimal is greater than the eth decimal
         vm.expectRevert(bytes("BridgeConfig: Invalid IOTA decimal"));
         config.addTokensWithSignatures(signatures, message);
     }
@@ -347,7 +347,7 @@ contract BridgeConfigTest is BridgeBaseTest {
     }
 
     // An e2e update token price regression test covering message ser/de and signature verification
-    function testUpdateTokenPriceRegressionTestWithSigVerficiation() public {
+    function testUpdateTokenPriceRegressionTestWithSigVerification() public {
         address[] memory _committeeList = new address[](4);
         _committeeList[0] = 0x68B43fD906C0B8F024a18C56e06744F7c6157c65;
         _committeeList[1] = 0xaCAEf39832CB995c4E049437A3E2eC6a7bad1Ab5;

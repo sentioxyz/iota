@@ -32,7 +32,7 @@ struct IotansIndexerWorker {
 }
 
 impl IotansIndexerWorker {
-    /// Creates a transcation that upserts the given name record updates,
+    /// Creates a transaction that upserts the given name record updates,
     /// and deletes the given name record deletions.
     ///
     /// This is done using 1 or 2 queries, depending on whether there are any deletions/updates in the checkpoint.

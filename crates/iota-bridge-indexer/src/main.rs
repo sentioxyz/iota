@@ -14,7 +14,7 @@ use std::path::PathBuf;
 use std::str::FromStr;
 use std::sync::Arc;
 use iota_bridge::eth_client::EthClient;
-use iota_bridge::metered_eth_provider::{new_metered_eth_provider, MeteredEthHttpProvier};
+use iota_bridge::metered_eth_provider::{new_metered_eth_provider, MeteredEthHttpProvider};
 use iota_bridge::iota_bridge_watchdog::Observable;
 use iota_bridge::iota_client::IotaBridgeClient;
 use iota_bridge::utils::get_eth_contract_addresses;
@@ -85,8 +85,8 @@ async fn main() -> Result<()> {
     let db_url = config.db_url.clone();
     let pool = get_connection_pool(db_url.clone()).await;
 
-    let eth_client: Arc<EthClient<MeteredEthHttpProvier>> = Arc::new(
-        EthClient::<MeteredEthHttpProvier>::new(
+    let eth_client: Arc<EthClient<MeteredEthHttpProvider>> = Arc::new(
+        EthClient::<MeteredEthHttpProvider>::new(
             &config.eth_rpc_url,
             HashSet::from_iter(vec![]), // dummy
             bridge_metrics.clone(),
@@ -231,7 +231,7 @@ async fn start_processing_iota_checkpoints_by_querying_txns(
     ));
     handles.push(spawn_logged_monitored_task!(
         handle_iota_transactions_loop(pg_pool.clone(), rx, indexer_metrics.clone()),
-        "handle_iota_transcations_loop"
+        "handle_iota_transactions_loop"
     ));
     Ok(handles)
 }

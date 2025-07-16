@@ -388,7 +388,7 @@ pub struct BridgeCliConfig {
     /// - Base64 encoded `flag || privkey` for ECDSA key
     /// - Base64 encoded `privkey` for Raw key
     /// - Hex encoded `privkey` for Raw key
-    /// At leaset one of `iota_key_path` or `eth_key_path` must be provided.
+    /// At least one of `iota_key_path` or `eth_key_path` must be provided.
     /// If only one is provided, it will be used for both IOTA and Eth.
     pub iota_key_path: Option<PathBuf>,
     /// See `iota_key_path`. Must be Secp256k1 key.
@@ -663,7 +663,7 @@ async fn deposit_on_iota(
     );
     let signed_tx = Transaction::from_data(tx_data, vec![sig]);
     let tx_digest = *signed_tx.digest();
-    info!(?tx_digest, "Sending deposit transction to IOTA.");
+    info!(?tx_digest, "Sending deposit transaction to IOTA.");
     let resp = iota_bridge_client
         .execute_transaction_block_with_effects(signed_tx)
         .await

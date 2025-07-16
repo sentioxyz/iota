@@ -103,7 +103,7 @@ pub struct ImageBuildArgs {
     /// Optional image name, default to "app", only used if multiple images are built within one repo
     #[arg(long)]
     image_name: Option<String>,
-    /// Optioanl reference type, default to "branch"
+    /// Optional reference type, default to "branch"
     #[arg(long)]
     ref_type: Option<RefType>,
     /// Optional reference value, default to "main"
@@ -130,7 +130,7 @@ pub struct ImageBuildArgs {
     /// Optional flag to target the image, used for multi-stage builds
     #[arg(short = 't', long)]
     image_target: Option<String>,
-    /// Optional arg to speciy the org to build the image for, default to "iota"
+    /// Optional arg to specify the org to build the image for, default to "iota"
     #[arg(short = 'o', long)]
     org: Option<String>,
 }

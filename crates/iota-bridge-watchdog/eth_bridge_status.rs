@@ -11,18 +11,18 @@ use ethers::types::Address as EthAddress;
 use prometheus::IntGauge;
 use std::sync::Arc;
 use iota_bridge::abi::EthIotaBridge;
-use iota_bridge::metered_eth_provider::MeteredEthHttpProvier;
+use iota_bridge::metered_eth_provider::MeteredEthHttpProvider;
 use tokio::time::Duration;
 use tracing::{error, info};
 
 pub struct EthBridgeStatus {
-    bridge_contract: EthIotaBridge<Provider<MeteredEthHttpProvier>>,
+    bridge_contract: EthIotaBridge<Provider<MeteredEthHttpProvider>>,
     metric: IntGauge,
 }
 
 impl EthBridgeStatus {
     pub fn new(
-        provider: Arc<Provider<MeteredEthHttpProvier>>,
+        provider: Arc<Provider<MeteredEthHttpProvider>>,
         bridge_address: EthAddress,
         metric: IntGauge,
     ) -> Self {

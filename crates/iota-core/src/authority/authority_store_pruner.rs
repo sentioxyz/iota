@@ -540,7 +540,7 @@ impl AuthorityStorePruner {
             (config.num_epochs_to_retain_for_indexes, indexes)
         {
             if epochs_to_retain < 7 {
-                warn!("num_epochs_to_retain_for_indexes is too low. Reseting it to 7");
+                warn!("num_epochs_to_retain_for_indexes is too low. Resetting it to 7");
                 epochs_to_retain = 7;
             }
             let now = SystemTime::now().duration_since(UNIX_EPOCH)?.as_millis();

@@ -298,7 +298,7 @@ Response: {
                             }
                           },
                           {
-                            "cursor": "eyJuIjoic3Rha2Vfc3Vic2lkeSIsImMiOjB9",
+                            "cursor": "eyJuIjoic3Rha2Vfc3Vic2likeSIsImMiOjB9",
                             "node": {
                               "name": "stake_subsidy"
                             }
