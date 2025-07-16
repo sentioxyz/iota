@@ -1,0 +1,1254 @@
+---
+title: Module iota::bcs
+sidebar_label: bcs
+slug: bcs
+---
+import Link from '@docusaurus/Link';
+
+<Link id="iota_bcs"/>
+This module implements BCS (de)serialization in Move.
+Full specification can be found here: https://github.com/diem/bcs
+
+Short summary (for Move-supported types):
+
+- address - sequence of X bytes
+- bool - byte with 0 or 1
+- u8 - a single u8 byte
+- u16 / u32 / u64 / u128 / u256 - LE bytes
+- vector - ULEB128 length + LEN elements
+- option - first byte bool: None (0) or Some (1), then value
+
+Usage example:
+```
+/// This function reads u8 and u64 value from the input
+/// and returns the rest of the bytes.
+fun deserialize(bytes: `vector<u8>`): (u8, u64, `vector<u8>`) {
+use iota::bcs::{Self, BCS};
+
+let prepared: BCS = bcs::new(bytes);
+let (u8_value, u64_value) = (
+prepared.peel_u8(),
+prepared.peel_u64()
+);
+
+// unpack bcs struct
+let leftovers = prepared.into_remainder_bytes();
+
+(u8_value, u64_value, leftovers)
+}
+```
+
+
+-  [Struct `BCS`](#iota_bcs_BCS)
+-  [Constants](#@Constants_0)
+-  [Function `to_bytes`](#iota_bcs_to_bytes)
+-  [Function `new`](#iota_bcs_new)
+-  [Function `into_remainder_bytes`](#iota_bcs_into_remainder_bytes)
+-  [Function `peel_address`](#iota_bcs_peel_address)
+-  [Function `peel_bool`](#iota_bcs_peel_bool)
+-  [Function `peel_u8`](#iota_bcs_peel_u8)
+-  [Macro function `peel_num`](#iota_bcs_peel_num)
+-  [Function `peel_u16`](#iota_bcs_peel_u16)
+-  [Function `peel_u32`](#iota_bcs_peel_u32)
+-  [Function `peel_u64`](#iota_bcs_peel_u64)
+-  [Function `peel_u128`](#iota_bcs_peel_u128)
+-  [Function `peel_u256`](#iota_bcs_peel_u256)
+-  [Function `peel_vec_length`](#iota_bcs_peel_vec_length)
+-  [Macro function `peel_vec`](#iota_bcs_peel_vec)
+-  [Function `peel_vec_address`](#iota_bcs_peel_vec_address)
+-  [Function `peel_vec_bool`](#iota_bcs_peel_vec_bool)
+-  [Function `peel_vec_u8`](#iota_bcs_peel_vec_u8)
+-  [Function `peel_vec_vec_u8`](#iota_bcs_peel_vec_vec_u8)
+-  [Function `peel_vec_u16`](#iota_bcs_peel_vec_u16)
+-  [Function `peel_vec_u32`](#iota_bcs_peel_vec_u32)
+-  [Function `peel_vec_u64`](#iota_bcs_peel_vec_u64)
+-  [Function `peel_vec_u128`](#iota_bcs_peel_vec_u128)
+-  [Function `peel_vec_u256`](#iota_bcs_peel_vec_u256)
+-  [Function `peel_enum_tag`](#iota_bcs_peel_enum_tag)
+-  [Macro function `peel_option`](#iota_bcs_peel_option)
+-  [Function `peel_option_address`](#iota_bcs_peel_option_address)
+-  [Function `peel_option_bool`](#iota_bcs_peel_option_bool)
+-  [Function `peel_option_u8`](#iota_bcs_peel_option_u8)
+-  [Function `peel_option_u16`](#iota_bcs_peel_option_u16)
+-  [Function `peel_option_u32`](#iota_bcs_peel_option_u32)
+-  [Function `peel_option_u64`](#iota_bcs_peel_option_u64)
+-  [Function `peel_option_u128`](#iota_bcs_peel_option_u128)
+-  [Function `peel_option_u256`](#iota_bcs_peel_option_u256)
+
+
+<pre>
+<code>
+<b>use</b> <Link to="../iota/address#iota_address">iota::address</Link>;
+<b>use</b> <Link to="../iota/hex#iota_hex">iota::hex</Link>;
+<b>use</b> <Link to="../std/ascii#std_ascii">std::ascii</Link>;
+<b>use</b> <Link to="../std/bcs#std_bcs">std::bcs</Link>;
+<b>use</b> <Link to="../std/option#std_option">std::option</Link>;
+<b>use</b> <Link to="../std/string#std_string">std::string</Link>;
+<b>use</b> <Link to="../std/vector#std_vector">std::vector</Link>;
+</code>
+</pre>
+
+
+
+<Link id="iota_bcs_BCS"></Link>
+
+## Struct `BCS`
+
+A helper struct that saves resources on operations. For better
+vector performance, it stores reversed bytes of the BCS and
+enables use of <code>vector::pop_back</code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota/bcs#iota_bcs_BCS">BCS</Link> <b>has</b> <b>copy</b>, drop, store
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code>bytes: vector&lt;u8&gt;</code>
+</dt>
+<dd>
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="@Constants_0"></Link>
+
+## Constants
+
+
+<Link id="iota_bcs_ELenOutOfRange"></Link>
+
+For when ULEB byte is out of range (or not found).
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota/bcs#iota_bcs_ELenOutOfRange">ELenOutOfRange</Link>: u64 = 2;
+</code>
+</pre>
+
+
+
+<Link id="iota_bcs_ENotBool"></Link>
+
+For when the boolean value different than <code>0</code> or <code>1</code>.
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota/bcs#iota_bcs_ENotBool">ENotBool</Link>: u64 = 1;
+</code>
+</pre>
+
+
+
+<Link id="iota_bcs_EOutOfRange"></Link>
+
+For when bytes length is less than required for deserialization.
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota/bcs#iota_bcs_EOutOfRange">EOutOfRange</Link>: u64 = 0;
+</code>
+</pre>
+
+
+
+<Link id="iota_bcs_to_bytes"></Link>
+
+## Function `to_bytes`
+
+Get BCS serialized bytes for any value.
+Re-exports stdlib <code><Link to="../iota/bcs#iota_bcs_to_bytes">bcs::to_bytes</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_to_bytes">to_bytes</Link>&lt;T&gt;(value: &T): vector&lt;u8&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_to_bytes">to_bytes</Link>&lt;T&gt;(value: &T): vector&lt;u8&gt; \{
+    <Link to="../iota/bcs#iota_bcs_to_bytes">bcs::to_bytes</Link>(value)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_bcs_new"></Link>
+
+## Function `new`
+
+Creates a new instance of BCS wrapper that holds inversed
+bytes for better performance.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_new">new</Link>(bytes: vector&lt;u8&gt;): <Link to="../iota/bcs#iota_bcs_BCS">iota::bcs::BCS</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_new">new</Link>(<b>mut</b> bytes: vector&lt;u8&gt;): <Link to="../iota/bcs#iota_bcs_BCS">BCS</Link> \{
+    bytes.reverse();
+    <Link to="../iota/bcs#iota_bcs_BCS">BCS</Link> \{ bytes }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_bcs_into_remainder_bytes"></Link>
+
+## Function `into_remainder_bytes`
+
+Unpack the <code><Link to="../iota/bcs#iota_bcs_BCS">BCS</Link></code> struct returning the leftover bytes.
+Useful for passing the data further after partial deserialization.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_into_remainder_bytes">into_remainder_bytes</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: <Link to="../iota/bcs#iota_bcs_BCS">iota::bcs::BCS</Link>): vector&lt;u8&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_into_remainder_bytes">into_remainder_bytes</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: <Link to="../iota/bcs#iota_bcs_BCS">BCS</Link>): vector&lt;u8&gt; \{
+    <b>let</b> <Link to="../iota/bcs#iota_bcs_BCS">BCS</Link> \{ <b>mut</b> bytes } = <Link to="../iota/bcs#iota_bcs">bcs</Link>;
+    bytes.reverse();
+    bytes
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_bcs_peel_address"></Link>
+
+## Function `peel_address`
+
+Read address from the bcs-serialized bytes.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_address">peel_address</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">iota::bcs::BCS</Link>): <b>address</b>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_address">peel_address</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">BCS</Link>): <b>address</b> \{
+    <b>assert</b>!(<Link to="../iota/bcs#iota_bcs">bcs</Link>.bytes.length() &gt;= <Link to="../iota/address#iota_address_length">address::length</Link>(), <Link to="../iota/bcs#iota_bcs_EOutOfRange">EOutOfRange</Link>);
+    <b>let</b> (<b>mut</b> addr_bytes, <b>mut</b> i) = (vector[], 0);
+    <b>while</b> (i &lt; <Link to="../iota/address#iota_address_length">address::length</Link>()) \{
+        addr_bytes.push_back(<Link to="../iota/bcs#iota_bcs">bcs</Link>.bytes.pop_back());
+        i = i + 1;
+    };
+    <Link to="../iota/address#iota_address_from_bytes">address::from_bytes</Link>(addr_bytes)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_bcs_peel_bool"></Link>
+
+## Function `peel_bool`
+
+Read a <code>bool</code> value from bcs-serialized bytes.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_bool">peel_bool</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">iota::bcs::BCS</Link>): bool
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_bool">peel_bool</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">BCS</Link>): bool \{
+    <b>let</b> value = <Link to="../iota/bcs#iota_bcs">bcs</Link>.<Link to="../iota/bcs#iota_bcs_peel_u8">peel_u8</Link>();
+    <b>if</b> (value == 0) <b>false</b>
+    <b>else</b> <b>if</b> (value == 1) <b>true</b>
+    <b>else</b> <b>abort</b> <Link to="../iota/bcs#iota_bcs_ENotBool">ENotBool</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_bcs_peel_u8"></Link>
+
+## Function `peel_u8`
+
+Read <code>u8</code> value from bcs-serialized bytes.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_u8">peel_u8</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">iota::bcs::BCS</Link>): u8
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_u8">peel_u8</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">BCS</Link>): u8 \{
+    <b>assert</b>!(<Link to="../iota/bcs#iota_bcs">bcs</Link>.bytes.length() &gt;= 1, <Link to="../iota/bcs#iota_bcs_EOutOfRange">EOutOfRange</Link>);
+    <Link to="../iota/bcs#iota_bcs">bcs</Link>.bytes.pop_back()
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_bcs_peel_num"></Link>
+
+## Macro function `peel_num`
+
+
+
+<pre>
+<code>
+<b>macro</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_num">peel_num</Link>&lt;$I, $T&gt;($<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">iota::bcs::BCS</Link>, $len: u64, $bits: $I): $T
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>macro</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_num">peel_num</Link>&lt;$I, $T&gt;($<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">BCS</Link>, $len: u64, $bits: $I): $T \{
+    <b>let</b> <Link to="../iota/bcs#iota_bcs">bcs</Link> = $<Link to="../iota/bcs#iota_bcs">bcs</Link>;
+    <b>assert</b>!(<Link to="../iota/bcs#iota_bcs">bcs</Link>.bytes.length() &gt;= $len, <Link to="../iota/bcs#iota_bcs_EOutOfRange">EOutOfRange</Link>);
+    <b>let</b> <b>mut</b> value: $T = 0;
+    <b>let</b> <b>mut</b> i: $I = 0;
+    <b>let</b> bits = $bits;
+    <b>while</b> (i &lt; bits) \{
+        <b>let</b> byte = <Link to="../iota/bcs#iota_bcs">bcs</Link>.bytes.pop_back() <b>as</b> $T;
+        value = value + (byte &lt;&lt; (i <b>as</b> u8));
+        i = i + 8;
+    };
+    value
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_bcs_peel_u16"></Link>
+
+## Function `peel_u16`
+
+Read <code>u16</code> value from bcs-serialized bytes.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_u16">peel_u16</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">iota::bcs::BCS</Link>): u16
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_u16">peel_u16</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">BCS</Link>): u16 \{
+    <Link to="../iota/bcs#iota_bcs">bcs</Link>.<Link to="../iota/bcs#iota_bcs_peel_num">peel_num</Link>!(2, 16u8)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_bcs_peel_u32"></Link>
+
+## Function `peel_u32`
+
+Read <code>u32</code> value from bcs-serialized bytes.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_u32">peel_u32</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">iota::bcs::BCS</Link>): u32
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_u32">peel_u32</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">BCS</Link>): u32 \{
+    <Link to="../iota/bcs#iota_bcs">bcs</Link>.<Link to="../iota/bcs#iota_bcs_peel_num">peel_num</Link>!(4, 32u8)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_bcs_peel_u64"></Link>
+
+## Function `peel_u64`
+
+Read <code>u64</code> value from bcs-serialized bytes.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_u64">peel_u64</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">iota::bcs::BCS</Link>): u64
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_u64">peel_u64</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">BCS</Link>): u64 \{
+    <Link to="../iota/bcs#iota_bcs">bcs</Link>.<Link to="../iota/bcs#iota_bcs_peel_num">peel_num</Link>!(8, 64u8)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_bcs_peel_u128"></Link>
+
+## Function `peel_u128`
+
+Read <code>u128</code> value from bcs-serialized bytes.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_u128">peel_u128</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">iota::bcs::BCS</Link>): u128
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_u128">peel_u128</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">BCS</Link>): u128 \{
+    <Link to="../iota/bcs#iota_bcs">bcs</Link>.<Link to="../iota/bcs#iota_bcs_peel_num">peel_num</Link>!(16, 128u8)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_bcs_peel_u256"></Link>
+
+## Function `peel_u256`
+
+Read <code>u256</code> value from bcs-serialized bytes.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_u256">peel_u256</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">iota::bcs::BCS</Link>): u256
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_u256">peel_u256</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">BCS</Link>): u256 \{
+    <Link to="../iota/bcs#iota_bcs">bcs</Link>.<Link to="../iota/bcs#iota_bcs_peel_num">peel_num</Link>!(32, 256u16)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_bcs_peel_vec_length"></Link>
+
+## Function `peel_vec_length`
+
+Read ULEB bytes expecting a vector length. Result should
+then be used to perform <code>peel_*</code> operation LEN times.
+
+In BCS <code>vector</code> length is implemented with ULEB128;
+See more here: https://en.wikipedia.org/wiki/LEB128
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_vec_length">peel_vec_length</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">iota::bcs::BCS</Link>): u64
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_vec_length">peel_vec_length</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">BCS</Link>): u64 \{
+    <b>let</b> (<b>mut</b> total, <b>mut</b> shift, <b>mut</b> len) = (0u64, 0, 0);
+    <b>loop</b> \{
+        <b>assert</b>!(len &lt;= 4, <Link to="../iota/bcs#iota_bcs_ELenOutOfRange">ELenOutOfRange</Link>);
+        <b>let</b> byte = <Link to="../iota/bcs#iota_bcs">bcs</Link>.bytes.pop_back() <b>as</b> u64;
+        len = len + 1;
+        total = total | ((byte & 0x7f) &lt;&lt; shift);
+        <b>if</b> ((byte & 0x80) == 0) <b>break</b>;
+        shift = shift + 7;
+    };
+    total
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_bcs_peel_vec"></Link>
+
+## Macro function `peel_vec`
+
+Peel <code>vector&lt;$T&gt;</code> from serialized bytes, where <code>$peel: |&<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">BCS</Link>| -&gt; $T</code> gives the
+functionality of peeling each value.
+
+
+<pre>
+<code>
+<b>public</b> <b>macro</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_vec">peel_vec</Link>&lt;$T&gt;($<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">iota::bcs::BCS</Link>, $peel: |&<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">iota::bcs::BCS</Link>| -&gt; $T): vector&lt;$T&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>macro</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_vec">peel_vec</Link>&lt;$T&gt;($<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">BCS</Link>, $peel: |&<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">BCS</Link>| -&gt; $T): vector&lt;$T&gt; \{
+    <b>let</b> <Link to="../iota/bcs#iota_bcs">bcs</Link> = $<Link to="../iota/bcs#iota_bcs">bcs</Link>;
+    <b>let</b> len = <Link to="../iota/bcs#iota_bcs">bcs</Link>.<Link to="../iota/bcs#iota_bcs_peel_vec_length">peel_vec_length</Link>();
+    <b>let</b> <b>mut</b> i = 0;
+    <b>let</b> <b>mut</b> res = vector[];
+    <b>while</b> (i &lt; len) \{
+        res.push_back($peel(<Link to="../iota/bcs#iota_bcs">bcs</Link>));
+        i = i + 1;
+    };
+    res
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_bcs_peel_vec_address"></Link>
+
+## Function `peel_vec_address`
+
+Peel a vector of <code><b>address</b></code> from serialized bytes.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_vec_address">peel_vec_address</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">iota::bcs::BCS</Link>): vector&lt;<b>address</b>&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_vec_address">peel_vec_address</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">BCS</Link>): vector&lt;<b>address</b>&gt; \{
+    <Link to="../iota/bcs#iota_bcs">bcs</Link>.<Link to="../iota/bcs#iota_bcs_peel_vec">peel_vec</Link>!(|<Link to="../iota/bcs#iota_bcs">bcs</Link>| <Link to="../iota/bcs#iota_bcs">bcs</Link>.<Link to="../iota/bcs#iota_bcs_peel_address">peel_address</Link>())
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_bcs_peel_vec_bool"></Link>
+
+## Function `peel_vec_bool`
+
+Peel a vector of <code><b>address</b></code> from serialized bytes.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_vec_bool">peel_vec_bool</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">iota::bcs::BCS</Link>): vector&lt;bool&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_vec_bool">peel_vec_bool</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">BCS</Link>): vector&lt;bool&gt; \{
+    <Link to="../iota/bcs#iota_bcs">bcs</Link>.<Link to="../iota/bcs#iota_bcs_peel_vec">peel_vec</Link>!(|<Link to="../iota/bcs#iota_bcs">bcs</Link>| <Link to="../iota/bcs#iota_bcs">bcs</Link>.<Link to="../iota/bcs#iota_bcs_peel_bool">peel_bool</Link>())
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_bcs_peel_vec_u8"></Link>
+
+## Function `peel_vec_u8`
+
+Peel a vector of <code>u8</code> (eg string) from serialized bytes.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_vec_u8">peel_vec_u8</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">iota::bcs::BCS</Link>): vector&lt;u8&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_vec_u8">peel_vec_u8</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">BCS</Link>): vector&lt;u8&gt; \{
+    <Link to="../iota/bcs#iota_bcs">bcs</Link>.<Link to="../iota/bcs#iota_bcs_peel_vec">peel_vec</Link>!(|<Link to="../iota/bcs#iota_bcs">bcs</Link>| <Link to="../iota/bcs#iota_bcs">bcs</Link>.<Link to="../iota/bcs#iota_bcs_peel_u8">peel_u8</Link>())
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_bcs_peel_vec_vec_u8"></Link>
+
+## Function `peel_vec_vec_u8`
+
+Peel a <code>vector&lt;vector&lt;u8&gt;&gt;</code> (eg vec of string) from serialized bytes.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_vec_vec_u8">peel_vec_vec_u8</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">iota::bcs::BCS</Link>): vector&lt;vector&lt;u8&gt;&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_vec_vec_u8">peel_vec_vec_u8</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">BCS</Link>): vector&lt;vector&lt;u8&gt;&gt; \{
+    <Link to="../iota/bcs#iota_bcs">bcs</Link>.<Link to="../iota/bcs#iota_bcs_peel_vec">peel_vec</Link>!(|<Link to="../iota/bcs#iota_bcs">bcs</Link>| <Link to="../iota/bcs#iota_bcs">bcs</Link>.<Link to="../iota/bcs#iota_bcs_peel_vec_u8">peel_vec_u8</Link>())
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_bcs_peel_vec_u16"></Link>
+
+## Function `peel_vec_u16`
+
+Peel a vector of <code>u16</code> from serialized bytes.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_vec_u16">peel_vec_u16</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">iota::bcs::BCS</Link>): vector&lt;u16&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_vec_u16">peel_vec_u16</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">BCS</Link>): vector&lt;u16&gt; \{
+    <Link to="../iota/bcs#iota_bcs">bcs</Link>.<Link to="../iota/bcs#iota_bcs_peel_vec">peel_vec</Link>!(|<Link to="../iota/bcs#iota_bcs">bcs</Link>| <Link to="../iota/bcs#iota_bcs">bcs</Link>.<Link to="../iota/bcs#iota_bcs_peel_u16">peel_u16</Link>())
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_bcs_peel_vec_u32"></Link>
+
+## Function `peel_vec_u32`
+
+Peel a vector of <code>u32</code> from serialized bytes.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_vec_u32">peel_vec_u32</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">iota::bcs::BCS</Link>): vector&lt;u32&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_vec_u32">peel_vec_u32</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">BCS</Link>): vector&lt;u32&gt; \{
+    <Link to="../iota/bcs#iota_bcs">bcs</Link>.<Link to="../iota/bcs#iota_bcs_peel_vec">peel_vec</Link>!(|<Link to="../iota/bcs#iota_bcs">bcs</Link>| <Link to="../iota/bcs#iota_bcs">bcs</Link>.<Link to="../iota/bcs#iota_bcs_peel_u32">peel_u32</Link>())
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_bcs_peel_vec_u64"></Link>
+
+## Function `peel_vec_u64`
+
+Peel a vector of <code>u64</code> from serialized bytes.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_vec_u64">peel_vec_u64</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">iota::bcs::BCS</Link>): vector&lt;u64&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_vec_u64">peel_vec_u64</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">BCS</Link>): vector&lt;u64&gt; \{
+    <Link to="../iota/bcs#iota_bcs">bcs</Link>.<Link to="../iota/bcs#iota_bcs_peel_vec">peel_vec</Link>!(|<Link to="../iota/bcs#iota_bcs">bcs</Link>| <Link to="../iota/bcs#iota_bcs">bcs</Link>.<Link to="../iota/bcs#iota_bcs_peel_u64">peel_u64</Link>())
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_bcs_peel_vec_u128"></Link>
+
+## Function `peel_vec_u128`
+
+Peel a vector of <code>u128</code> from serialized bytes.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_vec_u128">peel_vec_u128</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">iota::bcs::BCS</Link>): vector&lt;u128&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_vec_u128">peel_vec_u128</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">BCS</Link>): vector&lt;u128&gt; \{
+    <Link to="../iota/bcs#iota_bcs">bcs</Link>.<Link to="../iota/bcs#iota_bcs_peel_vec">peel_vec</Link>!(|<Link to="../iota/bcs#iota_bcs">bcs</Link>| <Link to="../iota/bcs#iota_bcs">bcs</Link>.<Link to="../iota/bcs#iota_bcs_peel_u128">peel_u128</Link>())
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_bcs_peel_vec_u256"></Link>
+
+## Function `peel_vec_u256`
+
+Peel a vector of <code>u256</code> from serialized bytes.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_vec_u256">peel_vec_u256</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">iota::bcs::BCS</Link>): vector&lt;u256&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_vec_u256">peel_vec_u256</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">BCS</Link>): vector&lt;u256&gt; \{
+    <Link to="../iota/bcs#iota_bcs">bcs</Link>.<Link to="../iota/bcs#iota_bcs_peel_vec">peel_vec</Link>!(|<Link to="../iota/bcs#iota_bcs">bcs</Link>| <Link to="../iota/bcs#iota_bcs">bcs</Link>.<Link to="../iota/bcs#iota_bcs_peel_u256">peel_u256</Link>())
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_bcs_peel_enum_tag"></Link>
+
+## Function `peel_enum_tag`
+
+Peel enum from serialized bytes, where <code>$f</code> takes a <code>tag</code> value and returns
+the corresponding enum variant. Move enums are limited to 127 variants,
+however the tag can be any <code>u32</code> value.
+
+Example:
+```rust
+let my_enum = match (bcs.peel_enum_tag()) {
+0 => Enum::Empty,
+1 => Enum::U8(bcs.peel_u8()),
+2 => Enum::U16(bcs.peel_u16()),
+3 => Enum::Struct { a: bcs.peel_address(), b: bcs.peel_u8() },
+_ => abort,
+};
+```
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_enum_tag">peel_enum_tag</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">iota::bcs::BCS</Link>): u32
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_enum_tag">peel_enum_tag</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">BCS</Link>): u32 \{
+    <b>let</b> tag = <Link to="../iota/bcs#iota_bcs">bcs</Link>.<Link to="../iota/bcs#iota_bcs_peel_vec_length">peel_vec_length</Link>();
+    <b>assert</b>!(tag &lt;= <Link to="../std/u32#std_u32_max_value">std::u32::max_value</Link>!() <b>as</b> u64, <Link to="../iota/bcs#iota_bcs_EOutOfRange">EOutOfRange</Link>);
+    tag <b>as</b> u32
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_bcs_peel_option"></Link>
+
+## Macro function `peel_option`
+
+Peel <code>Option&lt;$T&gt;</code> from serialized bytes, where <code>$peel: |&<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">BCS</Link>| -&gt; $T</code> gives the
+functionality of peeling the inner value.
+
+
+<pre>
+<code>
+<b>public</b> <b>macro</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_option">peel_option</Link>&lt;$T&gt;($<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">iota::bcs::BCS</Link>, $peel: |&<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">iota::bcs::BCS</Link>| -&gt; $T): <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;$T&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>macro</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_option">peel_option</Link>&lt;$T&gt;($<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">BCS</Link>, $peel: |&<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">BCS</Link>| -&gt; $T): Option&lt;$T&gt; \{
+    <b>let</b> <Link to="../iota/bcs#iota_bcs">bcs</Link> = $<Link to="../iota/bcs#iota_bcs">bcs</Link>;
+    <b>if</b> (<Link to="../iota/bcs#iota_bcs">bcs</Link>.<Link to="../iota/bcs#iota_bcs_peel_bool">peel_bool</Link>()) option::some($peel(<Link to="../iota/bcs#iota_bcs">bcs</Link>)) <b>else</b> option::none()
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_bcs_peel_option_address"></Link>
+
+## Function `peel_option_address`
+
+Peel <code>Option&lt;<b>address</b>&gt;</code> from serialized bytes.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_option_address">peel_option_address</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">iota::bcs::BCS</Link>): <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;<b>address</b>&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_option_address">peel_option_address</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">BCS</Link>): Option&lt;<b>address</b>&gt; \{
+    <Link to="../iota/bcs#iota_bcs">bcs</Link>.<Link to="../iota/bcs#iota_bcs_peel_option">peel_option</Link>!(|<Link to="../iota/bcs#iota_bcs">bcs</Link>| <Link to="../iota/bcs#iota_bcs">bcs</Link>.<Link to="../iota/bcs#iota_bcs_peel_address">peel_address</Link>())
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_bcs_peel_option_bool"></Link>
+
+## Function `peel_option_bool`
+
+Peel <code>Option&lt;bool&gt;</code> from serialized bytes.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_option_bool">peel_option_bool</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">iota::bcs::BCS</Link>): <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;bool&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_option_bool">peel_option_bool</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">BCS</Link>): Option&lt;bool&gt; \{
+    <Link to="../iota/bcs#iota_bcs">bcs</Link>.<Link to="../iota/bcs#iota_bcs_peel_option">peel_option</Link>!(|<Link to="../iota/bcs#iota_bcs">bcs</Link>| <Link to="../iota/bcs#iota_bcs">bcs</Link>.<Link to="../iota/bcs#iota_bcs_peel_bool">peel_bool</Link>())
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_bcs_peel_option_u8"></Link>
+
+## Function `peel_option_u8`
+
+Peel <code>Option&lt;u8&gt;</code> from serialized bytes.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_option_u8">peel_option_u8</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">iota::bcs::BCS</Link>): <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;u8&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_option_u8">peel_option_u8</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">BCS</Link>): Option&lt;u8&gt; \{
+    <Link to="../iota/bcs#iota_bcs">bcs</Link>.<Link to="../iota/bcs#iota_bcs_peel_option">peel_option</Link>!(|<Link to="../iota/bcs#iota_bcs">bcs</Link>| <Link to="../iota/bcs#iota_bcs">bcs</Link>.<Link to="../iota/bcs#iota_bcs_peel_u8">peel_u8</Link>())
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_bcs_peel_option_u16"></Link>
+
+## Function `peel_option_u16`
+
+Peel <code>Option&lt;u16&gt;</code> from serialized bytes.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_option_u16">peel_option_u16</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">iota::bcs::BCS</Link>): <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;u16&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_option_u16">peel_option_u16</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">BCS</Link>): Option&lt;u16&gt; \{
+    <Link to="../iota/bcs#iota_bcs">bcs</Link>.<Link to="../iota/bcs#iota_bcs_peel_option">peel_option</Link>!(|<Link to="../iota/bcs#iota_bcs">bcs</Link>| <Link to="../iota/bcs#iota_bcs">bcs</Link>.<Link to="../iota/bcs#iota_bcs_peel_u16">peel_u16</Link>())
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_bcs_peel_option_u32"></Link>
+
+## Function `peel_option_u32`
+
+Peel <code>Option&lt;u32&gt;</code> from serialized bytes.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_option_u32">peel_option_u32</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">iota::bcs::BCS</Link>): <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;u32&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_option_u32">peel_option_u32</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">BCS</Link>): Option&lt;u32&gt; \{
+    <Link to="../iota/bcs#iota_bcs">bcs</Link>.<Link to="../iota/bcs#iota_bcs_peel_option">peel_option</Link>!(|<Link to="../iota/bcs#iota_bcs">bcs</Link>| <Link to="../iota/bcs#iota_bcs">bcs</Link>.<Link to="../iota/bcs#iota_bcs_peel_u32">peel_u32</Link>())
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_bcs_peel_option_u64"></Link>
+
+## Function `peel_option_u64`
+
+Peel <code>Option&lt;u64&gt;</code> from serialized bytes.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_option_u64">peel_option_u64</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">iota::bcs::BCS</Link>): <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;u64&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_option_u64">peel_option_u64</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">BCS</Link>): Option&lt;u64&gt; \{
+    <Link to="../iota/bcs#iota_bcs">bcs</Link>.<Link to="../iota/bcs#iota_bcs_peel_option">peel_option</Link>!(|<Link to="../iota/bcs#iota_bcs">bcs</Link>| <Link to="../iota/bcs#iota_bcs">bcs</Link>.<Link to="../iota/bcs#iota_bcs_peel_u64">peel_u64</Link>())
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_bcs_peel_option_u128"></Link>
+
+## Function `peel_option_u128`
+
+Peel <code>Option&lt;u128&gt;</code> from serialized bytes.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_option_u128">peel_option_u128</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">iota::bcs::BCS</Link>): <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;u128&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_option_u128">peel_option_u128</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">BCS</Link>): Option&lt;u128&gt; \{
+    <Link to="../iota/bcs#iota_bcs">bcs</Link>.<Link to="../iota/bcs#iota_bcs_peel_option">peel_option</Link>!(|<Link to="../iota/bcs#iota_bcs">bcs</Link>| <Link to="../iota/bcs#iota_bcs">bcs</Link>.<Link to="../iota/bcs#iota_bcs_peel_u128">peel_u128</Link>())
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_bcs_peel_option_u256"></Link>
+
+## Function `peel_option_u256`
+
+Peel <code>Option&lt;u256&gt;</code> from serialized bytes.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_option_u256">peel_option_u256</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">iota::bcs::BCS</Link>): <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;u256&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bcs#iota_bcs_peel_option_u256">peel_option_u256</Link>(<Link to="../iota/bcs#iota_bcs">bcs</Link>: &<b>mut</b> <Link to="../iota/bcs#iota_bcs_BCS">BCS</Link>): Option&lt;u256&gt; \{
+    <Link to="../iota/bcs#iota_bcs">bcs</Link>.<Link to="../iota/bcs#iota_bcs_peel_option">peel_option</Link>!(|<Link to="../iota/bcs#iota_bcs">bcs</Link>| <Link to="../iota/bcs#iota_bcs">bcs</Link>.<Link to="../iota/bcs#iota_bcs_peel_u256">peel_u256</Link>())
+}
+</code>
+</pre>
+
+
+
+</details>

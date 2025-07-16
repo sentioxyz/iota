@@ -1,0 +1,253 @@
+---
+title: Module iota_system::validator_cap
+sidebar_label: validator_cap
+slug: validator_cap
+---
+import Link from '@docusaurus/Link';
+
+<Link id="iota_system_validator_cap"/>
+
+
+-  [Struct `UnverifiedValidatorOperationCap`](#iota_system_validator_cap_UnverifiedValidatorOperationCap)
+-  [Struct `ValidatorOperationCap`](#iota_system_validator_cap_ValidatorOperationCap)
+-  [Function `unverified_operation_cap_address`](#iota_system_validator_cap_unverified_operation_cap_address)
+-  [Function `verified_operation_cap_address`](#iota_system_validator_cap_verified_operation_cap_address)
+-  [Function `new_unverified_validator_operation_cap_and_transfer`](#iota_system_validator_cap_new_unverified_validator_operation_cap_and_transfer)
+-  [Function `new_from_unverified`](#iota_system_validator_cap_new_from_unverified)
+
+
+<pre>
+<code>
+<b>use</b> <Link to="../iota/address#iota_address">iota::address</Link>;
+<b>use</b> <Link to="../iota/hex#iota_hex">iota::hex</Link>;
+<b>use</b> <Link to="../iota/object#iota_object">iota::object</Link>;
+<b>use</b> <Link to="../iota/transfer#iota_transfer">iota::transfer</Link>;
+<b>use</b> <Link to="../iota/tx_context#iota_tx_context">iota::tx_context</Link>;
+<b>use</b> <Link to="../std/ascii#std_ascii">std::ascii</Link>;
+<b>use</b> <Link to="../std/bcs#std_bcs">std::bcs</Link>;
+<b>use</b> <Link to="../std/option#std_option">std::option</Link>;
+<b>use</b> <Link to="../std/string#std_string">std::string</Link>;
+<b>use</b> <Link to="../std/vector#std_vector">std::vector</Link>;
+</code>
+</pre>
+
+
+
+<Link id="iota_system_validator_cap_UnverifiedValidatorOperationCap"></Link>
+
+## Struct `UnverifiedValidatorOperationCap`
+
+The capability object is created when creating a new <code>Validator</code> or when the
+validator explicitly creates a new capability object for rotation/revocation.
+The holder address of this object can perform some validator operations on behalf of
+the authorizer validator. Thus, if a validator wants to separate the keys for operation
+(such as reference gas price setting or tallying rule reporting) from fund/staking, it
+could transfer this capability object to another address.
+To facilitate rotating/revocation, <code>Validator</code> stores the ID of currently valid
+<code><Link to="../iota_system/validator_cap#iota_system_validator_cap_UnverifiedValidatorOperationCap">UnverifiedValidatorOperationCap</Link></code>. Thus, before converting <code><Link to="../iota_system/validator_cap#iota_system_validator_cap_UnverifiedValidatorOperationCap">UnverifiedValidatorOperationCap</Link></code>
+to <code><Link to="../iota_system/validator_cap#iota_system_validator_cap_ValidatorOperationCap">ValidatorOperationCap</Link></code>, verification needs to be done to make sure
+the cap object is still valid.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota_system/validator_cap#iota_system_validator_cap_UnverifiedValidatorOperationCap">UnverifiedValidatorOperationCap</Link> <b>has</b> key, store
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code>id: <Link to="../iota/object#iota_object_UID">iota::object::UID</Link></code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>authorizer_validator_address: <b>address</b></code>
+</dt>
+<dd>
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="iota_system_validator_cap_ValidatorOperationCap"></Link>
+
+## Struct `ValidatorOperationCap`
+
+Privileged operations require <code><Link to="../iota_system/validator_cap#iota_system_validator_cap_ValidatorOperationCap">ValidatorOperationCap</Link></code> for permission check.
+This is only constructed after successful verification.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota_system/validator_cap#iota_system_validator_cap_ValidatorOperationCap">ValidatorOperationCap</Link> <b>has</b> drop
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code>authorizer_validator_address: <b>address</b></code>
+</dt>
+<dd>
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="iota_system_validator_cap_unverified_operation_cap_address"></Link>
+
+## Function `unverified_operation_cap_address`
+
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator_cap#iota_system_validator_cap_unverified_operation_cap_address">unverified_operation_cap_address</Link>(cap: &<Link to="../iota_system/validator_cap#iota_system_validator_cap_UnverifiedValidatorOperationCap">iota_system::validator_cap::UnverifiedValidatorOperationCap</Link>): &<b>address</b>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator_cap#iota_system_validator_cap_unverified_operation_cap_address">unverified_operation_cap_address</Link>(
+    cap: &<Link to="../iota_system/validator_cap#iota_system_validator_cap_UnverifiedValidatorOperationCap">UnverifiedValidatorOperationCap</Link>,
+): &<b>address</b> \{
+    &cap.authorizer_validator_address
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_cap_verified_operation_cap_address"></Link>
+
+## Function `verified_operation_cap_address`
+
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator_cap#iota_system_validator_cap_verified_operation_cap_address">verified_operation_cap_address</Link>(cap: &<Link to="../iota_system/validator_cap#iota_system_validator_cap_ValidatorOperationCap">iota_system::validator_cap::ValidatorOperationCap</Link>): &<b>address</b>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator_cap#iota_system_validator_cap_verified_operation_cap_address">verified_operation_cap_address</Link>(cap: &<Link to="../iota_system/validator_cap#iota_system_validator_cap_ValidatorOperationCap">ValidatorOperationCap</Link>): &<b>address</b> \{
+    &cap.authorizer_validator_address
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_cap_new_unverified_validator_operation_cap_and_transfer"></Link>
+
+## Function `new_unverified_validator_operation_cap_and_transfer`
+
+Should be only called by the friend modules when adding a <code>Validator</code>
+or rotating an existing validaotr's <code>operation_cap_id</code>.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator_cap#iota_system_validator_cap_new_unverified_validator_operation_cap_and_transfer">new_unverified_validator_operation_cap_and_transfer</Link>(validator_address: <b>address</b>, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): <Link to="../iota/object#iota_object_ID">iota::object::ID</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator_cap#iota_system_validator_cap_new_unverified_validator_operation_cap_and_transfer">new_unverified_validator_operation_cap_and_transfer</Link>(
+    validator_address: <b>address</b>,
+    ctx: &<b>mut</b> TxContext,
+): ID \{
+    // This function needs to be called only by the <Link to="../iota_system/validator#iota_system_validator">validator</Link> itself, except
+    // 1. in <Link to="../iota_system/genesis#iota_system_genesis">genesis</Link> where all validators are created by @0x0
+    // 2. in tests where @0x0 could be used to simplify the setup
+    <b>let</b> sender_address = ctx.sender();
+    <b>assert</b>!(sender_address == @0x0 || sender_address == validator_address, 0);
+    <b>let</b> operation_cap = <Link to="../iota_system/validator_cap#iota_system_validator_cap_UnverifiedValidatorOperationCap">UnverifiedValidatorOperationCap</Link> \{
+        id: object::new(ctx),
+        authorizer_validator_address: validator_address,
+    };
+    <b>let</b> operation_cap_id = object::id(&operation_cap);
+    transfer::public_transfer(operation_cap, validator_address);
+    operation_cap_id
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_cap_new_from_unverified"></Link>
+
+## Function `new_from_unverified`
+
+Convert an <code><Link to="../iota_system/validator_cap#iota_system_validator_cap_UnverifiedValidatorOperationCap">UnverifiedValidatorOperationCap</Link></code> to <code><Link to="../iota_system/validator_cap#iota_system_validator_cap_ValidatorOperationCap">ValidatorOperationCap</Link></code>.
+Should only be called by <code><Link to="../iota_system/validator_set#iota_system_validator_set">validator_set</Link></code> module AFTER verification.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator_cap#iota_system_validator_cap_new_from_unverified">new_from_unverified</Link>(cap: &<Link to="../iota_system/validator_cap#iota_system_validator_cap_UnverifiedValidatorOperationCap">iota_system::validator_cap::UnverifiedValidatorOperationCap</Link>): <Link to="../iota_system/validator_cap#iota_system_validator_cap_ValidatorOperationCap">iota_system::validator_cap::ValidatorOperationCap</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator_cap#iota_system_validator_cap_new_from_unverified">new_from_unverified</Link>(
+    cap: &<Link to="../iota_system/validator_cap#iota_system_validator_cap_UnverifiedValidatorOperationCap">UnverifiedValidatorOperationCap</Link>,
+): <Link to="../iota_system/validator_cap#iota_system_validator_cap_ValidatorOperationCap">ValidatorOperationCap</Link> \{
+    <Link to="../iota_system/validator_cap#iota_system_validator_cap_ValidatorOperationCap">ValidatorOperationCap</Link> \{
+        authorizer_validator_address: cap.authorizer_validator_address,
+    }
+}
+</code>
+</pre>
+
+
+
+</details>

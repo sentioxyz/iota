@@ -1,62 +1,13 @@
-# Contributing to This Project
+# Contributors
 
-Thanks for considering making a contribution to the IOTA network or its documentation. Before you get started, please take a moment to read these guidelines.
+Thanks for considering making a contribution to the IOTA network or its documentation. The IOTA monorepo houses the code that powers and documents the IOTA ledger.
 
-## Important Note
+## Contribute to IOTA
 
-We appreciate contributions, but **simple typo fixes (e.g., minor spelling errors, punctuation changes, or trivial rewording) will be ignored** unless they significantly improve clarity or fix a critical issue. If you are unsure whether your change is substantial enough, consider opening an issue first to discuss it.
+See [IOTA Environment Setup](https://github.com/iotaledger/iota/blob/develop/docs/content/developer/getting-started/iota-environment.mdx) for approach to submitting code fixes and enhancements.
 
-# How to Contribute
-
-
-## Documentation
-
-Found a small error or typo in the main documentation? Each page on the [docs.iota.org](https://docs.iota.org/) site includes an **Edit this page** link at the bottom that you can use to edit the page in GitHub. The content is located in the docs/content directory of the IOTA repo, so you can make a PR if you prefer. 
+Found a bug or security vulnerability? Create a [GitHub issue](https://github.com/iotaledger/iota/issues/new/choose).
 
 For larger documentation issues, you can [create an issue](https://github.com/iotaledger/iota/issues/new/choose) in GitHub. To fix the problem yourself, follow the [documentation contribution](./docs/content/references/contribute/contribution-process.mdx) guidelines.
 
-If you change functionality, update the relevant documentation.
-
-Include examples where applicable.
-
-## Reporting Issues
-
-Found a bug or security vulnerability? Please check the existing issues before opening a new one.
-
-Provide as much detail as possible, including steps to reproduce the issue, expected behavior, and actual behavior.
-
-## New IOTA features
-
-If you want to contribute code that creates a feature on Iota, start with a [IOTA Improvement Proposal](https://github.com/sui-foundation/sips/tree/main) before developing the logic.
-
-## New IOTA Framework Contributions
-
 Want to contribute to the IOTA framework? See [CONTRIBUTING.md](https://github.com/iotaledger/iota/blob/develop/crates/iota-framework/CONTRIBUTING.md) for information related to `iota-framework` crate contributions.
-
-## Proposing Code Changes
-
-Fork the repository and create a new branch for your changes. Ensure your branch is based on the latest main
-
-Follow the coding style and conventions used in the project.
-
-If your change is significant, please open an issue first to discuss it.
-
-## Submitting a Pull Request
-
-Ensure your changes are well-tested. Provide a clear description of your changes in the pull request.
-
-Reference any relevant issue numbers in your pull request. Be responsive to feedback from maintainers.
-
-## Code Standards
-
-Follow existing code structure and formatting.
-
-Write meaningful commit messages.
-
-Ensure all tests pass before submitting a pull request.
-
-# License
-
-By contributing, you agree that your contributions will be licensed under the same license as this project.
-
-Thank you for contributing!

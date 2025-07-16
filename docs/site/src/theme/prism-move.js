@@ -1,5 +1,5 @@
 // Copyright (c) Mysten Labs, Inc.
-// Modifications Copyright (c) 2025 IOTA Stiftung
+// Modifications Copyright (c) 2024 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 /**
@@ -68,7 +68,7 @@
      */
 
     "module-header": {
-      pattern: /\b(module)\s+(\w+)::(\w+)\s*[{;]/,
+      pattern: /\b(module)\s+(\w+)::(\w+)\s*\{/,
       inside: {
         "module-keyword": {
           pattern: /\b(module)\b/,

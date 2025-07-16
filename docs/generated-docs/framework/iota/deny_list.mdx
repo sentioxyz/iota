@@ -1,0 +1,805 @@
+---
+title: Module iota::deny_list
+sidebar_label: deny_list
+slug: deny_list
+---
+import Link from '@docusaurus/Link';
+
+<Link id="iota_deny_list"/>
+Defines the <code><Link to="../iota/deny_list#iota_deny_list_DenyList">DenyList</Link></code> type. The <code><Link to="../iota/deny_list#iota_deny_list_DenyList">DenyList</Link></code> shared object is used to restrict access to
+instances of certain core types from being used as inputs by specified addresses in the deny
+list.
+
+
+-  [Struct `DenyList`](#iota_deny_list_DenyList)
+-  [Struct `ConfigWriteCap`](#iota_deny_list_ConfigWriteCap)
+-  [Struct `ConfigKey`](#iota_deny_list_ConfigKey)
+-  [Struct `AddressKey`](#iota_deny_list_AddressKey)
+-  [Struct `GlobalPauseKey`](#iota_deny_list_GlobalPauseKey)
+-  [Struct `PerTypeConfigCreated`](#iota_deny_list_PerTypeConfigCreated)
+-  [Constants](#@Constants_0)
+-  [Function `add`](#iota_deny_list_add)
+-  [Function `remove`](#iota_deny_list_remove)
+-  [Function `contains_current_epoch`](#iota_deny_list_contains_current_epoch)
+-  [Function `contains_next_epoch`](#iota_deny_list_contains_next_epoch)
+-  [Function `enable_global_pause`](#iota_deny_list_enable_global_pause)
+-  [Function `disable_global_pause`](#iota_deny_list_disable_global_pause)
+-  [Function `is_global_pause_enabled_current_epoch`](#iota_deny_list_is_global_pause_enabled_current_epoch)
+-  [Function `is_global_pause_enabled_next_epoch`](#iota_deny_list_is_global_pause_enabled_next_epoch)
+-  [Function `add_per_type_config`](#iota_deny_list_add_per_type_config)
+-  [Function `borrow_per_type_config_mut`](#iota_deny_list_borrow_per_type_config_mut)
+-  [Function `borrow_per_type_config`](#iota_deny_list_borrow_per_type_config)
+-  [Function `per_type_exists`](#iota_deny_list_per_type_exists)
+-  [Macro function `per_type_config_entry`](#iota_deny_list_per_type_config_entry)
+-  [Function `create`](#iota_deny_list_create)
+
+
+<pre>
+<code>
+<b>use</b> <Link to="../iota/address#iota_address">iota::address</Link>;
+<b>use</b> <Link to="../iota/bag#iota_bag">iota::bag</Link>;
+<b>use</b> <Link to="../iota/config#iota_config">iota::config</Link>;
+<b>use</b> <Link to="../iota/dynamic_field#iota_dynamic_field">iota::dynamic_field</Link>;
+<b>use</b> <Link to="../iota/dynamic_object_field#iota_dynamic_object_field">iota::dynamic_object_field</Link>;
+<b>use</b> <Link to="../iota/event#iota_event">iota::event</Link>;
+<b>use</b> <Link to="../iota/hex#iota_hex">iota::hex</Link>;
+<b>use</b> <Link to="../iota/object#iota_object">iota::object</Link>;
+<b>use</b> <Link to="../iota/transfer#iota_transfer">iota::transfer</Link>;
+<b>use</b> <Link to="../iota/tx_context#iota_tx_context">iota::tx_context</Link>;
+<b>use</b> <Link to="../std/ascii#std_ascii">std::ascii</Link>;
+<b>use</b> <Link to="../std/bcs#std_bcs">std::bcs</Link>;
+<b>use</b> <Link to="../std/option#std_option">std::option</Link>;
+<b>use</b> <Link to="../std/string#std_string">std::string</Link>;
+<b>use</b> <Link to="../std/vector#std_vector">std::vector</Link>;
+</code>
+</pre>
+
+
+
+<Link id="iota_deny_list_DenyList"></Link>
+
+## Struct `DenyList`
+
+A shared object that stores the addresses that are blocked for a given core type.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota/deny_list#iota_deny_list_DenyList">DenyList</Link> <b>has</b> key
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code>id: <Link to="../iota/object#iota_object_UID">iota::object::UID</Link></code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>lists: <Link to="../iota/bag#iota_bag_Bag">iota::bag::Bag</Link></code>
+</dt>
+<dd>
+ The individual deny lists.
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="iota_deny_list_ConfigWriteCap"></Link>
+
+## Struct `ConfigWriteCap`
+
+The capability used to write to the deny list config. Ensures that the Configs for the
+DenyList are modified only by this module.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota/deny_list#iota_deny_list_ConfigWriteCap">ConfigWriteCap</Link> <b>has</b> drop
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+</dl>
+
+
+</details>
+
+<Link id="iota_deny_list_ConfigKey"></Link>
+
+## Struct `ConfigKey`
+
+The dynamic object field key used to store the <code>Config</code> for a given type, essentially a
+<code>(per_type_index, per_type_key)</code> pair.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota/deny_list#iota_deny_list_ConfigKey">ConfigKey</Link> <b>has</b> <b>copy</b>, drop, store
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code>per_type_index: u64</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>per_type_key: vector&lt;u8&gt;</code>
+</dt>
+<dd>
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="iota_deny_list_AddressKey"></Link>
+
+## Struct `AddressKey`
+
+The setting key used to store the deny list for a given address in the <code>Config</code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota/deny_list#iota_deny_list_AddressKey">AddressKey</Link> <b>has</b> <b>copy</b>, drop, store
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code>0: <b>address</b></code>
+</dt>
+<dd>
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="iota_deny_list_GlobalPauseKey"></Link>
+
+## Struct `GlobalPauseKey`
+
+The setting key used to store the global pause setting in the <code>Config</code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota/deny_list#iota_deny_list_GlobalPauseKey">GlobalPauseKey</Link> <b>has</b> <b>copy</b>, drop, store
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+</dl>
+
+
+</details>
+
+<Link id="iota_deny_list_PerTypeConfigCreated"></Link>
+
+## Struct `PerTypeConfigCreated`
+
+The event emitted when a new <code>Config</code> is created for a given type. This can be useful for
+tracking the <code>ID</code> of a type's <code>Config</code> object.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota/deny_list#iota_deny_list_PerTypeConfigCreated">PerTypeConfigCreated</Link> <b>has</b> <b>copy</b>, drop, store
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code>key: <Link to="../iota/deny_list#iota_deny_list_ConfigKey">iota::deny_list::ConfigKey</Link></code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>config_id: <Link to="../iota/object#iota_object_ID">iota::object::ID</Link></code>
+</dt>
+<dd>
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="@Constants_0"></Link>
+
+## Constants
+
+
+<Link id="iota_deny_list_ENotSystemAddress"></Link>
+
+Trying to create a deny list object when not called by the system address.
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota/deny_list#iota_deny_list_ENotSystemAddress">ENotSystemAddress</Link>: u64 = 0;
+</code>
+</pre>
+
+
+
+<Link id="iota_deny_list_add"></Link>
+
+## Function `add`
+
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/deny_list#iota_deny_list_add">add</Link>(<Link to="../iota/deny_list#iota_deny_list">deny_list</Link>: &<b>mut</b> <Link to="../iota/deny_list#iota_deny_list_DenyList">iota::deny_list::DenyList</Link>, per_type_index: u64, per_type_key: vector&lt;u8&gt;, addr: <b>address</b>, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/deny_list#iota_deny_list_add">add</Link>(
+    <Link to="../iota/deny_list#iota_deny_list">deny_list</Link>: &<b>mut</b> <Link to="../iota/deny_list#iota_deny_list_DenyList">DenyList</Link>,
+    per_type_index: u64,
+    per_type_key: vector&lt;u8&gt;,
+    addr: <b>address</b>,
+    ctx: &<b>mut</b> TxContext,
+) \{
+    <b>let</b> per_type_config = <Link to="../iota/deny_list#iota_deny_list">deny_list</Link>.<Link to="../iota/deny_list#iota_deny_list_per_type_config_entry">per_type_config_entry</Link>!(per_type_index, per_type_key, ctx);
+    <b>let</b> setting_name = <Link to="../iota/deny_list#iota_deny_list_AddressKey">AddressKey</Link>(addr);
+    <b>let</b> next_epoch_entry = per_type_config.<b>entry</b>!&lt;_, <Link to="../iota/deny_list#iota_deny_list_AddressKey">AddressKey</Link>, bool&gt;(
+        &<b>mut</b> <Link to="../iota/deny_list#iota_deny_list_ConfigWriteCap">ConfigWriteCap</Link>(),
+        setting_name,
+        |_deny_list, _cap, _ctx| <b>true</b>,
+        ctx,
+    );
+    *next_epoch_entry = <b>true</b>;
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_deny_list_remove"></Link>
+
+## Function `remove`
+
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/deny_list#iota_deny_list_remove">remove</Link>(<Link to="../iota/deny_list#iota_deny_list">deny_list</Link>: &<b>mut</b> <Link to="../iota/deny_list#iota_deny_list_DenyList">iota::deny_list::DenyList</Link>, per_type_index: u64, per_type_key: vector&lt;u8&gt;, addr: <b>address</b>, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/deny_list#iota_deny_list_remove">remove</Link>(
+    <Link to="../iota/deny_list#iota_deny_list">deny_list</Link>: &<b>mut</b> <Link to="../iota/deny_list#iota_deny_list_DenyList">DenyList</Link>,
+    per_type_index: u64,
+    per_type_key: vector&lt;u8&gt;,
+    addr: <b>address</b>,
+    ctx: &<b>mut</b> TxContext,
+) \{
+    <b>let</b> per_type_config = <Link to="../iota/deny_list#iota_deny_list">deny_list</Link>.<Link to="../iota/deny_list#iota_deny_list_per_type_config_entry">per_type_config_entry</Link>!(per_type_index, per_type_key, ctx);
+    <b>let</b> setting_name = <Link to="../iota/deny_list#iota_deny_list_AddressKey">AddressKey</Link>(addr);
+    per_type_config.remove_for_next_epoch&lt;_, <Link to="../iota/deny_list#iota_deny_list_AddressKey">AddressKey</Link>, bool&gt;(
+        &<b>mut</b> <Link to="../iota/deny_list#iota_deny_list_ConfigWriteCap">ConfigWriteCap</Link>(),
+        setting_name,
+        ctx,
+    );
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_deny_list_contains_current_epoch"></Link>
+
+## Function `contains_current_epoch`
+
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/deny_list#iota_deny_list_contains_current_epoch">contains_current_epoch</Link>(<Link to="../iota/deny_list#iota_deny_list">deny_list</Link>: &<Link to="../iota/deny_list#iota_deny_list_DenyList">iota::deny_list::DenyList</Link>, per_type_index: u64, per_type_key: vector&lt;u8&gt;, addr: <b>address</b>, ctx: &<Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): bool
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/deny_list#iota_deny_list_contains_current_epoch">contains_current_epoch</Link>(
+    <Link to="../iota/deny_list#iota_deny_list">deny_list</Link>: &<Link to="../iota/deny_list#iota_deny_list_DenyList">DenyList</Link>,
+    per_type_index: u64,
+    per_type_key: vector&lt;u8&gt;,
+    addr: <b>address</b>,
+    ctx: &TxContext,
+): bool \{
+    <b>if</b> (!<Link to="../iota/deny_list#iota_deny_list">deny_list</Link>.<Link to="../iota/deny_list#iota_deny_list_per_type_exists">per_type_exists</Link>(per_type_index, per_type_key)) <b>return</b> <b>false</b>;
+    <b>let</b> per_type_config = <Link to="../iota/deny_list#iota_deny_list">deny_list</Link>.<Link to="../iota/deny_list#iota_deny_list_borrow_per_type_config">borrow_per_type_config</Link>(per_type_index, per_type_key);
+    <b>let</b> setting_name = <Link to="../iota/deny_list#iota_deny_list_AddressKey">AddressKey</Link>(addr);
+    <Link to="../iota/config#iota_config_read_setting">config::read_setting</Link>(<Link to="../iota/object#iota_object_id">object::id</Link>(per_type_config), setting_name, ctx).destroy_or!(<b>false</b>)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_deny_list_contains_next_epoch"></Link>
+
+## Function `contains_next_epoch`
+
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/deny_list#iota_deny_list_contains_next_epoch">contains_next_epoch</Link>(<Link to="../iota/deny_list#iota_deny_list">deny_list</Link>: &<Link to="../iota/deny_list#iota_deny_list_DenyList">iota::deny_list::DenyList</Link>, per_type_index: u64, per_type_key: vector&lt;u8&gt;, addr: <b>address</b>): bool
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/deny_list#iota_deny_list_contains_next_epoch">contains_next_epoch</Link>(
+    <Link to="../iota/deny_list#iota_deny_list">deny_list</Link>: &<Link to="../iota/deny_list#iota_deny_list_DenyList">DenyList</Link>,
+    per_type_index: u64,
+    per_type_key: vector&lt;u8&gt;,
+    addr: <b>address</b>,
+): bool \{
+    <b>if</b> (!<Link to="../iota/deny_list#iota_deny_list">deny_list</Link>.<Link to="../iota/deny_list#iota_deny_list_per_type_exists">per_type_exists</Link>(per_type_index, per_type_key)) <b>return</b> <b>false</b>;
+    <b>let</b> per_type_config = <Link to="../iota/deny_list#iota_deny_list">deny_list</Link>.<Link to="../iota/deny_list#iota_deny_list_borrow_per_type_config">borrow_per_type_config</Link>(per_type_index, per_type_key);
+    <b>let</b> setting_name = <Link to="../iota/deny_list#iota_deny_list_AddressKey">AddressKey</Link>(addr);
+    per_type_config.read_setting_for_next_epoch(setting_name).destroy_or!(<b>false</b>)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_deny_list_enable_global_pause"></Link>
+
+## Function `enable_global_pause`
+
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/deny_list#iota_deny_list_enable_global_pause">enable_global_pause</Link>(<Link to="../iota/deny_list#iota_deny_list">deny_list</Link>: &<b>mut</b> <Link to="../iota/deny_list#iota_deny_list_DenyList">iota::deny_list::DenyList</Link>, per_type_index: u64, per_type_key: vector&lt;u8&gt;, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/deny_list#iota_deny_list_enable_global_pause">enable_global_pause</Link>(
+    <Link to="../iota/deny_list#iota_deny_list">deny_list</Link>: &<b>mut</b> <Link to="../iota/deny_list#iota_deny_list_DenyList">DenyList</Link>,
+    per_type_index: u64,
+    per_type_key: vector&lt;u8&gt;,
+    ctx: &<b>mut</b> TxContext,
+) \{
+    <b>let</b> per_type_config = <Link to="../iota/deny_list#iota_deny_list">deny_list</Link>.<Link to="../iota/deny_list#iota_deny_list_per_type_config_entry">per_type_config_entry</Link>!(per_type_index, per_type_key, ctx);
+    <b>let</b> setting_name = <Link to="../iota/deny_list#iota_deny_list_GlobalPauseKey">GlobalPauseKey</Link>();
+    <b>let</b> next_epoch_entry = per_type_config.<b>entry</b>!&lt;_, <Link to="../iota/deny_list#iota_deny_list_GlobalPauseKey">GlobalPauseKey</Link>, bool&gt;(
+        &<b>mut</b> <Link to="../iota/deny_list#iota_deny_list_ConfigWriteCap">ConfigWriteCap</Link>(),
+        setting_name,
+        |_deny_list, _cap, _ctx| <b>true</b>,
+        ctx,
+    );
+    *next_epoch_entry = <b>true</b>;
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_deny_list_disable_global_pause"></Link>
+
+## Function `disable_global_pause`
+
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/deny_list#iota_deny_list_disable_global_pause">disable_global_pause</Link>(<Link to="../iota/deny_list#iota_deny_list">deny_list</Link>: &<b>mut</b> <Link to="../iota/deny_list#iota_deny_list_DenyList">iota::deny_list::DenyList</Link>, per_type_index: u64, per_type_key: vector&lt;u8&gt;, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/deny_list#iota_deny_list_disable_global_pause">disable_global_pause</Link>(
+    <Link to="../iota/deny_list#iota_deny_list">deny_list</Link>: &<b>mut</b> <Link to="../iota/deny_list#iota_deny_list_DenyList">DenyList</Link>,
+    per_type_index: u64,
+    per_type_key: vector&lt;u8&gt;,
+    ctx: &<b>mut</b> TxContext,
+) \{
+    <b>let</b> per_type_config = <Link to="../iota/deny_list#iota_deny_list">deny_list</Link>.<Link to="../iota/deny_list#iota_deny_list_per_type_config_entry">per_type_config_entry</Link>!(per_type_index, per_type_key, ctx);
+    <b>let</b> setting_name = <Link to="../iota/deny_list#iota_deny_list_GlobalPauseKey">GlobalPauseKey</Link>();
+    per_type_config.remove_for_next_epoch&lt;_, <Link to="../iota/deny_list#iota_deny_list_GlobalPauseKey">GlobalPauseKey</Link>, bool&gt;(
+        &<b>mut</b> <Link to="../iota/deny_list#iota_deny_list_ConfigWriteCap">ConfigWriteCap</Link>(),
+        setting_name,
+        ctx,
+    );
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_deny_list_is_global_pause_enabled_current_epoch"></Link>
+
+## Function `is_global_pause_enabled_current_epoch`
+
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/deny_list#iota_deny_list_is_global_pause_enabled_current_epoch">is_global_pause_enabled_current_epoch</Link>(<Link to="../iota/deny_list#iota_deny_list">deny_list</Link>: &<Link to="../iota/deny_list#iota_deny_list_DenyList">iota::deny_list::DenyList</Link>, per_type_index: u64, per_type_key: vector&lt;u8&gt;, ctx: &<Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): bool
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/deny_list#iota_deny_list_is_global_pause_enabled_current_epoch">is_global_pause_enabled_current_epoch</Link>(
+    <Link to="../iota/deny_list#iota_deny_list">deny_list</Link>: &<Link to="../iota/deny_list#iota_deny_list_DenyList">DenyList</Link>,
+    per_type_index: u64,
+    per_type_key: vector&lt;u8&gt;,
+    ctx: &TxContext,
+): bool \{
+    <b>if</b> (!<Link to="../iota/deny_list#iota_deny_list">deny_list</Link>.<Link to="../iota/deny_list#iota_deny_list_per_type_exists">per_type_exists</Link>(per_type_index, per_type_key)) <b>return</b> <b>false</b>;
+    <b>let</b> per_type_config = <Link to="../iota/deny_list#iota_deny_list">deny_list</Link>.<Link to="../iota/deny_list#iota_deny_list_borrow_per_type_config">borrow_per_type_config</Link>(per_type_index, per_type_key);
+    <b>let</b> setting_name = <Link to="../iota/deny_list#iota_deny_list_GlobalPauseKey">GlobalPauseKey</Link>();
+    <Link to="../iota/config#iota_config_read_setting">config::read_setting</Link>(<Link to="../iota/object#iota_object_id">object::id</Link>(per_type_config), setting_name, ctx).destroy_or!(<b>false</b>)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_deny_list_is_global_pause_enabled_next_epoch"></Link>
+
+## Function `is_global_pause_enabled_next_epoch`
+
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/deny_list#iota_deny_list_is_global_pause_enabled_next_epoch">is_global_pause_enabled_next_epoch</Link>(<Link to="../iota/deny_list#iota_deny_list">deny_list</Link>: &<Link to="../iota/deny_list#iota_deny_list_DenyList">iota::deny_list::DenyList</Link>, per_type_index: u64, per_type_key: vector&lt;u8&gt;): bool
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(<Link to="../iota/package#iota_package">package</Link>) <b>fun</b> <Link to="../iota/deny_list#iota_deny_list_is_global_pause_enabled_next_epoch">is_global_pause_enabled_next_epoch</Link>(
+    <Link to="../iota/deny_list#iota_deny_list">deny_list</Link>: &<Link to="../iota/deny_list#iota_deny_list_DenyList">DenyList</Link>,
+    per_type_index: u64,
+    per_type_key: vector&lt;u8&gt;,
+): bool \{
+    <b>if</b> (!<Link to="../iota/deny_list#iota_deny_list">deny_list</Link>.<Link to="../iota/deny_list#iota_deny_list_per_type_exists">per_type_exists</Link>(per_type_index, per_type_key)) <b>return</b> <b>false</b>;
+    <b>let</b> per_type_config = <Link to="../iota/deny_list#iota_deny_list">deny_list</Link>.<Link to="../iota/deny_list#iota_deny_list_borrow_per_type_config">borrow_per_type_config</Link>(per_type_index, per_type_key);
+    <b>let</b> setting_name = <Link to="../iota/deny_list#iota_deny_list_GlobalPauseKey">GlobalPauseKey</Link>();
+    per_type_config.read_setting_for_next_epoch(setting_name).destroy_or!(<b>false</b>)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_deny_list_add_per_type_config"></Link>
+
+## Function `add_per_type_config`
+
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota/deny_list#iota_deny_list_add_per_type_config">add_per_type_config</Link>(<Link to="../iota/deny_list#iota_deny_list">deny_list</Link>: &<b>mut</b> <Link to="../iota/deny_list#iota_deny_list_DenyList">iota::deny_list::DenyList</Link>, per_type_index: u64, per_type_key: vector&lt;u8&gt;, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota/deny_list#iota_deny_list_add_per_type_config">add_per_type_config</Link>(
+    <Link to="../iota/deny_list#iota_deny_list">deny_list</Link>: &<b>mut</b> <Link to="../iota/deny_list#iota_deny_list_DenyList">DenyList</Link>,
+    per_type_index: u64,
+    per_type_key: vector&lt;u8&gt;,
+    ctx: &<b>mut</b> TxContext,
+) \{
+    <b>let</b> key = <Link to="../iota/deny_list#iota_deny_list_ConfigKey">ConfigKey</Link> \{ per_type_index, per_type_key };
+    <b>let</b> <Link to="../iota/config#iota_config">config</Link> = <Link to="../iota/config#iota_config_new">config::new</Link>(&<b>mut</b> <Link to="../iota/deny_list#iota_deny_list_ConfigWriteCap">ConfigWriteCap</Link>(), ctx);
+    <b>let</b> config_id = <Link to="../iota/object#iota_object_id">object::id</Link>(&<Link to="../iota/config#iota_config">config</Link>);
+    ofield::internal_add(&<b>mut</b> <Link to="../iota/deny_list#iota_deny_list">deny_list</Link>.id, key, <Link to="../iota/config#iota_config">config</Link>);
+    <Link to="../iota/event#iota_event_emit">iota::event::emit</Link>(<Link to="../iota/deny_list#iota_deny_list_PerTypeConfigCreated">PerTypeConfigCreated</Link> \{ key, config_id });
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_deny_list_borrow_per_type_config_mut"></Link>
+
+## Function `borrow_per_type_config_mut`
+
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota/deny_list#iota_deny_list_borrow_per_type_config_mut">borrow_per_type_config_mut</Link>(<Link to="../iota/deny_list#iota_deny_list">deny_list</Link>: &<b>mut</b> <Link to="../iota/deny_list#iota_deny_list_DenyList">iota::deny_list::DenyList</Link>, per_type_index: u64, per_type_key: vector&lt;u8&gt;): &<b>mut</b> <Link to="../iota/config#iota_config_Config">iota::config::Config</Link>&lt;<Link to="../iota/deny_list#iota_deny_list_ConfigWriteCap">iota::deny_list::ConfigWriteCap</Link>&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota/deny_list#iota_deny_list_borrow_per_type_config_mut">borrow_per_type_config_mut</Link>(
+    <Link to="../iota/deny_list#iota_deny_list">deny_list</Link>: &<b>mut</b> <Link to="../iota/deny_list#iota_deny_list_DenyList">DenyList</Link>,
+    per_type_index: u64,
+    per_type_key: vector&lt;u8&gt;,
+): &<b>mut</b> Config&lt;<Link to="../iota/deny_list#iota_deny_list_ConfigWriteCap">ConfigWriteCap</Link>&gt; \{
+    <b>let</b> key = <Link to="../iota/deny_list#iota_deny_list_ConfigKey">ConfigKey</Link> \{ per_type_index, per_type_key };
+    ofield::internal_borrow_mut(&<b>mut</b> <Link to="../iota/deny_list#iota_deny_list">deny_list</Link>.id, key)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_deny_list_borrow_per_type_config"></Link>
+
+## Function `borrow_per_type_config`
+
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota/deny_list#iota_deny_list_borrow_per_type_config">borrow_per_type_config</Link>(<Link to="../iota/deny_list#iota_deny_list">deny_list</Link>: &<Link to="../iota/deny_list#iota_deny_list_DenyList">iota::deny_list::DenyList</Link>, per_type_index: u64, per_type_key: vector&lt;u8&gt;): &<Link to="../iota/config#iota_config_Config">iota::config::Config</Link>&lt;<Link to="../iota/deny_list#iota_deny_list_ConfigWriteCap">iota::deny_list::ConfigWriteCap</Link>&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota/deny_list#iota_deny_list_borrow_per_type_config">borrow_per_type_config</Link>(
+    <Link to="../iota/deny_list#iota_deny_list">deny_list</Link>: &<Link to="../iota/deny_list#iota_deny_list_DenyList">DenyList</Link>,
+    per_type_index: u64,
+    per_type_key: vector&lt;u8&gt;,
+): &Config&lt;<Link to="../iota/deny_list#iota_deny_list_ConfigWriteCap">ConfigWriteCap</Link>&gt; \{
+    <b>let</b> key = <Link to="../iota/deny_list#iota_deny_list_ConfigKey">ConfigKey</Link> \{ per_type_index, per_type_key };
+    ofield::internal_borrow(&<Link to="../iota/deny_list#iota_deny_list">deny_list</Link>.id, key)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_deny_list_per_type_exists"></Link>
+
+## Function `per_type_exists`
+
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota/deny_list#iota_deny_list_per_type_exists">per_type_exists</Link>(<Link to="../iota/deny_list#iota_deny_list">deny_list</Link>: &<Link to="../iota/deny_list#iota_deny_list_DenyList">iota::deny_list::DenyList</Link>, per_type_index: u64, per_type_key: vector&lt;u8&gt;): bool
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota/deny_list#iota_deny_list_per_type_exists">per_type_exists</Link>(<Link to="../iota/deny_list#iota_deny_list">deny_list</Link>: &<Link to="../iota/deny_list#iota_deny_list_DenyList">DenyList</Link>, per_type_index: u64, per_type_key: vector&lt;u8&gt;): bool \{
+    <b>let</b> key = <Link to="../iota/deny_list#iota_deny_list_ConfigKey">ConfigKey</Link> \{ per_type_index, per_type_key };
+    ofield::exists_(&<Link to="../iota/deny_list#iota_deny_list">deny_list</Link>.id, key)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_deny_list_per_type_config_entry"></Link>
+
+## Macro function `per_type_config_entry`
+
+
+
+<pre>
+<code>
+<b>macro</b> <b>fun</b> <Link to="../iota/deny_list#iota_deny_list_per_type_config_entry">per_type_config_entry</Link>($<Link to="../iota/deny_list#iota_deny_list">deny_list</Link>: &<b>mut</b> <Link to="../iota/deny_list#iota_deny_list_DenyList">iota::deny_list::DenyList</Link>, $per_type_index: u64, $per_type_key: vector&lt;u8&gt;, $ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): &<b>mut</b> <Link to="../iota/config#iota_config_Config">iota::config::Config</Link>&lt;<Link to="../iota/deny_list#iota_deny_list_ConfigWriteCap">iota::deny_list::ConfigWriteCap</Link>&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>macro</b> <b>fun</b> <Link to="../iota/deny_list#iota_deny_list_per_type_config_entry">per_type_config_entry</Link>(
+    $<Link to="../iota/deny_list#iota_deny_list">deny_list</Link>: &<b>mut</b> <Link to="../iota/deny_list#iota_deny_list_DenyList">DenyList</Link>,
+    $per_type_index: u64,
+    $per_type_key: vector&lt;u8&gt;,
+    $ctx: &<b>mut</b> TxContext,
+): &<b>mut</b> Config&lt;<Link to="../iota/deny_list#iota_deny_list_ConfigWriteCap">ConfigWriteCap</Link>&gt; \{
+    <b>let</b> <Link to="../iota/deny_list#iota_deny_list">deny_list</Link> = $<Link to="../iota/deny_list#iota_deny_list">deny_list</Link>;
+    <b>let</b> per_type_index = $per_type_index;
+    <b>let</b> per_type_key = $per_type_key;
+    <b>let</b> ctx = $ctx;
+    <b>if</b> (!<Link to="../iota/deny_list#iota_deny_list">deny_list</Link>.<Link to="../iota/deny_list#iota_deny_list_per_type_exists">per_type_exists</Link>(per_type_index, per_type_key)) \{
+        <Link to="../iota/deny_list#iota_deny_list">deny_list</Link>.<Link to="../iota/deny_list#iota_deny_list_add_per_type_config">add_per_type_config</Link>(per_type_index, per_type_key, ctx);
+    };
+    <Link to="../iota/deny_list#iota_deny_list">deny_list</Link>.<Link to="../iota/deny_list#iota_deny_list_borrow_per_type_config_mut">borrow_per_type_config_mut</Link>(per_type_index, per_type_key)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_deny_list_create"></Link>
+
+## Function `create`
+
+Creation of the deny list object is restricted to the system address
+via a system transaction.
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota/deny_list#iota_deny_list_create">create</Link>(ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota/deny_list#iota_deny_list_create">create</Link>(ctx: &<b>mut</b> TxContext) \{
+    <b>assert</b>!(ctx.sender() == @0x0, <Link to="../iota/deny_list#iota_deny_list_ENotSystemAddress">ENotSystemAddress</Link>);
+    <b>let</b> deny_list_object = <Link to="../iota/deny_list#iota_deny_list_DenyList">DenyList</Link> \{
+        id: <Link to="../iota/object#iota_object_iota_deny_list_object_id">object::iota_deny_list_object_id</Link>(),
+        lists: <Link to="../iota/bag#iota_bag_new">bag::new</Link>(ctx),
+    };
+    <Link to="../iota/transfer#iota_transfer_share_object">transfer::share_object</Link>(deny_list_object);
+}
+</code>
+</pre>
+
+
+
+</details>

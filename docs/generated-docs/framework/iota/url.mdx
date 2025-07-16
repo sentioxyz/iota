@@ -1,0 +1,183 @@
+---
+title: Module iota::url
+sidebar_label: url
+slug: url
+---
+import Link from '@docusaurus/Link';
+
+<Link id="iota_url"/>
+URL: standard Uniform Resource Locator string
+
+
+-  [Struct `Url`](#iota_url_Url)
+-  [Function `new_unsafe`](#iota_url_new_unsafe)
+-  [Function `new_unsafe_from_bytes`](#iota_url_new_unsafe_from_bytes)
+-  [Function `inner_url`](#iota_url_inner_url)
+-  [Function `update`](#iota_url_update)
+
+
+<pre>
+<code>
+<b>use</b> <Link to="../std/ascii#std_ascii">std::ascii</Link>;
+<b>use</b> <Link to="../std/option#std_option">std::option</Link>;
+<b>use</b> <Link to="../std/vector#std_vector">std::vector</Link>;
+</code>
+</pre>
+
+
+
+<Link id="iota_url_Url"></Link>
+
+## Struct `Url`
+
+Standard Uniform Resource Locator (URL) string.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota/url#iota_url_Url">Url</Link> <b>has</b> <b>copy</b>, drop, store
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code><Link to="../iota/url#iota_url">url</Link>: <Link to="../std/ascii#std_ascii_String">std::ascii::String</Link></code>
+</dt>
+<dd>
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="iota_url_new_unsafe"></Link>
+
+## Function `new_unsafe`
+
+Create a <code><Link to="../iota/url#iota_url_Url">Url</Link></code>, with no validation
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/url#iota_url_new_unsafe">new_unsafe</Link>(<Link to="../iota/url#iota_url">url</Link>: <Link to="../std/ascii#std_ascii_String">std::ascii::String</Link>): <Link to="../iota/url#iota_url_Url">iota::url::Url</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/url#iota_url_new_unsafe">new_unsafe</Link>(<Link to="../iota/url#iota_url">url</Link>: String): <Link to="../iota/url#iota_url_Url">Url</Link> \{
+    <Link to="../iota/url#iota_url_Url">Url</Link> \{ <Link to="../iota/url#iota_url">url</Link> }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_url_new_unsafe_from_bytes"></Link>
+
+## Function `new_unsafe_from_bytes`
+
+Create a <code><Link to="../iota/url#iota_url_Url">Url</Link></code> with no validation from bytes
+Note: this will abort if <code>bytes</code> is not valid ASCII
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/url#iota_url_new_unsafe_from_bytes">new_unsafe_from_bytes</Link>(bytes: vector&lt;u8&gt;): <Link to="../iota/url#iota_url_Url">iota::url::Url</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/url#iota_url_new_unsafe_from_bytes">new_unsafe_from_bytes</Link>(bytes: vector&lt;u8&gt;): <Link to="../iota/url#iota_url_Url">Url</Link> \{
+    <b>let</b> <Link to="../iota/url#iota_url">url</Link> = bytes.to_ascii_string();
+    <Link to="../iota/url#iota_url_Url">Url</Link> \{ <Link to="../iota/url#iota_url">url</Link> }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_url_inner_url"></Link>
+
+## Function `inner_url`
+
+Get inner URL
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/url#iota_url_inner_url">inner_url</Link>(self: &<Link to="../iota/url#iota_url_Url">iota::url::Url</Link>): <Link to="../std/ascii#std_ascii_String">std::ascii::String</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/url#iota_url_inner_url">inner_url</Link>(self: &<Link to="../iota/url#iota_url_Url">Url</Link>): String \{
+    self.<Link to="../iota/url#iota_url">url</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_url_update"></Link>
+
+## Function `update`
+
+Update the inner URL
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/url#iota_url_update">update</Link>(self: &<b>mut</b> <Link to="../iota/url#iota_url_Url">iota::url::Url</Link>, <Link to="../iota/url#iota_url">url</Link>: <Link to="../std/ascii#std_ascii_String">std::ascii::String</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/url#iota_url_update">update</Link>(self: &<b>mut</b> <Link to="../iota/url#iota_url_Url">Url</Link>, <Link to="../iota/url#iota_url">url</Link>: String) \{
+    self.<Link to="../iota/url#iota_url">url</Link> = <Link to="../iota/url#iota_url">url</Link>;
+}
+</code>
+</pre>
+
+
+
+</details>

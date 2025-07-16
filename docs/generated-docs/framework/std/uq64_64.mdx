@@ -1,0 +1,674 @@
+---
+title: Module std::uq64_64
+sidebar_label: uq64_64
+slug: uq64_64
+---
+import Link from '@docusaurus/Link';
+
+<Link id="std_uq64_64"/>
+Defines an unsigned, fixed-point numeric type with a 64-bit integer part and a 64-bit fractional
+part. The notation <code><Link to="../std/uq64_64#std_uq64_64">uq64_64</Link></code> and <code><Link to="../std/uq64_64#std_uq64_64_UQ64_64">UQ64_64</Link></code> is based on
+[Q notation](https://en.wikipedia.org/wiki/Q_(number_format)). <code>q</code> indicates it a fixed-point
+number. The <code>u</code> prefix indicates it is unsigned. The <code>64_64</code> suffix indicates the number of
+bits, where the first number indicates the number of bits in the integer part, and the second
+the number of bits in the fractional part--in this case 64 bits for each.
+
+
+-  [Struct `UQ64_64`](#std_uq64_64_UQ64_64)
+-  [Constants](#@Constants_0)
+-  [Function `from_quotient`](#std_uq64_64_from_quotient)
+-  [Function `from_int`](#std_uq64_64_from_int)
+-  [Function `add`](#std_uq64_64_add)
+-  [Function `sub`](#std_uq64_64_sub)
+-  [Function `mul`](#std_uq64_64_mul)
+-  [Function `div`](#std_uq64_64_div)
+-  [Function `to_int`](#std_uq64_64_to_int)
+-  [Function `int_mul`](#std_uq64_64_int_mul)
+-  [Function `int_div`](#std_uq64_64_int_div)
+-  [Function `le`](#std_uq64_64_le)
+-  [Function `lt`](#std_uq64_64_lt)
+-  [Function `ge`](#std_uq64_64_ge)
+-  [Function `gt`](#std_uq64_64_gt)
+-  [Function `to_raw`](#std_uq64_64_to_raw)
+-  [Function `from_raw`](#std_uq64_64_from_raw)
+
+
+<pre><code></code></pre>
+
+
+
+<Link id="std_uq64_64_UQ64_64"></Link>
+
+## Struct `UQ64_64`
+
+A fixed-point numeric type with 64 integer bits and 64 fractional bits, represented by an
+underlying 128 bit value. This is a binary representation, so decimal values may not be exactly
+representable, but it provides more than 19 decimal digits of precision both before and after
+the decimal point (38 digits total).
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../std/uq64_64#std_uq64_64_UQ64_64">UQ64_64</Link> <b>has</b> <b>copy</b>, drop, store
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code>0: <Link to="../std/u128#std_u128">u128</Link></code>
+</dt>
+<dd>
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="@Constants_0"></Link>
+
+## Constants
+
+
+<Link id="std_uq64_64_EDenominator"></Link>
+
+
+
+<pre>
+<code>
+#[error]
+<b>const</b> <Link to="../std/uq64_64#std_uq64_64_EDenominator">EDenominator</Link>: <Link to="../std/vector#std_vector">vector</Link>&lt;<Link to="../std/u8#std_u8">u8</Link>&gt; = b"Quotient specified with a zero denominator";
+</code>
+</pre>
+
+
+
+<Link id="std_uq64_64_EDivisionByZero"></Link>
+
+
+
+<pre>
+<code>
+#[error]
+<b>const</b> <Link to="../std/uq64_64#std_uq64_64_EDivisionByZero">EDivisionByZero</Link>: <Link to="../std/vector#std_vector">vector</Link>&lt;<Link to="../std/u8#std_u8">u8</Link>&gt; = b"Division by zero";
+</code>
+</pre>
+
+
+
+<Link id="std_uq64_64_EOverflow"></Link>
+
+
+
+<pre>
+<code>
+#[error]
+<b>const</b> <Link to="../std/uq64_64#std_uq64_64_EOverflow">EOverflow</Link>: <Link to="../std/vector#std_vector">vector</Link>&lt;<Link to="../std/u8#std_u8">u8</Link>&gt; = b"Overflow from an arithmetic operation";
+</code>
+</pre>
+
+
+
+<Link id="std_uq64_64_EQuotientTooLarge"></Link>
+
+
+
+<pre>
+<code>
+#[error]
+<b>const</b> <Link to="../std/uq64_64#std_uq64_64_EQuotientTooLarge">EQuotientTooLarge</Link>: <Link to="../std/vector#std_vector">vector</Link>&lt;<Link to="../std/u8#std_u8">u8</Link>&gt; = b"Quotient specified is too large, and is outside of the supported range";
+</code>
+</pre>
+
+
+
+<Link id="std_uq64_64_EQuotientTooSmall"></Link>
+
+
+
+<pre>
+<code>
+#[error]
+<b>const</b> <Link to="../std/uq64_64#std_uq64_64_EQuotientTooSmall">EQuotientTooSmall</Link>: <Link to="../std/vector#std_vector">vector</Link>&lt;<Link to="../std/u8#std_u8">u8</Link>&gt; = b"Quotient specified is too small, and is outside of the supported range";
+</code>
+</pre>
+
+
+
+<Link id="std_uq64_64_FRACTIONAL_BITS"></Link>
+
+The number of fractional bits in the fixed-point number. Used in <code><b>macro</b></code> invocations.
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../std/uq64_64#std_uq64_64_FRACTIONAL_BITS">FRACTIONAL_BITS</Link>: <Link to="../std/u8#std_u8">u8</Link> = 64;
+</code>
+</pre>
+
+
+
+<Link id="std_uq64_64_TOTAL_BITS"></Link>
+
+The total number of bits in the fixed-point number. Used in <code><b>macro</b></code> invocations.
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../std/uq64_64#std_uq64_64_TOTAL_BITS">TOTAL_BITS</Link>: <Link to="../std/u8#std_u8">u8</Link> = 128;
+</code>
+</pre>
+
+
+
+<Link id="std_uq64_64_from_quotient"></Link>
+
+## Function `from_quotient`
+
+Create a fixed-point value from a quotient specified by its numerator and denominator.
+<code><Link to="../std/uq64_64#std_uq64_64_from_quotient">from_quotient</Link></code> and <code><Link to="../std/uq64_64#std_uq64_64_from_int">from_int</Link></code> should be preferred over using <code><Link to="../std/uq64_64#std_uq64_64_from_raw">from_raw</Link></code>.
+Unless the denominator is a power of two, fractions can not be represented accurately,
+so be careful about rounding errors.
+Aborts if the denominator is zero.
+Aborts if the input is non-zero but so small that it will be represented as zero, e.g. smaller
+than 2^{-64}.
+Aborts if the input is too large, e.g. larger than or equal to 2^64.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq64_64#std_uq64_64_from_quotient">from_quotient</Link>(numerator: <Link to="../std/u128#std_u128">u128</Link>, denominator: <Link to="../std/u128#std_u128">u128</Link>): <Link to="../std/uq64_64#std_uq64_64_UQ64_64">std::uq64_64::UQ64_64</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq64_64#std_uq64_64_from_quotient">from_quotient</Link>(numerator: <Link to="../std/u128#std_u128">u128</Link>, denominator: <Link to="../std/u128#std_u128">u128</Link>): <Link to="../std/uq64_64#std_uq64_64_UQ64_64">UQ64_64</Link> \{
+    <Link to="../std/uq64_64#std_uq64_64_UQ64_64">UQ64_64</Link>(
+        <Link to="../std/macros#std_macros_uq_from_quotient">std::macros::uq_from_quotient</Link>!&lt;<Link to="../std/u128#std_u128">u128</Link>, <Link to="../std/u256#std_u256">u256</Link>&gt;(
+            numerator,
+            denominator,
+            <Link to="../std/u128#std_u128_max_value">std::u128::max_value</Link>!(),
+            <Link to="../std/uq64_64#std_uq64_64_TOTAL_BITS">TOTAL_BITS</Link>,
+            <Link to="../std/uq64_64#std_uq64_64_FRACTIONAL_BITS">FRACTIONAL_BITS</Link>,
+            <b>abort</b> <Link to="../std/uq64_64#std_uq64_64_EDenominator">EDenominator</Link>,
+            <b>abort</b> <Link to="../std/uq64_64#std_uq64_64_EQuotientTooSmall">EQuotientTooSmall</Link>,
+            <b>abort</b> <Link to="../std/uq64_64#std_uq64_64_EQuotientTooLarge">EQuotientTooLarge</Link>,
+        ),
+    )
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_uq64_64_from_int"></Link>
+
+## Function `from_int`
+
+Create a fixed-point value from an integer.
+<code><Link to="../std/uq64_64#std_uq64_64_from_int">from_int</Link></code> and <code><Link to="../std/uq64_64#std_uq64_64_from_quotient">from_quotient</Link></code> should be preferred over using <code><Link to="../std/uq64_64#std_uq64_64_from_raw">from_raw</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq64_64#std_uq64_64_from_int">from_int</Link>(integer: <Link to="../std/u64#std_u64">u64</Link>): <Link to="../std/uq64_64#std_uq64_64_UQ64_64">std::uq64_64::UQ64_64</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq64_64#std_uq64_64_from_int">from_int</Link>(integer: <Link to="../std/u64#std_u64">u64</Link>): <Link to="../std/uq64_64#std_uq64_64_UQ64_64">UQ64_64</Link> \{
+    <Link to="../std/uq64_64#std_uq64_64_UQ64_64">UQ64_64</Link>(<Link to="../std/macros#std_macros_uq_from_int">std::macros::uq_from_int</Link>!(integer, <Link to="../std/uq64_64#std_uq64_64_FRACTIONAL_BITS">FRACTIONAL_BITS</Link>))
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_uq64_64_add"></Link>
+
+## Function `add`
+
+Add two fixed-point numbers, <code>a + b</code>.
+Aborts if the sum overflows.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq64_64#std_uq64_64_add">add</Link>(a: <Link to="../std/uq64_64#std_uq64_64_UQ64_64">std::uq64_64::UQ64_64</Link>, b: <Link to="../std/uq64_64#std_uq64_64_UQ64_64">std::uq64_64::UQ64_64</Link>): <Link to="../std/uq64_64#std_uq64_64_UQ64_64">std::uq64_64::UQ64_64</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq64_64#std_uq64_64_add">add</Link>(a: <Link to="../std/uq64_64#std_uq64_64_UQ64_64">UQ64_64</Link>, b: <Link to="../std/uq64_64#std_uq64_64_UQ64_64">UQ64_64</Link>): <Link to="../std/uq64_64#std_uq64_64_UQ64_64">UQ64_64</Link> \{
+    <Link to="../std/uq64_64#std_uq64_64_UQ64_64">UQ64_64</Link>(<Link to="../std/macros#std_macros_uq_add">std::macros::uq_add</Link>!&lt;<Link to="../std/u128#std_u128">u128</Link>, <Link to="../std/u256#std_u256">u256</Link>&gt;(a.0, b.0, <Link to="../std/u128#std_u128_max_value">std::u128::max_value</Link>!(), <b>abort</b> <Link to="../std/uq64_64#std_uq64_64_EOverflow">EOverflow</Link>))
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_uq64_64_sub"></Link>
+
+## Function `sub`
+
+Subtract two fixed-point numbers, <code>a - b</code>.
+Aborts if <code>a &lt; b</code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq64_64#std_uq64_64_sub">sub</Link>(a: <Link to="../std/uq64_64#std_uq64_64_UQ64_64">std::uq64_64::UQ64_64</Link>, b: <Link to="../std/uq64_64#std_uq64_64_UQ64_64">std::uq64_64::UQ64_64</Link>): <Link to="../std/uq64_64#std_uq64_64_UQ64_64">std::uq64_64::UQ64_64</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq64_64#std_uq64_64_sub">sub</Link>(a: <Link to="../std/uq64_64#std_uq64_64_UQ64_64">UQ64_64</Link>, b: <Link to="../std/uq64_64#std_uq64_64_UQ64_64">UQ64_64</Link>): <Link to="../std/uq64_64#std_uq64_64_UQ64_64">UQ64_64</Link> \{
+    <Link to="../std/uq64_64#std_uq64_64_UQ64_64">UQ64_64</Link>(<Link to="../std/macros#std_macros_uq_sub">std::macros::uq_sub</Link>!(a.0, b.0, <b>abort</b> <Link to="../std/uq64_64#std_uq64_64_EOverflow">EOverflow</Link>))
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_uq64_64_mul"></Link>
+
+## Function `mul`
+
+Multiply two fixed-point numbers, truncating any fractional part of the product.
+Aborts if the product overflows.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq64_64#std_uq64_64_mul">mul</Link>(a: <Link to="../std/uq64_64#std_uq64_64_UQ64_64">std::uq64_64::UQ64_64</Link>, b: <Link to="../std/uq64_64#std_uq64_64_UQ64_64">std::uq64_64::UQ64_64</Link>): <Link to="../std/uq64_64#std_uq64_64_UQ64_64">std::uq64_64::UQ64_64</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq64_64#std_uq64_64_mul">mul</Link>(a: <Link to="../std/uq64_64#std_uq64_64_UQ64_64">UQ64_64</Link>, b: <Link to="../std/uq64_64#std_uq64_64_UQ64_64">UQ64_64</Link>): <Link to="../std/uq64_64#std_uq64_64_UQ64_64">UQ64_64</Link> \{
+    <Link to="../std/uq64_64#std_uq64_64_UQ64_64">UQ64_64</Link>(<Link to="../std/uq64_64#std_uq64_64_int_mul">int_mul</Link>(a.0, b))
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_uq64_64_div"></Link>
+
+## Function `div`
+
+Divide two fixed-point numbers, truncating any fractional part of the quotient.
+Aborts if the divisor is zero.
+Aborts if the quotient overflows.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq64_64#std_uq64_64_div">div</Link>(a: <Link to="../std/uq64_64#std_uq64_64_UQ64_64">std::uq64_64::UQ64_64</Link>, b: <Link to="../std/uq64_64#std_uq64_64_UQ64_64">std::uq64_64::UQ64_64</Link>): <Link to="../std/uq64_64#std_uq64_64_UQ64_64">std::uq64_64::UQ64_64</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq64_64#std_uq64_64_div">div</Link>(a: <Link to="../std/uq64_64#std_uq64_64_UQ64_64">UQ64_64</Link>, b: <Link to="../std/uq64_64#std_uq64_64_UQ64_64">UQ64_64</Link>): <Link to="../std/uq64_64#std_uq64_64_UQ64_64">UQ64_64</Link> \{
+    <Link to="../std/uq64_64#std_uq64_64_UQ64_64">UQ64_64</Link>(<Link to="../std/uq64_64#std_uq64_64_int_div">int_div</Link>(a.0, b))
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_uq64_64_to_int"></Link>
+
+## Function `to_int`
+
+Convert a fixed-point number to an integer, truncating any fractional part.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq64_64#std_uq64_64_to_int">to_int</Link>(a: <Link to="../std/uq64_64#std_uq64_64_UQ64_64">std::uq64_64::UQ64_64</Link>): <Link to="../std/u64#std_u64">u64</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq64_64#std_uq64_64_to_int">to_int</Link>(a: <Link to="../std/uq64_64#std_uq64_64_UQ64_64">UQ64_64</Link>): <Link to="../std/u64#std_u64">u64</Link> \{
+    <Link to="../std/macros#std_macros_uq_to_int">std::macros::uq_to_int</Link>!(a.0, <Link to="../std/uq64_64#std_uq64_64_FRACTIONAL_BITS">FRACTIONAL_BITS</Link>)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_uq64_64_int_mul"></Link>
+
+## Function `int_mul`
+
+Multiply a <code><Link to="../std/u128#std_u128">u128</Link></code> integer by a fixed-point number, truncating any fractional part of the product.
+Aborts if the product overflows.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq64_64#std_uq64_64_int_mul">int_mul</Link>(val: <Link to="../std/u128#std_u128">u128</Link>, multiplier: <Link to="../std/uq64_64#std_uq64_64_UQ64_64">std::uq64_64::UQ64_64</Link>): <Link to="../std/u128#std_u128">u128</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq64_64#std_uq64_64_int_mul">int_mul</Link>(val: <Link to="../std/u128#std_u128">u128</Link>, multiplier: <Link to="../std/uq64_64#std_uq64_64_UQ64_64">UQ64_64</Link>): <Link to="../std/u128#std_u128">u128</Link> \{
+    <Link to="../std/macros#std_macros_uq_int_mul">std::macros::uq_int_mul</Link>!&lt;<Link to="../std/u128#std_u128">u128</Link>, <Link to="../std/u256#std_u256">u256</Link>&gt;(
+        val,
+        multiplier.0,
+        <Link to="../std/u128#std_u128_max_value">std::u128::max_value</Link>!(),
+        <Link to="../std/uq64_64#std_uq64_64_FRACTIONAL_BITS">FRACTIONAL_BITS</Link>,
+        <b>abort</b> <Link to="../std/uq64_64#std_uq64_64_EOverflow">EOverflow</Link>,
+    )
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_uq64_64_int_div"></Link>
+
+## Function `int_div`
+
+Divide a <code><Link to="../std/u128#std_u128">u128</Link></code> integer by a fixed-point number, truncating any fractional part of the quotient.
+Aborts if the divisor is zero.
+Aborts if the quotient overflows.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq64_64#std_uq64_64_int_div">int_div</Link>(val: <Link to="../std/u128#std_u128">u128</Link>, divisor: <Link to="../std/uq64_64#std_uq64_64_UQ64_64">std::uq64_64::UQ64_64</Link>): <Link to="../std/u128#std_u128">u128</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq64_64#std_uq64_64_int_div">int_div</Link>(val: <Link to="../std/u128#std_u128">u128</Link>, divisor: <Link to="../std/uq64_64#std_uq64_64_UQ64_64">UQ64_64</Link>): <Link to="../std/u128#std_u128">u128</Link> \{
+    <Link to="../std/macros#std_macros_uq_int_div">std::macros::uq_int_div</Link>!&lt;<Link to="../std/u128#std_u128">u128</Link>, <Link to="../std/u256#std_u256">u256</Link>&gt;(
+        val,
+        divisor.0,
+        <Link to="../std/u128#std_u128_max_value">std::u128::max_value</Link>!(),
+        <Link to="../std/uq64_64#std_uq64_64_FRACTIONAL_BITS">FRACTIONAL_BITS</Link>,
+        <b>abort</b> <Link to="../std/uq64_64#std_uq64_64_EDivisionByZero">EDivisionByZero</Link>,
+        <b>abort</b> <Link to="../std/uq64_64#std_uq64_64_EOverflow">EOverflow</Link>,
+    )
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_uq64_64_le"></Link>
+
+## Function `le`
+
+Less than or equal to. Returns <code><b>true</b></code> if and only if <code>a &lt;= a</code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq64_64#std_uq64_64_le">le</Link>(a: <Link to="../std/uq64_64#std_uq64_64_UQ64_64">std::uq64_64::UQ64_64</Link>, b: <Link to="../std/uq64_64#std_uq64_64_UQ64_64">std::uq64_64::UQ64_64</Link>): bool
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq64_64#std_uq64_64_le">le</Link>(a: <Link to="../std/uq64_64#std_uq64_64_UQ64_64">UQ64_64</Link>, b: <Link to="../std/uq64_64#std_uq64_64_UQ64_64">UQ64_64</Link>): bool \{
+    a.0 &lt;= b.0
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_uq64_64_lt"></Link>
+
+## Function `lt`
+
+Less than. Returns <code><b>true</b></code> if and only if <code>a &lt; b</code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq64_64#std_uq64_64_lt">lt</Link>(a: <Link to="../std/uq64_64#std_uq64_64_UQ64_64">std::uq64_64::UQ64_64</Link>, b: <Link to="../std/uq64_64#std_uq64_64_UQ64_64">std::uq64_64::UQ64_64</Link>): bool
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq64_64#std_uq64_64_lt">lt</Link>(a: <Link to="../std/uq64_64#std_uq64_64_UQ64_64">UQ64_64</Link>, b: <Link to="../std/uq64_64#std_uq64_64_UQ64_64">UQ64_64</Link>): bool \{
+    a.0 &lt; b.0
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_uq64_64_ge"></Link>
+
+## Function `ge`
+
+Greater than or equal to. Returns <code><b>true</b></code> if and only if <code>a &gt;= b</code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq64_64#std_uq64_64_ge">ge</Link>(a: <Link to="../std/uq64_64#std_uq64_64_UQ64_64">std::uq64_64::UQ64_64</Link>, b: <Link to="../std/uq64_64#std_uq64_64_UQ64_64">std::uq64_64::UQ64_64</Link>): bool
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq64_64#std_uq64_64_ge">ge</Link>(a: <Link to="../std/uq64_64#std_uq64_64_UQ64_64">UQ64_64</Link>, b: <Link to="../std/uq64_64#std_uq64_64_UQ64_64">UQ64_64</Link>): bool \{
+    a.0 &gt;= b.0
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_uq64_64_gt"></Link>
+
+## Function `gt`
+
+Greater than. Returns <code><b>true</b></code> if and only if <code>a &gt; b</code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq64_64#std_uq64_64_gt">gt</Link>(a: <Link to="../std/uq64_64#std_uq64_64_UQ64_64">std::uq64_64::UQ64_64</Link>, b: <Link to="../std/uq64_64#std_uq64_64_UQ64_64">std::uq64_64::UQ64_64</Link>): bool
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq64_64#std_uq64_64_gt">gt</Link>(a: <Link to="../std/uq64_64#std_uq64_64_UQ64_64">UQ64_64</Link>, b: <Link to="../std/uq64_64#std_uq64_64_UQ64_64">UQ64_64</Link>): bool \{
+    a.0 &gt; b.0
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_uq64_64_to_raw"></Link>
+
+## Function `to_raw`
+
+Accessor for the raw u128 value. Can be paired with <code><Link to="../std/uq64_64#std_uq64_64_from_raw">from_raw</Link></code> to perform less common operations
+on the raw values directly.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq64_64#std_uq64_64_to_raw">to_raw</Link>(a: <Link to="../std/uq64_64#std_uq64_64_UQ64_64">std::uq64_64::UQ64_64</Link>): <Link to="../std/u128#std_u128">u128</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq64_64#std_uq64_64_to_raw">to_raw</Link>(a: <Link to="../std/uq64_64#std_uq64_64_UQ64_64">UQ64_64</Link>): <Link to="../std/u128#std_u128">u128</Link> \{
+    a.0
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_uq64_64_from_raw"></Link>
+
+## Function `from_raw`
+
+Accessor for the raw u128 value. Can be paired with <code><Link to="../std/uq64_64#std_uq64_64_to_raw">to_raw</Link></code> to perform less common operations
+on the raw values directly.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq64_64#std_uq64_64_from_raw">from_raw</Link>(raw_value: <Link to="../std/u128#std_u128">u128</Link>): <Link to="../std/uq64_64#std_uq64_64_UQ64_64">std::uq64_64::UQ64_64</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq64_64#std_uq64_64_from_raw">from_raw</Link>(raw_value: <Link to="../std/u128#std_u128">u128</Link>): <Link to="../std/uq64_64#std_uq64_64_UQ64_64">UQ64_64</Link> \{
+    <Link to="../std/uq64_64#std_uq64_64_UQ64_64">UQ64_64</Link>(raw_value)
+}
+</code>
+</pre>
+
+
+
+</details>

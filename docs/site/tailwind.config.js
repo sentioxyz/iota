@@ -1,8 +1,6 @@
 // Copyright (c) Mysten Labs, Inc.
-// Modifications Copyright (c) 2025 IOTA Stiftung
+// Modifications Copyright (c) 2024 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
-
-const defaultTheme = require("tailwindcss/defaultTheme");
 
 module.exports = {
   corePlugins: {
@@ -13,12 +11,10 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Inter", ...defaultTheme.fontFamily.sans],
         twkeverett: ["Twkeverett"],
       },
       colors: {
         "iota-black": "var(--iota-black)",
-        "iota-blue-primary": "rgb(var(--iota-blue-primary)/<alpha-value>)",
         "iota-blue": "var(--iota-blue)",
         "iota-blue-bright": "var(--iota-blue-bright)",
         "iota-blue-light": "var(--iota-blue-light)",

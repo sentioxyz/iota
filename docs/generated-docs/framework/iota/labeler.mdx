@@ -1,0 +1,153 @@
+---
+title: Module iota::labeler
+sidebar_label: labeler
+slug: labeler
+---
+import Link from '@docusaurus/Link';
+
+<Link id="iota_labeler"/>
+Defines a LabelerCap used for creating labels in a ```iota::timelock::Timelock``` object.
+The LabelerCap can be created only be consuming an OTW, making then labels unique for each cap.
+
+
+-  [Struct `LabelerCap`](#iota_labeler_LabelerCap)
+-  [Constants](#@Constants_0)
+-  [Function `create_labeler_cap`](#iota_labeler_create_labeler_cap)
+-  [Function `destroy_labeler_cap`](#iota_labeler_destroy_labeler_cap)
+
+
+<pre>
+<code>
+<b>use</b> <Link to="../iota/address#iota_address">iota::address</Link>;
+<b>use</b> <Link to="../iota/hex#iota_hex">iota::hex</Link>;
+<b>use</b> <Link to="../iota/object#iota_object">iota::object</Link>;
+<b>use</b> <Link to="../iota/tx_context#iota_tx_context">iota::tx_context</Link>;
+<b>use</b> <Link to="../iota/types#iota_types">iota::types</Link>;
+<b>use</b> <Link to="../std/ascii#std_ascii">std::ascii</Link>;
+<b>use</b> <Link to="../std/bcs#std_bcs">std::bcs</Link>;
+<b>use</b> <Link to="../std/option#std_option">std::option</Link>;
+<b>use</b> <Link to="../std/string#std_string">std::string</Link>;
+<b>use</b> <Link to="../std/vector#std_vector">std::vector</Link>;
+</code>
+</pre>
+
+
+
+<Link id="iota_labeler_LabelerCap"></Link>
+
+## Struct `LabelerCap`
+
+<code><Link to="../iota/labeler#iota_labeler_LabelerCap">LabelerCap</Link></code> allows to create labels of the specific type <code>L</code>.
+Can be publicly transferred like any other object.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota/labeler#iota_labeler_LabelerCap">LabelerCap</Link>&lt;<b>phantom</b> L&gt; <b>has</b> key, store
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code>id: <Link to="../iota/object#iota_object_UID">iota::object::UID</Link></code>
+</dt>
+<dd>
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="@Constants_0"></Link>
+
+## Constants
+
+
+<Link id="iota_labeler_ENotOneTimeWitness"></Link>
+
+Error code for when a type passed to the <code><Link to="../iota/labeler#iota_labeler_create_labeler_cap">create_labeler_cap</Link></code> function is not a one-time witness.
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota/labeler#iota_labeler_ENotOneTimeWitness">ENotOneTimeWitness</Link>: u64 = 0;
+</code>
+</pre>
+
+
+
+<Link id="iota_labeler_create_labeler_cap"></Link>
+
+## Function `create_labeler_cap`
+
+Create a <code><Link to="../iota/labeler#iota_labeler_LabelerCap">LabelerCap</Link></code> instance.
+Can be created only by consuming a one time witness.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/labeler#iota_labeler_create_labeler_cap">create_labeler_cap</Link>&lt;L: drop&gt;(witness: L, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): <Link to="../iota/labeler#iota_labeler_LabelerCap">iota::labeler::LabelerCap</Link>&lt;L&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/labeler#iota_labeler_create_labeler_cap">create_labeler_cap</Link>&lt;L: drop&gt;(witness: L, ctx: &<b>mut</b> TxContext): <Link to="../iota/labeler#iota_labeler_LabelerCap">LabelerCap</Link>&lt;L&gt; \{
+    <b>assert</b>!(<Link to="../iota/types#iota_types_is_one_time_witness">iota::types::is_one_time_witness</Link>(&witness), <Link to="../iota/labeler#iota_labeler_ENotOneTimeWitness">ENotOneTimeWitness</Link>);
+    <Link to="../iota/labeler#iota_labeler_LabelerCap">LabelerCap</Link>&lt;L&gt; \{
+        id: <Link to="../iota/object#iota_object_new">object::new</Link>(ctx),
+    }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_labeler_destroy_labeler_cap"></Link>
+
+## Function `destroy_labeler_cap`
+
+Delete a <code><Link to="../iota/labeler#iota_labeler_LabelerCap">LabelerCap</Link></code> instance.
+If a capability is destroyed, it is impossible to add the related labels.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/labeler#iota_labeler_destroy_labeler_cap">destroy_labeler_cap</Link>&lt;L&gt;(cap: <Link to="../iota/labeler#iota_labeler_LabelerCap">iota::labeler::LabelerCap</Link>&lt;L&gt;)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/labeler#iota_labeler_destroy_labeler_cap">destroy_labeler_cap</Link>&lt;L&gt;(cap: <Link to="../iota/labeler#iota_labeler_LabelerCap">LabelerCap</Link>&lt;L&gt;) \{
+    <b>let</b> <Link to="../iota/labeler#iota_labeler_LabelerCap">LabelerCap</Link>&lt;L&gt; \{
+        id,
+    } = cap;
+    <Link to="../iota/object#iota_object_delete">object::delete</Link>(id);
+}
+</code>
+</pre>
+
+
+
+</details>

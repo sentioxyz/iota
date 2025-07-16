@@ -1,0 +1,674 @@
+---
+title: Module std::uq32_32
+sidebar_label: uq32_32
+slug: uq32_32
+---
+import Link from '@docusaurus/Link';
+
+<Link id="std_uq32_32"/>
+Defines an unsigned, fixed-point numeric type with a 32-bit integer part and a 32-bit fractional
+part. The notation <code><Link to="../std/uq32_32#std_uq32_32">uq32_32</Link></code> and <code><Link to="../std/uq32_32#std_uq32_32_UQ32_32">UQ32_32</Link></code> is based on
+[Q notation](https://en.wikipedia.org/wiki/Q_(number_format)). <code>q</code> indicates it a fixed-point
+number. The <code>u</code> prefix indicates it is unsigned. The <code>32_32</code> suffix indicates the number of
+bits, where the first number indicates the number of bits in the integer part, and the second
+the number of bits in the fractional part--in this case 32 bits for each.
+
+
+-  [Struct `UQ32_32`](#std_uq32_32_UQ32_32)
+-  [Constants](#@Constants_0)
+-  [Function `from_quotient`](#std_uq32_32_from_quotient)
+-  [Function `from_int`](#std_uq32_32_from_int)
+-  [Function `add`](#std_uq32_32_add)
+-  [Function `sub`](#std_uq32_32_sub)
+-  [Function `mul`](#std_uq32_32_mul)
+-  [Function `div`](#std_uq32_32_div)
+-  [Function `to_int`](#std_uq32_32_to_int)
+-  [Function `int_mul`](#std_uq32_32_int_mul)
+-  [Function `int_div`](#std_uq32_32_int_div)
+-  [Function `le`](#std_uq32_32_le)
+-  [Function `lt`](#std_uq32_32_lt)
+-  [Function `ge`](#std_uq32_32_ge)
+-  [Function `gt`](#std_uq32_32_gt)
+-  [Function `to_raw`](#std_uq32_32_to_raw)
+-  [Function `from_raw`](#std_uq32_32_from_raw)
+
+
+<pre><code></code></pre>
+
+
+
+<Link id="std_uq32_32_UQ32_32"></Link>
+
+## Struct `UQ32_32`
+
+A fixed-point numeric type with 32 integer bits and 32 fractional bits, represented by an
+underlying 64 bit value. This is a binary representation, so decimal values may not be exactly
+representable, but it provides more than 9 decimal digits of precision both before and after the
+decimal point (18 digits total).
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../std/uq32_32#std_uq32_32_UQ32_32">UQ32_32</Link> <b>has</b> <b>copy</b>, drop, store
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code>0: <Link to="../std/u64#std_u64">u64</Link></code>
+</dt>
+<dd>
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="@Constants_0"></Link>
+
+## Constants
+
+
+<Link id="std_uq32_32_EDenominator"></Link>
+
+
+
+<pre>
+<code>
+#[error]
+<b>const</b> <Link to="../std/uq32_32#std_uq32_32_EDenominator">EDenominator</Link>: <Link to="../std/vector#std_vector">vector</Link>&lt;<Link to="../std/u8#std_u8">u8</Link>&gt; = b"Quotient specified with a zero denominator";
+</code>
+</pre>
+
+
+
+<Link id="std_uq32_32_EDivisionByZero"></Link>
+
+
+
+<pre>
+<code>
+#[error]
+<b>const</b> <Link to="../std/uq32_32#std_uq32_32_EDivisionByZero">EDivisionByZero</Link>: <Link to="../std/vector#std_vector">vector</Link>&lt;<Link to="../std/u8#std_u8">u8</Link>&gt; = b"Division by zero";
+</code>
+</pre>
+
+
+
+<Link id="std_uq32_32_EOverflow"></Link>
+
+
+
+<pre>
+<code>
+#[error]
+<b>const</b> <Link to="../std/uq32_32#std_uq32_32_EOverflow">EOverflow</Link>: <Link to="../std/vector#std_vector">vector</Link>&lt;<Link to="../std/u8#std_u8">u8</Link>&gt; = b"Overflow from an arithmetic operation";
+</code>
+</pre>
+
+
+
+<Link id="std_uq32_32_EQuotientTooLarge"></Link>
+
+
+
+<pre>
+<code>
+#[error]
+<b>const</b> <Link to="../std/uq32_32#std_uq32_32_EQuotientTooLarge">EQuotientTooLarge</Link>: <Link to="../std/vector#std_vector">vector</Link>&lt;<Link to="../std/u8#std_u8">u8</Link>&gt; = b"Quotient specified is too large, and is outside of the supported range";
+</code>
+</pre>
+
+
+
+<Link id="std_uq32_32_EQuotientTooSmall"></Link>
+
+
+
+<pre>
+<code>
+#[error]
+<b>const</b> <Link to="../std/uq32_32#std_uq32_32_EQuotientTooSmall">EQuotientTooSmall</Link>: <Link to="../std/vector#std_vector">vector</Link>&lt;<Link to="../std/u8#std_u8">u8</Link>&gt; = b"Quotient specified is too small, and is outside of the supported range";
+</code>
+</pre>
+
+
+
+<Link id="std_uq32_32_FRACTIONAL_BITS"></Link>
+
+The number of fractional bits in the fixed-point number. Used in <code><b>macro</b></code> invocations.
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../std/uq32_32#std_uq32_32_FRACTIONAL_BITS">FRACTIONAL_BITS</Link>: <Link to="../std/u8#std_u8">u8</Link> = 32;
+</code>
+</pre>
+
+
+
+<Link id="std_uq32_32_TOTAL_BITS"></Link>
+
+The total number of bits in the fixed-point number. Used in <code><b>macro</b></code> invocations.
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../std/uq32_32#std_uq32_32_TOTAL_BITS">TOTAL_BITS</Link>: <Link to="../std/u8#std_u8">u8</Link> = 64;
+</code>
+</pre>
+
+
+
+<Link id="std_uq32_32_from_quotient"></Link>
+
+## Function `from_quotient`
+
+Create a fixed-point value from a quotient specified by its numerator and denominator.
+<code><Link to="../std/uq32_32#std_uq32_32_from_quotient">from_quotient</Link></code> and <code><Link to="../std/uq32_32#std_uq32_32_from_int">from_int</Link></code> should be preferred over using <code><Link to="../std/uq32_32#std_uq32_32_from_raw">from_raw</Link></code>.
+Unless the denominator is a power of two, fractions can not be represented accurately,
+so be careful about rounding errors.
+Aborts if the denominator is zero.
+Aborts if the input is non-zero but so small that it will be represented as zero, e.g. smaller
+than 2^{-32}.
+Aborts if the input is too large, e.g. larger than or equal to 2^32.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq32_32#std_uq32_32_from_quotient">from_quotient</Link>(numerator: <Link to="../std/u64#std_u64">u64</Link>, denominator: <Link to="../std/u64#std_u64">u64</Link>): <Link to="../std/uq32_32#std_uq32_32_UQ32_32">std::uq32_32::UQ32_32</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq32_32#std_uq32_32_from_quotient">from_quotient</Link>(numerator: <Link to="../std/u64#std_u64">u64</Link>, denominator: <Link to="../std/u64#std_u64">u64</Link>): <Link to="../std/uq32_32#std_uq32_32_UQ32_32">UQ32_32</Link> \{
+    <Link to="../std/uq32_32#std_uq32_32_UQ32_32">UQ32_32</Link>(
+        <Link to="../std/macros#std_macros_uq_from_quotient">std::macros::uq_from_quotient</Link>!&lt;<Link to="../std/u64#std_u64">u64</Link>, <Link to="../std/u128#std_u128">u128</Link>&gt;(
+            numerator,
+            denominator,
+            <Link to="../std/u64#std_u64_max_value">std::u64::max_value</Link>!(),
+            <Link to="../std/uq32_32#std_uq32_32_TOTAL_BITS">TOTAL_BITS</Link>,
+            <Link to="../std/uq32_32#std_uq32_32_FRACTIONAL_BITS">FRACTIONAL_BITS</Link>,
+            <b>abort</b> <Link to="../std/uq32_32#std_uq32_32_EDenominator">EDenominator</Link>,
+            <b>abort</b> <Link to="../std/uq32_32#std_uq32_32_EQuotientTooSmall">EQuotientTooSmall</Link>,
+            <b>abort</b> <Link to="../std/uq32_32#std_uq32_32_EQuotientTooLarge">EQuotientTooLarge</Link>,
+        ),
+    )
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_uq32_32_from_int"></Link>
+
+## Function `from_int`
+
+Create a fixed-point value from an integer.
+<code><Link to="../std/uq32_32#std_uq32_32_from_int">from_int</Link></code> and <code><Link to="../std/uq32_32#std_uq32_32_from_quotient">from_quotient</Link></code> should be preferred over using <code><Link to="../std/uq32_32#std_uq32_32_from_raw">from_raw</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq32_32#std_uq32_32_from_int">from_int</Link>(integer: <Link to="../std/u32#std_u32">u32</Link>): <Link to="../std/uq32_32#std_uq32_32_UQ32_32">std::uq32_32::UQ32_32</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq32_32#std_uq32_32_from_int">from_int</Link>(integer: <Link to="../std/u32#std_u32">u32</Link>): <Link to="../std/uq32_32#std_uq32_32_UQ32_32">UQ32_32</Link> \{
+    <Link to="../std/uq32_32#std_uq32_32_UQ32_32">UQ32_32</Link>(<Link to="../std/macros#std_macros_uq_from_int">std::macros::uq_from_int</Link>!(integer, <Link to="../std/uq32_32#std_uq32_32_FRACTIONAL_BITS">FRACTIONAL_BITS</Link>))
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_uq32_32_add"></Link>
+
+## Function `add`
+
+Add two fixed-point numbers, <code>a + b</code>.
+Aborts if the sum overflows.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq32_32#std_uq32_32_add">add</Link>(a: <Link to="../std/uq32_32#std_uq32_32_UQ32_32">std::uq32_32::UQ32_32</Link>, b: <Link to="../std/uq32_32#std_uq32_32_UQ32_32">std::uq32_32::UQ32_32</Link>): <Link to="../std/uq32_32#std_uq32_32_UQ32_32">std::uq32_32::UQ32_32</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq32_32#std_uq32_32_add">add</Link>(a: <Link to="../std/uq32_32#std_uq32_32_UQ32_32">UQ32_32</Link>, b: <Link to="../std/uq32_32#std_uq32_32_UQ32_32">UQ32_32</Link>): <Link to="../std/uq32_32#std_uq32_32_UQ32_32">UQ32_32</Link> \{
+    <Link to="../std/uq32_32#std_uq32_32_UQ32_32">UQ32_32</Link>(<Link to="../std/macros#std_macros_uq_add">std::macros::uq_add</Link>!&lt;<Link to="../std/u64#std_u64">u64</Link>, <Link to="../std/u128#std_u128">u128</Link>&gt;(a.0, b.0, <Link to="../std/u64#std_u64_max_value">std::u64::max_value</Link>!(), <b>abort</b> <Link to="../std/uq32_32#std_uq32_32_EOverflow">EOverflow</Link>))
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_uq32_32_sub"></Link>
+
+## Function `sub`
+
+Subtract two fixed-point numbers, <code>a - b</code>.
+Aborts if <code>a &lt; b</code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq32_32#std_uq32_32_sub">sub</Link>(a: <Link to="../std/uq32_32#std_uq32_32_UQ32_32">std::uq32_32::UQ32_32</Link>, b: <Link to="../std/uq32_32#std_uq32_32_UQ32_32">std::uq32_32::UQ32_32</Link>): <Link to="../std/uq32_32#std_uq32_32_UQ32_32">std::uq32_32::UQ32_32</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq32_32#std_uq32_32_sub">sub</Link>(a: <Link to="../std/uq32_32#std_uq32_32_UQ32_32">UQ32_32</Link>, b: <Link to="../std/uq32_32#std_uq32_32_UQ32_32">UQ32_32</Link>): <Link to="../std/uq32_32#std_uq32_32_UQ32_32">UQ32_32</Link> \{
+    <Link to="../std/uq32_32#std_uq32_32_UQ32_32">UQ32_32</Link>(<Link to="../std/macros#std_macros_uq_sub">std::macros::uq_sub</Link>!(a.0, b.0, <b>abort</b> <Link to="../std/uq32_32#std_uq32_32_EOverflow">EOverflow</Link>))
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_uq32_32_mul"></Link>
+
+## Function `mul`
+
+Multiply two fixed-point numbers, truncating any fractional part of the product.
+Aborts if the product overflows.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq32_32#std_uq32_32_mul">mul</Link>(a: <Link to="../std/uq32_32#std_uq32_32_UQ32_32">std::uq32_32::UQ32_32</Link>, b: <Link to="../std/uq32_32#std_uq32_32_UQ32_32">std::uq32_32::UQ32_32</Link>): <Link to="../std/uq32_32#std_uq32_32_UQ32_32">std::uq32_32::UQ32_32</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq32_32#std_uq32_32_mul">mul</Link>(a: <Link to="../std/uq32_32#std_uq32_32_UQ32_32">UQ32_32</Link>, b: <Link to="../std/uq32_32#std_uq32_32_UQ32_32">UQ32_32</Link>): <Link to="../std/uq32_32#std_uq32_32_UQ32_32">UQ32_32</Link> \{
+    <Link to="../std/uq32_32#std_uq32_32_UQ32_32">UQ32_32</Link>(<Link to="../std/uq32_32#std_uq32_32_int_mul">int_mul</Link>(a.0, b))
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_uq32_32_div"></Link>
+
+## Function `div`
+
+Divide two fixed-point numbers, truncating any fractional part of the quotient.
+Aborts if the divisor is zero.
+Aborts if the quotient overflows.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq32_32#std_uq32_32_div">div</Link>(a: <Link to="../std/uq32_32#std_uq32_32_UQ32_32">std::uq32_32::UQ32_32</Link>, b: <Link to="../std/uq32_32#std_uq32_32_UQ32_32">std::uq32_32::UQ32_32</Link>): <Link to="../std/uq32_32#std_uq32_32_UQ32_32">std::uq32_32::UQ32_32</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq32_32#std_uq32_32_div">div</Link>(a: <Link to="../std/uq32_32#std_uq32_32_UQ32_32">UQ32_32</Link>, b: <Link to="../std/uq32_32#std_uq32_32_UQ32_32">UQ32_32</Link>): <Link to="../std/uq32_32#std_uq32_32_UQ32_32">UQ32_32</Link> \{
+    <Link to="../std/uq32_32#std_uq32_32_UQ32_32">UQ32_32</Link>(<Link to="../std/uq32_32#std_uq32_32_int_div">int_div</Link>(a.0, b))
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_uq32_32_to_int"></Link>
+
+## Function `to_int`
+
+Convert a fixed-point number to an integer, truncating any fractional part.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq32_32#std_uq32_32_to_int">to_int</Link>(a: <Link to="../std/uq32_32#std_uq32_32_UQ32_32">std::uq32_32::UQ32_32</Link>): <Link to="../std/u32#std_u32">u32</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq32_32#std_uq32_32_to_int">to_int</Link>(a: <Link to="../std/uq32_32#std_uq32_32_UQ32_32">UQ32_32</Link>): <Link to="../std/u32#std_u32">u32</Link> \{
+    <Link to="../std/macros#std_macros_uq_to_int">std::macros::uq_to_int</Link>!(a.0, <Link to="../std/uq32_32#std_uq32_32_FRACTIONAL_BITS">FRACTIONAL_BITS</Link>)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_uq32_32_int_mul"></Link>
+
+## Function `int_mul`
+
+Multiply a <code><Link to="../std/u64#std_u64">u64</Link></code> integer by a fixed-point number, truncating any fractional part of the product.
+Aborts if the product overflows.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq32_32#std_uq32_32_int_mul">int_mul</Link>(val: <Link to="../std/u64#std_u64">u64</Link>, multiplier: <Link to="../std/uq32_32#std_uq32_32_UQ32_32">std::uq32_32::UQ32_32</Link>): <Link to="../std/u64#std_u64">u64</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq32_32#std_uq32_32_int_mul">int_mul</Link>(val: <Link to="../std/u64#std_u64">u64</Link>, multiplier: <Link to="../std/uq32_32#std_uq32_32_UQ32_32">UQ32_32</Link>): <Link to="../std/u64#std_u64">u64</Link> \{
+    <Link to="../std/macros#std_macros_uq_int_mul">std::macros::uq_int_mul</Link>!&lt;<Link to="../std/u64#std_u64">u64</Link>, <Link to="../std/u128#std_u128">u128</Link>&gt;(
+        val,
+        multiplier.0,
+        <Link to="../std/u64#std_u64_max_value">std::u64::max_value</Link>!(),
+        <Link to="../std/uq32_32#std_uq32_32_FRACTIONAL_BITS">FRACTIONAL_BITS</Link>,
+        <b>abort</b> <Link to="../std/uq32_32#std_uq32_32_EOverflow">EOverflow</Link>,
+    )
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_uq32_32_int_div"></Link>
+
+## Function `int_div`
+
+Divide a <code><Link to="../std/u64#std_u64">u64</Link></code> integer by a fixed-point number, truncating any fractional part of the quotient.
+Aborts if the divisor is zero.
+Aborts if the quotient overflows.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq32_32#std_uq32_32_int_div">int_div</Link>(val: <Link to="../std/u64#std_u64">u64</Link>, divisor: <Link to="../std/uq32_32#std_uq32_32_UQ32_32">std::uq32_32::UQ32_32</Link>): <Link to="../std/u64#std_u64">u64</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq32_32#std_uq32_32_int_div">int_div</Link>(val: <Link to="../std/u64#std_u64">u64</Link>, divisor: <Link to="../std/uq32_32#std_uq32_32_UQ32_32">UQ32_32</Link>): <Link to="../std/u64#std_u64">u64</Link> \{
+    <Link to="../std/macros#std_macros_uq_int_div">std::macros::uq_int_div</Link>!&lt;<Link to="../std/u64#std_u64">u64</Link>, <Link to="../std/u128#std_u128">u128</Link>&gt;(
+        val,
+        divisor.0,
+        <Link to="../std/u64#std_u64_max_value">std::u64::max_value</Link>!(),
+        <Link to="../std/uq32_32#std_uq32_32_FRACTIONAL_BITS">FRACTIONAL_BITS</Link>,
+        <b>abort</b> <Link to="../std/uq32_32#std_uq32_32_EDivisionByZero">EDivisionByZero</Link>,
+        <b>abort</b> <Link to="../std/uq32_32#std_uq32_32_EOverflow">EOverflow</Link>,
+    )
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_uq32_32_le"></Link>
+
+## Function `le`
+
+Less than or equal to. Returns <code><b>true</b></code> if and only if <code>a &lt;= a</code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq32_32#std_uq32_32_le">le</Link>(a: <Link to="../std/uq32_32#std_uq32_32_UQ32_32">std::uq32_32::UQ32_32</Link>, b: <Link to="../std/uq32_32#std_uq32_32_UQ32_32">std::uq32_32::UQ32_32</Link>): bool
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq32_32#std_uq32_32_le">le</Link>(a: <Link to="../std/uq32_32#std_uq32_32_UQ32_32">UQ32_32</Link>, b: <Link to="../std/uq32_32#std_uq32_32_UQ32_32">UQ32_32</Link>): bool \{
+    a.0 &lt;= b.0
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_uq32_32_lt"></Link>
+
+## Function `lt`
+
+Less than. Returns <code><b>true</b></code> if and only if <code>a &lt; b</code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq32_32#std_uq32_32_lt">lt</Link>(a: <Link to="../std/uq32_32#std_uq32_32_UQ32_32">std::uq32_32::UQ32_32</Link>, b: <Link to="../std/uq32_32#std_uq32_32_UQ32_32">std::uq32_32::UQ32_32</Link>): bool
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq32_32#std_uq32_32_lt">lt</Link>(a: <Link to="../std/uq32_32#std_uq32_32_UQ32_32">UQ32_32</Link>, b: <Link to="../std/uq32_32#std_uq32_32_UQ32_32">UQ32_32</Link>): bool \{
+    a.0 &lt; b.0
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_uq32_32_ge"></Link>
+
+## Function `ge`
+
+Greater than or equal to. Returns <code><b>true</b></code> if and only if <code>a &gt;= b</code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq32_32#std_uq32_32_ge">ge</Link>(a: <Link to="../std/uq32_32#std_uq32_32_UQ32_32">std::uq32_32::UQ32_32</Link>, b: <Link to="../std/uq32_32#std_uq32_32_UQ32_32">std::uq32_32::UQ32_32</Link>): bool
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq32_32#std_uq32_32_ge">ge</Link>(a: <Link to="../std/uq32_32#std_uq32_32_UQ32_32">UQ32_32</Link>, b: <Link to="../std/uq32_32#std_uq32_32_UQ32_32">UQ32_32</Link>): bool \{
+    a.0 &gt;= b.0
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_uq32_32_gt"></Link>
+
+## Function `gt`
+
+Greater than. Returns <code><b>true</b></code> if and only if <code>a &gt; b</code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq32_32#std_uq32_32_gt">gt</Link>(a: <Link to="../std/uq32_32#std_uq32_32_UQ32_32">std::uq32_32::UQ32_32</Link>, b: <Link to="../std/uq32_32#std_uq32_32_UQ32_32">std::uq32_32::UQ32_32</Link>): bool
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq32_32#std_uq32_32_gt">gt</Link>(a: <Link to="../std/uq32_32#std_uq32_32_UQ32_32">UQ32_32</Link>, b: <Link to="../std/uq32_32#std_uq32_32_UQ32_32">UQ32_32</Link>): bool \{
+    a.0 &gt; b.0
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_uq32_32_to_raw"></Link>
+
+## Function `to_raw`
+
+Accessor for the raw u64 value. Can be paired with <code><Link to="../std/uq32_32#std_uq32_32_from_raw">from_raw</Link></code> to perform less common operations
+on the raw values directly.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq32_32#std_uq32_32_to_raw">to_raw</Link>(a: <Link to="../std/uq32_32#std_uq32_32_UQ32_32">std::uq32_32::UQ32_32</Link>): <Link to="../std/u64#std_u64">u64</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq32_32#std_uq32_32_to_raw">to_raw</Link>(a: <Link to="../std/uq32_32#std_uq32_32_UQ32_32">UQ32_32</Link>): <Link to="../std/u64#std_u64">u64</Link> \{
+    a.0
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_uq32_32_from_raw"></Link>
+
+## Function `from_raw`
+
+Accessor for the raw u64 value. Can be paired with <code><Link to="../std/uq32_32#std_uq32_32_to_raw">to_raw</Link></code> to perform less common operations
+on the raw values directly.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq32_32#std_uq32_32_from_raw">from_raw</Link>(raw_value: <Link to="../std/u64#std_u64">u64</Link>): <Link to="../std/uq32_32#std_uq32_32_UQ32_32">std::uq32_32::UQ32_32</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/uq32_32#std_uq32_32_from_raw">from_raw</Link>(raw_value: <Link to="../std/u64#std_u64">u64</Link>): <Link to="../std/uq32_32#std_uq32_32_UQ32_32">UQ32_32</Link> \{
+    <Link to="../std/uq32_32#std_uq32_32_UQ32_32">UQ32_32</Link>(raw_value)
+}
+</code>
+</pre>
+
+
+
+</details>

@@ -1,0 +1,260 @@
+---
+title: Module iota_system::validator_wrapper
+sidebar_label: validator_wrapper
+slug: validator_wrapper
+---
+import Link from '@docusaurus/Link';
+
+<Link id="iota_system_validator_wrapper"/>
+
+
+-  [Struct `Validator`](#iota_system_validator_wrapper_Validator)
+-  [Constants](#@Constants_0)
+-  [Function `create_v1`](#iota_system_validator_wrapper_create_v1)
+-  [Function `load_validator_maybe_upgrade`](#iota_system_validator_wrapper_load_validator_maybe_upgrade)
+-  [Function `destroy`](#iota_system_validator_wrapper_destroy)
+-  [Function `upgrade_to_latest`](#iota_system_validator_wrapper_upgrade_to_latest)
+-  [Function `version`](#iota_system_validator_wrapper_version)
+
+
+<pre>
+<code>
+<b>use</b> <Link to="../iota/address#iota_address">iota::address</Link>;
+<b>use</b> <Link to="../iota/bag#iota_bag">iota::bag</Link>;
+<b>use</b> <Link to="../iota/balance#iota_balance">iota::balance</Link>;
+<b>use</b> <Link to="../iota/coin#iota_coin">iota::coin</Link>;
+<b>use</b> <Link to="../iota/config#iota_config">iota::config</Link>;
+<b>use</b> <Link to="../iota/deny_list#iota_deny_list">iota::deny_list</Link>;
+<b>use</b> <Link to="../iota/dynamic_field#iota_dynamic_field">iota::dynamic_field</Link>;
+<b>use</b> <Link to="../iota/dynamic_object_field#iota_dynamic_object_field">iota::dynamic_object_field</Link>;
+<b>use</b> <Link to="../iota/event#iota_event">iota::event</Link>;
+<b>use</b> <Link to="../iota/hex#iota_hex">iota::hex</Link>;
+<b>use</b> <Link to="../iota/iota#iota_iota">iota::iota</Link>;
+<b>use</b> <Link to="../iota/object#iota_object">iota::object</Link>;
+<b>use</b> <Link to="../iota/table#iota_table">iota::table</Link>;
+<b>use</b> <Link to="../iota/transfer#iota_transfer">iota::transfer</Link>;
+<b>use</b> <Link to="../iota/tx_context#iota_tx_context">iota::tx_context</Link>;
+<b>use</b> <Link to="../iota/types#iota_types">iota::types</Link>;
+<b>use</b> <Link to="../iota/url#iota_url">iota::url</Link>;
+<b>use</b> <Link to="../iota/versioned#iota_versioned">iota::versioned</Link>;
+<b>use</b> <Link to="../iota_system/staking_pool#iota_system_staking_pool">iota_system::staking_pool</Link>;
+<b>use</b> <Link to="../iota_system/validator#iota_system_validator">iota_system::validator</Link>;
+<b>use</b> <Link to="../iota_system/validator_cap#iota_system_validator_cap">iota_system::validator_cap</Link>;
+<b>use</b> <Link to="../std/address#std_address">std::address</Link>;
+<b>use</b> <Link to="../std/ascii#std_ascii">std::ascii</Link>;
+<b>use</b> <Link to="../std/bcs#std_bcs">std::bcs</Link>;
+<b>use</b> <Link to="../std/option#std_option">std::option</Link>;
+<b>use</b> <Link to="../std/string#std_string">std::string</Link>;
+<b>use</b> <Link to="../std/type_name#std_type_name">std::type_name</Link>;
+<b>use</b> <Link to="../std/u64#std_u64">std::u64</Link>;
+<b>use</b> <Link to="../std/vector#std_vector">std::vector</Link>;
+</code>
+</pre>
+
+
+
+<Link id="iota_system_validator_wrapper_Validator"></Link>
+
+## Struct `Validator`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota_system/validator_wrapper#iota_system_validator_wrapper_Validator">Validator</Link> <b>has</b> store
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code>inner: <Link to="../iota/versioned#iota_versioned_Versioned">iota::versioned::Versioned</Link></code>
+</dt>
+<dd>
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="@Constants_0"></Link>
+
+## Constants
+
+
+<Link id="iota_system_validator_wrapper_EInvalidVersion"></Link>
+
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota_system/validator_wrapper#iota_system_validator_wrapper_EInvalidVersion">EInvalidVersion</Link>: u64 = 0;
+</code>
+</pre>
+
+
+
+<Link id="iota_system_validator_wrapper_create_v1"></Link>
+
+## Function `create_v1`
+
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator_wrapper#iota_system_validator_wrapper_create_v1">create_v1</Link>(<Link to="../iota_system/validator#iota_system_validator">validator</Link>: <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): <Link to="../iota_system/validator_wrapper#iota_system_validator_wrapper_Validator">iota_system::validator_wrapper::Validator</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator_wrapper#iota_system_validator_wrapper_create_v1">create_v1</Link>(<Link to="../iota_system/validator#iota_system_validator">validator</Link>: ValidatorV1, ctx: &<b>mut</b> TxContext): <Link to="../iota_system/validator_wrapper#iota_system_validator_wrapper_Validator">Validator</Link> \{
+    <Link to="../iota_system/validator_wrapper#iota_system_validator_wrapper_Validator">Validator</Link> \{
+        inner: versioned::create(1, <Link to="../iota_system/validator#iota_system_validator">validator</Link>, ctx),
+    }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_wrapper_load_validator_maybe_upgrade"></Link>
+
+## Function `load_validator_maybe_upgrade`
+
+This function should always return the latest supported version.
+If the inner version is old, we upgrade it lazily in-place.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator_wrapper#iota_system_validator_wrapper_load_validator_maybe_upgrade">load_validator_maybe_upgrade</Link>(self: &<b>mut</b> <Link to="../iota_system/validator_wrapper#iota_system_validator_wrapper_Validator">iota_system::validator_wrapper::Validator</Link>): &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator_wrapper#iota_system_validator_wrapper_load_validator_maybe_upgrade">load_validator_maybe_upgrade</Link>(self: &<b>mut</b> <Link to="../iota_system/validator_wrapper#iota_system_validator_wrapper_Validator">Validator</Link>): &<b>mut</b> ValidatorV1 \{
+    <Link to="../iota_system/validator_wrapper#iota_system_validator_wrapper_upgrade_to_latest">upgrade_to_latest</Link>(self);
+    versioned::load_value_mut(&<b>mut</b> self.inner)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_wrapper_destroy"></Link>
+
+## Function `destroy`
+
+Destroy the wrapper and retrieve the inner validator object.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator_wrapper#iota_system_validator_wrapper_destroy">destroy</Link>(self: <Link to="../iota_system/validator_wrapper#iota_system_validator_wrapper_Validator">iota_system::validator_wrapper::Validator</Link>): <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator_wrapper#iota_system_validator_wrapper_destroy">destroy</Link>(self: <Link to="../iota_system/validator_wrapper#iota_system_validator_wrapper_Validator">Validator</Link>): ValidatorV1 \{
+    <Link to="../iota_system/validator_wrapper#iota_system_validator_wrapper_upgrade_to_latest">upgrade_to_latest</Link>(&self);
+    <b>let</b> <Link to="../iota_system/validator_wrapper#iota_system_validator_wrapper_Validator">Validator</Link> \{ inner } = self;
+    versioned::destroy(inner)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_wrapper_upgrade_to_latest"></Link>
+
+## Function `upgrade_to_latest`
+
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota_system/validator_wrapper#iota_system_validator_wrapper_upgrade_to_latest">upgrade_to_latest</Link>(self: &<Link to="../iota_system/validator_wrapper#iota_system_validator_wrapper_Validator">iota_system::validator_wrapper::Validator</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota_system/validator_wrapper#iota_system_validator_wrapper_upgrade_to_latest">upgrade_to_latest</Link>(self: &<Link to="../iota_system/validator_wrapper#iota_system_validator_wrapper_Validator">Validator</Link>) \{
+    <b>let</b> <Link to="../iota_system/validator_wrapper#iota_system_validator_wrapper_version">version</Link> = <Link to="../iota_system/validator_wrapper#iota_system_validator_wrapper_version">version</Link>(self);
+    // TODO: When new versions are added, we need to explicitly upgrade here.
+    <b>assert</b>!(<Link to="../iota_system/validator_wrapper#iota_system_validator_wrapper_version">version</Link> == 1, <Link to="../iota_system/validator_wrapper#iota_system_validator_wrapper_EInvalidVersion">EInvalidVersion</Link>);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_wrapper_version"></Link>
+
+## Function `version`
+
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota_system/validator_wrapper#iota_system_validator_wrapper_version">version</Link>(self: &<Link to="../iota_system/validator_wrapper#iota_system_validator_wrapper_Validator">iota_system::validator_wrapper::Validator</Link>): u64
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota_system/validator_wrapper#iota_system_validator_wrapper_version">version</Link>(self: &<Link to="../iota_system/validator_wrapper#iota_system_validator_wrapper_Validator">Validator</Link>): u64 \{
+    versioned::version(&self.inner)
+}
+</code>
+</pre>
+
+
+
+</details>

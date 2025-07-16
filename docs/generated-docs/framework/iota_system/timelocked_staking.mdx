@@ -1,0 +1,1117 @@
+---
+title: Module iota_system::timelocked_staking
+sidebar_label: timelocked_staking
+slug: timelocked_staking
+---
+import Link from '@docusaurus/Link';
+
+<Link id="iota_system_timelocked_staking"/>
+
+
+-  [Struct `TimelockedStakedIota`](#iota_system_timelocked_staking_TimelockedStakedIota)
+-  [Constants](#@Constants_0)
+-  [Function `request_add_stake`](#iota_system_timelocked_staking_request_add_stake)
+-  [Function `request_add_stake_mul_bal`](#iota_system_timelocked_staking_request_add_stake_mul_bal)
+-  [Function `request_withdraw_stake`](#iota_system_timelocked_staking_request_withdraw_stake)
+-  [Function `request_add_stake_non_entry`](#iota_system_timelocked_staking_request_add_stake_non_entry)
+-  [Function `request_add_stake_mul_bal_non_entry`](#iota_system_timelocked_staking_request_add_stake_mul_bal_non_entry)
+-  [Function `request_withdraw_stake_non_entry`](#iota_system_timelocked_staking_request_withdraw_stake_non_entry)
+-  [Function `unlock`](#iota_system_timelocked_staking_unlock)
+-  [Function `unlock_with_clock`](#iota_system_timelocked_staking_unlock_with_clock)
+-  [Function `split`](#iota_system_timelocked_staking_split)
+-  [Function `split_staked_iota`](#iota_system_timelocked_staking_split_staked_iota)
+-  [Function `join_staked_iota`](#iota_system_timelocked_staking_join_staked_iota)
+-  [Function `transfer_to_sender`](#iota_system_timelocked_staking_transfer_to_sender)
+-  [Function `transfer_to_sender_multiple`](#iota_system_timelocked_staking_transfer_to_sender_multiple)
+-  [Function `is_equal_staking_metadata`](#iota_system_timelocked_staking_is_equal_staking_metadata)
+-  [Function `pool_id`](#iota_system_timelocked_staking_pool_id)
+-  [Function `staked_iota_amount`](#iota_system_timelocked_staking_staked_iota_amount)
+-  [Function `stake_activation_epoch`](#iota_system_timelocked_staking_stake_activation_epoch)
+-  [Function `expiration_timestamp_ms`](#iota_system_timelocked_staking_expiration_timestamp_ms)
+-  [Function `label`](#iota_system_timelocked_staking_label)
+-  [Function `is_labeled_with`](#iota_system_timelocked_staking_is_labeled_with)
+-  [Function `unpack`](#iota_system_timelocked_staking_unpack)
+-  [Function `transfer`](#iota_system_timelocked_staking_transfer)
+-  [Function `transfer_multiple`](#iota_system_timelocked_staking_transfer_multiple)
+-  [Function `request_add_stake_at_genesis`](#iota_system_timelocked_staking_request_add_stake_at_genesis)
+
+
+<pre>
+<code>
+<b>use</b> <Link to="../iota/address#iota_address">iota::address</Link>;
+<b>use</b> <Link to="../iota/bag#iota_bag">iota::bag</Link>;
+<b>use</b> <Link to="../iota/balance#iota_balance">iota::balance</Link>;
+<b>use</b> <Link to="../iota/clock#iota_clock">iota::clock</Link>;
+<b>use</b> <Link to="../iota/coin#iota_coin">iota::coin</Link>;
+<b>use</b> <Link to="../iota/config#iota_config">iota::config</Link>;
+<b>use</b> <Link to="../iota/deny_list#iota_deny_list">iota::deny_list</Link>;
+<b>use</b> <Link to="../iota/dynamic_field#iota_dynamic_field">iota::dynamic_field</Link>;
+<b>use</b> <Link to="../iota/dynamic_object_field#iota_dynamic_object_field">iota::dynamic_object_field</Link>;
+<b>use</b> <Link to="../iota/event#iota_event">iota::event</Link>;
+<b>use</b> <Link to="../iota/hex#iota_hex">iota::hex</Link>;
+<b>use</b> <Link to="../iota/iota#iota_iota">iota::iota</Link>;
+<b>use</b> <Link to="../iota/labeler#iota_labeler">iota::labeler</Link>;
+<b>use</b> <Link to="../iota/object#iota_object">iota::object</Link>;
+<b>use</b> <Link to="../iota/pay#iota_pay">iota::pay</Link>;
+<b>use</b> <Link to="../iota/priority_queue#iota_priority_queue">iota::priority_queue</Link>;
+<b>use</b> <Link to="../iota/system_admin_cap#iota_system_admin_cap">iota::system_admin_cap</Link>;
+<b>use</b> <Link to="../iota/table#iota_table">iota::table</Link>;
+<b>use</b> <Link to="../iota/table_vec#iota_table_vec">iota::table_vec</Link>;
+<b>use</b> <Link to="../iota/timelock#iota_timelock">iota::timelock</Link>;
+<b>use</b> <Link to="../iota/transfer#iota_transfer">iota::transfer</Link>;
+<b>use</b> <Link to="../iota/tx_context#iota_tx_context">iota::tx_context</Link>;
+<b>use</b> <Link to="../iota/types#iota_types">iota::types</Link>;
+<b>use</b> <Link to="../iota/url#iota_url">iota::url</Link>;
+<b>use</b> <Link to="../iota/vec_map#iota_vec_map">iota::vec_map</Link>;
+<b>use</b> <Link to="../iota/vec_set#iota_vec_set">iota::vec_set</Link>;
+<b>use</b> <Link to="../iota/versioned#iota_versioned">iota::versioned</Link>;
+<b>use</b> <Link to="../iota_system/iota_system#iota_system_iota_system">iota_system::iota_system</Link>;
+<b>use</b> <Link to="../iota_system/iota_system_state_inner#iota_system_iota_system_state_inner">iota_system::iota_system_state_inner</Link>;
+<b>use</b> <Link to="../iota_system/staking_pool#iota_system_staking_pool">iota_system::staking_pool</Link>;
+<b>use</b> <Link to="../iota_system/storage_fund#iota_system_storage_fund">iota_system::storage_fund</Link>;
+<b>use</b> <Link to="../iota_system/validator#iota_system_validator">iota_system::validator</Link>;
+<b>use</b> <Link to="../iota_system/validator_cap#iota_system_validator_cap">iota_system::validator_cap</Link>;
+<b>use</b> <Link to="../iota_system/validator_set#iota_system_validator_set">iota_system::validator_set</Link>;
+<b>use</b> <Link to="../iota_system/validator_wrapper#iota_system_validator_wrapper">iota_system::validator_wrapper</Link>;
+<b>use</b> <Link to="../iota_system/voting_power#iota_system_voting_power">iota_system::voting_power</Link>;
+<b>use</b> <Link to="../std/address#std_address">std::address</Link>;
+<b>use</b> <Link to="../std/ascii#std_ascii">std::ascii</Link>;
+<b>use</b> <Link to="../std/bcs#std_bcs">std::bcs</Link>;
+<b>use</b> <Link to="../std/option#std_option">std::option</Link>;
+<b>use</b> <Link to="../std/string#std_string">std::string</Link>;
+<b>use</b> <Link to="../std/type_name#std_type_name">std::type_name</Link>;
+<b>use</b> <Link to="../std/u64#std_u64">std::u64</Link>;
+<b>use</b> <Link to="../std/vector#std_vector">std::vector</Link>;
+</code>
+</pre>
+
+
+
+<Link id="iota_system_timelocked_staking_TimelockedStakedIota"></Link>
+
+## Struct `TimelockedStakedIota`
+
+A self-custodial object holding the timelocked staked IOTA tokens.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link> <b>has</b> key
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code>id: <Link to="../iota/object#iota_object_UID">iota::object::UID</Link></code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>staked_iota: <Link to="../iota_system/staking_pool#iota_system_staking_pool_StakedIota">iota_system::staking_pool::StakedIota</Link></code>
+</dt>
+<dd>
+ A self-custodial object holding the staked IOTA tokens.
+</dd>
+<dt>
+<code><Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_expiration_timestamp_ms">expiration_timestamp_ms</Link>: u64</code>
+</dt>
+<dd>
+ This is the epoch time stamp of when the lock expires.
+</dd>
+<dt>
+<code><Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_label">label</Link>: <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;<Link to="../std/string#std_string_String">std::string::String</Link>&gt;</code>
+</dt>
+<dd>
+ Timelock related label.
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="@Constants_0"></Link>
+
+## Constants
+
+
+<Link id="iota_system_timelocked_staking_EIncompatibleTimelockedStakedIota"></Link>
+
+Incompatible objects when joining <code><Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link></code>.
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_EIncompatibleTimelockedStakedIota">EIncompatibleTimelockedStakedIota</Link>: u64 = 1;
+</code>
+</pre>
+
+
+
+<Link id="iota_system_timelocked_staking_ETimeLockShouldNotBeExpired"></Link>
+
+For when trying to stake an expired time-locked balance.
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_ETimeLockShouldNotBeExpired">ETimeLockShouldNotBeExpired</Link>: u64 = 0;
+</code>
+</pre>
+
+
+
+<Link id="iota_system_timelocked_staking_ETimelockedStakedIotaShouldBeExpired"></Link>
+
+
+
+<pre>
+<code>
+#[error]
+<b>const</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_ETimelockedStakedIotaShouldBeExpired">ETimelockedStakedIotaShouldBeExpired</Link>: vector&lt;u8&gt; = b"<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link> is not expired.";
+</code>
+</pre>
+
+
+
+<Link id="iota_system_timelocked_staking_request_add_stake"></Link>
+
+## Function `request_add_stake`
+
+Add a time-locked stake to a validator's staking pool.
+
+
+<pre>
+<code>
+<b>public</b> <b>entry</b> <b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_request_add_stake">request_add_stake</Link>(<Link to="../iota_system/iota_system#iota_system_iota_system">iota_system</Link>: &<b>mut</b> <Link to="../iota_system/iota_system#iota_system_iota_system_IotaSystemState">iota_system::iota_system::IotaSystemState</Link>, timelocked_balance: <Link to="../iota/timelock#iota_timelock_TimeLock">iota::timelock::TimeLock</Link>&lt;<Link to="../iota/balance#iota_balance_Balance">iota::balance::Balance</Link>&lt;<Link to="../iota/iota#iota_iota_IOTA">iota::iota::IOTA</Link>&gt;&gt;, validator_address: <b>address</b>, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>entry</b> <b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_request_add_stake">request_add_stake</Link>(
+    <Link to="../iota_system/iota_system#iota_system_iota_system">iota_system</Link>: &<b>mut</b> IotaSystemState,
+    timelocked_balance: TimeLock&lt;Balance&lt;IOTA&gt;&gt;,
+    validator_address: <b>address</b>,
+    ctx: &<b>mut</b> TxContext,
+) \{
+    // Stake the time-locked balance.
+    <b>let</b> timelocked_staked_iota = <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_request_add_stake_non_entry">request_add_stake_non_entry</Link>(
+        <Link to="../iota_system/iota_system#iota_system_iota_system">iota_system</Link>,
+        timelocked_balance,
+        validator_address,
+        ctx,
+    );
+    // Transfer the receipt to the sender.
+    timelocked_staked_iota.<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_transfer_to_sender">transfer_to_sender</Link>(ctx);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_timelocked_staking_request_add_stake_mul_bal"></Link>
+
+## Function `request_add_stake_mul_bal`
+
+Add a time-locked stake to a validator's staking pool using multiple time-locked balances.
+
+
+<pre>
+<code>
+<b>public</b> <b>entry</b> <b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_request_add_stake_mul_bal">request_add_stake_mul_bal</Link>(<Link to="../iota_system/iota_system#iota_system_iota_system">iota_system</Link>: &<b>mut</b> <Link to="../iota_system/iota_system#iota_system_iota_system_IotaSystemState">iota_system::iota_system::IotaSystemState</Link>, timelocked_balances: vector&lt;<Link to="../iota/timelock#iota_timelock_TimeLock">iota::timelock::TimeLock</Link>&lt;<Link to="../iota/balance#iota_balance_Balance">iota::balance::Balance</Link>&lt;<Link to="../iota/iota#iota_iota_IOTA">iota::iota::IOTA</Link>&gt;&gt;&gt;, validator_address: <b>address</b>, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>entry</b> <b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_request_add_stake_mul_bal">request_add_stake_mul_bal</Link>(
+    <Link to="../iota_system/iota_system#iota_system_iota_system">iota_system</Link>: &<b>mut</b> IotaSystemState,
+    timelocked_balances: vector&lt;TimeLock&lt;Balance&lt;IOTA&gt;&gt;&gt;,
+    validator_address: <b>address</b>,
+    ctx: &<b>mut</b> TxContext,
+) \{
+    // Stake the time-locked balances.
+    <b>let</b> <b>mut</b> receipts = <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_request_add_stake_mul_bal_non_entry">request_add_stake_mul_bal_non_entry</Link>(
+        <Link to="../iota_system/iota_system#iota_system_iota_system">iota_system</Link>,
+        timelocked_balances,
+        validator_address,
+        ctx,
+    );
+    // Create useful variables.
+    <b>let</b> (<b>mut</b> i, len) = (0, receipts.length());
+    // Send all the receipts to the sender.
+    <b>while</b> (i &lt; len) \{
+        // Take a receipt.
+        <b>let</b> receipt = receipts.pop_back();
+        // Transfer the receipt to the sender.
+        receipt.<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_transfer_to_sender">transfer_to_sender</Link>(ctx);
+        i = i + 1
+    };
+    // Destroy the empty vector.
+    vector::destroy_empty(receipts)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_timelocked_staking_request_withdraw_stake"></Link>
+
+## Function `request_withdraw_stake`
+
+Withdraw a time-locked stake from a validator's staking pool.
+
+
+<pre>
+<code>
+<b>public</b> <b>entry</b> <b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_request_withdraw_stake">request_withdraw_stake</Link>(<Link to="../iota_system/iota_system#iota_system_iota_system">iota_system</Link>: &<b>mut</b> <Link to="../iota_system/iota_system#iota_system_iota_system_IotaSystemState">iota_system::iota_system::IotaSystemState</Link>, timelocked_staked_iota: <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">iota_system::timelocked_staking::TimelockedStakedIota</Link>, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>entry</b> <b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_request_withdraw_stake">request_withdraw_stake</Link>(
+    <Link to="../iota_system/iota_system#iota_system_iota_system">iota_system</Link>: &<b>mut</b> IotaSystemState,
+    timelocked_staked_iota: <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link>,
+    ctx: &<b>mut</b> TxContext,
+) \{
+    // Withdraw the time-locked balance.
+    <b>let</b> (timelocked_balance, reward) = <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_request_withdraw_stake_non_entry">request_withdraw_stake_non_entry</Link>(
+        <Link to="../iota_system/iota_system#iota_system_iota_system">iota_system</Link>,
+        timelocked_staked_iota,
+        ctx,
+    );
+    // Transfer the withdrawn time-locked balance to the sender.
+    timelocked_balance.<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_transfer_to_sender">transfer_to_sender</Link>(ctx);
+    // Send coins only <b>if</b> the reward is not zero.
+    <b>if</b> (reward.value() &gt; 0) \{
+        transfer::public_transfer(reward.into_coin(ctx), ctx.sender());
+    } <b>else</b> \{
+        balance::destroy_zero(reward);
+    }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_timelocked_staking_request_add_stake_non_entry"></Link>
+
+## Function `request_add_stake_non_entry`
+
+The non-entry version of <code><Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_request_add_stake">request_add_stake</Link></code>, which returns the time-locked staked IOTA instead of transferring it to the sender.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_request_add_stake_non_entry">request_add_stake_non_entry</Link>(<Link to="../iota_system/iota_system#iota_system_iota_system">iota_system</Link>: &<b>mut</b> <Link to="../iota_system/iota_system#iota_system_iota_system_IotaSystemState">iota_system::iota_system::IotaSystemState</Link>, timelocked_balance: <Link to="../iota/timelock#iota_timelock_TimeLock">iota::timelock::TimeLock</Link>&lt;<Link to="../iota/balance#iota_balance_Balance">iota::balance::Balance</Link>&lt;<Link to="../iota/iota#iota_iota_IOTA">iota::iota::IOTA</Link>&gt;&gt;, validator_address: <b>address</b>, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">iota_system::timelocked_staking::TimelockedStakedIota</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_request_add_stake_non_entry">request_add_stake_non_entry</Link>(
+    <Link to="../iota_system/iota_system#iota_system_iota_system">iota_system</Link>: &<b>mut</b> IotaSystemState,
+    timelocked_balance: TimeLock&lt;Balance&lt;IOTA&gt;&gt;,
+    validator_address: <b>address</b>,
+    ctx: &<b>mut</b> TxContext,
+): <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link> \{
+    // Check the preconditions.
+    <b>assert</b>!(timelocked_balance.is_locked(ctx), <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_ETimeLockShouldNotBeExpired">ETimeLockShouldNotBeExpired</Link>);
+    // Unpack the time-locked balance.
+    <b>let</b> sys_admin_cap = <Link to="../iota_system/iota_system#iota_system_iota_system">iota_system</Link>.load_iota_system_admin_cap();
+    <b>let</b> (balance, <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_expiration_timestamp_ms">expiration_timestamp_ms</Link>, <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_label">label</Link>) = timelock::system_unpack(
+        sys_admin_cap,
+        timelocked_balance,
+    );
+    // Stake the time-locked balance.
+    <b>let</b> staked_iota = <Link to="../iota_system/iota_system#iota_system_iota_system">iota_system</Link>.<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_request_add_stake_non_entry">request_add_stake_non_entry</Link>(
+        balance.into_coin(ctx),
+        validator_address,
+        ctx,
+    );
+    // Create and <b>return</b> a receipt.
+    <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link> \{
+        id: object::new(ctx),
+        staked_iota,
+        <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_expiration_timestamp_ms">expiration_timestamp_ms</Link>,
+        <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_label">label</Link>,
+    }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_timelocked_staking_request_add_stake_mul_bal_non_entry"></Link>
+
+## Function `request_add_stake_mul_bal_non_entry`
+
+The non-entry version of <code><Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_request_add_stake_mul_bal">request_add_stake_mul_bal</Link></code>,
+which returns a list of the time-locked staked IOTAs instead of transferring them to the sender.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_request_add_stake_mul_bal_non_entry">request_add_stake_mul_bal_non_entry</Link>(<Link to="../iota_system/iota_system#iota_system_iota_system">iota_system</Link>: &<b>mut</b> <Link to="../iota_system/iota_system#iota_system_iota_system_IotaSystemState">iota_system::iota_system::IotaSystemState</Link>, timelocked_balances: vector&lt;<Link to="../iota/timelock#iota_timelock_TimeLock">iota::timelock::TimeLock</Link>&lt;<Link to="../iota/balance#iota_balance_Balance">iota::balance::Balance</Link>&lt;<Link to="../iota/iota#iota_iota_IOTA">iota::iota::IOTA</Link>&gt;&gt;&gt;, validator_address: <b>address</b>, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): vector&lt;<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">iota_system::timelocked_staking::TimelockedStakedIota</Link>&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_request_add_stake_mul_bal_non_entry">request_add_stake_mul_bal_non_entry</Link>(
+    <Link to="../iota_system/iota_system#iota_system_iota_system">iota_system</Link>: &<b>mut</b> IotaSystemState,
+    <b>mut</b> timelocked_balances: vector&lt;TimeLock&lt;Balance&lt;IOTA&gt;&gt;&gt;,
+    validator_address: <b>address</b>,
+    ctx: &<b>mut</b> TxContext,
+): vector&lt;<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link>&gt; \{
+    // Create a vector to store the results.
+    <b>let</b> <b>mut</b> result = vector[];
+    // Create useful variables.
+    <b>let</b> (<b>mut</b> i, len) = (0, timelocked_balances.length());
+    // Stake all the time-locked balances.
+    <b>while</b> (i &lt; len) \{
+        // Take a time-locked balance.
+        <b>let</b> timelocked_balance = timelocked_balances.pop_back();
+        // Stake the time-locked balance.
+        <b>let</b> timelocked_staked_iota = <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_request_add_stake_non_entry">request_add_stake_non_entry</Link>(
+            <Link to="../iota_system/iota_system#iota_system_iota_system">iota_system</Link>,
+            timelocked_balance,
+            validator_address,
+            ctx,
+        );
+        // Store the created receipt.
+        result.push_back(timelocked_staked_iota);
+        i = i + 1
+    };
+    // Destroy the empty vector.
+    vector::destroy_empty(timelocked_balances);
+    result
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_timelocked_staking_request_withdraw_stake_non_entry"></Link>
+
+## Function `request_withdraw_stake_non_entry`
+
+Non-entry version of <code><Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_request_withdraw_stake">request_withdraw_stake</Link></code> that returns the withdrawn time-locked IOTA and reward
+instead of transferring it to the sender.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_request_withdraw_stake_non_entry">request_withdraw_stake_non_entry</Link>(<Link to="../iota_system/iota_system#iota_system_iota_system">iota_system</Link>: &<b>mut</b> <Link to="../iota_system/iota_system#iota_system_iota_system_IotaSystemState">iota_system::iota_system::IotaSystemState</Link>, timelocked_staked_iota: <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">iota_system::timelocked_staking::TimelockedStakedIota</Link>, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): (<Link to="../iota/timelock#iota_timelock_TimeLock">iota::timelock::TimeLock</Link>&lt;<Link to="../iota/balance#iota_balance_Balance">iota::balance::Balance</Link>&lt;<Link to="../iota/iota#iota_iota_IOTA">iota::iota::IOTA</Link>&gt;&gt;, <Link to="../iota/balance#iota_balance_Balance">iota::balance::Balance</Link>&lt;<Link to="../iota/iota#iota_iota_IOTA">iota::iota::IOTA</Link>&gt;)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_request_withdraw_stake_non_entry">request_withdraw_stake_non_entry</Link>(
+    <Link to="../iota_system/iota_system#iota_system_iota_system">iota_system</Link>: &<b>mut</b> IotaSystemState,
+    timelocked_staked_iota: <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link>,
+    ctx: &<b>mut</b> TxContext,
+): (TimeLock&lt;Balance&lt;IOTA&gt;&gt;, Balance&lt;IOTA&gt;) \{
+    // Unpack the `<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link>` instance.
+    <b>let</b> (staked_iota, <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_expiration_timestamp_ms">expiration_timestamp_ms</Link>, <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_label">label</Link>) = timelocked_staked_iota.<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_unpack">unpack</Link>();
+    // Store the original stake amount.
+    <b>let</b> principal = staked_iota.<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_staked_iota_amount">staked_iota_amount</Link>();
+    // Withdraw the balance.
+    <b>let</b> <b>mut</b> withdraw_stake = <Link to="../iota_system/iota_system#iota_system_iota_system">iota_system</Link>.<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_request_withdraw_stake_non_entry">request_withdraw_stake_non_entry</Link>(staked_iota, ctx);
+    // The <Link to="../iota_system/iota_system#iota_system_iota_system">iota_system</Link> withdraw functions <b>return</b> a balance that consists of the original staked amount plus the reward amount;
+    // In here, it splits the original staked balance to timelock it again.
+    <b>let</b> principal = withdraw_stake.<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_split">split</Link>(principal);
+    // Pack and <b>return</b> a time-locked balance, and the reward.
+    <b>let</b> sys_admin_cap = <Link to="../iota_system/iota_system#iota_system_iota_system">iota_system</Link>.load_iota_system_admin_cap();
+    (
+        timelock::system_pack(sys_admin_cap, principal, <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_expiration_timestamp_ms">expiration_timestamp_ms</Link>, <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_label">label</Link>, ctx),
+        withdraw_stake,
+    )
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_timelocked_staking_unlock"></Link>
+
+## Function `unlock`
+
+Unlock the <code>StakedIota</code> from a <code><Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link></code>  based on the epoch start time.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_unlock">unlock</Link>(self: <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">iota_system::timelocked_staking::TimelockedStakedIota</Link>, ctx: &<Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): <Link to="../iota_system/staking_pool#iota_system_staking_pool_StakedIota">iota_system::staking_pool::StakedIota</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_unlock">unlock</Link>(self: <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link>, ctx: &TxContext): StakedIota \{
+    // Unpack the `<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link>`.
+    <b>let</b> (staked, <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_expiration_timestamp_ms">expiration_timestamp_ms</Link>, _) = <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_unpack">unpack</Link>(self);
+    // Check <b>if</b> the lock <b>has</b> expired.
+    <b>assert</b>!(<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_expiration_timestamp_ms">expiration_timestamp_ms</Link> &lt;= ctx.epoch_timestamp_ms(), <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_ETimelockedStakedIotaShouldBeExpired">ETimelockedStakedIotaShouldBeExpired</Link>);
+    staked
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_timelocked_staking_unlock_with_clock"></Link>
+
+## Function `unlock_with_clock`
+
+Unlock the <code>StakedIota</code> from a <code><Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link></code> based on the <code>Clock</code> object.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_unlock_with_clock">unlock_with_clock</Link>(self: <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">iota_system::timelocked_staking::TimelockedStakedIota</Link>, clock: &<Link to="../iota/clock#iota_clock_Clock">iota::clock::Clock</Link>): <Link to="../iota_system/staking_pool#iota_system_staking_pool_StakedIota">iota_system::staking_pool::StakedIota</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_unlock_with_clock">unlock_with_clock</Link>(self: <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link>, clock: &Clock): StakedIota \{
+    // Unpack the `<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link>`.
+    <b>let</b> (staked, <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_expiration_timestamp_ms">expiration_timestamp_ms</Link>, _) = <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_unpack">unpack</Link>(self);
+    // Check <b>if</b> the lock <b>has</b> expired.
+    <b>assert</b>!(<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_expiration_timestamp_ms">expiration_timestamp_ms</Link> &lt;= clock.timestamp_ms(), <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_ETimelockedStakedIotaShouldBeExpired">ETimelockedStakedIotaShouldBeExpired</Link>);
+    staked
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_timelocked_staking_split"></Link>
+
+## Function `split`
+
+Split <code><Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link></code> into two parts, one with principal <code>split_amount</code>,
+and the remaining principal is left in <code>self</code>.
+All the other parameters of the <code><Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link></code> like <code><Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_stake_activation_epoch">stake_activation_epoch</Link></code> or <code><Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_pool_id">pool_id</Link></code> remain the same.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_split">split</Link>(self: &<b>mut</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">iota_system::timelocked_staking::TimelockedStakedIota</Link>, split_amount: u64, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">iota_system::timelocked_staking::TimelockedStakedIota</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_split">split</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link>,
+    split_amount: u64,
+    ctx: &<b>mut</b> TxContext,
+): <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link> \{
+    <b>let</b> split_stake = self.staked_iota.<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_split">split</Link>(split_amount, ctx);
+    <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link> \{
+        id: object::new(ctx),
+        staked_iota: split_stake,
+        <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_expiration_timestamp_ms">expiration_timestamp_ms</Link>: self.<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_expiration_timestamp_ms">expiration_timestamp_ms</Link>,
+        <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_label">label</Link>: self.<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_label">label</Link>,
+    }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_timelocked_staking_split_staked_iota"></Link>
+
+## Function `split_staked_iota`
+
+Split the given <code><Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link></code> to the two parts, one with principal <code>split_amount</code>,
+transfer the newly split part to the sender address.
+
+
+<pre>
+<code>
+<b>public</b> <b>entry</b> <b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_split_staked_iota">split_staked_iota</Link>(stake: &<b>mut</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">iota_system::timelocked_staking::TimelockedStakedIota</Link>, split_amount: u64, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>entry</b> <b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_split_staked_iota">split_staked_iota</Link>(
+    stake: &<b>mut</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link>,
+    split_amount: u64,
+    ctx: &<b>mut</b> TxContext,
+) \{
+    <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_split">split</Link>(stake, split_amount, ctx).<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_transfer_to_sender">transfer_to_sender</Link>(ctx);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_timelocked_staking_join_staked_iota"></Link>
+
+## Function `join_staked_iota`
+
+Consume the staked iota <code>other</code> and add its value to <code>self</code>.
+Aborts if some of the staking parameters are incompatible (pool id, stake activation epoch, etc.)
+
+
+<pre>
+<code>
+<b>public</b> <b>entry</b> <b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_join_staked_iota">join_staked_iota</Link>(self: &<b>mut</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">iota_system::timelocked_staking::TimelockedStakedIota</Link>, other: <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">iota_system::timelocked_staking::TimelockedStakedIota</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>entry</b> <b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_join_staked_iota">join_staked_iota</Link>(self: &<b>mut</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link>, other: <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link>) \{
+    <b>assert</b>!(self.<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_is_equal_staking_metadata">is_equal_staking_metadata</Link>(&other), <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_EIncompatibleTimelockedStakedIota">EIncompatibleTimelockedStakedIota</Link>);
+    <b>let</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link> \{
+        id,
+        staked_iota,
+        <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_expiration_timestamp_ms">expiration_timestamp_ms</Link>: _,
+        <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_label">label</Link>: _,
+    } = other;
+    id.delete();
+    self.staked_iota.join(staked_iota);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_timelocked_staking_transfer_to_sender"></Link>
+
+## Function `transfer_to_sender`
+
+A utility function to transfer a <code><Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_transfer_to_sender">transfer_to_sender</Link>(stake: <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">iota_system::timelocked_staking::TimelockedStakedIota</Link>, ctx: &<Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_transfer_to_sender">transfer_to_sender</Link>(stake: <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link>, ctx: &TxContext) \{
+    <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_transfer">transfer</Link>(stake, ctx.sender())
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_timelocked_staking_transfer_to_sender_multiple"></Link>
+
+## Function `transfer_to_sender_multiple`
+
+A utility function to transfer multiple <code><Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_transfer_to_sender_multiple">transfer_to_sender_multiple</Link>(stakes: vector&lt;<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">iota_system::timelocked_staking::TimelockedStakedIota</Link>&gt;, ctx: &<Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_transfer_to_sender_multiple">transfer_to_sender_multiple</Link>(stakes: vector&lt;<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link>&gt;, ctx: &TxContext) \{
+    <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_transfer_multiple">transfer_multiple</Link>(stakes, ctx.sender())
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_timelocked_staking_is_equal_staking_metadata"></Link>
+
+## Function `is_equal_staking_metadata`
+
+A utility function that returns true if all the staking parameters
+of the staked iota except the principal are identical
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_is_equal_staking_metadata">is_equal_staking_metadata</Link>(self: &<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">iota_system::timelocked_staking::TimelockedStakedIota</Link>, other: &<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">iota_system::timelocked_staking::TimelockedStakedIota</Link>): bool
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_is_equal_staking_metadata">is_equal_staking_metadata</Link>(
+    self: &<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link>,
+    other: &<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link>,
+): bool \{
+    self.staked_iota.<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_is_equal_staking_metadata">is_equal_staking_metadata</Link>(&other.staked_iota) &&
+        (self.<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_expiration_timestamp_ms">expiration_timestamp_ms</Link> == other.<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_expiration_timestamp_ms">expiration_timestamp_ms</Link>) &&
+        (self.<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_label">label</Link>() == other.<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_label">label</Link>())
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_timelocked_staking_pool_id"></Link>
+
+## Function `pool_id`
+
+Function to get the pool id of a <code><Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_pool_id">pool_id</Link>(self: &<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">iota_system::timelocked_staking::TimelockedStakedIota</Link>): <Link to="../iota/object#iota_object_ID">iota::object::ID</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_pool_id">pool_id</Link>(self: &<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link>): ID \{ self.staked_iota.<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_pool_id">pool_id</Link>() }
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_timelocked_staking_staked_iota_amount"></Link>
+
+## Function `staked_iota_amount`
+
+Function to get the staked iota amount of a <code><Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_staked_iota_amount">staked_iota_amount</Link>(self: &<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">iota_system::timelocked_staking::TimelockedStakedIota</Link>): u64
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_staked_iota_amount">staked_iota_amount</Link>(self: &<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link>): u64 \{
+    self.staked_iota.<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_staked_iota_amount">staked_iota_amount</Link>()
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_timelocked_staking_stake_activation_epoch"></Link>
+
+## Function `stake_activation_epoch`
+
+Function to get the stake activation epoch of a <code><Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_stake_activation_epoch">stake_activation_epoch</Link>(self: &<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">iota_system::timelocked_staking::TimelockedStakedIota</Link>): u64
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_stake_activation_epoch">stake_activation_epoch</Link>(self: &<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link>): u64 \{
+    self.staked_iota.<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_stake_activation_epoch">stake_activation_epoch</Link>()
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_timelocked_staking_expiration_timestamp_ms"></Link>
+
+## Function `expiration_timestamp_ms`
+
+Function to get the expiration timestamp of a <code><Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_expiration_timestamp_ms">expiration_timestamp_ms</Link>(self: &<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">iota_system::timelocked_staking::TimelockedStakedIota</Link>): u64
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_expiration_timestamp_ms">expiration_timestamp_ms</Link>(self: &<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link>): u64 \{
+    self.<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_expiration_timestamp_ms">expiration_timestamp_ms</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_timelocked_staking_label"></Link>
+
+## Function `label`
+
+Function to get the label of a <code><Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_label">label</Link>(self: &<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">iota_system::timelocked_staking::TimelockedStakedIota</Link>): <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;<Link to="../std/string#std_string_String">std::string::String</Link>&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_label">label</Link>(self: &<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link>): Option&lt;String&gt; \{
+    self.<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_label">label</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_timelocked_staking_is_labeled_with"></Link>
+
+## Function `is_labeled_with`
+
+Check if a <code><Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link></code> is labeled with the type <code>L</code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_is_labeled_with">is_labeled_with</Link>&lt;L&gt;(self: &<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">iota_system::timelocked_staking::TimelockedStakedIota</Link>): bool
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_is_labeled_with">is_labeled_with</Link>&lt;L&gt;(self: &<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link>): bool \{
+    <b>if</b> (self.<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_label">label</Link>.is_some()) \{
+        self.<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_label">label</Link>.borrow() == timelock::type_name&lt;L&gt;()
+    } <b>else</b> \{
+        <b>false</b>
+    }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_timelocked_staking_unpack"></Link>
+
+## Function `unpack`
+
+A utility function to destroy a <code><Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link></code>.
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_unpack">unpack</Link>(self: <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">iota_system::timelocked_staking::TimelockedStakedIota</Link>): (<Link to="../iota_system/staking_pool#iota_system_staking_pool_StakedIota">iota_system::staking_pool::StakedIota</Link>, u64, <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;<Link to="../std/string#std_string_String">std::string::String</Link>&gt;)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_unpack">unpack</Link>(self: <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link>): (StakedIota, u64, Option&lt;String&gt;) \{
+    <b>let</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link> \{
+        id,
+        staked_iota,
+        <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_expiration_timestamp_ms">expiration_timestamp_ms</Link>,
+        <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_label">label</Link>,
+    } = self;
+    object::delete(id);
+    (staked_iota, <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_expiration_timestamp_ms">expiration_timestamp_ms</Link>, <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_label">label</Link>)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_timelocked_staking_transfer"></Link>
+
+## Function `transfer`
+
+A utility function to transfer a <code><Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link></code> to a receiver.
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_transfer">transfer</Link>(stake: <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">iota_system::timelocked_staking::TimelockedStakedIota</Link>, receiver: <b>address</b>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_transfer">transfer</Link>(stake: <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link>, receiver: <b>address</b>) \{
+    transfer::transfer(stake, receiver);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_timelocked_staking_transfer_multiple"></Link>
+
+## Function `transfer_multiple`
+
+A utility function to transfer a vector of <code><Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link></code> to a receiver.
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_transfer_multiple">transfer_multiple</Link>(stakes: vector&lt;<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">iota_system::timelocked_staking::TimelockedStakedIota</Link>&gt;, receiver: <b>address</b>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_transfer_multiple">transfer_multiple</Link>(<b>mut</b> stakes: vector&lt;<Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link>&gt;, receiver: <b>address</b>) \{
+    // Transfer all the time-locked stakes to the recipient.
+    <b>while</b> (!stakes.is_empty()) \{
+        <b>let</b> stake = stakes.pop_back();
+        transfer::transfer(stake, receiver);
+    };
+    // Destroy the empty vector.
+    vector::destroy_empty(stakes);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_timelocked_staking_request_add_stake_at_genesis"></Link>
+
+## Function `request_add_stake_at_genesis`
+
+Request to add timelocked stake to the validator's staking pool at genesis
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_request_add_stake_at_genesis">request_add_stake_at_genesis</Link>(<Link to="../iota_system/validator#iota_system_validator">validator</Link>: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>, stake: <Link to="../iota/balance#iota_balance_Balance">iota::balance::Balance</Link>&lt;<Link to="../iota/iota#iota_iota_IOTA">iota::iota::IOTA</Link>&gt;, staker_address: <b>address</b>, <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_expiration_timestamp_ms">expiration_timestamp_ms</Link>: u64, <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_label">label</Link>: <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;<Link to="../std/string#std_string_String">std::string::String</Link>&gt;, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_request_add_stake_at_genesis">request_add_stake_at_genesis</Link>(
+    <Link to="../iota_system/validator#iota_system_validator">validator</Link>: &<b>mut</b> ValidatorV1,
+    stake: Balance&lt;IOTA&gt;,
+    staker_address: <b>address</b>,
+    <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_expiration_timestamp_ms">expiration_timestamp_ms</Link>: u64,
+    <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_label">label</Link>: Option&lt;String&gt;,
+    ctx: &<b>mut</b> TxContext,
+) \{
+    <b>let</b> staked_iota = <Link to="../iota_system/validator#iota_system_validator">validator</Link>.request_add_stake_at_genesis_with_receipt(stake, ctx);
+    <b>let</b> timelocked_staked_iota = <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_TimelockedStakedIota">TimelockedStakedIota</Link> \{
+        id: object::new(ctx),
+        staked_iota,
+        <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_expiration_timestamp_ms">expiration_timestamp_ms</Link>,
+        <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_label">label</Link>,
+    };
+    <Link to="../iota_system/timelocked_staking#iota_system_timelocked_staking_transfer">transfer</Link>(timelocked_staked_iota, staker_address);
+}
+</code>
+</pre>
+
+
+
+</details>

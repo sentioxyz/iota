@@ -1,0 +1,254 @@
+---
+title: Module stardust::expiration_unlock_condition
+sidebar_label: expiration_unlock_condition
+slug: expiration_unlock_condition
+---
+import Link from '@docusaurus/Link';
+
+<Link id="stardust_expiration_unlock_condition"/>
+
+
+-  [Struct `ExpirationUnlockCondition`](#stardust_expiration_unlock_condition_ExpirationUnlockCondition)
+-  [Constants](#@Constants_0)
+-  [Function `unlock`](#stardust_expiration_unlock_condition_unlock)
+-  [Function `can_be_unlocked_by`](#stardust_expiration_unlock_condition_can_be_unlocked_by)
+-  [Function `owner`](#stardust_expiration_unlock_condition_owner)
+-  [Function `return_address`](#stardust_expiration_unlock_condition_return_address)
+-  [Function `unix_time`](#stardust_expiration_unlock_condition_unix_time)
+
+
+<pre>
+<code>
+<b>use</b> <Link to="../iota/tx_context#iota_tx_context">iota::tx_context</Link>;
+</code>
+</pre>
+
+
+
+<Link id="stardust_expiration_unlock_condition_ExpirationUnlockCondition"></Link>
+
+## Struct `ExpirationUnlockCondition`
+
+The Stardust expiration unlock condition.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../stardust/expiration_unlock_condition#stardust_expiration_unlock_condition_ExpirationUnlockCondition">ExpirationUnlockCondition</Link> <b>has</b> store
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code><Link to="../stardust/expiration_unlock_condition#stardust_expiration_unlock_condition_owner">owner</Link>: <b>address</b></code>
+</dt>
+<dd>
+ The address who owns the output before the timestamp has passed.
+</dd>
+<dt>
+<code><Link to="../stardust/expiration_unlock_condition#stardust_expiration_unlock_condition_return_address">return_address</Link>: <b>address</b></code>
+</dt>
+<dd>
+ The address that is allowed to spend the locked funds after the timestamp has passed.
+</dd>
+<dt>
+<code><Link to="../stardust/expiration_unlock_condition#stardust_expiration_unlock_condition_unix_time">unix_time</Link>: u32</code>
+</dt>
+<dd>
+ Before this unix time, Address Unlock Condition is allowed to unlock the output, after that only the address defined in Return Address.
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="@Constants_0"></Link>
+
+## Constants
+
+
+<Link id="stardust_expiration_unlock_condition_EWrongSender"></Link>
+
+The output can not be unlocked by the sender error.
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../stardust/expiration_unlock_condition#stardust_expiration_unlock_condition_EWrongSender">EWrongSender</Link>: u64 = 0;
+</code>
+</pre>
+
+
+
+<Link id="stardust_expiration_unlock_condition_unlock"></Link>
+
+## Function `unlock`
+
+Check the unlock condition.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/expiration_unlock_condition#stardust_expiration_unlock_condition_unlock">unlock</Link>(condition: <Link to="../stardust/expiration_unlock_condition#stardust_expiration_unlock_condition_ExpirationUnlockCondition">stardust::expiration_unlock_condition::ExpirationUnlockCondition</Link>, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/expiration_unlock_condition#stardust_expiration_unlock_condition_unlock">unlock</Link>(condition: <Link to="../stardust/expiration_unlock_condition#stardust_expiration_unlock_condition_ExpirationUnlockCondition">ExpirationUnlockCondition</Link>, ctx: &<b>mut</b> TxContext) \{
+    <b>let</b> unlock_address = condition.<Link to="../stardust/expiration_unlock_condition#stardust_expiration_unlock_condition_can_be_unlocked_by">can_be_unlocked_by</Link>(ctx);
+    <b>assert</b>!(unlock_address == ctx.sender(), <Link to="../stardust/expiration_unlock_condition#stardust_expiration_unlock_condition_EWrongSender">EWrongSender</Link>);
+    <b>let</b> <Link to="../stardust/expiration_unlock_condition#stardust_expiration_unlock_condition_ExpirationUnlockCondition">ExpirationUnlockCondition</Link> \{
+        <Link to="../stardust/expiration_unlock_condition#stardust_expiration_unlock_condition_owner">owner</Link>: _,
+        <Link to="../stardust/expiration_unlock_condition#stardust_expiration_unlock_condition_return_address">return_address</Link>: _,
+        <Link to="../stardust/expiration_unlock_condition#stardust_expiration_unlock_condition_unix_time">unix_time</Link>: _,
+    } = condition;
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="stardust_expiration_unlock_condition_can_be_unlocked_by"></Link>
+
+## Function `can_be_unlocked_by`
+
+Return the address that can unlock the related output.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/expiration_unlock_condition#stardust_expiration_unlock_condition_can_be_unlocked_by">can_be_unlocked_by</Link>(condition: &<Link to="../stardust/expiration_unlock_condition#stardust_expiration_unlock_condition_ExpirationUnlockCondition">stardust::expiration_unlock_condition::ExpirationUnlockCondition</Link>, ctx: &<Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): <b>address</b>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/expiration_unlock_condition#stardust_expiration_unlock_condition_can_be_unlocked_by">can_be_unlocked_by</Link>(condition: &<Link to="../stardust/expiration_unlock_condition#stardust_expiration_unlock_condition_ExpirationUnlockCondition">ExpirationUnlockCondition</Link>, ctx: &TxContext): <b>address</b> \{
+    // Unix time in seconds.
+    <b>let</b> current_time = ((tx_context::epoch_timestamp_ms(ctx) / 1000) <b>as</b> u32);
+    <b>if</b> (condition.<Link to="../stardust/expiration_unlock_condition#stardust_expiration_unlock_condition_unix_time">unix_time</Link>() &lt;= current_time) \{
+        condition.<Link to="../stardust/expiration_unlock_condition#stardust_expiration_unlock_condition_return_address">return_address</Link>()
+    } <b>else</b> \{
+        condition.<Link to="../stardust/expiration_unlock_condition#stardust_expiration_unlock_condition_owner">owner</Link>()
+    }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="stardust_expiration_unlock_condition_owner"></Link>
+
+## Function `owner`
+
+Get the unlock condition's <code><Link to="../stardust/expiration_unlock_condition#stardust_expiration_unlock_condition_owner">owner</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/expiration_unlock_condition#stardust_expiration_unlock_condition_owner">owner</Link>(condition: &<Link to="../stardust/expiration_unlock_condition#stardust_expiration_unlock_condition_ExpirationUnlockCondition">stardust::expiration_unlock_condition::ExpirationUnlockCondition</Link>): <b>address</b>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/expiration_unlock_condition#stardust_expiration_unlock_condition_owner">owner</Link>(condition: &<Link to="../stardust/expiration_unlock_condition#stardust_expiration_unlock_condition_ExpirationUnlockCondition">ExpirationUnlockCondition</Link>): <b>address</b> \{
+    condition.<Link to="../stardust/expiration_unlock_condition#stardust_expiration_unlock_condition_owner">owner</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="stardust_expiration_unlock_condition_return_address"></Link>
+
+## Function `return_address`
+
+Get the unlock condition's <code><Link to="../stardust/expiration_unlock_condition#stardust_expiration_unlock_condition_return_address">return_address</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/expiration_unlock_condition#stardust_expiration_unlock_condition_return_address">return_address</Link>(condition: &<Link to="../stardust/expiration_unlock_condition#stardust_expiration_unlock_condition_ExpirationUnlockCondition">stardust::expiration_unlock_condition::ExpirationUnlockCondition</Link>): <b>address</b>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/expiration_unlock_condition#stardust_expiration_unlock_condition_return_address">return_address</Link>(condition: &<Link to="../stardust/expiration_unlock_condition#stardust_expiration_unlock_condition_ExpirationUnlockCondition">ExpirationUnlockCondition</Link>): <b>address</b> \{
+    condition.<Link to="../stardust/expiration_unlock_condition#stardust_expiration_unlock_condition_return_address">return_address</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="stardust_expiration_unlock_condition_unix_time"></Link>
+
+## Function `unix_time`
+
+Get the unlock condition's <code><Link to="../stardust/expiration_unlock_condition#stardust_expiration_unlock_condition_unix_time">unix_time</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/expiration_unlock_condition#stardust_expiration_unlock_condition_unix_time">unix_time</Link>(condition: &<Link to="../stardust/expiration_unlock_condition#stardust_expiration_unlock_condition_ExpirationUnlockCondition">stardust::expiration_unlock_condition::ExpirationUnlockCondition</Link>): u32
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/expiration_unlock_condition#stardust_expiration_unlock_condition_unix_time">unix_time</Link>(condition: &<Link to="../stardust/expiration_unlock_condition#stardust_expiration_unlock_condition_ExpirationUnlockCondition">ExpirationUnlockCondition</Link>): u32 \{
+    condition.<Link to="../stardust/expiration_unlock_condition#stardust_expiration_unlock_condition_unix_time">unix_time</Link>
+}
+</code>
+</pre>
+
+
+
+</details>

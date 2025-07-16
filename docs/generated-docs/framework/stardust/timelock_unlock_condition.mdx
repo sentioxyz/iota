@@ -1,0 +1,169 @@
+---
+title: Module stardust::timelock_unlock_condition
+sidebar_label: timelock_unlock_condition
+slug: timelock_unlock_condition
+---
+import Link from '@docusaurus/Link';
+
+<Link id="stardust_timelock_unlock_condition"/>
+
+
+-  [Struct `TimelockUnlockCondition`](#stardust_timelock_unlock_condition_TimelockUnlockCondition)
+-  [Constants](#@Constants_0)
+-  [Function `unlock`](#stardust_timelock_unlock_condition_unlock)
+-  [Function `is_timelocked`](#stardust_timelock_unlock_condition_is_timelocked)
+-  [Function `unix_time`](#stardust_timelock_unlock_condition_unix_time)
+
+
+<pre>
+<code>
+<b>use</b> <Link to="../iota/tx_context#iota_tx_context">iota::tx_context</Link>;
+</code>
+</pre>
+
+
+
+<Link id="stardust_timelock_unlock_condition_TimelockUnlockCondition"></Link>
+
+## Struct `TimelockUnlockCondition`
+
+The Stardust timelock unlock condition.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../stardust/timelock_unlock_condition#stardust_timelock_unlock_condition_TimelockUnlockCondition">TimelockUnlockCondition</Link> <b>has</b> store
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code><Link to="../stardust/timelock_unlock_condition#stardust_timelock_unlock_condition_unix_time">unix_time</Link>: u32</code>
+</dt>
+<dd>
+ The unix time (seconds since Unix epoch) starting from which the output can be consumed.
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="@Constants_0"></Link>
+
+## Constants
+
+
+<Link id="stardust_timelock_unlock_condition_ETimelockNotExpired"></Link>
+
+The timelock is not expired error.
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../stardust/timelock_unlock_condition#stardust_timelock_unlock_condition_ETimelockNotExpired">ETimelockNotExpired</Link>: u64 = 0;
+</code>
+</pre>
+
+
+
+<Link id="stardust_timelock_unlock_condition_unlock"></Link>
+
+## Function `unlock`
+
+Check the unlock condition.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/timelock_unlock_condition#stardust_timelock_unlock_condition_unlock">unlock</Link>(condition: <Link to="../stardust/timelock_unlock_condition#stardust_timelock_unlock_condition_TimelockUnlockCondition">stardust::timelock_unlock_condition::TimelockUnlockCondition</Link>, ctx: &<Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/timelock_unlock_condition#stardust_timelock_unlock_condition_unlock">unlock</Link>(condition: <Link to="../stardust/timelock_unlock_condition#stardust_timelock_unlock_condition_TimelockUnlockCondition">TimelockUnlockCondition</Link>, ctx: &TxContext) \{
+    <b>assert</b>!(!<Link to="../stardust/timelock_unlock_condition#stardust_timelock_unlock_condition_is_timelocked">is_timelocked</Link>(&condition, ctx), <Link to="../stardust/timelock_unlock_condition#stardust_timelock_unlock_condition_ETimelockNotExpired">ETimelockNotExpired</Link>);
+    <b>let</b> <Link to="../stardust/timelock_unlock_condition#stardust_timelock_unlock_condition_TimelockUnlockCondition">TimelockUnlockCondition</Link> \{
+        <Link to="../stardust/timelock_unlock_condition#stardust_timelock_unlock_condition_unix_time">unix_time</Link>: _,
+    } = condition;
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="stardust_timelock_unlock_condition_is_timelocked"></Link>
+
+## Function `is_timelocked`
+
+Check if the output is locked by the <code>Timelock</code> condition.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/timelock_unlock_condition#stardust_timelock_unlock_condition_is_timelocked">is_timelocked</Link>(condition: &<Link to="../stardust/timelock_unlock_condition#stardust_timelock_unlock_condition_TimelockUnlockCondition">stardust::timelock_unlock_condition::TimelockUnlockCondition</Link>, ctx: &<Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): bool
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/timelock_unlock_condition#stardust_timelock_unlock_condition_is_timelocked">is_timelocked</Link>(condition: &<Link to="../stardust/timelock_unlock_condition#stardust_timelock_unlock_condition_TimelockUnlockCondition">TimelockUnlockCondition</Link>, ctx: &TxContext): bool \{
+    condition.<Link to="../stardust/timelock_unlock_condition#stardust_timelock_unlock_condition_unix_time">unix_time</Link>() &gt; ((tx_context::epoch_timestamp_ms(ctx) / 1000) <b>as</b> u32)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="stardust_timelock_unlock_condition_unix_time"></Link>
+
+## Function `unix_time`
+
+Get the unlock condition's <code><Link to="../stardust/timelock_unlock_condition#stardust_timelock_unlock_condition_unix_time">unix_time</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/timelock_unlock_condition#stardust_timelock_unlock_condition_unix_time">unix_time</Link>(condition: &<Link to="../stardust/timelock_unlock_condition#stardust_timelock_unlock_condition_TimelockUnlockCondition">stardust::timelock_unlock_condition::TimelockUnlockCondition</Link>): u32
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/timelock_unlock_condition#stardust_timelock_unlock_condition_unix_time">unix_time</Link>(condition: &<Link to="../stardust/timelock_unlock_condition#stardust_timelock_unlock_condition_TimelockUnlockCondition">TimelockUnlockCondition</Link>): u32 \{
+    condition.<Link to="../stardust/timelock_unlock_condition#stardust_timelock_unlock_condition_unix_time">unix_time</Link>
+}
+</code>
+</pre>
+
+
+
+</details>

@@ -1,0 +1,77 @@
+---
+title: Module std::hash
+sidebar_label: hash
+slug: hash
+---
+import Link from '@docusaurus/Link';
+
+<Link id="std_hash"/>
+Module which defines SHA hashes for byte vectors.
+
+The functions in this module are natively declared both in the Move runtime
+as in the Move prover's prelude.
+
+
+-  [Function `sha2_256`](#std_hash_sha2_256)
+-  [Function `sha3_256`](#std_hash_sha3_256)
+
+
+<pre><code></code></pre>
+
+
+
+<Link id="std_hash_sha2_256"></Link>
+
+## Function `sha2_256`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/hash#std_hash_sha2_256">sha2_256</Link>(data: <Link to="../std/vector#std_vector">vector</Link>&lt;<Link to="../std/u8#std_u8">u8</Link>&gt;): <Link to="../std/vector#std_vector">vector</Link>&lt;<Link to="../std/u8#std_u8">u8</Link>&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>native</b> <b>fun</b> <Link to="../std/hash#std_hash_sha2_256">sha2_256</Link>(data: <Link to="../std/vector#std_vector">vector</Link>&lt;<Link to="../std/u8#std_u8">u8</Link>&gt;): <Link to="../std/vector#std_vector">vector</Link>&lt;<Link to="../std/u8#std_u8">u8</Link>&gt;;
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_hash_sha3_256"></Link>
+
+## Function `sha3_256`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/hash#std_hash_sha3_256">sha3_256</Link>(data: <Link to="../std/vector#std_vector">vector</Link>&lt;<Link to="../std/u8#std_u8">u8</Link>&gt;): <Link to="../std/vector#std_vector">vector</Link>&lt;<Link to="../std/u8#std_u8">u8</Link>&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>native</b> <b>fun</b> <Link to="../std/hash#std_hash_sha3_256">sha3_256</Link>(data: <Link to="../std/vector#std_vector">vector</Link>&lt;<Link to="../std/u8#std_u8">u8</Link>&gt;): <Link to="../std/vector#std_vector">vector</Link>&lt;<Link to="../std/u8#std_u8">u8</Link>&gt;;
+</code>
+</pre>
+
+
+
+</details>

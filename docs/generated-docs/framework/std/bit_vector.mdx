@@ -1,0 +1,377 @@
+---
+title: Module std::bit_vector
+sidebar_label: bit_vector
+slug: bit_vector
+---
+import Link from '@docusaurus/Link';
+
+<Link id="std_bit_vector"/>
+
+
+-  [Struct `BitVector`](#std_bit_vector_BitVector)
+-  [Constants](#@Constants_0)
+-  [Function `new`](#std_bit_vector_new)
+-  [Function `set`](#std_bit_vector_set)
+-  [Function `unset`](#std_bit_vector_unset)
+-  [Function `shift_left`](#std_bit_vector_shift_left)
+-  [Function `is_index_set`](#std_bit_vector_is_index_set)
+-  [Function `length`](#std_bit_vector_length)
+-  [Function `longest_set_sequence_starting_at`](#std_bit_vector_longest_set_sequence_starting_at)
+
+
+<pre><code></code></pre>
+
+
+
+<Link id="std_bit_vector_BitVector"></Link>
+
+## Struct `BitVector`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../std/bit_vector#std_bit_vector_BitVector">BitVector</Link> <b>has</b> <b>copy</b>, drop, store
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code><Link to="../std/bit_vector#std_bit_vector_length">length</Link>: <Link to="../std/u64#std_u64">u64</Link></code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>bit_field: <Link to="../std/vector#std_vector">vector</Link>&lt;bool&gt;</code>
+</dt>
+<dd>
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="@Constants_0"></Link>
+
+## Constants
+
+
+<Link id="std_bit_vector_EINDEX"></Link>
+
+The provided index is out of bounds
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../std/bit_vector#std_bit_vector_EINDEX">EINDEX</Link>: <Link to="../std/u64#std_u64">u64</Link> = 131072;
+</code>
+</pre>
+
+
+
+<Link id="std_bit_vector_ELENGTH"></Link>
+
+An invalid length of bitvector was given
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../std/bit_vector#std_bit_vector_ELENGTH">ELENGTH</Link>: <Link to="../std/u64#std_u64">u64</Link> = 131073;
+</code>
+</pre>
+
+
+
+<Link id="std_bit_vector_MAX_SIZE"></Link>
+
+The maximum allowed bitvector size
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../std/bit_vector#std_bit_vector_MAX_SIZE">MAX_SIZE</Link>: <Link to="../std/u64#std_u64">u64</Link> = 1024;
+</code>
+</pre>
+
+
+
+<Link id="std_bit_vector_WORD_SIZE"></Link>
+
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../std/bit_vector#std_bit_vector_WORD_SIZE">WORD_SIZE</Link>: <Link to="../std/u64#std_u64">u64</Link> = 1;
+</code>
+</pre>
+
+
+
+<Link id="std_bit_vector_new"></Link>
+
+## Function `new`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/bit_vector#std_bit_vector_new">new</Link>(<Link to="../std/bit_vector#std_bit_vector_length">length</Link>: <Link to="../std/u64#std_u64">u64</Link>): <Link to="../std/bit_vector#std_bit_vector_BitVector">std::bit_vector::BitVector</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/bit_vector#std_bit_vector_new">new</Link>(<Link to="../std/bit_vector#std_bit_vector_length">length</Link>: <Link to="../std/u64#std_u64">u64</Link>): <Link to="../std/bit_vector#std_bit_vector_BitVector">BitVector</Link> \{
+    <b>assert</b>!(<Link to="../std/bit_vector#std_bit_vector_length">length</Link> &gt; 0, <Link to="../std/bit_vector#std_bit_vector_ELENGTH">ELENGTH</Link>);
+    <b>assert</b>!(<Link to="../std/bit_vector#std_bit_vector_length">length</Link> &lt; <Link to="../std/bit_vector#std_bit_vector_MAX_SIZE">MAX_SIZE</Link>, <Link to="../std/bit_vector#std_bit_vector_ELENGTH">ELENGTH</Link>);
+    <b>let</b> <b>mut</b> counter = 0;
+    <b>let</b> <b>mut</b> bit_field = <Link to="../std/vector#std_vector_empty">vector::empty</Link>();
+    <b>while</b> (counter &lt; <Link to="../std/bit_vector#std_bit_vector_length">length</Link>) \{
+        bit_field.push_back(<b>false</b>);
+        counter = counter + 1;
+    };
+    <Link to="../std/bit_vector#std_bit_vector_BitVector">BitVector</Link> \{
+        <Link to="../std/bit_vector#std_bit_vector_length">length</Link>,
+        bit_field,
+    }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_bit_vector_set"></Link>
+
+## Function `set`
+
+Set the bit at <code>bit_index</code> in the <code>bitvector</code> regardless of its previous state.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/bit_vector#std_bit_vector_set">set</Link>(bitvector: &<b>mut</b> <Link to="../std/bit_vector#std_bit_vector_BitVector">std::bit_vector::BitVector</Link>, bit_index: <Link to="../std/u64#std_u64">u64</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/bit_vector#std_bit_vector_set">set</Link>(bitvector: &<b>mut</b> <Link to="../std/bit_vector#std_bit_vector_BitVector">BitVector</Link>, bit_index: <Link to="../std/u64#std_u64">u64</Link>) \{
+    <b>assert</b>!(bit_index &lt; bitvector.bit_field.<Link to="../std/bit_vector#std_bit_vector_length">length</Link>(), <Link to="../std/bit_vector#std_bit_vector_EINDEX">EINDEX</Link>);
+    <b>let</b> x = &<b>mut</b> bitvector.bit_field[bit_index];
+    *x = <b>true</b>;
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_bit_vector_unset"></Link>
+
+## Function `unset`
+
+Unset the bit at <code>bit_index</code> in the <code>bitvector</code> regardless of its previous state.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/bit_vector#std_bit_vector_unset">unset</Link>(bitvector: &<b>mut</b> <Link to="../std/bit_vector#std_bit_vector_BitVector">std::bit_vector::BitVector</Link>, bit_index: <Link to="../std/u64#std_u64">u64</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/bit_vector#std_bit_vector_unset">unset</Link>(bitvector: &<b>mut</b> <Link to="../std/bit_vector#std_bit_vector_BitVector">BitVector</Link>, bit_index: <Link to="../std/u64#std_u64">u64</Link>) \{
+    <b>assert</b>!(bit_index &lt; bitvector.bit_field.<Link to="../std/bit_vector#std_bit_vector_length">length</Link>(), <Link to="../std/bit_vector#std_bit_vector_EINDEX">EINDEX</Link>);
+    <b>let</b> x = &<b>mut</b> bitvector.bit_field[bit_index];
+    *x = <b>false</b>;
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_bit_vector_shift_left"></Link>
+
+## Function `shift_left`
+
+Shift the <code>bitvector</code> left by <code>amount</code>. If <code>amount</code> is greater than the
+bitvector's length the bitvector will be zeroed out.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/bit_vector#std_bit_vector_shift_left">shift_left</Link>(bitvector: &<b>mut</b> <Link to="../std/bit_vector#std_bit_vector_BitVector">std::bit_vector::BitVector</Link>, amount: <Link to="../std/u64#std_u64">u64</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/bit_vector#std_bit_vector_shift_left">shift_left</Link>(bitvector: &<b>mut</b> <Link to="../std/bit_vector#std_bit_vector_BitVector">BitVector</Link>, amount: <Link to="../std/u64#std_u64">u64</Link>) \{
+    <b>if</b> (amount &gt;= bitvector.<Link to="../std/bit_vector#std_bit_vector_length">length</Link>) \{
+        <b>let</b> len = bitvector.bit_field.<Link to="../std/bit_vector#std_bit_vector_length">length</Link>();
+        <b>let</b> <b>mut</b> i = 0;
+        <b>while</b> (i &lt; len) \{
+            <b>let</b> elem = &<b>mut</b> bitvector.bit_field[i];
+            *elem = <b>false</b>;
+            i = i + 1;
+        };
+    } <b>else</b> \{
+        <b>let</b> <b>mut</b> i = amount;
+        <b>while</b> (i &lt; bitvector.<Link to="../std/bit_vector#std_bit_vector_length">length</Link>) \{
+            <b>if</b> (bitvector.<Link to="../std/bit_vector#std_bit_vector_is_index_set">is_index_set</Link>(i)) bitvector.<Link to="../std/bit_vector#std_bit_vector_set">set</Link>(i - amount)
+            <b>else</b> bitvector.<Link to="../std/bit_vector#std_bit_vector_unset">unset</Link>(i - amount);
+            i = i + 1;
+        };
+        i = bitvector.<Link to="../std/bit_vector#std_bit_vector_length">length</Link> - amount;
+        <b>while</b> (i &lt; bitvector.<Link to="../std/bit_vector#std_bit_vector_length">length</Link>) \{
+            <Link to="../std/bit_vector#std_bit_vector_unset">unset</Link>(bitvector, i);
+            i = i + 1;
+        };
+    }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_bit_vector_is_index_set"></Link>
+
+## Function `is_index_set`
+
+Return the value of the bit at <code>bit_index</code> in the <code>bitvector</code>. <code><b>true</b></code>
+represents "1" and <code><b>false</b></code> represents a 0
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/bit_vector#std_bit_vector_is_index_set">is_index_set</Link>(bitvector: &<Link to="../std/bit_vector#std_bit_vector_BitVector">std::bit_vector::BitVector</Link>, bit_index: <Link to="../std/u64#std_u64">u64</Link>): bool
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/bit_vector#std_bit_vector_is_index_set">is_index_set</Link>(bitvector: &<Link to="../std/bit_vector#std_bit_vector_BitVector">BitVector</Link>, bit_index: <Link to="../std/u64#std_u64">u64</Link>): bool \{
+    <b>assert</b>!(bit_index &lt; bitvector.bit_field.<Link to="../std/bit_vector#std_bit_vector_length">length</Link>(), <Link to="../std/bit_vector#std_bit_vector_EINDEX">EINDEX</Link>);
+    bitvector.bit_field[bit_index]
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_bit_vector_length"></Link>
+
+## Function `length`
+
+Return the length (number of usable bits) of this bitvector
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/bit_vector#std_bit_vector_length">length</Link>(bitvector: &<Link to="../std/bit_vector#std_bit_vector_BitVector">std::bit_vector::BitVector</Link>): <Link to="../std/u64#std_u64">u64</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/bit_vector#std_bit_vector_length">length</Link>(bitvector: &<Link to="../std/bit_vector#std_bit_vector_BitVector">BitVector</Link>): <Link to="../std/u64#std_u64">u64</Link> \{
+    bitvector.bit_field.<Link to="../std/bit_vector#std_bit_vector_length">length</Link>()
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="std_bit_vector_longest_set_sequence_starting_at"></Link>
+
+## Function `longest_set_sequence_starting_at`
+
+Returns the length of the longest sequence of set bits starting at (and
+including) <code>start_index</code> in the <code>bitvector</code>. If there is no such
+sequence, then <code>0</code> is returned.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/bit_vector#std_bit_vector_longest_set_sequence_starting_at">longest_set_sequence_starting_at</Link>(bitvector: &<Link to="../std/bit_vector#std_bit_vector_BitVector">std::bit_vector::BitVector</Link>, start_index: <Link to="../std/u64#std_u64">u64</Link>): <Link to="../std/u64#std_u64">u64</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../std/bit_vector#std_bit_vector_longest_set_sequence_starting_at">longest_set_sequence_starting_at</Link>(bitvector: &<Link to="../std/bit_vector#std_bit_vector_BitVector">BitVector</Link>, start_index: <Link to="../std/u64#std_u64">u64</Link>): <Link to="../std/u64#std_u64">u64</Link> \{
+    <b>assert</b>!(start_index &lt; bitvector.<Link to="../std/bit_vector#std_bit_vector_length">length</Link>, <Link to="../std/bit_vector#std_bit_vector_EINDEX">EINDEX</Link>);
+    <b>let</b> <b>mut</b> index = start_index;
+    // Find the greatest index in the <Link to="../std/vector#std_vector">vector</Link> such that all indices less than it are <Link to="../std/bit_vector#std_bit_vector_set">set</Link>.
+    <b>while</b> (index &lt; bitvector.<Link to="../std/bit_vector#std_bit_vector_length">length</Link>) \{
+        <b>if</b> (!bitvector.<Link to="../std/bit_vector#std_bit_vector_is_index_set">is_index_set</Link>(index)) <b>break</b>;
+        index = index + 1;
+    };
+    index - start_index
+}
+</code>
+</pre>
+
+
+
+</details>

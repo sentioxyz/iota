@@ -1,24 +1,155 @@
-/crates/iota-types/src/crypto.rs @joyqvq @kchalkias @benr-ml
-/crates/iota-types/src/base_types.rs @joyqvq
-/crates/iota-keys/ @joyqvq @patrickkuo
-/crates/iota-protocol-config @iotamark
+# Default fallback, if no other path below this matches
+* @iotaledger/sc-platform @iotaledger/core-protocol
 
-*.md @ronny-iota
-# Omit auto-generated changelogs and changesets from docs review:
-/.changeset/*.md
-CHANGELOG.md
+# Everything within the SDK folder
+/sdk/ @iotaledger/tooling
 
-# When native functions change, so we can evaluate cost impact
-/crates/iota-framework/src/natives/ @dariorussi
+/consensus/ @iotaledger/consensus
 
-# GraphQL RPC working group
-/crates/iota-graphql-rpc/ @amnn @wlmyng @stefan-iota @emmazzz
-/crates/iota-graphql-e2e-tests/ @amnn @wlmyng @stefan-iota @emmazzz
+# Crates
+/crates/bin-version/ @iotaledger/dev-tools
+/crates/iota/ @iotaledger/dev-tools
+/crates/iota-adapter-transactional-tests/ @iotaledger/vm-language
+/crates/iota-analytics-indexer/ @iotaledger/infrastructure
+/crates/iota-analytics-indexer-derive/ @iotaledger/infrastructure
+/crates/iota-archival/ @iotaledger/node
+/crates/iota-authority-aggregation/ @iotaledger/node @iotaledger/consensus
+/crates/iota-aws-orchestrator/ @iotaledger/consensus
+/crates/iota-benchmark/ @iotaledger/node
+/crates/iota-cluster-test/ @iotaledger/infrastructure
+/crates/iota-common/ @iotaledger/core-protocol
+/crates/iota-config/ @iotaledger/node
+/crates/iota-core/ @iotaledger/node @iotaledger/consensus
+/crates/iota-core/src/authority/ @iotaledger/node @iotaledger/consensus @iotaledger/research
+/crates/iota-cost/ @iotaledger/vm-language
+/crates/iota-data-ingestion*/ @iotaledger/infrastructure
+/crates/iota-e2e-tests/ @iotaledger/node @iotaledger/vm-language
+/crates/iota-enum-compat-util/ @iotaledger/vm-language
+/crates/iota-faucet/ @iotaledger/infrastructure
+/crates/iota-framework/ @iotaledger/vm-language
+/crates/iota-framework-snapshot/ @iotaledger/vm-language
+/crates/iota-framework-tests/ @iotaledger/vm-language
+/crates/iota-genesis-builder/ @iotaledger/vm-language
+/crates/iota-genesis-common/ @iotaledger/vm-language
+/crates/iota-graphql*/ @iotaledger/infrastructure
+/crates/iota-http/ @iotaledger/node
+/crates/iota-indexer*/ @iotaledger/infrastructure
+/crates/iota-json/ @iotaledger/infrastructure
+/crates/iota-json-rpc*/ @iotaledger/infrastructure
+/crates/iota-keys/ @iotaledger/dev-tools
+/crates/iota-light-client/ @iotaledger/dev-tools
+/crates/iota-macros/ @iotaledger/dev-tools
+/crates/iota-mainnet-unlocks/ @iotaledger/infrastructure
+/crates/iota-metric-checker/ @iotaledger/node
+/crates/iota-metrics/ @iotaledger/core-protocol
+/crates/iota-move/ @iotaledger/vm-language
+/crates/iota-move-build/ @iotaledger/vm-language
+/crates/iota-move-lsp/ @iotaledger/vm-language
+/crates/iota-names/ @iotaledger/dev-tools
+/crates/iota-network/ @iotaledger/node
+/crates/iota-network-stack/ @iotaledger/node
+/crates/iota-node/ @iotaledger/node
+/crates/iota-open-rpc/ @iotaledger/dev-tools
+/crates/iota-open-rpc-macros/ @iotaledger/dev-tools
+/crates/iota-package-dump/ @iotaledger/infrastructure
+/crates/iota-package-management/ @iotaledger/vm-language
+/crates/iota-package-resolver/ @iotaledger/vm-language
+/crates/iota-proc-macros/ @iotaledger/dev-tools
+/crates/iota-protocol-config/ @iotaledger/node @iotaledger/sc-platform
+/crates/iota-protocol-config-macros/ @iotaledger/node @iotaledger/sc-platform
+/crates/iota-proxy/ @iotaledger/node
+/crates/iota-replay/ @iotaledger/node
+/crates/iota-rest-api/ @iotaledger/node @iotaledger/infrastructure
+/crates/iota-rest-kv/ @iotaledger/infrastructure
+/crates/iota-rosetta/ @iotaledger/infrastructure
+/crates/iota-rpc-loadgen/ @iotaledger/infrastructure
+/crates/iota-sdk/ @iotaledger/dev-tools
+/crates/iota-simulator/ @iotaledger/core-protocol
+/crates/iota-single-node-benchmark/ @iotaledger/node
+/crates/iota-snapshot/ @iotaledger/node
+/crates/iota-source-validation/ @iotaledger/vm-language
+/crates/iota-source-validation-service/ @iotaledger/vm-language
+/crates/iota-storage/ @iotaledger/node
+/crates/iota-surfer/ @iotaledger/node
+/crates/iota-swarm/ @iotaledger/node
+/crates/iota-swarm-config/ @iotaledger/node
+/crates/iota-test-transaction-builder/ @iotaledger/dev-tools
+/crates/iota-tls/ @iotaledger/core-protocol
+/crates/iota-tool/ @iotaledger/node
+/crates/iota-transaction-builder/ @iotaledger/dev-tools
+/crates/iota-transaction-checks/ @iotaledger/core-protocol
+/crates/iota-transactional-test-runner/ @iotaledger/vm-language
+/crates/iota-types/ @iotaledger/core-protocol @iotaledger/sc-platform
+/crates/iota-upgrade-compatibility-transactional-tests/ @iotaledger/vm-language
+/crates/iota-verifier-transactional-tests/ @iotaledger/vm-language
+/crates/prometheus-closure-metric/ @iotaledger/node
+/crates/shared-crypto/ @iotaledger/core-protocol
+/crates/simulacrum/ @iotaledger/vm-language
+/crates/telemetry-subscribers/ @iotaledger/core-protocol
+/crates/transaction-fuzzer/ @iotaledger/node @iotaledger/vm-language
+/crates/test-cluster/ @iotaledger/infrastructure
+/crates/typed-store/ @iotaledger/core-protocol
+/crates/typed-store-derive/ @iotaledger/core-protocol
+/crates/typed-store-error/ @iotaledger/core-protocol
+/crates/typed-store-workspace-hack/ @iotaledger/core-protocol
 
-# Consensus working group
-/consensus/ @IF/consensus
-/crates/iota-core/src/consensus_handler.rs @IF/consensus
-/crates/iota-core/src/consensus_adapter.rs @IF/consensus
+# Docker
+/docker/ @iotaledger/infrastructure @iotaledger/node @iotaledger/devops-admin
+/dev-tools/ @iotaledger/infrastructure @iotaledger/node @iotaledger/devops-admin
+/dev-tools/iota-indexer-monitoring/ @iotaledger/infrastructure
+/dev-tools/iota-data-ingestion/ @iotaledger/infrastructure
+/dev-tools/iota-rest-kv/ @iotaledger/infrastructure
+/dev-tools/pg-services-local/ @iotaledger/infrastructure
+/setups/ @iotaledger/infrastructure @iotaledger/node @iotaledger/devops-admin
 
+# Frontend apps to be looked after by Boxfish Studio or the tooling team
+/apps/ @iotaledger/tooling
+/dapps/ @iotaledger/tooling
+/linting/ @iotaledger/tooling
+/.husky/ @iotaledger/tooling
+/.changeset/ @iotaledger/tooling
+.eslintrc.js @iotaledger/tooling
+.lintstagedrc.json @iotaledger/tooling
+.npmrc @iotaledger/tooling
+.prettierignore @iotaledger/tooling
+graphql.config.ts @iotaledger/tooling
+package.json @iotaledger/tooling
+pnpm-workspace.yaml @iotaledger/tooling
+prettier.config.js @iotaledger/tooling
+turbo.json @iotaledger/tooling
+vercel.json @iotaledger/tooling
 
-/docker/ @IF/iota-pe
+# Needs to be after package.json ownership definition to override it
+/iota-execution/ @iotaledger/vm-language
+/external-crates/ @iotaledger/vm-language
+
+# Docs and examples are for DevEx to approve upon
+/docs/ @iotaledger/devx
+/examples/ @iotaledger/devx
+
+# Override ownership of Boxfish Studio and the tooling team for the following files
+/docs/**/package.json @iotaledger/devx
+/docs/**/vercel.json @iotaledger/devx
+
+# CI Taskforce
+/.github/actions/ @msarcev @alexsporn @thibault-martinez @DaughterOfMars @Dr-Electron
+/.github/workflows/ @msarcev @alexsporn @thibault-martinez @DaughterOfMars @Dr-Electron
+
+# Protect this CODEOWNERS file, with some fallback in case of unavailability
+/.github/CODEOWNERS @luca-moser @lzpap @miker83z @alexsporn
+
+# Scripts
+/scripts/cargo_sort/ @muXxer
+/scripts/ci_tests/ @iotaledger/node
+/scripts/codesearch/ @muXxer
+/scripts/generate_files/ @muXxer
+/scripts/tooling/ @iotaledger/tooling
+/scripts/utils/ @muXxer
+
+# Other
+/kiosk/ @iotaledger/vm-language
+/nre/ @iotaledger/node
+
+# Disable code ownership for these auto-generated files
+/Cargo.lock
+/pnpm-lock.yaml

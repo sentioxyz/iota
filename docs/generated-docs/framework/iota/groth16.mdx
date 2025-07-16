@@ -1,0 +1,585 @@
+---
+title: Module iota::groth16
+sidebar_label: groth16
+slug: groth16
+---
+import Link from '@docusaurus/Link';
+
+<Link id="iota_groth16"/>
+
+
+-  [Struct `Curve`](#iota_groth16_Curve)
+-  [Struct `PreparedVerifyingKey`](#iota_groth16_PreparedVerifyingKey)
+-  [Struct `PublicProofInputs`](#iota_groth16_PublicProofInputs)
+-  [Struct `ProofPoints`](#iota_groth16_ProofPoints)
+-  [Constants](#@Constants_0)
+-  [Function `bls12381`](#iota_groth16_bls12381)
+-  [Function `bn254`](#iota_groth16_bn254)
+-  [Function `pvk_from_bytes`](#iota_groth16_pvk_from_bytes)
+-  [Function `pvk_to_bytes`](#iota_groth16_pvk_to_bytes)
+-  [Function `public_proof_inputs_from_bytes`](#iota_groth16_public_proof_inputs_from_bytes)
+-  [Function `proof_points_from_bytes`](#iota_groth16_proof_points_from_bytes)
+-  [Function `prepare_verifying_key`](#iota_groth16_prepare_verifying_key)
+-  [Function `prepare_verifying_key_internal`](#iota_groth16_prepare_verifying_key_internal)
+-  [Function `verify_groth16_proof`](#iota_groth16_verify_groth16_proof)
+-  [Function `verify_groth16_proof_internal`](#iota_groth16_verify_groth16_proof_internal)
+
+
+<pre><code></code></pre>
+
+
+
+<Link id="iota_groth16_Curve"></Link>
+
+## Struct `Curve`
+
+Represents an elliptic curve construction to be used in the verifier. Currently we support BLS12-381 and BN254.
+This should be given as the first parameter to <code><Link to="../iota/groth16#iota_groth16_prepare_verifying_key">prepare_verifying_key</Link></code> or <code><Link to="../iota/groth16#iota_groth16_verify_groth16_proof">verify_groth16_proof</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota/groth16#iota_groth16_Curve">Curve</Link> <b>has</b> <b>copy</b>, drop, store
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code>id: u8</code>
+</dt>
+<dd>
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="iota_groth16_PreparedVerifyingKey"></Link>
+
+## Struct `PreparedVerifyingKey`
+
+A <code><Link to="../iota/groth16#iota_groth16_PreparedVerifyingKey">PreparedVerifyingKey</Link></code> consisting of four components in serialized form.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota/groth16#iota_groth16_PreparedVerifyingKey">PreparedVerifyingKey</Link> <b>has</b> <b>copy</b>, drop, store
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code>vk_gamma_abc_g1_bytes: vector&lt;u8&gt;</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>alpha_g1_beta_g2_bytes: vector&lt;u8&gt;</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>gamma_g2_neg_pc_bytes: vector&lt;u8&gt;</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>delta_g2_neg_pc_bytes: vector&lt;u8&gt;</code>
+</dt>
+<dd>
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="iota_groth16_PublicProofInputs"></Link>
+
+## Struct `PublicProofInputs`
+
+A <code><Link to="../iota/groth16#iota_groth16_PublicProofInputs">PublicProofInputs</Link></code> wrapper around its serialized bytes.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota/groth16#iota_groth16_PublicProofInputs">PublicProofInputs</Link> <b>has</b> <b>copy</b>, drop, store
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code>bytes: vector&lt;u8&gt;</code>
+</dt>
+<dd>
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="iota_groth16_ProofPoints"></Link>
+
+## Struct `ProofPoints`
+
+A <code><Link to="../iota/groth16#iota_groth16_ProofPoints">ProofPoints</Link></code> wrapper around the serialized form of three proof points.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota/groth16#iota_groth16_ProofPoints">ProofPoints</Link> <b>has</b> <b>copy</b>, drop, store
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code>bytes: vector&lt;u8&gt;</code>
+</dt>
+<dd>
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="@Constants_0"></Link>
+
+## Constants
+
+
+<Link id="iota_groth16_EInvalidCurve"></Link>
+
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota/groth16#iota_groth16_EInvalidCurve">EInvalidCurve</Link>: u64 = 1;
+</code>
+</pre>
+
+
+
+<Link id="iota_groth16_EInvalidScalar"></Link>
+
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota/groth16#iota_groth16_EInvalidScalar">EInvalidScalar</Link>: u64 = 3;
+</code>
+</pre>
+
+
+
+<Link id="iota_groth16_EInvalidVerifyingKey"></Link>
+
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota/groth16#iota_groth16_EInvalidVerifyingKey">EInvalidVerifyingKey</Link>: u64 = 0;
+</code>
+</pre>
+
+
+
+<Link id="iota_groth16_ETooManyPublicInputs"></Link>
+
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota/groth16#iota_groth16_ETooManyPublicInputs">ETooManyPublicInputs</Link>: u64 = 2;
+</code>
+</pre>
+
+
+
+<Link id="iota_groth16_MaxPublicInputs"></Link>
+
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota/groth16#iota_groth16_MaxPublicInputs">MaxPublicInputs</Link>: u64 = 8;
+</code>
+</pre>
+
+
+
+<Link id="iota_groth16_bls12381"></Link>
+
+## Function `bls12381`
+
+Return the <code><Link to="../iota/groth16#iota_groth16_Curve">Curve</Link></code> value indicating that the BLS12-381 construction should be used in a given function.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bls12381#iota_bls12381">bls12381</Link>(): <Link to="../iota/groth16#iota_groth16_Curve">iota::groth16::Curve</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/bls12381#iota_bls12381">bls12381</Link>(): <Link to="../iota/groth16#iota_groth16_Curve">Curve</Link> \{ <Link to="../iota/groth16#iota_groth16_Curve">Curve</Link> \{ id: 0 } }
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_groth16_bn254"></Link>
+
+## Function `bn254`
+
+Return the <code><Link to="../iota/groth16#iota_groth16_Curve">Curve</Link></code> value indicating that the BN254 construction should be used in a given function.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/groth16#iota_groth16_bn254">bn254</Link>(): <Link to="../iota/groth16#iota_groth16_Curve">iota::groth16::Curve</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/groth16#iota_groth16_bn254">bn254</Link>(): <Link to="../iota/groth16#iota_groth16_Curve">Curve</Link> \{ <Link to="../iota/groth16#iota_groth16_Curve">Curve</Link> \{ id: 1 } }
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_groth16_pvk_from_bytes"></Link>
+
+## Function `pvk_from_bytes`
+
+Creates a <code><Link to="../iota/groth16#iota_groth16_PreparedVerifyingKey">PreparedVerifyingKey</Link></code> from bytes.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/groth16#iota_groth16_pvk_from_bytes">pvk_from_bytes</Link>(vk_gamma_abc_g1_bytes: vector&lt;u8&gt;, alpha_g1_beta_g2_bytes: vector&lt;u8&gt;, gamma_g2_neg_pc_bytes: vector&lt;u8&gt;, delta_g2_neg_pc_bytes: vector&lt;u8&gt;): <Link to="../iota/groth16#iota_groth16_PreparedVerifyingKey">iota::groth16::PreparedVerifyingKey</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/groth16#iota_groth16_pvk_from_bytes">pvk_from_bytes</Link>(
+    vk_gamma_abc_g1_bytes: vector&lt;u8&gt;,
+    alpha_g1_beta_g2_bytes: vector&lt;u8&gt;,
+    gamma_g2_neg_pc_bytes: vector&lt;u8&gt;,
+    delta_g2_neg_pc_bytes: vector&lt;u8&gt;,
+): <Link to="../iota/groth16#iota_groth16_PreparedVerifyingKey">PreparedVerifyingKey</Link> \{
+    <Link to="../iota/groth16#iota_groth16_PreparedVerifyingKey">PreparedVerifyingKey</Link> \{
+        vk_gamma_abc_g1_bytes,
+        alpha_g1_beta_g2_bytes,
+        gamma_g2_neg_pc_bytes,
+        delta_g2_neg_pc_bytes,
+    }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_groth16_pvk_to_bytes"></Link>
+
+## Function `pvk_to_bytes`
+
+Returns bytes of the four components of the <code><Link to="../iota/groth16#iota_groth16_PreparedVerifyingKey">PreparedVerifyingKey</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/groth16#iota_groth16_pvk_to_bytes">pvk_to_bytes</Link>(pvk: <Link to="../iota/groth16#iota_groth16_PreparedVerifyingKey">iota::groth16::PreparedVerifyingKey</Link>): vector&lt;vector&lt;u8&gt;&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/groth16#iota_groth16_pvk_to_bytes">pvk_to_bytes</Link>(pvk: <Link to="../iota/groth16#iota_groth16_PreparedVerifyingKey">PreparedVerifyingKey</Link>): vector&lt;vector&lt;u8&gt;&gt; \{
+    vector[
+        pvk.vk_gamma_abc_g1_bytes,
+        pvk.alpha_g1_beta_g2_bytes,
+        pvk.gamma_g2_neg_pc_bytes,
+        pvk.delta_g2_neg_pc_bytes,
+    ]
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_groth16_public_proof_inputs_from_bytes"></Link>
+
+## Function `public_proof_inputs_from_bytes`
+
+Creates a <code><Link to="../iota/groth16#iota_groth16_PublicProofInputs">PublicProofInputs</Link></code> wrapper from bytes. The <code>bytes</code> parameter should be a concatenation of a number of
+32 bytes scalar field elements to be used as public inputs in little-endian format to a circuit.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/groth16#iota_groth16_public_proof_inputs_from_bytes">public_proof_inputs_from_bytes</Link>(bytes: vector&lt;u8&gt;): <Link to="../iota/groth16#iota_groth16_PublicProofInputs">iota::groth16::PublicProofInputs</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/groth16#iota_groth16_public_proof_inputs_from_bytes">public_proof_inputs_from_bytes</Link>(bytes: vector&lt;u8&gt;): <Link to="../iota/groth16#iota_groth16_PublicProofInputs">PublicProofInputs</Link> \{
+    <b>assert</b>!(bytes.length() % 32 == 0, <Link to="../iota/groth16#iota_groth16_EInvalidScalar">EInvalidScalar</Link>);
+    <b>assert</b>!(bytes.length() / 32 &lt;= <Link to="../iota/groth16#iota_groth16_MaxPublicInputs">MaxPublicInputs</Link>, <Link to="../iota/groth16#iota_groth16_ETooManyPublicInputs">ETooManyPublicInputs</Link>);
+    <Link to="../iota/groth16#iota_groth16_PublicProofInputs">PublicProofInputs</Link> \{ bytes }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_groth16_proof_points_from_bytes"></Link>
+
+## Function `proof_points_from_bytes`
+
+Creates a Groth16 <code><Link to="../iota/groth16#iota_groth16_ProofPoints">ProofPoints</Link></code> from bytes.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/groth16#iota_groth16_proof_points_from_bytes">proof_points_from_bytes</Link>(bytes: vector&lt;u8&gt;): <Link to="../iota/groth16#iota_groth16_ProofPoints">iota::groth16::ProofPoints</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/groth16#iota_groth16_proof_points_from_bytes">proof_points_from_bytes</Link>(bytes: vector&lt;u8&gt;): <Link to="../iota/groth16#iota_groth16_ProofPoints">ProofPoints</Link> \{
+    <Link to="../iota/groth16#iota_groth16_ProofPoints">ProofPoints</Link> \{ bytes }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_groth16_prepare_verifying_key"></Link>
+
+## Function `prepare_verifying_key`
+
+@param curve: What elliptic curve construction to use. See <code><Link to="../iota/bls12381#iota_bls12381">bls12381</Link></code> and <code><Link to="../iota/groth16#iota_groth16_bn254">bn254</Link></code>.
+@param verifying_key: An Arkworks canonical compressed serialization of a verifying key.
+
+Returns four vectors of bytes representing the four components of a prepared verifying key.
+This step computes one pairing e(P, Q), and binds the verification to one particular proof statement.
+This can be used as inputs for the <code><Link to="../iota/groth16#iota_groth16_verify_groth16_proof">verify_groth16_proof</Link></code> function.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/groth16#iota_groth16_prepare_verifying_key">prepare_verifying_key</Link>(curve: &<Link to="../iota/groth16#iota_groth16_Curve">iota::groth16::Curve</Link>, verifying_key: &vector&lt;u8&gt;): <Link to="../iota/groth16#iota_groth16_PreparedVerifyingKey">iota::groth16::PreparedVerifyingKey</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/groth16#iota_groth16_prepare_verifying_key">prepare_verifying_key</Link>(curve: &<Link to="../iota/groth16#iota_groth16_Curve">Curve</Link>, verifying_key: &vector&lt;u8&gt;): <Link to="../iota/groth16#iota_groth16_PreparedVerifyingKey">PreparedVerifyingKey</Link> \{
+    <Link to="../iota/groth16#iota_groth16_prepare_verifying_key_internal">prepare_verifying_key_internal</Link>(curve.id, verifying_key)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_groth16_prepare_verifying_key_internal"></Link>
+
+## Function `prepare_verifying_key_internal`
+
+Native functions that flattens the inputs into an array and passes to the Rust native function. May abort with <code><Link to="../iota/groth16#iota_groth16_EInvalidVerifyingKey">EInvalidVerifyingKey</Link></code> or <code><Link to="../iota/groth16#iota_groth16_EInvalidCurve">EInvalidCurve</Link></code>.
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota/groth16#iota_groth16_prepare_verifying_key_internal">prepare_verifying_key_internal</Link>(curve: u8, verifying_key: &vector&lt;u8&gt;): <Link to="../iota/groth16#iota_groth16_PreparedVerifyingKey">iota::groth16::PreparedVerifyingKey</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>native</b> <b>fun</b> <Link to="../iota/groth16#iota_groth16_prepare_verifying_key_internal">prepare_verifying_key_internal</Link>(
+    curve: u8,
+    verifying_key: &vector&lt;u8&gt;,
+): <Link to="../iota/groth16#iota_groth16_PreparedVerifyingKey">PreparedVerifyingKey</Link>;
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_groth16_verify_groth16_proof"></Link>
+
+## Function `verify_groth16_proof`
+
+@param curve: What elliptic curve construction to use. See the <code><Link to="../iota/bls12381#iota_bls12381">bls12381</Link></code> and <code><Link to="../iota/groth16#iota_groth16_bn254">bn254</Link></code> functions.
+@param prepared_verifying_key: Consists of four vectors of bytes representing the four components of a prepared verifying key.
+@param public_proof_inputs: Represent inputs that are public.
+@param proof_points: Represent three proof points.
+
+Returns a boolean indicating whether the proof is valid.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/groth16#iota_groth16_verify_groth16_proof">verify_groth16_proof</Link>(curve: &<Link to="../iota/groth16#iota_groth16_Curve">iota::groth16::Curve</Link>, prepared_verifying_key: &<Link to="../iota/groth16#iota_groth16_PreparedVerifyingKey">iota::groth16::PreparedVerifyingKey</Link>, public_proof_inputs: &<Link to="../iota/groth16#iota_groth16_PublicProofInputs">iota::groth16::PublicProofInputs</Link>, proof_points: &<Link to="../iota/groth16#iota_groth16_ProofPoints">iota::groth16::ProofPoints</Link>): bool
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota/groth16#iota_groth16_verify_groth16_proof">verify_groth16_proof</Link>(
+    curve: &<Link to="../iota/groth16#iota_groth16_Curve">Curve</Link>,
+    prepared_verifying_key: &<Link to="../iota/groth16#iota_groth16_PreparedVerifyingKey">PreparedVerifyingKey</Link>,
+    public_proof_inputs: &<Link to="../iota/groth16#iota_groth16_PublicProofInputs">PublicProofInputs</Link>,
+    proof_points: &<Link to="../iota/groth16#iota_groth16_ProofPoints">ProofPoints</Link>,
+): bool \{
+    <Link to="../iota/groth16#iota_groth16_verify_groth16_proof_internal">verify_groth16_proof_internal</Link>(
+        curve.id,
+        &prepared_verifying_key.vk_gamma_abc_g1_bytes,
+        &prepared_verifying_key.alpha_g1_beta_g2_bytes,
+        &prepared_verifying_key.gamma_g2_neg_pc_bytes,
+        &prepared_verifying_key.delta_g2_neg_pc_bytes,
+        &public_proof_inputs.bytes,
+        &proof_points.bytes,
+    )
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_groth16_verify_groth16_proof_internal"></Link>
+
+## Function `verify_groth16_proof_internal`
+
+Native functions that flattens the inputs into arrays of vectors and passed to the Rust native function. May abort with <code><Link to="../iota/groth16#iota_groth16_EInvalidCurve">EInvalidCurve</Link></code> or <code><Link to="../iota/groth16#iota_groth16_ETooManyPublicInputs">ETooManyPublicInputs</Link></code>.
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota/groth16#iota_groth16_verify_groth16_proof_internal">verify_groth16_proof_internal</Link>(curve: u8, vk_gamma_abc_g1_bytes: &vector&lt;u8&gt;, alpha_g1_beta_g2_bytes: &vector&lt;u8&gt;, gamma_g2_neg_pc_bytes: &vector&lt;u8&gt;, delta_g2_neg_pc_bytes: &vector&lt;u8&gt;, public_proof_inputs: &vector&lt;u8&gt;, proof_points: &vector&lt;u8&gt;): bool
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>native</b> <b>fun</b> <Link to="../iota/groth16#iota_groth16_verify_groth16_proof_internal">verify_groth16_proof_internal</Link>(
+    curve: u8,
+    vk_gamma_abc_g1_bytes: &vector&lt;u8&gt;,
+    alpha_g1_beta_g2_bytes: &vector&lt;u8&gt;,
+    gamma_g2_neg_pc_bytes: &vector&lt;u8&gt;,
+    delta_g2_neg_pc_bytes: &vector&lt;u8&gt;,
+    public_proof_inputs: &vector&lt;u8&gt;,
+    proof_points: &vector&lt;u8&gt;,
+): bool;
+</code>
+</pre>
+
+
+
+</details>

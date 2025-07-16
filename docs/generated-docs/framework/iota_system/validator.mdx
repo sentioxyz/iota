@@ -1,0 +1,3335 @@
+---
+title: Module iota_system::validator
+sidebar_label: validator
+slug: validator
+---
+import Link from '@docusaurus/Link';
+
+<Link id="iota_system_validator"/>
+
+
+-  [Struct `ValidatorMetadataV1`](#iota_system_validator_ValidatorMetadataV1)
+-  [Struct `ValidatorV1`](#iota_system_validator_ValidatorV1)
+-  [Struct `StakingRequestEvent`](#iota_system_validator_StakingRequestEvent)
+-  [Struct `UnstakingRequestEvent`](#iota_system_validator_UnstakingRequestEvent)
+-  [Constants](#@Constants_0)
+-  [Function `new_metadata`](#iota_system_validator_new_metadata)
+-  [Function `new`](#iota_system_validator_new)
+-  [Function `deactivate`](#iota_system_validator_deactivate)
+-  [Function `activate`](#iota_system_validator_activate)
+-  [Function `adjust_next_epoch_commission_rate`](#iota_system_validator_adjust_next_epoch_commission_rate)
+-  [Function `request_add_stake`](#iota_system_validator_request_add_stake)
+-  [Function `request_add_stake_at_genesis`](#iota_system_validator_request_add_stake_at_genesis)
+-  [Function `request_add_stake_at_genesis_with_receipt`](#iota_system_validator_request_add_stake_at_genesis_with_receipt)
+-  [Function `request_withdraw_stake`](#iota_system_validator_request_withdraw_stake)
+-  [Function `request_set_commission_rate`](#iota_system_validator_request_set_commission_rate)
+-  [Function `set_candidate_commission_rate`](#iota_system_validator_set_candidate_commission_rate)
+-  [Function `deposit_stake_rewards`](#iota_system_validator_deposit_stake_rewards)
+-  [Function `process_pending_stakes_and_withdraws`](#iota_system_validator_process_pending_stakes_and_withdraws)
+-  [Function `is_preactive`](#iota_system_validator_is_preactive)
+-  [Function `metadata`](#iota_system_validator_metadata)
+-  [Function `iota_address`](#iota_system_validator_iota_address)
+-  [Function `name`](#iota_system_validator_name)
+-  [Function `description`](#iota_system_validator_description)
+-  [Function `image_url`](#iota_system_validator_image_url)
+-  [Function `project_url`](#iota_system_validator_project_url)
+-  [Function `network_address`](#iota_system_validator_network_address)
+-  [Function `p2p_address`](#iota_system_validator_p2p_address)
+-  [Function `primary_address`](#iota_system_validator_primary_address)
+-  [Function `authority_pubkey_bytes`](#iota_system_validator_authority_pubkey_bytes)
+-  [Function `proof_of_possession`](#iota_system_validator_proof_of_possession)
+-  [Function `network_pubkey_bytes`](#iota_system_validator_network_pubkey_bytes)
+-  [Function `protocol_pubkey_bytes`](#iota_system_validator_protocol_pubkey_bytes)
+-  [Function `next_epoch_network_address`](#iota_system_validator_next_epoch_network_address)
+-  [Function `next_epoch_p2p_address`](#iota_system_validator_next_epoch_p2p_address)
+-  [Function `next_epoch_primary_address`](#iota_system_validator_next_epoch_primary_address)
+-  [Function `next_epoch_authority_pubkey_bytes`](#iota_system_validator_next_epoch_authority_pubkey_bytes)
+-  [Function `next_epoch_proof_of_possession`](#iota_system_validator_next_epoch_proof_of_possession)
+-  [Function `next_epoch_network_pubkey_bytes`](#iota_system_validator_next_epoch_network_pubkey_bytes)
+-  [Function `next_epoch_protocol_pubkey_bytes`](#iota_system_validator_next_epoch_protocol_pubkey_bytes)
+-  [Function `operation_cap_id`](#iota_system_validator_operation_cap_id)
+-  [Function `next_epoch_gas_price`](#iota_system_validator_next_epoch_gas_price)
+-  [Function `total_stake_amount`](#iota_system_validator_total_stake_amount)
+-  [Function `stake_amount`](#iota_system_validator_stake_amount)
+-  [Function `total_stake`](#iota_system_validator_total_stake)
+-  [Function `next_epoch_stake`](#iota_system_validator_next_epoch_stake)
+-  [Function `voting_power`](#iota_system_validator_voting_power)
+-  [Function `set_voting_power`](#iota_system_validator_set_voting_power)
+-  [Function `pending_stake_amount`](#iota_system_validator_pending_stake_amount)
+-  [Function `pending_stake_withdraw_amount`](#iota_system_validator_pending_stake_withdraw_amount)
+-  [Function `gas_price`](#iota_system_validator_gas_price)
+-  [Function `commission_rate`](#iota_system_validator_commission_rate)
+-  [Function `pool_token_exchange_rate_at_epoch`](#iota_system_validator_pool_token_exchange_rate_at_epoch)
+-  [Function `staking_pool_id`](#iota_system_validator_staking_pool_id)
+-  [Function `is_duplicate`](#iota_system_validator_is_duplicate)
+-  [Function `is_equal_some_and_value`](#iota_system_validator_is_equal_some_and_value)
+-  [Function `is_equal_some`](#iota_system_validator_is_equal_some)
+-  [Function `smaller_than`](#iota_system_validator_smaller_than)
+-  [Function `new_unverified_validator_operation_cap_and_transfer`](#iota_system_validator_new_unverified_validator_operation_cap_and_transfer)
+-  [Function `update_name`](#iota_system_validator_update_name)
+-  [Function `update_description`](#iota_system_validator_update_description)
+-  [Function `update_image_url`](#iota_system_validator_update_image_url)
+-  [Function `update_project_url`](#iota_system_validator_update_project_url)
+-  [Function `update_next_epoch_network_address`](#iota_system_validator_update_next_epoch_network_address)
+-  [Function `update_candidate_network_address`](#iota_system_validator_update_candidate_network_address)
+-  [Function `update_next_epoch_p2p_address`](#iota_system_validator_update_next_epoch_p2p_address)
+-  [Function `update_candidate_p2p_address`](#iota_system_validator_update_candidate_p2p_address)
+-  [Function `update_next_epoch_primary_address`](#iota_system_validator_update_next_epoch_primary_address)
+-  [Function `update_candidate_primary_address`](#iota_system_validator_update_candidate_primary_address)
+-  [Function `update_next_epoch_authority_pubkey`](#iota_system_validator_update_next_epoch_authority_pubkey)
+-  [Function `update_candidate_authority_pubkey`](#iota_system_validator_update_candidate_authority_pubkey)
+-  [Function `update_next_epoch_network_pubkey`](#iota_system_validator_update_next_epoch_network_pubkey)
+-  [Function `update_candidate_network_pubkey`](#iota_system_validator_update_candidate_network_pubkey)
+-  [Function `update_next_epoch_protocol_pubkey`](#iota_system_validator_update_next_epoch_protocol_pubkey)
+-  [Function `update_candidate_protocol_pubkey`](#iota_system_validator_update_candidate_protocol_pubkey)
+-  [Function `effectuate_staged_metadata`](#iota_system_validator_effectuate_staged_metadata)
+-  [Function `validate_metadata`](#iota_system_validator_validate_metadata)
+-  [Function `validate_metadata_bcs`](#iota_system_validator_validate_metadata_bcs)
+-  [Function `get_staking_pool_ref`](#iota_system_validator_get_staking_pool_ref)
+-  [Function `new_from_metadata`](#iota_system_validator_new_from_metadata)
+
+
+<pre>
+<code>
+<b>use</b> <Link to="../iota/address#iota_address">iota::address</Link>;
+<b>use</b> <Link to="../iota/bag#iota_bag">iota::bag</Link>;
+<b>use</b> <Link to="../iota/balance#iota_balance">iota::balance</Link>;
+<b>use</b> <Link to="../iota/coin#iota_coin">iota::coin</Link>;
+<b>use</b> <Link to="../iota/config#iota_config">iota::config</Link>;
+<b>use</b> <Link to="../iota/deny_list#iota_deny_list">iota::deny_list</Link>;
+<b>use</b> <Link to="../iota/dynamic_field#iota_dynamic_field">iota::dynamic_field</Link>;
+<b>use</b> <Link to="../iota/dynamic_object_field#iota_dynamic_object_field">iota::dynamic_object_field</Link>;
+<b>use</b> <Link to="../iota/event#iota_event">iota::event</Link>;
+<b>use</b> <Link to="../iota/hex#iota_hex">iota::hex</Link>;
+<b>use</b> <Link to="../iota/iota#iota_iota">iota::iota</Link>;
+<b>use</b> <Link to="../iota/object#iota_object">iota::object</Link>;
+<b>use</b> <Link to="../iota/table#iota_table">iota::table</Link>;
+<b>use</b> <Link to="../iota/transfer#iota_transfer">iota::transfer</Link>;
+<b>use</b> <Link to="../iota/tx_context#iota_tx_context">iota::tx_context</Link>;
+<b>use</b> <Link to="../iota/types#iota_types">iota::types</Link>;
+<b>use</b> <Link to="../iota/url#iota_url">iota::url</Link>;
+<b>use</b> <Link to="../iota_system/staking_pool#iota_system_staking_pool">iota_system::staking_pool</Link>;
+<b>use</b> <Link to="../iota_system/validator_cap#iota_system_validator_cap">iota_system::validator_cap</Link>;
+<b>use</b> <Link to="../std/address#std_address">std::address</Link>;
+<b>use</b> <Link to="../std/ascii#std_ascii">std::ascii</Link>;
+<b>use</b> <Link to="../std/bcs#std_bcs">std::bcs</Link>;
+<b>use</b> <Link to="../std/option#std_option">std::option</Link>;
+<b>use</b> <Link to="../std/string#std_string">std::string</Link>;
+<b>use</b> <Link to="../std/type_name#std_type_name">std::type_name</Link>;
+<b>use</b> <Link to="../std/u64#std_u64">std::u64</Link>;
+<b>use</b> <Link to="../std/vector#std_vector">std::vector</Link>;
+</code>
+</pre>
+
+
+
+<Link id="iota_system_validator_ValidatorMetadataV1"></Link>
+
+## Struct `ValidatorMetadataV1`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorMetadataV1">ValidatorMetadataV1</Link> <b>has</b> store
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code><Link to="../iota_system/validator#iota_system_validator_iota_address">iota_address</Link>: <b>address</b></code>
+</dt>
+<dd>
+ The IOTA Address of the validator. This is the sender that created the ValidatorV1 object,
+ and also the address to send validator/coins to during withdraws.
+</dd>
+<dt>
+<code><Link to="../iota_system/validator#iota_system_validator_authority_pubkey_bytes">authority_pubkey_bytes</Link>: vector&lt;u8&gt;</code>
+</dt>
+<dd>
+ The public key bytes corresponding to the private key that the validator
+ holds to sign transactions. For now, this is the same as AuthorityName.
+</dd>
+<dt>
+<code><Link to="../iota_system/validator#iota_system_validator_network_pubkey_bytes">network_pubkey_bytes</Link>: vector&lt;u8&gt;</code>
+</dt>
+<dd>
+ The public key bytes corresponding to the private key that the validator
+ uses to establish TLS connections.
+</dd>
+<dt>
+<code><Link to="../iota_system/validator#iota_system_validator_protocol_pubkey_bytes">protocol_pubkey_bytes</Link>: vector&lt;u8&gt;</code>
+</dt>
+<dd>
+ The public key bytes corresponding to the private key that the validator
+ holds to sign consensus blocks.
+</dd>
+<dt>
+<code><Link to="../iota_system/validator#iota_system_validator_proof_of_possession">proof_of_possession</Link>: vector&lt;u8&gt;</code>
+</dt>
+<dd>
+ This is a proof that the validator has ownership of the private key.
+</dd>
+<dt>
+<code><Link to="../iota_system/validator#iota_system_validator_name">name</Link>: <Link to="../std/string#std_string_String">std::string::String</Link></code>
+</dt>
+<dd>
+ A unique human-readable name of this validator.
+</dd>
+<dt>
+<code><Link to="../iota_system/validator#iota_system_validator_description">description</Link>: <Link to="../std/string#std_string_String">std::string::String</Link></code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code><Link to="../iota_system/validator#iota_system_validator_image_url">image_url</Link>: <Link to="../iota/url#iota_url_Url">iota::url::Url</Link></code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code><Link to="../iota_system/validator#iota_system_validator_project_url">project_url</Link>: <Link to="../iota/url#iota_url_Url">iota::url::Url</Link></code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>net_address: <Link to="../std/string#std_string_String">std::string::String</Link></code>
+</dt>
+<dd>
+ The network address of the validator (could also contain extra info such as port, DNS and etc.).
+</dd>
+<dt>
+<code><Link to="../iota_system/validator#iota_system_validator_p2p_address">p2p_address</Link>: <Link to="../std/string#std_string_String">std::string::String</Link></code>
+</dt>
+<dd>
+ The address of the validator used for p2p activities such as state sync (could also contain extra info such as port, DNS and etc.).
+</dd>
+<dt>
+<code><Link to="../iota_system/validator#iota_system_validator_primary_address">primary_address</Link>: <Link to="../std/string#std_string_String">std::string::String</Link></code>
+</dt>
+<dd>
+ The primary address of the consensus
+</dd>
+<dt>
+<code><Link to="../iota_system/validator#iota_system_validator_next_epoch_authority_pubkey_bytes">next_epoch_authority_pubkey_bytes</Link>: <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;vector&lt;u8&gt;&gt;</code>
+</dt>
+<dd>
+ "next_epoch" metadata only takes effects in the next epoch.
+ If none, current value will stay unchanged.
+</dd>
+<dt>
+<code><Link to="../iota_system/validator#iota_system_validator_next_epoch_proof_of_possession">next_epoch_proof_of_possession</Link>: <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;vector&lt;u8&gt;&gt;</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code><Link to="../iota_system/validator#iota_system_validator_next_epoch_network_pubkey_bytes">next_epoch_network_pubkey_bytes</Link>: <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;vector&lt;u8&gt;&gt;</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code><Link to="../iota_system/validator#iota_system_validator_next_epoch_protocol_pubkey_bytes">next_epoch_protocol_pubkey_bytes</Link>: <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;vector&lt;u8&gt;&gt;</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>next_epoch_net_address: <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;<Link to="../std/string#std_string_String">std::string::String</Link>&gt;</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code><Link to="../iota_system/validator#iota_system_validator_next_epoch_p2p_address">next_epoch_p2p_address</Link>: <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;<Link to="../std/string#std_string_String">std::string::String</Link>&gt;</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code><Link to="../iota_system/validator#iota_system_validator_next_epoch_primary_address">next_epoch_primary_address</Link>: <Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;<Link to="../std/string#std_string_String">std::string::String</Link>&gt;</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>extra_fields: <Link to="../iota/bag#iota_bag_Bag">iota::bag::Bag</Link></code>
+</dt>
+<dd>
+ Any extra fields that's not defined statically.
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="iota_system_validator_ValidatorV1"></Link>
+
+## Struct `ValidatorV1`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link> <b>has</b> store
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code><Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>: <Link to="../iota_system/validator#iota_system_validator_ValidatorMetadataV1">iota_system::validator::ValidatorMetadataV1</Link></code>
+</dt>
+<dd>
+ Summary of the validator.
+</dd>
+<dt>
+<code><Link to="../iota_system/voting_power#iota_system_voting_power">voting_power</Link>: u64</code>
+</dt>
+<dd>
+ The voting power of this validator, which might be different from its
+ stake amount.
+</dd>
+<dt>
+<code><Link to="../iota_system/validator#iota_system_validator_operation_cap_id">operation_cap_id</Link>: <Link to="../iota/object#iota_object_ID">iota::object::ID</Link></code>
+</dt>
+<dd>
+ The ID of this validator's current valid <code>UnverifiedValidatorOperationCap</code>
+</dd>
+<dt>
+<code><Link to="../iota_system/validator#iota_system_validator_gas_price">gas_price</Link>: u64</code>
+</dt>
+<dd>
+ Gas price quote, updated only at end of epoch.
+</dd>
+<dt>
+<code><Link to="../iota_system/staking_pool#iota_system_staking_pool">staking_pool</Link>: <Link to="../iota_system/staking_pool#iota_system_staking_pool_StakingPoolV1">iota_system::staking_pool::StakingPoolV1</Link></code>
+</dt>
+<dd>
+ Staking pool for this validator.
+</dd>
+<dt>
+<code><Link to="../iota_system/validator#iota_system_validator_commission_rate">commission_rate</Link>: u64</code>
+</dt>
+<dd>
+ Commission rate of the validator, in basis point.
+</dd>
+<dt>
+<code><Link to="../iota_system/validator#iota_system_validator_next_epoch_stake">next_epoch_stake</Link>: u64</code>
+</dt>
+<dd>
+ Total amount of stake that would be active in the next epoch.
+</dd>
+<dt>
+<code><Link to="../iota_system/validator#iota_system_validator_next_epoch_gas_price">next_epoch_gas_price</Link>: u64</code>
+</dt>
+<dd>
+ This validator's gas price quote for the next epoch.
+</dd>
+<dt>
+<code>next_epoch_commission_rate: u64</code>
+</dt>
+<dd>
+ The commission rate of the validator starting the next epoch, in basis point.
+</dd>
+<dt>
+<code>extra_fields: <Link to="../iota/bag#iota_bag_Bag">iota::bag::Bag</Link></code>
+</dt>
+<dd>
+ Any extra fields that's not defined statically.
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="iota_system_validator_StakingRequestEvent"></Link>
+
+## Struct `StakingRequestEvent`
+
+Event emitted when a new stake request is received.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota_system/validator#iota_system_validator_StakingRequestEvent">StakingRequestEvent</Link> <b>has</b> <b>copy</b>, drop
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code>pool_id: <Link to="../iota/object#iota_object_ID">iota::object::ID</Link></code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>validator_address: <b>address</b></code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>staker_address: <b>address</b></code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>epoch: u64</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>amount: u64</code>
+</dt>
+<dd>
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="iota_system_validator_UnstakingRequestEvent"></Link>
+
+## Struct `UnstakingRequestEvent`
+
+Event emitted when a new unstake request is received.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../iota_system/validator#iota_system_validator_UnstakingRequestEvent">UnstakingRequestEvent</Link> <b>has</b> <b>copy</b>, drop
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code>pool_id: <Link to="../iota/object#iota_object_ID">iota::object::ID</Link></code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>validator_address: <b>address</b></code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>staker_address: <b>address</b></code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>stake_activation_epoch: u64</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>unstaking_epoch: u64</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>principal_amount: u64</code>
+</dt>
+<dd>
+</dd>
+<dt>
+<code>reward_amount: u64</code>
+</dt>
+<dd>
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="@Constants_0"></Link>
+
+## Constants
+
+
+<Link id="iota_system_validator_ECalledDuringNonGenesis"></Link>
+
+Function called during non-genesis times.
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota_system/validator#iota_system_validator_ECalledDuringNonGenesis">ECalledDuringNonGenesis</Link>: u64 = 11;
+</code>
+</pre>
+
+
+
+<Link id="iota_system_validator_ECommissionRateTooHigh"></Link>
+
+Commission rate set by the validator is higher than the threshold
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota_system/validator#iota_system_validator_ECommissionRateTooHigh">ECommissionRateTooHigh</Link>: u64 = 7;
+</code>
+</pre>
+
+
+
+<Link id="iota_system_validator_ECommitteeMembersOutOfRange"></Link>
+
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota_system/validator#iota_system_validator_ECommitteeMembersOutOfRange">ECommitteeMembersOutOfRange</Link>: u64 = 103;
+</code>
+</pre>
+
+
+
+<Link id="iota_system_validator_EGasPriceHigherThanThreshold"></Link>
+
+Validator trying to set gas price higher than threshold.
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota_system/validator#iota_system_validator_EGasPriceHigherThanThreshold">EGasPriceHigherThanThreshold</Link>: u64 = 102;
+</code>
+</pre>
+
+
+
+<Link id="iota_system_validator_EInvalidCap"></Link>
+
+Capability code is not valid
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota_system/validator#iota_system_validator_EInvalidCap">EInvalidCap</Link>: u64 = 101;
+</code>
+</pre>
+
+
+
+<Link id="iota_system_validator_EInvalidProofOfPossession"></Link>
+
+Invalid proof_of_possession field in ValidatorMetadata
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota_system/validator#iota_system_validator_EInvalidProofOfPossession">EInvalidProofOfPossession</Link>: u64 = 0;
+</code>
+</pre>
+
+
+
+<Link id="iota_system_validator_EInvalidStakeAmount"></Link>
+
+Stake amount is invalid or wrong.
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota_system/validator#iota_system_validator_EInvalidStakeAmount">EInvalidStakeAmount</Link>: u64 = 10;
+</code>
+</pre>
+
+
+
+<Link id="iota_system_validator_EMetadataInvalidAuthorityPubkey"></Link>
+
+Invalid authority_pubkey_bytes field in ValidatorMetadata
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota_system/validator#iota_system_validator_EMetadataInvalidAuthorityPubkey">EMetadataInvalidAuthorityPubkey</Link>: u64 = 1;
+</code>
+</pre>
+
+
+
+<Link id="iota_system_validator_EMetadataInvalidNetAddr"></Link>
+
+Invalid net_address field in ValidatorMetadata
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota_system/validator#iota_system_validator_EMetadataInvalidNetAddr">EMetadataInvalidNetAddr</Link>: u64 = 4;
+</code>
+</pre>
+
+
+
+<Link id="iota_system_validator_EMetadataInvalidNetPubkey"></Link>
+
+Invalid network_pubkey_bytes field in ValidatorMetadata
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota_system/validator#iota_system_validator_EMetadataInvalidNetPubkey">EMetadataInvalidNetPubkey</Link>: u64 = 2;
+</code>
+</pre>
+
+
+
+<Link id="iota_system_validator_EMetadataInvalidP2pAddr"></Link>
+
+Invalid p2p_address field in ValidatorMetadata
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota_system/validator#iota_system_validator_EMetadataInvalidP2pAddr">EMetadataInvalidP2pAddr</Link>: u64 = 5;
+</code>
+</pre>
+
+
+
+<Link id="iota_system_validator_EMetadataInvalidPrimaryAddr"></Link>
+
+Invalid primary_address field in ValidatorMetadata
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota_system/validator#iota_system_validator_EMetadataInvalidPrimaryAddr">EMetadataInvalidPrimaryAddr</Link>: u64 = 6;
+</code>
+</pre>
+
+
+
+<Link id="iota_system_validator_EMetadataInvalidProtocolPubkey"></Link>
+
+Invalid protocol_pubkey_bytes field in ValidatorMetadata
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota_system/validator#iota_system_validator_EMetadataInvalidProtocolPubkey">EMetadataInvalidProtocolPubkey</Link>: u64 = 3;
+</code>
+</pre>
+
+
+
+<Link id="iota_system_validator_ENewCapNotCreatedByValidatorItself"></Link>
+
+New Capability is not created by the validator itself
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota_system/validator#iota_system_validator_ENewCapNotCreatedByValidatorItself">ENewCapNotCreatedByValidatorItself</Link>: u64 = 100;
+</code>
+</pre>
+
+
+
+<Link id="iota_system_validator_ENotValidatorCandidate"></Link>
+
+Intended validator is not a candidate one.
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota_system/validator#iota_system_validator_ENotValidatorCandidate">ENotValidatorCandidate</Link>: u64 = 9;
+</code>
+</pre>
+
+
+
+<Link id="iota_system_validator_EValidatorMetadataExceedingLengthLimit"></Link>
+
+Validator Metadata is too long
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota_system/validator#iota_system_validator_EValidatorMetadataExceedingLengthLimit">EValidatorMetadataExceedingLengthLimit</Link>: u64 = 8;
+</code>
+</pre>
+
+
+
+<Link id="iota_system_validator_MAX_COMMISSION_RATE"></Link>
+
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota_system/validator#iota_system_validator_MAX_COMMISSION_RATE">MAX_COMMISSION_RATE</Link>: u64 = 2000;
+</code>
+</pre>
+
+
+
+<Link id="iota_system_validator_MAX_VALIDATOR_GAS_PRICE"></Link>
+
+Max gas price a validator can set is 100K NANOS.
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota_system/validator#iota_system_validator_MAX_VALIDATOR_GAS_PRICE">MAX_VALIDATOR_GAS_PRICE</Link>: u64 = 100000;
+</code>
+</pre>
+
+
+
+<Link id="iota_system_validator_MAX_VALIDATOR_METADATA_LENGTH"></Link>
+
+
+
+<pre>
+<code>
+<b>const</b> <Link to="../iota_system/validator#iota_system_validator_MAX_VALIDATOR_METADATA_LENGTH">MAX_VALIDATOR_METADATA_LENGTH</Link>: u64 = 256;
+</code>
+</pre>
+
+
+
+<Link id="iota_system_validator_new_metadata"></Link>
+
+## Function `new_metadata`
+
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_new_metadata">new_metadata</Link>(<Link to="../iota_system/validator#iota_system_validator_iota_address">iota_address</Link>: <b>address</b>, <Link to="../iota_system/validator#iota_system_validator_authority_pubkey_bytes">authority_pubkey_bytes</Link>: vector&lt;u8&gt;, <Link to="../iota_system/validator#iota_system_validator_network_pubkey_bytes">network_pubkey_bytes</Link>: vector&lt;u8&gt;, <Link to="../iota_system/validator#iota_system_validator_protocol_pubkey_bytes">protocol_pubkey_bytes</Link>: vector&lt;u8&gt;, <Link to="../iota_system/validator#iota_system_validator_proof_of_possession">proof_of_possession</Link>: vector&lt;u8&gt;, <Link to="../iota_system/validator#iota_system_validator_name">name</Link>: <Link to="../std/string#std_string_String">std::string::String</Link>, <Link to="../iota_system/validator#iota_system_validator_description">description</Link>: <Link to="../std/string#std_string_String">std::string::String</Link>, <Link to="../iota_system/validator#iota_system_validator_image_url">image_url</Link>: <Link to="../iota/url#iota_url_Url">iota::url::Url</Link>, <Link to="../iota_system/validator#iota_system_validator_project_url">project_url</Link>: <Link to="../iota/url#iota_url_Url">iota::url::Url</Link>, net_address: <Link to="../std/string#std_string_String">std::string::String</Link>, <Link to="../iota_system/validator#iota_system_validator_p2p_address">p2p_address</Link>: <Link to="../std/string#std_string_String">std::string::String</Link>, <Link to="../iota_system/validator#iota_system_validator_primary_address">primary_address</Link>: <Link to="../std/string#std_string_String">std::string::String</Link>, extra_fields: <Link to="../iota/bag#iota_bag_Bag">iota::bag::Bag</Link>): <Link to="../iota_system/validator#iota_system_validator_ValidatorMetadataV1">iota_system::validator::ValidatorMetadataV1</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_new_metadata">new_metadata</Link>(
+    <Link to="../iota_system/validator#iota_system_validator_iota_address">iota_address</Link>: <b>address</b>,
+    <Link to="../iota_system/validator#iota_system_validator_authority_pubkey_bytes">authority_pubkey_bytes</Link>: vector&lt;u8&gt;,
+    <Link to="../iota_system/validator#iota_system_validator_network_pubkey_bytes">network_pubkey_bytes</Link>: vector&lt;u8&gt;,
+    <Link to="../iota_system/validator#iota_system_validator_protocol_pubkey_bytes">protocol_pubkey_bytes</Link>: vector&lt;u8&gt;,
+    <Link to="../iota_system/validator#iota_system_validator_proof_of_possession">proof_of_possession</Link>: vector&lt;u8&gt;,
+    <Link to="../iota_system/validator#iota_system_validator_name">name</Link>: String,
+    <Link to="../iota_system/validator#iota_system_validator_description">description</Link>: String,
+    <Link to="../iota_system/validator#iota_system_validator_image_url">image_url</Link>: Url,
+    <Link to="../iota_system/validator#iota_system_validator_project_url">project_url</Link>: Url,
+    net_address: String,
+    <Link to="../iota_system/validator#iota_system_validator_p2p_address">p2p_address</Link>: String,
+    <Link to="../iota_system/validator#iota_system_validator_primary_address">primary_address</Link>: String,
+    extra_fields: Bag,
+): <Link to="../iota_system/validator#iota_system_validator_ValidatorMetadataV1">ValidatorMetadataV1</Link> \{
+    <b>let</b> <Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link> = <Link to="../iota_system/validator#iota_system_validator_ValidatorMetadataV1">ValidatorMetadataV1</Link> \{
+        <Link to="../iota_system/validator#iota_system_validator_iota_address">iota_address</Link>,
+        <Link to="../iota_system/validator#iota_system_validator_authority_pubkey_bytes">authority_pubkey_bytes</Link>,
+        <Link to="../iota_system/validator#iota_system_validator_network_pubkey_bytes">network_pubkey_bytes</Link>,
+        <Link to="../iota_system/validator#iota_system_validator_protocol_pubkey_bytes">protocol_pubkey_bytes</Link>,
+        <Link to="../iota_system/validator#iota_system_validator_proof_of_possession">proof_of_possession</Link>,
+        <Link to="../iota_system/validator#iota_system_validator_name">name</Link>,
+        <Link to="../iota_system/validator#iota_system_validator_description">description</Link>,
+        <Link to="../iota_system/validator#iota_system_validator_image_url">image_url</Link>,
+        <Link to="../iota_system/validator#iota_system_validator_project_url">project_url</Link>,
+        net_address,
+        <Link to="../iota_system/validator#iota_system_validator_p2p_address">p2p_address</Link>,
+        <Link to="../iota_system/validator#iota_system_validator_primary_address">primary_address</Link>,
+        <Link to="../iota_system/validator#iota_system_validator_next_epoch_authority_pubkey_bytes">next_epoch_authority_pubkey_bytes</Link>: option::none(),
+        <Link to="../iota_system/validator#iota_system_validator_next_epoch_network_pubkey_bytes">next_epoch_network_pubkey_bytes</Link>: option::none(),
+        <Link to="../iota_system/validator#iota_system_validator_next_epoch_protocol_pubkey_bytes">next_epoch_protocol_pubkey_bytes</Link>: option::none(),
+        <Link to="../iota_system/validator#iota_system_validator_next_epoch_proof_of_possession">next_epoch_proof_of_possession</Link>: option::none(),
+        next_epoch_net_address: option::none(),
+        <Link to="../iota_system/validator#iota_system_validator_next_epoch_p2p_address">next_epoch_p2p_address</Link>: option::none(),
+        <Link to="../iota_system/validator#iota_system_validator_next_epoch_primary_address">next_epoch_primary_address</Link>: option::none(),
+        extra_fields,
+    };
+    <Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_new"></Link>
+
+## Function `new`
+
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_new">new</Link>(<Link to="../iota_system/validator#iota_system_validator_iota_address">iota_address</Link>: <b>address</b>, <Link to="../iota_system/validator#iota_system_validator_authority_pubkey_bytes">authority_pubkey_bytes</Link>: vector&lt;u8&gt;, <Link to="../iota_system/validator#iota_system_validator_network_pubkey_bytes">network_pubkey_bytes</Link>: vector&lt;u8&gt;, <Link to="../iota_system/validator#iota_system_validator_protocol_pubkey_bytes">protocol_pubkey_bytes</Link>: vector&lt;u8&gt;, <Link to="../iota_system/validator#iota_system_validator_proof_of_possession">proof_of_possession</Link>: vector&lt;u8&gt;, <Link to="../iota_system/validator#iota_system_validator_name">name</Link>: vector&lt;u8&gt;, <Link to="../iota_system/validator#iota_system_validator_description">description</Link>: vector&lt;u8&gt;, <Link to="../iota_system/validator#iota_system_validator_image_url">image_url</Link>: vector&lt;u8&gt;, <Link to="../iota_system/validator#iota_system_validator_project_url">project_url</Link>: vector&lt;u8&gt;, net_address: vector&lt;u8&gt;, <Link to="../iota_system/validator#iota_system_validator_p2p_address">p2p_address</Link>: vector&lt;u8&gt;, <Link to="../iota_system/validator#iota_system_validator_primary_address">primary_address</Link>: vector&lt;u8&gt;, <Link to="../iota_system/validator#iota_system_validator_gas_price">gas_price</Link>: u64, <Link to="../iota_system/validator#iota_system_validator_commission_rate">commission_rate</Link>: u64, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_new">new</Link>(
+    <Link to="../iota_system/validator#iota_system_validator_iota_address">iota_address</Link>: <b>address</b>,
+    <Link to="../iota_system/validator#iota_system_validator_authority_pubkey_bytes">authority_pubkey_bytes</Link>: vector&lt;u8&gt;,
+    <Link to="../iota_system/validator#iota_system_validator_network_pubkey_bytes">network_pubkey_bytes</Link>: vector&lt;u8&gt;,
+    <Link to="../iota_system/validator#iota_system_validator_protocol_pubkey_bytes">protocol_pubkey_bytes</Link>: vector&lt;u8&gt;,
+    <Link to="../iota_system/validator#iota_system_validator_proof_of_possession">proof_of_possession</Link>: vector&lt;u8&gt;,
+    <Link to="../iota_system/validator#iota_system_validator_name">name</Link>: vector&lt;u8&gt;,
+    <Link to="../iota_system/validator#iota_system_validator_description">description</Link>: vector&lt;u8&gt;,
+    <Link to="../iota_system/validator#iota_system_validator_image_url">image_url</Link>: vector&lt;u8&gt;,
+    <Link to="../iota_system/validator#iota_system_validator_project_url">project_url</Link>: vector&lt;u8&gt;,
+    net_address: vector&lt;u8&gt;,
+    <Link to="../iota_system/validator#iota_system_validator_p2p_address">p2p_address</Link>: vector&lt;u8&gt;,
+    <Link to="../iota_system/validator#iota_system_validator_primary_address">primary_address</Link>: vector&lt;u8&gt;,
+    <Link to="../iota_system/validator#iota_system_validator_gas_price">gas_price</Link>: u64,
+    <Link to="../iota_system/validator#iota_system_validator_commission_rate">commission_rate</Link>: u64,
+    ctx: &<b>mut</b> TxContext,
+): <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link> \{
+    <b>assert</b>!(
+        net_address.length() &lt;= <Link to="../iota_system/validator#iota_system_validator_MAX_VALIDATOR_METADATA_LENGTH">MAX_VALIDATOR_METADATA_LENGTH</Link>
+                && <Link to="../iota_system/validator#iota_system_validator_p2p_address">p2p_address</Link>.length() &lt;= <Link to="../iota_system/validator#iota_system_validator_MAX_VALIDATOR_METADATA_LENGTH">MAX_VALIDATOR_METADATA_LENGTH</Link>
+                && <Link to="../iota_system/validator#iota_system_validator_primary_address">primary_address</Link>.length() &lt;= <Link to="../iota_system/validator#iota_system_validator_MAX_VALIDATOR_METADATA_LENGTH">MAX_VALIDATOR_METADATA_LENGTH</Link>
+                && <Link to="../iota_system/validator#iota_system_validator_name">name</Link>.length() &lt;= <Link to="../iota_system/validator#iota_system_validator_MAX_VALIDATOR_METADATA_LENGTH">MAX_VALIDATOR_METADATA_LENGTH</Link>
+                && <Link to="../iota_system/validator#iota_system_validator_description">description</Link>.length() &lt;= <Link to="../iota_system/validator#iota_system_validator_MAX_VALIDATOR_METADATA_LENGTH">MAX_VALIDATOR_METADATA_LENGTH</Link>
+                && <Link to="../iota_system/validator#iota_system_validator_image_url">image_url</Link>.length() &lt;= <Link to="../iota_system/validator#iota_system_validator_MAX_VALIDATOR_METADATA_LENGTH">MAX_VALIDATOR_METADATA_LENGTH</Link>
+                && <Link to="../iota_system/validator#iota_system_validator_project_url">project_url</Link>.length() &lt;= <Link to="../iota_system/validator#iota_system_validator_MAX_VALIDATOR_METADATA_LENGTH">MAX_VALIDATOR_METADATA_LENGTH</Link>,
+        <Link to="../iota_system/validator#iota_system_validator_EValidatorMetadataExceedingLengthLimit">EValidatorMetadataExceedingLengthLimit</Link>,
+    );
+    <b>assert</b>!(<Link to="../iota_system/validator#iota_system_validator_commission_rate">commission_rate</Link> &lt;= <Link to="../iota_system/validator#iota_system_validator_MAX_COMMISSION_RATE">MAX_COMMISSION_RATE</Link>, <Link to="../iota_system/validator#iota_system_validator_ECommissionRateTooHigh">ECommissionRateTooHigh</Link>);
+    <b>assert</b>!(<Link to="../iota_system/validator#iota_system_validator_gas_price">gas_price</Link> &lt;= <Link to="../iota_system/validator#iota_system_validator_MAX_VALIDATOR_GAS_PRICE">MAX_VALIDATOR_GAS_PRICE</Link>, <Link to="../iota_system/validator#iota_system_validator_EGasPriceHigherThanThreshold">EGasPriceHigherThanThreshold</Link>);
+    <b>let</b> <Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link> = <Link to="../iota_system/validator#iota_system_validator_new_metadata">new_metadata</Link>(
+        <Link to="../iota_system/validator#iota_system_validator_iota_address">iota_address</Link>,
+        <Link to="../iota_system/validator#iota_system_validator_authority_pubkey_bytes">authority_pubkey_bytes</Link>,
+        <Link to="../iota_system/validator#iota_system_validator_network_pubkey_bytes">network_pubkey_bytes</Link>,
+        <Link to="../iota_system/validator#iota_system_validator_protocol_pubkey_bytes">protocol_pubkey_bytes</Link>,
+        <Link to="../iota_system/validator#iota_system_validator_proof_of_possession">proof_of_possession</Link>,
+        <Link to="../iota_system/validator#iota_system_validator_name">name</Link>.to_ascii_string().to_string(),
+        <Link to="../iota_system/validator#iota_system_validator_description">description</Link>.to_ascii_string().to_string(),
+        url::new_unsafe_from_bytes(<Link to="../iota_system/validator#iota_system_validator_image_url">image_url</Link>),
+        url::new_unsafe_from_bytes(<Link to="../iota_system/validator#iota_system_validator_project_url">project_url</Link>),
+        net_address.to_ascii_string().to_string(),
+        <Link to="../iota_system/validator#iota_system_validator_p2p_address">p2p_address</Link>.to_ascii_string().to_string(),
+        <Link to="../iota_system/validator#iota_system_validator_primary_address">primary_address</Link>.to_ascii_string().to_string(),
+        bag::new(ctx),
+    );
+    // Checks that the keys & addresses & PoP are valid.
+    <Link to="../iota_system/validator#iota_system_validator_validate_metadata">validate_metadata</Link>(&<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>);
+    <Link to="../iota_system/validator#iota_system_validator_new_from_metadata">new_from_metadata</Link>(
+        <Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>,
+        <Link to="../iota_system/validator#iota_system_validator_gas_price">gas_price</Link>,
+        <Link to="../iota_system/validator#iota_system_validator_commission_rate">commission_rate</Link>,
+        ctx,
+    )
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_deactivate"></Link>
+
+## Function `deactivate`
+
+Deactivate this validator's staking pool
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_deactivate">deactivate</Link>(self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>, deactivation_epoch: u64)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_deactivate">deactivate</Link>(self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>, deactivation_epoch: u64) \{
+    self.<Link to="../iota_system/staking_pool#iota_system_staking_pool">staking_pool</Link>.deactivate_staking_pool(deactivation_epoch)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_activate"></Link>
+
+## Function `activate`
+
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_activate">activate</Link>(self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>, activation_epoch: u64)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_activate">activate</Link>(self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>, activation_epoch: u64) \{
+    self.<Link to="../iota_system/staking_pool#iota_system_staking_pool">staking_pool</Link>.activate_staking_pool(activation_epoch);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_adjust_next_epoch_commission_rate"></Link>
+
+## Function `adjust_next_epoch_commission_rate`
+
+Update the commission rate.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_adjust_next_epoch_commission_rate">adjust_next_epoch_commission_rate</Link>(self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_adjust_next_epoch_commission_rate">adjust_next_epoch_commission_rate</Link>(self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>) \{
+    self.<Link to="../iota_system/validator#iota_system_validator_commission_rate">commission_rate</Link> = self.next_epoch_commission_rate;
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_request_add_stake"></Link>
+
+## Function `request_add_stake`
+
+Request to add stake to the validator's staking pool, processed at the end of the epoch.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_request_add_stake">request_add_stake</Link>(self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>, stake: <Link to="../iota/balance#iota_balance_Balance">iota::balance::Balance</Link>&lt;<Link to="../iota/iota#iota_iota_IOTA">iota::iota::IOTA</Link>&gt;, staker_address: <b>address</b>, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): <Link to="../iota_system/staking_pool#iota_system_staking_pool_StakedIota">iota_system::staking_pool::StakedIota</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_request_add_stake">request_add_stake</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>,
+    stake: Balance&lt;IOTA&gt;,
+    staker_address: <b>address</b>,
+    ctx: &<b>mut</b> TxContext,
+): StakedIota \{
+    <b>let</b> <Link to="../iota_system/validator#iota_system_validator_stake_amount">stake_amount</Link> = stake.value();
+    <b>assert</b>!(<Link to="../iota_system/validator#iota_system_validator_stake_amount">stake_amount</Link> &gt; 0, <Link to="../iota_system/validator#iota_system_validator_EInvalidStakeAmount">EInvalidStakeAmount</Link>);
+    <b>let</b> stake_epoch = ctx.epoch() + 1;
+    <b>let</b> staked_iota = self.<Link to="../iota_system/staking_pool#iota_system_staking_pool">staking_pool</Link>.<Link to="../iota_system/validator#iota_system_validator_request_add_stake">request_add_stake</Link>(stake, stake_epoch, ctx);
+    // Process stake right away <b>if</b> staking pool is preactive.
+    <b>if</b> (self.<Link to="../iota_system/staking_pool#iota_system_staking_pool">staking_pool</Link>.<Link to="../iota_system/validator#iota_system_validator_is_preactive">is_preactive</Link>()) \{
+        self.<Link to="../iota_system/staking_pool#iota_system_staking_pool">staking_pool</Link>.process_pending_stake();
+    };
+    self.<Link to="../iota_system/validator#iota_system_validator_next_epoch_stake">next_epoch_stake</Link> = self.<Link to="../iota_system/validator#iota_system_validator_next_epoch_stake">next_epoch_stake</Link> + <Link to="../iota_system/validator#iota_system_validator_stake_amount">stake_amount</Link>;
+    event::emit(<Link to="../iota_system/validator#iota_system_validator_StakingRequestEvent">StakingRequestEvent</Link> \{
+        pool_id: <Link to="../iota_system/validator#iota_system_validator_staking_pool_id">staking_pool_id</Link>(self),
+        validator_address: self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_iota_address">iota_address</Link>,
+        staker_address,
+        epoch: ctx.epoch(),
+        amount: <Link to="../iota_system/validator#iota_system_validator_stake_amount">stake_amount</Link>,
+    });
+    staked_iota
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_request_add_stake_at_genesis"></Link>
+
+## Function `request_add_stake_at_genesis`
+
+Request to add stake to the validator's staking pool at genesis
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_request_add_stake_at_genesis">request_add_stake_at_genesis</Link>(self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>, stake: <Link to="../iota/balance#iota_balance_Balance">iota::balance::Balance</Link>&lt;<Link to="../iota/iota#iota_iota_IOTA">iota::iota::IOTA</Link>&gt;, staker_address: <b>address</b>, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_request_add_stake_at_genesis">request_add_stake_at_genesis</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>,
+    stake: Balance&lt;IOTA&gt;,
+    staker_address: <b>address</b>,
+    ctx: &<b>mut</b> TxContext,
+) \{
+    <b>let</b> staked_iota = <Link to="../iota_system/validator#iota_system_validator_request_add_stake_at_genesis_with_receipt">request_add_stake_at_genesis_with_receipt</Link>(
+        self,
+        stake,
+        ctx,
+    );
+    transfer::public_transfer(staked_iota, staker_address);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_request_add_stake_at_genesis_with_receipt"></Link>
+
+## Function `request_add_stake_at_genesis_with_receipt`
+
+Internal request to add stake to the validator's staking pool at genesis.
+Returns a StakedIota
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_request_add_stake_at_genesis_with_receipt">request_add_stake_at_genesis_with_receipt</Link>(self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>, stake: <Link to="../iota/balance#iota_balance_Balance">iota::balance::Balance</Link>&lt;<Link to="../iota/iota#iota_iota_IOTA">iota::iota::IOTA</Link>&gt;, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): <Link to="../iota_system/staking_pool#iota_system_staking_pool_StakedIota">iota_system::staking_pool::StakedIota</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_request_add_stake_at_genesis_with_receipt">request_add_stake_at_genesis_with_receipt</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>,
+    stake: Balance&lt;IOTA&gt;,
+    ctx: &<b>mut</b> TxContext,
+): StakedIota \{
+    <b>assert</b>!(ctx.epoch() == 0, <Link to="../iota_system/validator#iota_system_validator_ECalledDuringNonGenesis">ECalledDuringNonGenesis</Link>);
+    <b>let</b> <Link to="../iota_system/validator#iota_system_validator_stake_amount">stake_amount</Link> = stake.value();
+    <b>assert</b>!(<Link to="../iota_system/validator#iota_system_validator_stake_amount">stake_amount</Link> &gt; 0, <Link to="../iota_system/validator#iota_system_validator_EInvalidStakeAmount">EInvalidStakeAmount</Link>);
+    <b>let</b> staked_iota = self
+        .<Link to="../iota_system/staking_pool#iota_system_staking_pool">staking_pool</Link>
+        .<Link to="../iota_system/validator#iota_system_validator_request_add_stake">request_add_stake</Link>(
+            stake,
+            0, // epoch 0 -- <Link to="../iota_system/genesis#iota_system_genesis">genesis</Link>
+            ctx,
+        );
+    // Process stake right away
+    self.<Link to="../iota_system/staking_pool#iota_system_staking_pool">staking_pool</Link>.process_pending_stake();
+    self.<Link to="../iota_system/validator#iota_system_validator_next_epoch_stake">next_epoch_stake</Link> = self.<Link to="../iota_system/validator#iota_system_validator_next_epoch_stake">next_epoch_stake</Link> + <Link to="../iota_system/validator#iota_system_validator_stake_amount">stake_amount</Link>;
+    staked_iota
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_request_withdraw_stake"></Link>
+
+## Function `request_withdraw_stake`
+
+Request to withdraw stake from the validator's staking pool, processed at the end of the epoch.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_request_withdraw_stake">request_withdraw_stake</Link>(self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>, staked_iota: <Link to="../iota_system/staking_pool#iota_system_staking_pool_StakedIota">iota_system::staking_pool::StakedIota</Link>, ctx: &<Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): <Link to="../iota/balance#iota_balance_Balance">iota::balance::Balance</Link>&lt;<Link to="../iota/iota#iota_iota_IOTA">iota::iota::IOTA</Link>&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_request_withdraw_stake">request_withdraw_stake</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>,
+    staked_iota: StakedIota,
+    ctx: &TxContext,
+): Balance&lt;IOTA&gt; \{
+    <b>let</b> principal_amount = staked_iota.staked_iota_amount();
+    <b>let</b> stake_activation_epoch = staked_iota.stake_activation_epoch();
+    <b>let</b> withdrawn_stake = self.<Link to="../iota_system/staking_pool#iota_system_staking_pool">staking_pool</Link>.<Link to="../iota_system/validator#iota_system_validator_request_withdraw_stake">request_withdraw_stake</Link>(staked_iota, ctx);
+    // Process withdraw right away <b>if</b> staking pool is preactive or inactive
+    <b>if</b> (self.<Link to="../iota_system/staking_pool#iota_system_staking_pool">staking_pool</Link>.<Link to="../iota_system/validator#iota_system_validator_is_preactive">is_preactive</Link>() || self.<Link to="../iota_system/staking_pool#iota_system_staking_pool">staking_pool</Link>.is_inactive()) \{
+        self.<Link to="../iota_system/staking_pool#iota_system_staking_pool">staking_pool</Link>.process_pending_stake_withdraw();
+    };
+    <b>let</b> withdraw_amount = withdrawn_stake.value();
+    <b>let</b> reward_amount = withdraw_amount - principal_amount;
+    self.<Link to="../iota_system/validator#iota_system_validator_next_epoch_stake">next_epoch_stake</Link> = self.<Link to="../iota_system/validator#iota_system_validator_next_epoch_stake">next_epoch_stake</Link> - withdraw_amount;
+    event::emit(<Link to="../iota_system/validator#iota_system_validator_UnstakingRequestEvent">UnstakingRequestEvent</Link> \{
+        pool_id: <Link to="../iota_system/validator#iota_system_validator_staking_pool_id">staking_pool_id</Link>(self),
+        validator_address: self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_iota_address">iota_address</Link>,
+        staker_address: ctx.sender(),
+        stake_activation_epoch,
+        unstaking_epoch: ctx.epoch(),
+        principal_amount,
+        reward_amount,
+    });
+    withdrawn_stake
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_request_set_commission_rate"></Link>
+
+## Function `request_set_commission_rate`
+
+Request to set new commission rate for the next epoch.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_request_set_commission_rate">request_set_commission_rate</Link>(self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>, new_commission_rate: u64)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_request_set_commission_rate">request_set_commission_rate</Link>(self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>, new_commission_rate: u64) \{
+    <b>assert</b>!(new_commission_rate &lt;= <Link to="../iota_system/validator#iota_system_validator_MAX_COMMISSION_RATE">MAX_COMMISSION_RATE</Link>, <Link to="../iota_system/validator#iota_system_validator_ECommissionRateTooHigh">ECommissionRateTooHigh</Link>);
+    self.next_epoch_commission_rate = new_commission_rate;
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_set_candidate_commission_rate"></Link>
+
+## Function `set_candidate_commission_rate`
+
+Set new commission rate for the candidate validator.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_set_candidate_commission_rate">set_candidate_commission_rate</Link>(self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>, new_commission_rate: u64)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_set_candidate_commission_rate">set_candidate_commission_rate</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>,
+    new_commission_rate: u64,
+) \{
+    <b>assert</b>!(<Link to="../iota_system/validator#iota_system_validator_is_preactive">is_preactive</Link>(self), <Link to="../iota_system/validator#iota_system_validator_ENotValidatorCandidate">ENotValidatorCandidate</Link>);
+    <b>assert</b>!(new_commission_rate &lt;= <Link to="../iota_system/validator#iota_system_validator_MAX_COMMISSION_RATE">MAX_COMMISSION_RATE</Link>, <Link to="../iota_system/validator#iota_system_validator_ECommissionRateTooHigh">ECommissionRateTooHigh</Link>);
+    self.<Link to="../iota_system/validator#iota_system_validator_commission_rate">commission_rate</Link> = new_commission_rate;
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_deposit_stake_rewards"></Link>
+
+## Function `deposit_stake_rewards`
+
+Deposit stakes rewards into the validator's staking pool, called at the end of the epoch.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_deposit_stake_rewards">deposit_stake_rewards</Link>(self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>, reward: <Link to="../iota/balance#iota_balance_Balance">iota::balance::Balance</Link>&lt;<Link to="../iota/iota#iota_iota_IOTA">iota::iota::IOTA</Link>&gt;)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_deposit_stake_rewards">deposit_stake_rewards</Link>(self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>, reward: Balance&lt;IOTA&gt;) \{
+    self.<Link to="../iota_system/validator#iota_system_validator_next_epoch_stake">next_epoch_stake</Link> = self.<Link to="../iota_system/validator#iota_system_validator_next_epoch_stake">next_epoch_stake</Link> + reward.value();
+    self.<Link to="../iota_system/staking_pool#iota_system_staking_pool">staking_pool</Link>.deposit_rewards(reward);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_process_pending_stakes_and_withdraws"></Link>
+
+## Function `process_pending_stakes_and_withdraws`
+
+Process pending stakes and withdraws, called at the end of the epoch.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_process_pending_stakes_and_withdraws">process_pending_stakes_and_withdraws</Link>(self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>, ctx: &<Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_process_pending_stakes_and_withdraws">process_pending_stakes_and_withdraws</Link>(self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>, ctx: &TxContext) \{
+    self.<Link to="../iota_system/staking_pool#iota_system_staking_pool">staking_pool</Link>.<Link to="../iota_system/validator#iota_system_validator_process_pending_stakes_and_withdraws">process_pending_stakes_and_withdraws</Link>(ctx);
+    <b>assert</b>!(<Link to="../iota_system/validator#iota_system_validator_stake_amount">stake_amount</Link>(self) == self.<Link to="../iota_system/validator#iota_system_validator_next_epoch_stake">next_epoch_stake</Link>, <Link to="../iota_system/validator#iota_system_validator_EInvalidStakeAmount">EInvalidStakeAmount</Link>);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_is_preactive"></Link>
+
+## Function `is_preactive`
+
+Returns true if the validator is preactive.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_is_preactive">is_preactive</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>): bool
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_is_preactive">is_preactive</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>): bool \{
+    self.<Link to="../iota_system/staking_pool#iota_system_staking_pool">staking_pool</Link>.<Link to="../iota_system/validator#iota_system_validator_is_preactive">is_preactive</Link>()
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_metadata"></Link>
+
+## Function `metadata`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>): &<Link to="../iota_system/validator#iota_system_validator_ValidatorMetadataV1">iota_system::validator::ValidatorMetadataV1</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>): &<Link to="../iota_system/validator#iota_system_validator_ValidatorMetadataV1">ValidatorMetadataV1</Link> \{
+    &self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_iota_address"></Link>
+
+## Function `iota_address`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_iota_address">iota_address</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>): <b>address</b>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_iota_address">iota_address</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>): <b>address</b> \{
+    self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_iota_address">iota_address</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_name"></Link>
+
+## Function `name`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_name">name</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>): &<Link to="../std/string#std_string_String">std::string::String</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_name">name</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>): &String \{
+    &self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_name">name</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_description"></Link>
+
+## Function `description`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_description">description</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>): &<Link to="../std/string#std_string_String">std::string::String</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_description">description</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>): &String \{
+    &self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_description">description</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_image_url"></Link>
+
+## Function `image_url`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_image_url">image_url</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>): &<Link to="../iota/url#iota_url_Url">iota::url::Url</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_image_url">image_url</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>): &Url \{
+    &self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_image_url">image_url</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_project_url"></Link>
+
+## Function `project_url`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_project_url">project_url</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>): &<Link to="../iota/url#iota_url_Url">iota::url::Url</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_project_url">project_url</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>): &Url \{
+    &self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_project_url">project_url</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_network_address"></Link>
+
+## Function `network_address`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_network_address">network_address</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>): &<Link to="../std/string#std_string_String">std::string::String</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_network_address">network_address</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>): &String \{
+    &self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.net_address
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_p2p_address"></Link>
+
+## Function `p2p_address`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_p2p_address">p2p_address</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>): &<Link to="../std/string#std_string_String">std::string::String</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_p2p_address">p2p_address</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>): &String \{
+    &self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_p2p_address">p2p_address</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_primary_address"></Link>
+
+## Function `primary_address`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_primary_address">primary_address</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>): &<Link to="../std/string#std_string_String">std::string::String</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_primary_address">primary_address</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>): &String \{
+    &self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_primary_address">primary_address</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_authority_pubkey_bytes"></Link>
+
+## Function `authority_pubkey_bytes`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_authority_pubkey_bytes">authority_pubkey_bytes</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>): &vector&lt;u8&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_authority_pubkey_bytes">authority_pubkey_bytes</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>): &vector&lt;u8&gt; \{
+    &self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_authority_pubkey_bytes">authority_pubkey_bytes</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_proof_of_possession"></Link>
+
+## Function `proof_of_possession`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_proof_of_possession">proof_of_possession</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>): &vector&lt;u8&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_proof_of_possession">proof_of_possession</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>): &vector&lt;u8&gt; \{
+    &self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_proof_of_possession">proof_of_possession</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_network_pubkey_bytes"></Link>
+
+## Function `network_pubkey_bytes`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_network_pubkey_bytes">network_pubkey_bytes</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>): &vector&lt;u8&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_network_pubkey_bytes">network_pubkey_bytes</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>): &vector&lt;u8&gt; \{
+    &self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_network_pubkey_bytes">network_pubkey_bytes</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_protocol_pubkey_bytes"></Link>
+
+## Function `protocol_pubkey_bytes`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_protocol_pubkey_bytes">protocol_pubkey_bytes</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>): &vector&lt;u8&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_protocol_pubkey_bytes">protocol_pubkey_bytes</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>): &vector&lt;u8&gt; \{
+    &self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_protocol_pubkey_bytes">protocol_pubkey_bytes</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_next_epoch_network_address"></Link>
+
+## Function `next_epoch_network_address`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_next_epoch_network_address">next_epoch_network_address</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>): &<Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;<Link to="../std/string#std_string_String">std::string::String</Link>&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_next_epoch_network_address">next_epoch_network_address</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>): &Option&lt;String&gt; \{
+    &self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.next_epoch_net_address
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_next_epoch_p2p_address"></Link>
+
+## Function `next_epoch_p2p_address`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_next_epoch_p2p_address">next_epoch_p2p_address</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>): &<Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;<Link to="../std/string#std_string_String">std::string::String</Link>&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_next_epoch_p2p_address">next_epoch_p2p_address</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>): &Option&lt;String&gt; \{
+    &self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_p2p_address">next_epoch_p2p_address</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_next_epoch_primary_address"></Link>
+
+## Function `next_epoch_primary_address`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_next_epoch_primary_address">next_epoch_primary_address</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>): &<Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;<Link to="../std/string#std_string_String">std::string::String</Link>&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_next_epoch_primary_address">next_epoch_primary_address</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>): &Option&lt;String&gt; \{
+    &self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_primary_address">next_epoch_primary_address</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_next_epoch_authority_pubkey_bytes"></Link>
+
+## Function `next_epoch_authority_pubkey_bytes`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_next_epoch_authority_pubkey_bytes">next_epoch_authority_pubkey_bytes</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>): &<Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;vector&lt;u8&gt;&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_next_epoch_authority_pubkey_bytes">next_epoch_authority_pubkey_bytes</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>): &Option&lt;vector&lt;u8&gt;&gt; \{
+    &self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_authority_pubkey_bytes">next_epoch_authority_pubkey_bytes</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_next_epoch_proof_of_possession"></Link>
+
+## Function `next_epoch_proof_of_possession`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_next_epoch_proof_of_possession">next_epoch_proof_of_possession</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>): &<Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;vector&lt;u8&gt;&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_next_epoch_proof_of_possession">next_epoch_proof_of_possession</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>): &Option&lt;vector&lt;u8&gt;&gt; \{
+    &self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_proof_of_possession">next_epoch_proof_of_possession</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_next_epoch_network_pubkey_bytes"></Link>
+
+## Function `next_epoch_network_pubkey_bytes`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_next_epoch_network_pubkey_bytes">next_epoch_network_pubkey_bytes</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>): &<Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;vector&lt;u8&gt;&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_next_epoch_network_pubkey_bytes">next_epoch_network_pubkey_bytes</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>): &Option&lt;vector&lt;u8&gt;&gt; \{
+    &self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_network_pubkey_bytes">next_epoch_network_pubkey_bytes</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_next_epoch_protocol_pubkey_bytes"></Link>
+
+## Function `next_epoch_protocol_pubkey_bytes`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_next_epoch_protocol_pubkey_bytes">next_epoch_protocol_pubkey_bytes</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>): &<Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;vector&lt;u8&gt;&gt;
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_next_epoch_protocol_pubkey_bytes">next_epoch_protocol_pubkey_bytes</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>): &Option&lt;vector&lt;u8&gt;&gt; \{
+    &self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_protocol_pubkey_bytes">next_epoch_protocol_pubkey_bytes</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_operation_cap_id"></Link>
+
+## Function `operation_cap_id`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_operation_cap_id">operation_cap_id</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>): &<Link to="../iota/object#iota_object_ID">iota::object::ID</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_operation_cap_id">operation_cap_id</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>): &ID \{
+    &self.<Link to="../iota_system/validator#iota_system_validator_operation_cap_id">operation_cap_id</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_next_epoch_gas_price"></Link>
+
+## Function `next_epoch_gas_price`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_next_epoch_gas_price">next_epoch_gas_price</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>): u64
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_next_epoch_gas_price">next_epoch_gas_price</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>): u64 \{
+    self.<Link to="../iota_system/validator#iota_system_validator_next_epoch_gas_price">next_epoch_gas_price</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_total_stake_amount"></Link>
+
+## Function `total_stake_amount`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_total_stake_amount">total_stake_amount</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>): u64
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_total_stake_amount">total_stake_amount</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>): u64 \{
+    self.<Link to="../iota_system/staking_pool#iota_system_staking_pool">staking_pool</Link>.iota_balance()
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_stake_amount"></Link>
+
+## Function `stake_amount`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_stake_amount">stake_amount</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>): u64
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_stake_amount">stake_amount</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>): u64 \{
+    self.<Link to="../iota_system/staking_pool#iota_system_staking_pool">staking_pool</Link>.iota_balance()
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_total_stake"></Link>
+
+## Function `total_stake`
+
+Return the total amount staked with this validator
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_total_stake">total_stake</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>): u64
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_total_stake">total_stake</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>): u64 \{
+    <Link to="../iota_system/validator#iota_system_validator_stake_amount">stake_amount</Link>(self)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_next_epoch_stake"></Link>
+
+## Function `next_epoch_stake`
+
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_next_epoch_stake">next_epoch_stake</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>): u64
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_next_epoch_stake">next_epoch_stake</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>): u64 \{
+    self.<Link to="../iota_system/validator#iota_system_validator_next_epoch_stake">next_epoch_stake</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_voting_power"></Link>
+
+## Function `voting_power`
+
+Return the voting power of this validator.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/voting_power#iota_system_voting_power">voting_power</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>): u64
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/voting_power#iota_system_voting_power">voting_power</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>): u64 \{
+    self.<Link to="../iota_system/voting_power#iota_system_voting_power">voting_power</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_set_voting_power"></Link>
+
+## Function `set_voting_power`
+
+Set the voting power of this validator, called only from validator_set.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_set_voting_power">set_voting_power</Link>(self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>, new_voting_power: u64)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_set_voting_power">set_voting_power</Link>(self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>, new_voting_power: u64) \{
+    self.<Link to="../iota_system/voting_power#iota_system_voting_power">voting_power</Link> = new_voting_power;
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_pending_stake_amount"></Link>
+
+## Function `pending_stake_amount`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_pending_stake_amount">pending_stake_amount</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>): u64
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_pending_stake_amount">pending_stake_amount</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>): u64 \{
+    self.<Link to="../iota_system/staking_pool#iota_system_staking_pool">staking_pool</Link>.<Link to="../iota_system/validator#iota_system_validator_pending_stake_amount">pending_stake_amount</Link>()
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_pending_stake_withdraw_amount"></Link>
+
+## Function `pending_stake_withdraw_amount`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_pending_stake_withdraw_amount">pending_stake_withdraw_amount</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>): u64
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_pending_stake_withdraw_amount">pending_stake_withdraw_amount</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>): u64 \{
+    self.<Link to="../iota_system/staking_pool#iota_system_staking_pool">staking_pool</Link>.<Link to="../iota_system/validator#iota_system_validator_pending_stake_withdraw_amount">pending_stake_withdraw_amount</Link>()
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_gas_price"></Link>
+
+## Function `gas_price`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_gas_price">gas_price</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>): u64
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_gas_price">gas_price</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>): u64 \{
+    self.<Link to="../iota_system/validator#iota_system_validator_gas_price">gas_price</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_commission_rate"></Link>
+
+## Function `commission_rate`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_commission_rate">commission_rate</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>): u64
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_commission_rate">commission_rate</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>): u64 \{
+    self.<Link to="../iota_system/validator#iota_system_validator_commission_rate">commission_rate</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_pool_token_exchange_rate_at_epoch"></Link>
+
+## Function `pool_token_exchange_rate_at_epoch`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_pool_token_exchange_rate_at_epoch">pool_token_exchange_rate_at_epoch</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>, epoch: u64): <Link to="../iota_system/staking_pool#iota_system_staking_pool_PoolTokenExchangeRate">iota_system::staking_pool::PoolTokenExchangeRate</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_pool_token_exchange_rate_at_epoch">pool_token_exchange_rate_at_epoch</Link>(
+    self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>,
+    epoch: u64,
+): PoolTokenExchangeRate \{
+    self.<Link to="../iota_system/staking_pool#iota_system_staking_pool">staking_pool</Link>.<Link to="../iota_system/validator#iota_system_validator_pool_token_exchange_rate_at_epoch">pool_token_exchange_rate_at_epoch</Link>(epoch)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_staking_pool_id"></Link>
+
+## Function `staking_pool_id`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_staking_pool_id">staking_pool_id</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>): <Link to="../iota/object#iota_object_ID">iota::object::ID</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_staking_pool_id">staking_pool_id</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>): ID \{
+    object::id(&self.<Link to="../iota_system/staking_pool#iota_system_staking_pool">staking_pool</Link>)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_is_duplicate"></Link>
+
+## Function `is_duplicate`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_is_duplicate">is_duplicate</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>, other: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>): bool
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_is_duplicate">is_duplicate</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>, other: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>): bool \{
+    self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_iota_address">iota_address</Link> == other.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_iota_address">iota_address</Link>
+            || self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_name">name</Link> == other.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_name">name</Link>
+            || self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.net_address == other.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.net_address
+            || self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_p2p_address">p2p_address</Link> == other.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_p2p_address">p2p_address</Link>
+            || self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_authority_pubkey_bytes">authority_pubkey_bytes</Link> == other.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_authority_pubkey_bytes">authority_pubkey_bytes</Link>
+            || self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_network_pubkey_bytes">network_pubkey_bytes</Link> == other.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_network_pubkey_bytes">network_pubkey_bytes</Link>
+            || self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_network_pubkey_bytes">network_pubkey_bytes</Link> == other.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_protocol_pubkey_bytes">protocol_pubkey_bytes</Link>
+            || self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_protocol_pubkey_bytes">protocol_pubkey_bytes</Link> == other.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_protocol_pubkey_bytes">protocol_pubkey_bytes</Link>
+            || self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_protocol_pubkey_bytes">protocol_pubkey_bytes</Link> == other.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_network_pubkey_bytes">network_pubkey_bytes</Link>
+            // All next epoch parameters.
+            || <Link to="../iota_system/validator#iota_system_validator_is_equal_some">is_equal_some</Link>(&self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.next_epoch_net_address, &other.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.next_epoch_net_address)
+            || <Link to="../iota_system/validator#iota_system_validator_is_equal_some">is_equal_some</Link>(&self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_p2p_address">next_epoch_p2p_address</Link>, &other.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_p2p_address">next_epoch_p2p_address</Link>)
+            || <Link to="../iota_system/validator#iota_system_validator_is_equal_some">is_equal_some</Link>(&self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_authority_pubkey_bytes">next_epoch_authority_pubkey_bytes</Link>, &other.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_authority_pubkey_bytes">next_epoch_authority_pubkey_bytes</Link>)
+            || <Link to="../iota_system/validator#iota_system_validator_is_equal_some">is_equal_some</Link>(&self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_network_pubkey_bytes">next_epoch_network_pubkey_bytes</Link>, &other.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_network_pubkey_bytes">next_epoch_network_pubkey_bytes</Link>)
+            || <Link to="../iota_system/validator#iota_system_validator_is_equal_some">is_equal_some</Link>(&self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_network_pubkey_bytes">next_epoch_network_pubkey_bytes</Link>, &other.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_protocol_pubkey_bytes">next_epoch_protocol_pubkey_bytes</Link>)
+            || <Link to="../iota_system/validator#iota_system_validator_is_equal_some">is_equal_some</Link>(&self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_protocol_pubkey_bytes">next_epoch_protocol_pubkey_bytes</Link>, &other.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_protocol_pubkey_bytes">next_epoch_protocol_pubkey_bytes</Link>)
+            || <Link to="../iota_system/validator#iota_system_validator_is_equal_some">is_equal_some</Link>(&self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_protocol_pubkey_bytes">next_epoch_protocol_pubkey_bytes</Link>, &other.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_network_pubkey_bytes">next_epoch_network_pubkey_bytes</Link>)
+            // My next epoch parameters with other current epoch parameters.
+            || <Link to="../iota_system/validator#iota_system_validator_is_equal_some_and_value">is_equal_some_and_value</Link>(&self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.next_epoch_net_address, &other.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.net_address)
+            || <Link to="../iota_system/validator#iota_system_validator_is_equal_some_and_value">is_equal_some_and_value</Link>(&self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_p2p_address">next_epoch_p2p_address</Link>, &other.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_p2p_address">p2p_address</Link>)
+            || <Link to="../iota_system/validator#iota_system_validator_is_equal_some_and_value">is_equal_some_and_value</Link>(&self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_authority_pubkey_bytes">next_epoch_authority_pubkey_bytes</Link>, &other.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_authority_pubkey_bytes">authority_pubkey_bytes</Link>)
+            || <Link to="../iota_system/validator#iota_system_validator_is_equal_some_and_value">is_equal_some_and_value</Link>(&self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_network_pubkey_bytes">next_epoch_network_pubkey_bytes</Link>, &other.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_network_pubkey_bytes">network_pubkey_bytes</Link>)
+            || <Link to="../iota_system/validator#iota_system_validator_is_equal_some_and_value">is_equal_some_and_value</Link>(&self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_network_pubkey_bytes">next_epoch_network_pubkey_bytes</Link>, &other.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_protocol_pubkey_bytes">protocol_pubkey_bytes</Link>)
+            || <Link to="../iota_system/validator#iota_system_validator_is_equal_some_and_value">is_equal_some_and_value</Link>(&self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_protocol_pubkey_bytes">next_epoch_protocol_pubkey_bytes</Link>, &other.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_protocol_pubkey_bytes">protocol_pubkey_bytes</Link>)
+            || <Link to="../iota_system/validator#iota_system_validator_is_equal_some_and_value">is_equal_some_and_value</Link>(&self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_protocol_pubkey_bytes">next_epoch_protocol_pubkey_bytes</Link>, &other.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_network_pubkey_bytes">network_pubkey_bytes</Link>)
+            // Other next epoch parameters with my current epoch parameters.
+            || <Link to="../iota_system/validator#iota_system_validator_is_equal_some_and_value">is_equal_some_and_value</Link>(&other.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.next_epoch_net_address, &self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.net_address)
+            || <Link to="../iota_system/validator#iota_system_validator_is_equal_some_and_value">is_equal_some_and_value</Link>(&other.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_p2p_address">next_epoch_p2p_address</Link>, &self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_p2p_address">p2p_address</Link>)
+            || <Link to="../iota_system/validator#iota_system_validator_is_equal_some_and_value">is_equal_some_and_value</Link>(&other.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_authority_pubkey_bytes">next_epoch_authority_pubkey_bytes</Link>, &self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_authority_pubkey_bytes">authority_pubkey_bytes</Link>)
+            || <Link to="../iota_system/validator#iota_system_validator_is_equal_some_and_value">is_equal_some_and_value</Link>(&other.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_network_pubkey_bytes">next_epoch_network_pubkey_bytes</Link>, &self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_network_pubkey_bytes">network_pubkey_bytes</Link>)
+            || <Link to="../iota_system/validator#iota_system_validator_is_equal_some_and_value">is_equal_some_and_value</Link>(&other.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_network_pubkey_bytes">next_epoch_network_pubkey_bytes</Link>, &self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_protocol_pubkey_bytes">protocol_pubkey_bytes</Link>)
+            || <Link to="../iota_system/validator#iota_system_validator_is_equal_some_and_value">is_equal_some_and_value</Link>(&other.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_protocol_pubkey_bytes">next_epoch_protocol_pubkey_bytes</Link>, &self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_protocol_pubkey_bytes">protocol_pubkey_bytes</Link>)
+            || <Link to="../iota_system/validator#iota_system_validator_is_equal_some_and_value">is_equal_some_and_value</Link>(&other.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_protocol_pubkey_bytes">next_epoch_protocol_pubkey_bytes</Link>, &self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_network_pubkey_bytes">network_pubkey_bytes</Link>)
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_is_equal_some_and_value"></Link>
+
+## Function `is_equal_some_and_value`
+
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota_system/validator#iota_system_validator_is_equal_some_and_value">is_equal_some_and_value</Link>&lt;T&gt;(a: &<Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;T&gt;, b: &T): bool
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota_system/validator#iota_system_validator_is_equal_some_and_value">is_equal_some_and_value</Link>&lt;T&gt;(a: &Option&lt;T&gt;, b: &T): bool \{
+    <b>if</b> (a.is_none()) \{
+        <b>false</b>
+    } <b>else</b> \{
+        a.borrow() == b
+    }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_is_equal_some"></Link>
+
+## Function `is_equal_some`
+
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota_system/validator#iota_system_validator_is_equal_some">is_equal_some</Link>&lt;T&gt;(a: &<Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;T&gt;, b: &<Link to="../std/option#std_option_Option">std::option::Option</Link>&lt;T&gt;): bool
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota_system/validator#iota_system_validator_is_equal_some">is_equal_some</Link>&lt;T&gt;(a: &Option&lt;T&gt;, b: &Option&lt;T&gt;): bool \{
+    <b>if</b> (a.is_none() || b.is_none()) \{
+        <b>false</b>
+    } <b>else</b> \{
+        a.borrow() == b.borrow()
+    }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_smaller_than"></Link>
+
+## Function `smaller_than`
+
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_smaller_than">smaller_than</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>, other: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>): bool
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_smaller_than">smaller_than</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>, other: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>): bool \{
+    <b>if</b> (self.<Link to="../iota_system/validator#iota_system_validator_total_stake">total_stake</Link>() != other.<Link to="../iota_system/validator#iota_system_validator_total_stake">total_stake</Link>()) \{
+        <b>return</b> self.<Link to="../iota_system/validator#iota_system_validator_total_stake">total_stake</Link>() &lt; other.<Link to="../iota_system/validator#iota_system_validator_total_stake">total_stake</Link>()
+    };
+    <b>let</b> self_pubkey = self.<Link to="../iota_system/validator#iota_system_validator_authority_pubkey_bytes">authority_pubkey_bytes</Link>();
+    <b>let</b> other_pubkey = other.<Link to="../iota_system/validator#iota_system_validator_authority_pubkey_bytes">authority_pubkey_bytes</Link>();
+    // Compare the two pubkeys lexicographically, assuming equal lengths
+    '<Link to="../iota_system/validator#iota_system_validator_smaller_than">smaller_than</Link>: \{
+        self_pubkey.zip_do_ref!(other_pubkey, |a, b| <b>if</b> (a != b) <b>return</b> '<Link to="../iota_system/validator#iota_system_validator_smaller_than">smaller_than</Link> *a &lt; *b);
+        <b>false</b> // Should never end up here
+    }
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_new_unverified_validator_operation_cap_and_transfer"></Link>
+
+## Function `new_unverified_validator_operation_cap_and_transfer`
+
+Create a new <code>UnverifiedValidatorOperationCap</code>, transfer to the validator,
+and registers it, thus revoking the previous cap's permission.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_new_unverified_validator_operation_cap_and_transfer">new_unverified_validator_operation_cap_and_transfer</Link>(self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_new_unverified_validator_operation_cap_and_transfer">new_unverified_validator_operation_cap_and_transfer</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>,
+    ctx: &<b>mut</b> TxContext,
+) \{
+    <b>let</b> <b>address</b> = ctx.sender();
+    <b>assert</b>!(<b>address</b> == self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_iota_address">iota_address</Link>, <Link to="../iota_system/validator#iota_system_validator_ENewCapNotCreatedByValidatorItself">ENewCapNotCreatedByValidatorItself</Link>);
+    <b>let</b> new_id = <Link to="../iota_system/validator_cap#iota_system_validator_cap_new_unverified_validator_operation_cap_and_transfer">validator_cap::new_unverified_validator_operation_cap_and_transfer</Link>(<b>address</b>, ctx);
+    self.<Link to="../iota_system/validator#iota_system_validator_operation_cap_id">operation_cap_id</Link> = new_id;
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_update_name"></Link>
+
+## Function `update_name`
+
+Update name of the validator.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_update_name">update_name</Link>(self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>, <Link to="../iota_system/validator#iota_system_validator_name">name</Link>: vector&lt;u8&gt;)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_update_name">update_name</Link>(self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>, <Link to="../iota_system/validator#iota_system_validator_name">name</Link>: vector&lt;u8&gt;) \{
+    <b>assert</b>!(<Link to="../iota_system/validator#iota_system_validator_name">name</Link>.length() &lt;= <Link to="../iota_system/validator#iota_system_validator_MAX_VALIDATOR_METADATA_LENGTH">MAX_VALIDATOR_METADATA_LENGTH</Link>, <Link to="../iota_system/validator#iota_system_validator_EValidatorMetadataExceedingLengthLimit">EValidatorMetadataExceedingLengthLimit</Link>);
+    self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_name">name</Link> = <Link to="../iota_system/validator#iota_system_validator_name">name</Link>.to_ascii_string().to_string();
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_update_description"></Link>
+
+## Function `update_description`
+
+Update description of the validator.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_update_description">update_description</Link>(self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>, <Link to="../iota_system/validator#iota_system_validator_description">description</Link>: vector&lt;u8&gt;)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_update_description">update_description</Link>(self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>, <Link to="../iota_system/validator#iota_system_validator_description">description</Link>: vector&lt;u8&gt;) \{
+    <b>assert</b>!(
+        <Link to="../iota_system/validator#iota_system_validator_description">description</Link>.length() &lt;= <Link to="../iota_system/validator#iota_system_validator_MAX_VALIDATOR_METADATA_LENGTH">MAX_VALIDATOR_METADATA_LENGTH</Link>,
+        <Link to="../iota_system/validator#iota_system_validator_EValidatorMetadataExceedingLengthLimit">EValidatorMetadataExceedingLengthLimit</Link>,
+    );
+    self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_description">description</Link> = <Link to="../iota_system/validator#iota_system_validator_description">description</Link>.to_ascii_string().to_string();
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_update_image_url"></Link>
+
+## Function `update_image_url`
+
+Update image url of the validator.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_update_image_url">update_image_url</Link>(self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>, <Link to="../iota_system/validator#iota_system_validator_image_url">image_url</Link>: vector&lt;u8&gt;)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_update_image_url">update_image_url</Link>(self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>, <Link to="../iota_system/validator#iota_system_validator_image_url">image_url</Link>: vector&lt;u8&gt;) \{
+    <b>assert</b>!(
+        <Link to="../iota_system/validator#iota_system_validator_image_url">image_url</Link>.length() &lt;= <Link to="../iota_system/validator#iota_system_validator_MAX_VALIDATOR_METADATA_LENGTH">MAX_VALIDATOR_METADATA_LENGTH</Link>,
+        <Link to="../iota_system/validator#iota_system_validator_EValidatorMetadataExceedingLengthLimit">EValidatorMetadataExceedingLengthLimit</Link>,
+    );
+    self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_image_url">image_url</Link> = url::new_unsafe_from_bytes(<Link to="../iota_system/validator#iota_system_validator_image_url">image_url</Link>);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_update_project_url"></Link>
+
+## Function `update_project_url`
+
+Update project url of the validator.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_update_project_url">update_project_url</Link>(self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>, <Link to="../iota_system/validator#iota_system_validator_project_url">project_url</Link>: vector&lt;u8&gt;)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_update_project_url">update_project_url</Link>(self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>, <Link to="../iota_system/validator#iota_system_validator_project_url">project_url</Link>: vector&lt;u8&gt;) \{
+    <b>assert</b>!(
+        <Link to="../iota_system/validator#iota_system_validator_project_url">project_url</Link>.length() &lt;= <Link to="../iota_system/validator#iota_system_validator_MAX_VALIDATOR_METADATA_LENGTH">MAX_VALIDATOR_METADATA_LENGTH</Link>,
+        <Link to="../iota_system/validator#iota_system_validator_EValidatorMetadataExceedingLengthLimit">EValidatorMetadataExceedingLengthLimit</Link>,
+    );
+    self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_project_url">project_url</Link> = url::new_unsafe_from_bytes(<Link to="../iota_system/validator#iota_system_validator_project_url">project_url</Link>);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_update_next_epoch_network_address"></Link>
+
+## Function `update_next_epoch_network_address`
+
+Update network address of this validator, taking effects from next epoch
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_update_next_epoch_network_address">update_next_epoch_network_address</Link>(self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>, net_address: vector&lt;u8&gt;)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_update_next_epoch_network_address">update_next_epoch_network_address</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>,
+    net_address: vector&lt;u8&gt;,
+) \{
+    <b>assert</b>!(
+        net_address.length() &lt;= <Link to="../iota_system/validator#iota_system_validator_MAX_VALIDATOR_METADATA_LENGTH">MAX_VALIDATOR_METADATA_LENGTH</Link>,
+        <Link to="../iota_system/validator#iota_system_validator_EValidatorMetadataExceedingLengthLimit">EValidatorMetadataExceedingLengthLimit</Link>,
+    );
+    <b>let</b> net_address = net_address.to_ascii_string().to_string();
+    self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.next_epoch_net_address = option::some(net_address);
+    <Link to="../iota_system/validator#iota_system_validator_validate_metadata">validate_metadata</Link>(&self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_update_candidate_network_address"></Link>
+
+## Function `update_candidate_network_address`
+
+Update network address of this candidate validator
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_update_candidate_network_address">update_candidate_network_address</Link>(self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>, net_address: vector&lt;u8&gt;)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_update_candidate_network_address">update_candidate_network_address</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>,
+    net_address: vector&lt;u8&gt;,
+) \{
+    <b>assert</b>!(<Link to="../iota_system/validator#iota_system_validator_is_preactive">is_preactive</Link>(self), <Link to="../iota_system/validator#iota_system_validator_ENotValidatorCandidate">ENotValidatorCandidate</Link>);
+    <b>assert</b>!(
+        net_address.length() &lt;= <Link to="../iota_system/validator#iota_system_validator_MAX_VALIDATOR_METADATA_LENGTH">MAX_VALIDATOR_METADATA_LENGTH</Link>,
+        <Link to="../iota_system/validator#iota_system_validator_EValidatorMetadataExceedingLengthLimit">EValidatorMetadataExceedingLengthLimit</Link>,
+    );
+    <b>let</b> net_address = net_address.to_ascii_string().to_string();
+    self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.net_address = net_address;
+    <Link to="../iota_system/validator#iota_system_validator_validate_metadata">validate_metadata</Link>(&self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_update_next_epoch_p2p_address"></Link>
+
+## Function `update_next_epoch_p2p_address`
+
+Update p2p address of this validator, taking effects from next epoch
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_update_next_epoch_p2p_address">update_next_epoch_p2p_address</Link>(self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>, <Link to="../iota_system/validator#iota_system_validator_p2p_address">p2p_address</Link>: vector&lt;u8&gt;)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_update_next_epoch_p2p_address">update_next_epoch_p2p_address</Link>(self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>, <Link to="../iota_system/validator#iota_system_validator_p2p_address">p2p_address</Link>: vector&lt;u8&gt;) \{
+    <b>assert</b>!(
+        <Link to="../iota_system/validator#iota_system_validator_p2p_address">p2p_address</Link>.length() &lt;= <Link to="../iota_system/validator#iota_system_validator_MAX_VALIDATOR_METADATA_LENGTH">MAX_VALIDATOR_METADATA_LENGTH</Link>,
+        <Link to="../iota_system/validator#iota_system_validator_EValidatorMetadataExceedingLengthLimit">EValidatorMetadataExceedingLengthLimit</Link>,
+    );
+    <b>let</b> <Link to="../iota_system/validator#iota_system_validator_p2p_address">p2p_address</Link> = <Link to="../iota_system/validator#iota_system_validator_p2p_address">p2p_address</Link>.to_ascii_string().to_string();
+    self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_p2p_address">next_epoch_p2p_address</Link> = option::some(<Link to="../iota_system/validator#iota_system_validator_p2p_address">p2p_address</Link>);
+    <Link to="../iota_system/validator#iota_system_validator_validate_metadata">validate_metadata</Link>(&self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_update_candidate_p2p_address"></Link>
+
+## Function `update_candidate_p2p_address`
+
+Update p2p address of this candidate validator
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_update_candidate_p2p_address">update_candidate_p2p_address</Link>(self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>, <Link to="../iota_system/validator#iota_system_validator_p2p_address">p2p_address</Link>: vector&lt;u8&gt;)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_update_candidate_p2p_address">update_candidate_p2p_address</Link>(self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>, <Link to="../iota_system/validator#iota_system_validator_p2p_address">p2p_address</Link>: vector&lt;u8&gt;) \{
+    <b>assert</b>!(<Link to="../iota_system/validator#iota_system_validator_is_preactive">is_preactive</Link>(self), <Link to="../iota_system/validator#iota_system_validator_ENotValidatorCandidate">ENotValidatorCandidate</Link>);
+    <b>assert</b>!(
+        <Link to="../iota_system/validator#iota_system_validator_p2p_address">p2p_address</Link>.length() &lt;= <Link to="../iota_system/validator#iota_system_validator_MAX_VALIDATOR_METADATA_LENGTH">MAX_VALIDATOR_METADATA_LENGTH</Link>,
+        <Link to="../iota_system/validator#iota_system_validator_EValidatorMetadataExceedingLengthLimit">EValidatorMetadataExceedingLengthLimit</Link>,
+    );
+    <b>let</b> <Link to="../iota_system/validator#iota_system_validator_p2p_address">p2p_address</Link> = <Link to="../iota_system/validator#iota_system_validator_p2p_address">p2p_address</Link>.to_ascii_string().to_string();
+    self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_p2p_address">p2p_address</Link> = <Link to="../iota_system/validator#iota_system_validator_p2p_address">p2p_address</Link>;
+    <Link to="../iota_system/validator#iota_system_validator_validate_metadata">validate_metadata</Link>(&self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_update_next_epoch_primary_address"></Link>
+
+## Function `update_next_epoch_primary_address`
+
+Update primary address of this validator, taking effects from next epoch
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_update_next_epoch_primary_address">update_next_epoch_primary_address</Link>(self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>, <Link to="../iota_system/validator#iota_system_validator_primary_address">primary_address</Link>: vector&lt;u8&gt;)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_update_next_epoch_primary_address">update_next_epoch_primary_address</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>,
+    <Link to="../iota_system/validator#iota_system_validator_primary_address">primary_address</Link>: vector&lt;u8&gt;,
+) \{
+    <b>assert</b>!(
+        <Link to="../iota_system/validator#iota_system_validator_primary_address">primary_address</Link>.length() &lt;= <Link to="../iota_system/validator#iota_system_validator_MAX_VALIDATOR_METADATA_LENGTH">MAX_VALIDATOR_METADATA_LENGTH</Link>,
+        <Link to="../iota_system/validator#iota_system_validator_EValidatorMetadataExceedingLengthLimit">EValidatorMetadataExceedingLengthLimit</Link>,
+    );
+    <b>let</b> <Link to="../iota_system/validator#iota_system_validator_primary_address">primary_address</Link> = <Link to="../iota_system/validator#iota_system_validator_primary_address">primary_address</Link>.to_ascii_string().to_string();
+    self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_primary_address">next_epoch_primary_address</Link> = option::some(<Link to="../iota_system/validator#iota_system_validator_primary_address">primary_address</Link>);
+    <Link to="../iota_system/validator#iota_system_validator_validate_metadata">validate_metadata</Link>(&self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_update_candidate_primary_address"></Link>
+
+## Function `update_candidate_primary_address`
+
+Update primary address of this candidate validator
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_update_candidate_primary_address">update_candidate_primary_address</Link>(self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>, <Link to="../iota_system/validator#iota_system_validator_primary_address">primary_address</Link>: vector&lt;u8&gt;)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_update_candidate_primary_address">update_candidate_primary_address</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>,
+    <Link to="../iota_system/validator#iota_system_validator_primary_address">primary_address</Link>: vector&lt;u8&gt;,
+) \{
+    <b>assert</b>!(<Link to="../iota_system/validator#iota_system_validator_is_preactive">is_preactive</Link>(self), <Link to="../iota_system/validator#iota_system_validator_ENotValidatorCandidate">ENotValidatorCandidate</Link>);
+    <b>assert</b>!(
+        <Link to="../iota_system/validator#iota_system_validator_primary_address">primary_address</Link>.length() &lt;= <Link to="../iota_system/validator#iota_system_validator_MAX_VALIDATOR_METADATA_LENGTH">MAX_VALIDATOR_METADATA_LENGTH</Link>,
+        <Link to="../iota_system/validator#iota_system_validator_EValidatorMetadataExceedingLengthLimit">EValidatorMetadataExceedingLengthLimit</Link>,
+    );
+    <b>let</b> <Link to="../iota_system/validator#iota_system_validator_primary_address">primary_address</Link> = <Link to="../iota_system/validator#iota_system_validator_primary_address">primary_address</Link>.to_ascii_string().to_string();
+    self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_primary_address">primary_address</Link> = <Link to="../iota_system/validator#iota_system_validator_primary_address">primary_address</Link>;
+    <Link to="../iota_system/validator#iota_system_validator_validate_metadata">validate_metadata</Link>(&self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_update_next_epoch_authority_pubkey"></Link>
+
+## Function `update_next_epoch_authority_pubkey`
+
+Update authority public key of this validator, taking effects from next epoch
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_update_next_epoch_authority_pubkey">update_next_epoch_authority_pubkey</Link>(self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>, authority_pubkey: vector&lt;u8&gt;, <Link to="../iota_system/validator#iota_system_validator_proof_of_possession">proof_of_possession</Link>: vector&lt;u8&gt;)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_update_next_epoch_authority_pubkey">update_next_epoch_authority_pubkey</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>,
+    authority_pubkey: vector&lt;u8&gt;,
+    <Link to="../iota_system/validator#iota_system_validator_proof_of_possession">proof_of_possession</Link>: vector&lt;u8&gt;,
+) \{
+    self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_authority_pubkey_bytes">next_epoch_authority_pubkey_bytes</Link> = option::some(authority_pubkey);
+    self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_proof_of_possession">next_epoch_proof_of_possession</Link> = option::some(<Link to="../iota_system/validator#iota_system_validator_proof_of_possession">proof_of_possession</Link>);
+    <Link to="../iota_system/validator#iota_system_validator_validate_metadata">validate_metadata</Link>(&self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_update_candidate_authority_pubkey"></Link>
+
+## Function `update_candidate_authority_pubkey`
+
+Update authority public key of this candidate validator
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_update_candidate_authority_pubkey">update_candidate_authority_pubkey</Link>(self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>, authority_pubkey: vector&lt;u8&gt;, <Link to="../iota_system/validator#iota_system_validator_proof_of_possession">proof_of_possession</Link>: vector&lt;u8&gt;)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_update_candidate_authority_pubkey">update_candidate_authority_pubkey</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>,
+    authority_pubkey: vector&lt;u8&gt;,
+    <Link to="../iota_system/validator#iota_system_validator_proof_of_possession">proof_of_possession</Link>: vector&lt;u8&gt;,
+) \{
+    <b>assert</b>!(<Link to="../iota_system/validator#iota_system_validator_is_preactive">is_preactive</Link>(self), <Link to="../iota_system/validator#iota_system_validator_ENotValidatorCandidate">ENotValidatorCandidate</Link>);
+    self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_authority_pubkey_bytes">authority_pubkey_bytes</Link> = authority_pubkey;
+    self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_proof_of_possession">proof_of_possession</Link> = <Link to="../iota_system/validator#iota_system_validator_proof_of_possession">proof_of_possession</Link>;
+    <Link to="../iota_system/validator#iota_system_validator_validate_metadata">validate_metadata</Link>(&self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_update_next_epoch_network_pubkey"></Link>
+
+## Function `update_next_epoch_network_pubkey`
+
+Update network public key of this validator, taking effects from next epoch
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_update_next_epoch_network_pubkey">update_next_epoch_network_pubkey</Link>(self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>, network_pubkey: vector&lt;u8&gt;)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_update_next_epoch_network_pubkey">update_next_epoch_network_pubkey</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>,
+    network_pubkey: vector&lt;u8&gt;,
+) \{
+    self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_network_pubkey_bytes">next_epoch_network_pubkey_bytes</Link> = option::some(network_pubkey);
+    <Link to="../iota_system/validator#iota_system_validator_validate_metadata">validate_metadata</Link>(&self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_update_candidate_network_pubkey"></Link>
+
+## Function `update_candidate_network_pubkey`
+
+Update network public key of this candidate validator
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_update_candidate_network_pubkey">update_candidate_network_pubkey</Link>(self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>, network_pubkey: vector&lt;u8&gt;)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_update_candidate_network_pubkey">update_candidate_network_pubkey</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>,
+    network_pubkey: vector&lt;u8&gt;,
+) \{
+    <b>assert</b>!(<Link to="../iota_system/validator#iota_system_validator_is_preactive">is_preactive</Link>(self), <Link to="../iota_system/validator#iota_system_validator_ENotValidatorCandidate">ENotValidatorCandidate</Link>);
+    self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_network_pubkey_bytes">network_pubkey_bytes</Link> = network_pubkey;
+    <Link to="../iota_system/validator#iota_system_validator_validate_metadata">validate_metadata</Link>(&self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_update_next_epoch_protocol_pubkey"></Link>
+
+## Function `update_next_epoch_protocol_pubkey`
+
+Update protocol public key of this validator, taking effects from next epoch
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_update_next_epoch_protocol_pubkey">update_next_epoch_protocol_pubkey</Link>(self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>, protocol_pubkey: vector&lt;u8&gt;)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_update_next_epoch_protocol_pubkey">update_next_epoch_protocol_pubkey</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>,
+    protocol_pubkey: vector&lt;u8&gt;,
+) \{
+    self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_protocol_pubkey_bytes">next_epoch_protocol_pubkey_bytes</Link> = option::some(protocol_pubkey);
+    <Link to="../iota_system/validator#iota_system_validator_validate_metadata">validate_metadata</Link>(&self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_update_candidate_protocol_pubkey"></Link>
+
+## Function `update_candidate_protocol_pubkey`
+
+Update protocol public key of this candidate validator
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_update_candidate_protocol_pubkey">update_candidate_protocol_pubkey</Link>(self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>, protocol_pubkey: vector&lt;u8&gt;)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_update_candidate_protocol_pubkey">update_candidate_protocol_pubkey</Link>(
+    self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>,
+    protocol_pubkey: vector&lt;u8&gt;,
+) \{
+    <b>assert</b>!(<Link to="../iota_system/validator#iota_system_validator_is_preactive">is_preactive</Link>(self), <Link to="../iota_system/validator#iota_system_validator_ENotValidatorCandidate">ENotValidatorCandidate</Link>);
+    self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_protocol_pubkey_bytes">protocol_pubkey_bytes</Link> = protocol_pubkey;
+    <Link to="../iota_system/validator#iota_system_validator_validate_metadata">validate_metadata</Link>(&self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>);
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_effectuate_staged_metadata"></Link>
+
+## Function `effectuate_staged_metadata`
+
+Effectutate all staged next epoch metadata for this validator.
+NOTE: this function SHOULD ONLY be called by validator_set when
+advancing an epoch.
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_effectuate_staged_metadata">effectuate_staged_metadata</Link>(self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_effectuate_staged_metadata">effectuate_staged_metadata</Link>(self: &<b>mut</b> <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>) \{
+    <b>if</b> (<Link to="../iota_system/validator#iota_system_validator_next_epoch_network_address">next_epoch_network_address</Link>(self).is_some()) \{
+        self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.net_address = self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.next_epoch_net_address.extract();
+        self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.next_epoch_net_address = option::none();
+    };
+    <b>if</b> (<Link to="../iota_system/validator#iota_system_validator_next_epoch_p2p_address">next_epoch_p2p_address</Link>(self).is_some()) \{
+        self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_p2p_address">p2p_address</Link> = self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_p2p_address">next_epoch_p2p_address</Link>.extract();
+        self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_p2p_address">next_epoch_p2p_address</Link> = option::none();
+    };
+    <b>if</b> (<Link to="../iota_system/validator#iota_system_validator_next_epoch_primary_address">next_epoch_primary_address</Link>(self).is_some()) \{
+        self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_primary_address">primary_address</Link> = self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_primary_address">next_epoch_primary_address</Link>.extract();
+        self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_primary_address">next_epoch_primary_address</Link> = option::none();
+    };
+    <b>if</b> (<Link to="../iota_system/validator#iota_system_validator_next_epoch_authority_pubkey_bytes">next_epoch_authority_pubkey_bytes</Link>(self).is_some()) \{
+        self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_authority_pubkey_bytes">authority_pubkey_bytes</Link> =
+            self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_authority_pubkey_bytes">next_epoch_authority_pubkey_bytes</Link>.extract();
+        self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_authority_pubkey_bytes">next_epoch_authority_pubkey_bytes</Link> = option::none();
+        self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_proof_of_possession">proof_of_possession</Link> = self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_proof_of_possession">next_epoch_proof_of_possession</Link>.extract();
+        self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_proof_of_possession">next_epoch_proof_of_possession</Link> = option::none();
+    };
+    <b>if</b> (<Link to="../iota_system/validator#iota_system_validator_next_epoch_network_pubkey_bytes">next_epoch_network_pubkey_bytes</Link>(self).is_some()) \{
+        self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_network_pubkey_bytes">network_pubkey_bytes</Link> =
+            self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_network_pubkey_bytes">next_epoch_network_pubkey_bytes</Link>.extract();
+        self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_network_pubkey_bytes">next_epoch_network_pubkey_bytes</Link> = option::none();
+    };
+    <b>if</b> (<Link to="../iota_system/validator#iota_system_validator_next_epoch_protocol_pubkey_bytes">next_epoch_protocol_pubkey_bytes</Link>(self).is_some()) \{
+        self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_protocol_pubkey_bytes">protocol_pubkey_bytes</Link> =
+            self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_protocol_pubkey_bytes">next_epoch_protocol_pubkey_bytes</Link>.extract();
+        self.<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_next_epoch_protocol_pubkey_bytes">next_epoch_protocol_pubkey_bytes</Link> = option::none();
+    };
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_validate_metadata"></Link>
+
+## Function `validate_metadata`
+
+Aborts if validator metadata is valid
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_validate_metadata">validate_metadata</Link>(<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>: &<Link to="../iota_system/validator#iota_system_validator_ValidatorMetadataV1">iota_system::validator::ValidatorMetadataV1</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_validate_metadata">validate_metadata</Link>(<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>: &<Link to="../iota_system/validator#iota_system_validator_ValidatorMetadataV1">ValidatorMetadataV1</Link>) \{
+    <Link to="../iota_system/validator#iota_system_validator_validate_metadata_bcs">validate_metadata_bcs</Link>(bcs::to_bytes(<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>));
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_validate_metadata_bcs"></Link>
+
+## Function `validate_metadata_bcs`
+
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_validate_metadata_bcs">validate_metadata_bcs</Link>(<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>: vector&lt;u8&gt;)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>native</b> <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_validate_metadata_bcs">validate_metadata_bcs</Link>(<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>: vector&lt;u8&gt;);
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_get_staking_pool_ref"></Link>
+
+## Function `get_staking_pool_ref`
+
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_get_staking_pool_ref">get_staking_pool_ref</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>): &<Link to="../iota_system/staking_pool#iota_system_staking_pool_StakingPoolV1">iota_system::staking_pool::StakingPoolV1</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b>(package) <b>fun</b> <Link to="../iota_system/validator#iota_system_validator_get_staking_pool_ref">get_staking_pool_ref</Link>(self: &<Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link>): &StakingPoolV1 \{
+    &self.<Link to="../iota_system/staking_pool#iota_system_staking_pool">staking_pool</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="iota_system_validator_new_from_metadata"></Link>
+
+## Function `new_from_metadata`
+
+Create a new validator from the given <code><Link to="../iota_system/validator#iota_system_validator_ValidatorMetadataV1">ValidatorMetadataV1</Link></code>, called by both <code><Link to="../iota_system/validator#iota_system_validator_new">new</Link></code> and <code>new_for_testing</code>.
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota_system/validator#iota_system_validator_new_from_metadata">new_from_metadata</Link>(<Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>: <Link to="../iota_system/validator#iota_system_validator_ValidatorMetadataV1">iota_system::validator::ValidatorMetadataV1</Link>, <Link to="../iota_system/validator#iota_system_validator_gas_price">gas_price</Link>: u64, <Link to="../iota_system/validator#iota_system_validator_commission_rate">commission_rate</Link>: u64, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>): <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">iota_system::validator::ValidatorV1</Link>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>fun</b> <Link to="../iota_system/validator#iota_system_validator_new_from_metadata">new_from_metadata</Link>(
+    <Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>: <Link to="../iota_system/validator#iota_system_validator_ValidatorMetadataV1">ValidatorMetadataV1</Link>,
+    <Link to="../iota_system/validator#iota_system_validator_gas_price">gas_price</Link>: u64,
+    <Link to="../iota_system/validator#iota_system_validator_commission_rate">commission_rate</Link>: u64,
+    ctx: &<b>mut</b> TxContext,
+): <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link> \{
+    <b>let</b> <Link to="../iota_system/validator#iota_system_validator_iota_address">iota_address</Link> = <Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>.<Link to="../iota_system/validator#iota_system_validator_iota_address">iota_address</Link>;
+    <b>let</b> <Link to="../iota_system/staking_pool#iota_system_staking_pool">staking_pool</Link> = <Link to="../iota_system/staking_pool#iota_system_staking_pool_new">staking_pool::new</Link>(ctx);
+    <b>let</b> <Link to="../iota_system/validator#iota_system_validator_operation_cap_id">operation_cap_id</Link> = <Link to="../iota_system/validator_cap#iota_system_validator_cap_new_unverified_validator_operation_cap_and_transfer">validator_cap::new_unverified_validator_operation_cap_and_transfer</Link>(
+        <Link to="../iota_system/validator#iota_system_validator_iota_address">iota_address</Link>,
+        ctx,
+    );
+    <Link to="../iota_system/validator#iota_system_validator_ValidatorV1">ValidatorV1</Link> \{
+        <Link to="../iota_system/validator#iota_system_validator_metadata">metadata</Link>,
+        // Initialize the voting power to be 0.
+        // At the epoch change where this <Link to="../iota_system/validator#iota_system_validator">validator</Link> is actually added to the
+        // committee <Link to="../iota_system/validator#iota_system_validator">validator</Link> set, the voting power will be updated accordingly.
+        <Link to="../iota_system/voting_power#iota_system_voting_power">voting_power</Link>: 0,
+        <Link to="../iota_system/validator#iota_system_validator_operation_cap_id">operation_cap_id</Link>,
+        <Link to="../iota_system/validator#iota_system_validator_gas_price">gas_price</Link>,
+        <Link to="../iota_system/staking_pool#iota_system_staking_pool">staking_pool</Link>,
+        <Link to="../iota_system/validator#iota_system_validator_commission_rate">commission_rate</Link>,
+        <Link to="../iota_system/validator#iota_system_validator_next_epoch_stake">next_epoch_stake</Link>: 0,
+        <Link to="../iota_system/validator#iota_system_validator_next_epoch_gas_price">next_epoch_gas_price</Link>: <Link to="../iota_system/validator#iota_system_validator_gas_price">gas_price</Link>,
+        next_epoch_commission_rate: <Link to="../iota_system/validator#iota_system_validator_commission_rate">commission_rate</Link>,
+        extra_fields: bag::new(ctx),
+    }
+}
+</code>
+</pre>
+
+
+
+</details>

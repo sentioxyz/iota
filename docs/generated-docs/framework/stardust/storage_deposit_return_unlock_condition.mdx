@@ -1,0 +1,185 @@
+---
+title: Module stardust::storage_deposit_return_unlock_condition
+sidebar_label: storage_deposit_return_unlock_condition
+slug: storage_deposit_return_unlock_condition
+---
+import Link from '@docusaurus/Link';
+
+<Link id="stardust_storage_deposit_return_unlock_condition"/>
+
+
+-  [Struct `StorageDepositReturnUnlockCondition`](#stardust_storage_deposit_return_unlock_condition_StorageDepositReturnUnlockCondition)
+-  [Function `unlock`](#stardust_storage_deposit_return_unlock_condition_unlock)
+-  [Function `return_address`](#stardust_storage_deposit_return_unlock_condition_return_address)
+-  [Function `return_amount`](#stardust_storage_deposit_return_unlock_condition_return_amount)
+
+
+<pre>
+<code>
+<b>use</b> <Link to="../iota/address#iota_address">iota::address</Link>;
+<b>use</b> <Link to="../iota/bag#iota_bag">iota::bag</Link>;
+<b>use</b> <Link to="../iota/balance#iota_balance">iota::balance</Link>;
+<b>use</b> <Link to="../iota/coin#iota_coin">iota::coin</Link>;
+<b>use</b> <Link to="../iota/config#iota_config">iota::config</Link>;
+<b>use</b> <Link to="../iota/deny_list#iota_deny_list">iota::deny_list</Link>;
+<b>use</b> <Link to="../iota/dynamic_field#iota_dynamic_field">iota::dynamic_field</Link>;
+<b>use</b> <Link to="../iota/dynamic_object_field#iota_dynamic_object_field">iota::dynamic_object_field</Link>;
+<b>use</b> <Link to="../iota/event#iota_event">iota::event</Link>;
+<b>use</b> <Link to="../iota/hex#iota_hex">iota::hex</Link>;
+<b>use</b> <Link to="../iota/object#iota_object">iota::object</Link>;
+<b>use</b> <Link to="../iota/transfer#iota_transfer">iota::transfer</Link>;
+<b>use</b> <Link to="../iota/tx_context#iota_tx_context">iota::tx_context</Link>;
+<b>use</b> <Link to="../iota/types#iota_types">iota::types</Link>;
+<b>use</b> <Link to="../iota/url#iota_url">iota::url</Link>;
+<b>use</b> <Link to="../std/address#std_address">std::address</Link>;
+<b>use</b> <Link to="../std/ascii#std_ascii">std::ascii</Link>;
+<b>use</b> <Link to="../std/bcs#std_bcs">std::bcs</Link>;
+<b>use</b> <Link to="../std/option#std_option">std::option</Link>;
+<b>use</b> <Link to="../std/string#std_string">std::string</Link>;
+<b>use</b> <Link to="../std/type_name#std_type_name">std::type_name</Link>;
+<b>use</b> <Link to="../std/vector#std_vector">std::vector</Link>;
+</code>
+</pre>
+
+
+
+<Link id="stardust_storage_deposit_return_unlock_condition_StorageDepositReturnUnlockCondition"></Link>
+
+## Struct `StorageDepositReturnUnlockCondition`
+
+The Stardust storage deposit return unlock condition.
+
+
+<pre>
+<code>
+<b>public</b> <b>struct</b> <Link to="../stardust/storage_deposit_return_unlock_condition#stardust_storage_deposit_return_unlock_condition_StorageDepositReturnUnlockCondition">StorageDepositReturnUnlockCondition</Link> <b>has</b> store
+</code>
+</pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code><Link to="../stardust/storage_deposit_return_unlock_condition#stardust_storage_deposit_return_unlock_condition_return_address">return_address</Link>: <b>address</b></code>
+</dt>
+<dd>
+ The address to which the consuming transaction should deposit the amount defined in Return Amount.
+</dd>
+<dt>
+<code><Link to="../stardust/storage_deposit_return_unlock_condition#stardust_storage_deposit_return_unlock_condition_return_amount">return_amount</Link>: u64</code>
+</dt>
+<dd>
+ The amount of coins the consuming transaction should deposit to the address defined in Return Address.
+</dd>
+</dl>
+
+
+</details>
+
+<Link id="stardust_storage_deposit_return_unlock_condition_unlock"></Link>
+
+## Function `unlock`
+
+Check the unlock condition.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/storage_deposit_return_unlock_condition#stardust_storage_deposit_return_unlock_condition_unlock">unlock</Link>&lt;T&gt;(condition: <Link to="../stardust/storage_deposit_return_unlock_condition#stardust_storage_deposit_return_unlock_condition_StorageDepositReturnUnlockCondition">stardust::storage_deposit_return_unlock_condition::StorageDepositReturnUnlockCondition</Link>, funding: &<b>mut</b> <Link to="../iota/balance#iota_balance_Balance">iota::balance::Balance</Link>&lt;T&gt;, ctx: &<b>mut</b> <Link to="../iota/tx_context#iota_tx_context_TxContext">iota::tx_context::TxContext</Link>)
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/storage_deposit_return_unlock_condition#stardust_storage_deposit_return_unlock_condition_unlock">unlock</Link>&lt;T&gt;(
+    condition: <Link to="../stardust/storage_deposit_return_unlock_condition#stardust_storage_deposit_return_unlock_condition_StorageDepositReturnUnlockCondition">StorageDepositReturnUnlockCondition</Link>,
+    funding: &<b>mut</b> Balance&lt;T&gt;,
+    ctx: &<b>mut</b> TxContext,
+) \{
+    // Aborts <b>if</b> `funding` is not enough.
+    <b>let</b> return_balance = funding.split(condition.<Link to="../stardust/storage_deposit_return_unlock_condition#stardust_storage_deposit_return_unlock_condition_return_amount">return_amount</Link>());
+    // Recipient will need to transfer the coin to a normal ed25519 <b>address</b> instead of legacy.
+    public_transfer(from_balance(return_balance, ctx), condition.<Link to="../stardust/storage_deposit_return_unlock_condition#stardust_storage_deposit_return_unlock_condition_return_address">return_address</Link>());
+    <b>let</b> <Link to="../stardust/storage_deposit_return_unlock_condition#stardust_storage_deposit_return_unlock_condition_StorageDepositReturnUnlockCondition">StorageDepositReturnUnlockCondition</Link> \{
+        <Link to="../stardust/storage_deposit_return_unlock_condition#stardust_storage_deposit_return_unlock_condition_return_address">return_address</Link>: _,
+        <Link to="../stardust/storage_deposit_return_unlock_condition#stardust_storage_deposit_return_unlock_condition_return_amount">return_amount</Link>: _,
+    } = condition;
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="stardust_storage_deposit_return_unlock_condition_return_address"></Link>
+
+## Function `return_address`
+
+Get the unlock condition's <code><Link to="../stardust/storage_deposit_return_unlock_condition#stardust_storage_deposit_return_unlock_condition_return_address">return_address</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/storage_deposit_return_unlock_condition#stardust_storage_deposit_return_unlock_condition_return_address">return_address</Link>(condition: &<Link to="../stardust/storage_deposit_return_unlock_condition#stardust_storage_deposit_return_unlock_condition_StorageDepositReturnUnlockCondition">stardust::storage_deposit_return_unlock_condition::StorageDepositReturnUnlockCondition</Link>): <b>address</b>
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/storage_deposit_return_unlock_condition#stardust_storage_deposit_return_unlock_condition_return_address">return_address</Link>(condition: &<Link to="../stardust/storage_deposit_return_unlock_condition#stardust_storage_deposit_return_unlock_condition_StorageDepositReturnUnlockCondition">StorageDepositReturnUnlockCondition</Link>): <b>address</b> \{
+    condition.<Link to="../stardust/storage_deposit_return_unlock_condition#stardust_storage_deposit_return_unlock_condition_return_address">return_address</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
+
+<Link id="stardust_storage_deposit_return_unlock_condition_return_amount"></Link>
+
+## Function `return_amount`
+
+Get the unlock condition's <code><Link to="../stardust/storage_deposit_return_unlock_condition#stardust_storage_deposit_return_unlock_condition_return_amount">return_amount</Link></code>.
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/storage_deposit_return_unlock_condition#stardust_storage_deposit_return_unlock_condition_return_amount">return_amount</Link>(condition: &<Link to="../stardust/storage_deposit_return_unlock_condition#stardust_storage_deposit_return_unlock_condition_StorageDepositReturnUnlockCondition">stardust::storage_deposit_return_unlock_condition::StorageDepositReturnUnlockCondition</Link>): u64
+</code>
+</pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre>
+<code>
+<b>public</b> <b>fun</b> <Link to="../stardust/storage_deposit_return_unlock_condition#stardust_storage_deposit_return_unlock_condition_return_amount">return_amount</Link>(condition: &<Link to="../stardust/storage_deposit_return_unlock_condition#stardust_storage_deposit_return_unlock_condition_StorageDepositReturnUnlockCondition">StorageDepositReturnUnlockCondition</Link>): u64 \{
+    condition.<Link to="../stardust/storage_deposit_return_unlock_condition#stardust_storage_deposit_return_unlock_condition_return_amount">return_amount</Link>
+}
+</code>
+</pre>
+
+
+
+</details>
