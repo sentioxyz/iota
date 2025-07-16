@@ -1,7 +1,5 @@
 packages:
-  - "apps/**"
   - "dapps/**"
-  - "docs/site"
   - "sdk/**"
   - "!**/dist/**"
   - "!**/.next/**"
