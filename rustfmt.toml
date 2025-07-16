@@ -6,16 +6,4 @@ imports_granularity = "Crate"
 normalize_comments = true
 normalize_doc_attributes = true
 wrap_comments = true
-ignore = [
-  "crates/iota-indexer-alt-jsonrpc/src/api/coin.rs",
-  "crates/iota-indexer-alt-jsonrpc/src/api/write.rs",
-  "crates/iota-indexer-alt-jsonrpc/src/api/objects.rs",
-  "crates/iota-indexer-alt-jsonrpc/src/api/transactions/mod.rs",
-  "crates/iota-json-rpc-api/src/coin.rs",
-  "crates/iota-json-rpc-api/src/extended.rs",
-  "crates/iota-json-rpc-api/src/indexer.rs",
-  "crates/iota-json-rpc-api/src/read.rs",
-  "crates/iota-json-rpc-api/src/transaction_builder.rs",
-  "crates/iota-json-rpc-api/src/write.rs",
-  "external-crates",
-]
+ignore = ["external-crates"]
