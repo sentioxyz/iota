@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use std::{
-    collections::HashSet,
+    collections::{HashMap, HashSet},
     sync::{Arc, Mutex},
 };
 
@@ -66,7 +66,7 @@ use crate::{
             IndexStatus, OptimisticTransaction, StoredTransaction, StoredTransactionEvents,
             stored_events_to_events, tx_events_to_iota_tx_events,
         },
-        tx_indices::TxSequenceNumber,
+        tx_indices::TxDigest,
     },
     schema::{
         address_metrics, addresses, chain_identifier, checkpoints, display, epochs, events,
@@ -78,7 +78,7 @@ use crate::{
 };
 
 pub const TX_SEQUENCE_NUMBER_STR: &str = "tx_sequence_number";
-pub const TRANSACTION_DIGEST_STR: &str = "transaction_digest";
+pub const TX_DIGEST_STR: &str = "tx_digest";
 pub const EVENT_SEQUENCE_NUMBER_STR: &str = "event_sequence_number";
 
 pub struct IndexerReader {
@@ -754,27 +754,6 @@ impl IndexerReader {
         Ok(tx_blocks)
     }
 
-    fn multi_get_transactions_with_sequence_numbers(
-        &self,
-        tx_sequence_numbers: Vec<i64>,
-        // Some(true) for desc, Some(false) for asc, None for undefined order
-        is_descending: Option<bool>,
-    ) -> Result<Vec<StoredTransaction>, IndexerError> {
-        let mut query = transactions::table
-            .filter(transactions::tx_sequence_number.eq_any(tx_sequence_numbers))
-            .into_boxed();
-        match is_descending {
-            Some(true) => {
-                query = query.order(transactions::dsl::tx_sequence_number.desc());
-            }
-            Some(false) => {
-                query = query.order(transactions::dsl::tx_sequence_number.asc());
-            }
-            None => (),
-        }
-        run_query!(&self.pool, |conn| query.load::<StoredTransaction>(conn))
-    }
-
     pub async fn get_owned_objects_in_blocking_task(
         &self,
         address: IotaAddress,
@@ -1063,9 +1042,9 @@ impl IndexerReader {
         let before_global_order_cursor_clause =
             if let Some(CursorPosition::BeforeGlobalOrder(cursor_tx_seq)) = cursor_position {
                 if is_descending {
-                    format!("AND {TX_SEQUENCE_NUMBER_STR} < {cursor_tx_seq}")
+                    format!("AND src_query.{TX_SEQUENCE_NUMBER_STR} < {cursor_tx_seq}")
                 } else {
-                    format!("AND {TX_SEQUENCE_NUMBER_STR} > {cursor_tx_seq}")
+                    format!("AND src_query.{TX_SEQUENCE_NUMBER_STR} > {cursor_tx_seq}")
                 }
             } else {
                 "".to_string()
@@ -1178,19 +1157,20 @@ impl IndexerReader {
                         "".to_string()
                     };
                 let inner_query_before_global_order = format!(
-                    "(SELECT tx_senders.{TX_SEQUENCE_NUMBER_STR} \
+                    "(SELECT {TX_DIGEST_STR} \
                     FROM tx_senders \
                     JOIN tx_recipients \
                     ON tx_senders.{TX_SEQUENCE_NUMBER_STR} = tx_recipients.{TX_SEQUENCE_NUMBER_STR} \
+                    JOIN tx_digests on tx_senders.{TX_SEQUENCE_NUMBER_STR} = tx_digests.{TX_SEQUENCE_NUMBER_STR} \
                     WHERE tx_senders.sender = '\\x{from_address}'::BYTEA \
                     AND tx_recipients.recipient = '\\x{to_address}'::BYTEA \
                     {before_global_order_cursor_clause} AND tx_senders.{TX_SEQUENCE_NUMBER_STR} < {smallest_tx_seq_with_global_order} \
-                    ORDER BY {TX_SEQUENCE_NUMBER_STR} {order_str} \
+                    ORDER BY tx_senders.{TX_SEQUENCE_NUMBER_STR} {order_str} \
                     LIMIT {limit}) AS inner_query_before_global_order
                     ",
                 );
                 let inner_query_after_global_order = format!(
-                    "(SELECT tx_senders.{TX_SEQUENCE_NUMBER_STR} \
+                    "(SELECT tx_digests.{TX_DIGEST_STR} \
                     FROM tx_senders \
                     JOIN tx_recipients \
                     ON tx_senders.{TX_SEQUENCE_NUMBER_STR} = tx_recipients.{TX_SEQUENCE_NUMBER_STR} \
@@ -1215,19 +1195,43 @@ impl IndexerReader {
             }
             Some(TransactionFilter::FromOrToAddress { addr }) => {
                 let address = Hex::encode(addr.to_vec());
+                let senders_before_global_order_cursor_clause =
+                    if let Some(CursorPosition::BeforeGlobalOrder(cursor_tx_seq)) = cursor_position
+                    {
+                        if is_descending {
+                            format!("AND tx_senders.{TX_SEQUENCE_NUMBER_STR} < {cursor_tx_seq}")
+                        } else {
+                            format!("AND tx_senders.{TX_SEQUENCE_NUMBER_STR} > {cursor_tx_seq}")
+                        }
+                    } else {
+                        "".to_string()
+                    };
+                let recipients_before_global_order_cursor_clause =
+                    if let Some(CursorPosition::BeforeGlobalOrder(cursor_tx_seq)) = cursor_position
+                    {
+                        if is_descending {
+                            format!("AND tx_recipients.{TX_SEQUENCE_NUMBER_STR} < {cursor_tx_seq}")
+                        } else {
+                            format!("AND tx_recipients.{TX_SEQUENCE_NUMBER_STR} > {cursor_tx_seq}")
+                        }
+                    } else {
+                        "".to_string()
+                    };
                 let inner_query_before_global_order = format!(
                     "( \
                         ( \
-                            SELECT {TX_SEQUENCE_NUMBER_STR} FROM tx_senders \
-                            WHERE sender = '\\x{address}'::BYTEA {before_global_order_cursor_clause} AND tx_senders.{TX_SEQUENCE_NUMBER_STR} < {smallest_tx_seq_with_global_order} \
-                            ORDER BY {TX_SEQUENCE_NUMBER_STR} {order_str} \
+                            SELECT {TX_DIGEST_STR} FROM tx_senders \
+                            JOIN tx_digests on tx_senders.tx_sequence_number = tx_digests.tx_sequence_number \
+                            WHERE sender = '\\x{address}'::BYTEA {senders_before_global_order_cursor_clause} AND tx_senders.{TX_SEQUENCE_NUMBER_STR} < {smallest_tx_seq_with_global_order} \
+                            ORDER BY tx_senders.{TX_SEQUENCE_NUMBER_STR} {order_str} \
                             LIMIT {limit} \
                         ) \
                         UNION \
                         ( \
-                            SELECT {TX_SEQUENCE_NUMBER_STR} FROM tx_recipients \
-                            WHERE recipient = '\\x{address}'::BYTEA {before_global_order_cursor_clause} AND tx_recipients.{TX_SEQUENCE_NUMBER_STR} < {smallest_tx_seq_with_global_order} \
-                            ORDER BY {TX_SEQUENCE_NUMBER_STR} {order_str} \
+                            SELECT {TX_DIGEST_STR} FROM tx_recipients \
+                            JOIN tx_digests on tx_recipients.tx_sequence_number = tx_digests.tx_sequence_number \
+                            WHERE recipient = '\\x{address}'::BYTEA {recipients_before_global_order_cursor_clause} AND tx_recipients.{TX_SEQUENCE_NUMBER_STR} < {smallest_tx_seq_with_global_order} \
+                            ORDER BY tx_recipients.{TX_SEQUENCE_NUMBER_STR} {order_str} \
                             LIMIT {limit} \
                         ) \
                     ) AS inner_query_before_global_order",
@@ -1235,7 +1239,7 @@ impl IndexerReader {
                 let inner_query_after_global_order = format!(
                     "( \
                         ( \
-                            SELECT {TX_SEQUENCE_NUMBER_STR} FROM tx_senders \
+                            SELECT tx_digests.{TX_DIGEST_STR} FROM tx_senders \
                             JOIN tx_digests on tx_senders.tx_sequence_number = tx_digests.tx_sequence_number \
                             JOIN tx_global_order ON tx_global_order.tx_digest = tx_digests.tx_digest \
                             WHERE sender = '\\x{address}'::BYTEA {global_order_cursor_clause} AND tx_senders.{TX_SEQUENCE_NUMBER_STR} >= {smallest_tx_seq_with_global_order} \
@@ -1244,7 +1248,7 @@ impl IndexerReader {
                         ) \
                         UNION \
                         ( \
-                            SELECT {TX_SEQUENCE_NUMBER_STR} FROM tx_recipients \
+                            SELECT tx_digests.{TX_DIGEST_STR} FROM tx_recipients \
                             JOIN tx_digests on tx_recipients.tx_sequence_number = tx_digests.tx_sequence_number \
                             JOIN tx_global_order ON tx_global_order.tx_digest = tx_digests.tx_digest \
                             WHERE recipient = '\\x{address}'::BYTEA {global_order_cursor_clause} AND tx_recipients.{TX_SEQUENCE_NUMBER_STR} >= {smallest_tx_seq_with_global_order} \
@@ -1347,21 +1351,22 @@ impl IndexerReader {
             }
         };
 
-        let final_query = match filtered_data_source {
+        let ordered_digests_query = match filtered_data_source {
             FilteredDataSource::CustomQuery(custom_query) => custom_query,
             FilteredDataSource::SingleTable {
                 table_name,
                 filter_condition,
             } => {
                 let query_before_global_order = format!(
-                    "SELECT {TX_SEQUENCE_NUMBER_STR} \
-                    FROM {table_name} \
-                    WHERE {filter_condition} {before_global_order_cursor_clause} AND {TX_SEQUENCE_NUMBER_STR} < {smallest_tx_seq_with_global_order} \
-                    ORDER BY {TX_SEQUENCE_NUMBER_STR} {order_str} \
+                    "SELECT {TX_DIGEST_STR} \
+                    FROM {table_name} src_table \
+                    JOIN tx_digests on src_table.tx_sequence_number = tx_digests.tx_sequence_number \
+                    WHERE {filter_condition} {before_global_order_cursor_clause} AND src_table.{TX_SEQUENCE_NUMBER_STR} < {smallest_tx_seq_with_global_order} \
+                    ORDER BY src_table.{TX_SEQUENCE_NUMBER_STR} {order_str} \
                     LIMIT {limit}",
                 );
                 let query_after_global_order = format!(
-                    "SELECT src_table.{TX_SEQUENCE_NUMBER_STR} \
+                    "SELECT tx_digests.{TX_DIGEST_STR} \
                     FROM {table_name} src_table \
                     JOIN tx_digests on src_table.tx_sequence_number = tx_digests.tx_sequence_number \
                     JOIN tx_global_order ON tx_global_order.tx_digest = tx_digests.tx_digest \
@@ -1369,7 +1374,6 @@ impl IndexerReader {
                     ORDER BY tx_global_order.global_sequence_number {order_str}, tx_global_order.optimistic_sequence_number {order_str} \
                     LIMIT {limit}",
                 );
-
                 combine_queries(
                     query_before_global_order,
                     query_after_global_order,
@@ -1380,18 +1384,24 @@ impl IndexerReader {
             }
         };
 
-        tracing::debug!("query transaction blocks: {}", final_query);
+        tracing::debug!("query transaction blocks: {}", ordered_digests_query);
         let pool = self.get_pool();
-        let tx_sequence_numbers = run_query_async!(&pool, move |conn| {
-            diesel::sql_query(final_query.clone()).load::<TxSequenceNumber>(conn)
+        let ordered_digests = run_query_async!(&pool, move |conn| {
+            sql_query(ordered_digests_query.clone()).load::<TxDigest>(conn)
         })?
         .into_iter()
-        .map(|tsn| tsn.tx_sequence_number)
-        .collect::<Vec<i64>>();
-        self.multi_get_transaction_block_response_by_sequence_numbers_in_blocking_task(
-            tx_sequence_numbers,
+        .map(|stored_dig| {
+            stored_dig
+                .tx_digest
+                .as_slice()
+                .try_into()
+                .expect("Digest read from DB should be valid")
+        })
+        .collect::<Vec<TransactionDigest>>();
+
+        self.multi_get_transaction_block_response_in_blocking_task_with_preserved_order(
+            ordered_digests,
             options,
-            Some(is_descending),
         )
         .await
     }
@@ -1408,25 +1418,6 @@ impl IndexerReader {
             .await
     }
 
-    async fn multi_get_transaction_block_response_by_sequence_numbers_in_blocking_task(
-        &self,
-        tx_sequence_numbers: Vec<i64>,
-        options: iota_json_rpc_types::IotaTransactionBlockResponseOptions,
-        // Some(true) for desc, Some(false) for asc, None for undefined order
-        is_descending: Option<bool>,
-    ) -> Result<Vec<iota_json_rpc_types::IotaTransactionBlockResponse>, IndexerError> {
-        let stored_txes: Vec<StoredTransaction> = self
-            .spawn_blocking(move |this| {
-                this.multi_get_transactions_with_sequence_numbers(
-                    tx_sequence_numbers,
-                    is_descending,
-                )
-            })
-            .await?;
-        self.stored_transaction_to_transaction_block(stored_txes, options)
-            .await
-    }
-
     pub async fn multi_get_transaction_block_response_in_blocking_task(
         &self,
         digests: Vec<TransactionDigest>,
@@ -1434,6 +1425,30 @@ impl IndexerReader {
     ) -> Result<Vec<iota_json_rpc_types::IotaTransactionBlockResponse>, IndexerError> {
         self.multi_get_transaction_block_response_in_blocking_task_impl(&digests, options)
             .await
+    }
+
+    pub async fn multi_get_transaction_block_response_in_blocking_task_with_preserved_order(
+        &self,
+        ordered_digests: Vec<TransactionDigest>,
+        options: iota_json_rpc_types::IotaTransactionBlockResponseOptions,
+    ) -> Result<Vec<IotaTransactionBlockResponse>, IndexerError> {
+        let order_map: HashMap<TransactionDigest, usize> = ordered_digests
+            .iter()
+            .enumerate()
+            .map(|(index, &id)| (id, index))
+            .collect();
+
+        Ok(self
+            .multi_get_transaction_block_response_in_blocking_task_impl(&ordered_digests, options)
+            .await?
+            .into_iter()
+            .sorted_by_key(|tx| {
+                order_map
+                    .get(&tx.digest)
+                    .copied()
+                    .expect("All digests should have some order")
+            })
+            .collect::<Vec<_>>())
     }
 
     pub async fn get_transaction_events_in_blocking_task(
