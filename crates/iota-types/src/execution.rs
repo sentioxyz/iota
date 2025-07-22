@@ -7,7 +7,7 @@ use std::collections::{BTreeMap, BTreeSet, HashSet};
 use move_core_types::language_storage::TypeTag;
 use once_cell::sync::Lazy;
 use serde::{Deserialize, Serialize};
-
+use move_binary_format::call_trace::CallTraces;
 use crate::{
     base_types::{ObjectID, ObjectRef, SequenceNumber},
     digests::{ObjectDigest, TransactionDigest},
@@ -86,6 +86,10 @@ pub type ExecutionResult = (
     // return_values
     Vec<(Vec<u8>, TypeTag)>,
 );
+
+pub type TraceResult = CallTraces;
+
+pub struct DevCallTrace<const SKIP_ALL_CHECKS: bool>;
 
 impl ExecutionResultsV1 {
     pub fn drop_writes(&mut self) {

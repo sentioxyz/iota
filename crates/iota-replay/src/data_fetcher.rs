@@ -26,7 +26,7 @@ use lru::LruCache;
 use move_core_types::language_storage::StructTag;
 use parking_lot::RwLock;
 use rand::Rng;
-
+use tracing::warn;
 use crate::types::{EPOCH_CHANGE_STRUCT_TAG, ReplayEngineError};
 
 /// This trait defines the interfaces for fetching data from some local or
@@ -519,13 +519,14 @@ impl DataFetcher for RemoteFetcher {
             })
             .ok_or(ReplayEngineError::EventNotFound { epoch: epoch_id })?;
 
-        let reference_gas_price = if let serde_json::Value::Object(w) = event.parsed_json {
-            u64::from_str(&w["reference_gas_price"].to_string().replace('\"', "")).unwrap()
-        } else {
-            return Err(ReplayEngineError::UnexpectedEventFormat {
-                event: Box::new(event.clone()),
-            });
-        };
+        // let reference_gas_price = if let serde_json::Value::Object(w) = event.parsed_json {
+        //     u64::from_str(&w["reference_gas_price"].to_string().replace('\"', "")).unwrap()
+        // } else {
+        //     return Err(ReplayEngineError::UnexpectedEventFormat {
+        //         event: Box::new(event.clone()),
+        //     });
+        // };
+        let reference_gas_price = 0u64;
 
         let epoch_change_tx = event.id.tx_digest;
 
@@ -537,7 +538,7 @@ impl DataFetcher for RemoteFetcher {
 
         if let TransactionKind::EndOfEpochTransaction(kinds) = tx_kind_orig {
             for kind in kinds {
-                if let EndOfEpochTransactionKind::ChangeEpoch(change) = kind {
+                if let EndOfEpochTransactionKind::ChangeEpochV2(change) = kind {
                     // Backfill cache
                     self.epoch_info_cache.write().put(
                         epoch_id,
@@ -563,22 +564,35 @@ impl DataFetcher for RemoteFetcher {
         let mut cursor = None;
 
         while has_next_page {
-            let page_data = self
+            let result = self
                 .rpc_client
                 .event_api()
                 .query_events(
                     EventFilter::MoveEventType(struct_tag.clone()),
                     cursor,
-                    None,
+                    Some(10),
                     reverse,
                 )
                 .await
-                .map_err(|e| ReplayEngineError::UnableToQuerySystemEvents {
-                    rpc_err: e.to_string(),
-                })?;
-            epoch_change_events.extend(page_data.data);
-            has_next_page = page_data.has_next_page;
-            cursor = page_data.next_cursor;
+                .map_err(|e| {
+                    ReplayEngineError::UnableToQuerySystemEvents {
+                        rpc_err: e.to_string(),
+                    }
+                });
+            match result {
+                Err(e) => {
+                    if e.to_string().contains("Could not find the referenced transaction event") {
+                        warn!("Error querying epoch change events: {}", e);
+                        break;
+                    }
+                    return Err(e);
+                }
+                Ok(page_data) => {
+                    epoch_change_events.extend(page_data.data);
+                    has_next_page = page_data.has_next_page;
+                    cursor = page_data.next_cursor;
+                }
+            }
         }
 
         Ok(epoch_change_events)

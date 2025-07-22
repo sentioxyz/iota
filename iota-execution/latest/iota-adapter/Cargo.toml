@@ -36,6 +36,8 @@ move-vm-profiler = { path = "../../../external-crates/move/crates/move-vm-profil
 move-vm-runtime = { path = "../../../external-crates/move/crates/move-vm-runtime" }
 move-vm-types = { path = "../../../external-crates/move/crates/move-vm-types" }
 
+serde_json.workspace = true
+
 [features]
 tracing = [
   "iota-types/tracing",
