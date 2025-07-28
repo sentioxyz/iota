@@ -1139,6 +1139,10 @@ impl AuthorityPerEpochStore {
         &self.committee
     }
 
+    pub fn committee(&self) -> &Arc<Committee> {
+        &self.committee
+    }
+
     pub fn protocol_config(&self) -> &ProtocolConfig {
         &self.protocol_config
     }
@@ -2592,6 +2596,8 @@ impl AuthorityPerEpochStore {
                     }),
                 ..
             }) => {
+                // TODO: this needs to be modified as committee validators might be different
+                // than the actual authority
                 if transaction.sender_authority() != *authority {
                     warn!(
                         "CapabilityNotificationV1 authority {} does not match its author from consensus {}",
