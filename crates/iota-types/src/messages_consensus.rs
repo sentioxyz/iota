@@ -223,6 +223,12 @@ impl AuthorityCapabilitiesV1 {
             available_system_packages,
         }
     }
+
+    fn sign(self, keypair: &AuthorityKeyPair) -> SignedAuthorityCapabilitiesV1 {
+        let msg = bcs::to_bytes(&self).expect("BCS serialization should not fail");
+        let sig = keypair.sign(&msg);
+        SignedAuthorityCapabilitiesV1::new_from_data_and_sig(self, sig)
+    }
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]

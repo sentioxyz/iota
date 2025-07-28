@@ -1143,6 +1143,10 @@ impl AuthorityPerEpochStore {
         &self.committee
     }
 
+    pub fn committee(&self) -> &Arc<Committee> {
+        &self.committee
+    }
+
     pub fn protocol_config(&self) -> &ProtocolConfig {
         &self.protocol_config
     }

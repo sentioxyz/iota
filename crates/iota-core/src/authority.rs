@@ -57,7 +57,10 @@ use iota_types::{
     authenticator_state::get_authenticator_state,
     base_types::*,
     committee::{Committee, EpochId, ProtocolVersion},
-    crypto::{AuthoritySignInfo, AuthoritySignature, RandomnessRound, Signer, default_hash},
+    crypto::{
+        AuthoritySignInfo, AuthoritySignInfoTrait, AuthoritySignature, RandomnessRound, Signer,
+        default_hash,
+    },
     deny_list_v1::check_coin_deny_list_v1_during_signing,
     digests::{ChainIdentifier, TransactionEventsDigest},
     dynamic_field::{DynamicFieldInfo, DynamicFieldName, visitor as DFV},
