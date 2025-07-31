@@ -4,6 +4,9 @@
 
 use std::{
     collections::BTreeMap,
+    fs,
+    fs::File,
+    io::Write,
     path::{Path, PathBuf},
     sync::Arc,
     time::Duration,
@@ -12,6 +15,7 @@ use std::{
 use backoff::backoff::Backoff;
 use futures::StreamExt;
 use iota_metrics::spawn_monitored_task;
+use iota_storage::blob::{Blob, BlobEncoding};
 use iota_types::{
     full_checkpoint_content::CheckpointData, messages_checkpoint::CheckpointSequenceNumber,
 };
@@ -261,14 +265,36 @@ impl CheckpointReader {
                 checkpoint.checkpoint_summary.sequence_number,
                 self.current_checkpoint_number
             );
-            self.checkpoint_sender.send(checkpoint).await.map_err(|_| {
-                IngestionError::Channel(
-                    "unable to send checkpoint to executor, receiver half closed".to_owned(),
-                )
-            })?;
+
+            self.checkpoint_sender
+                .send(checkpoint.clone())
+                .await
+                .map_err(|_| {
+                    IngestionError::Channel(
+                        "unable to send checkpoint to executor, receiver half closed".to_owned(),
+                    )
+                })?;
+
+            self.write_checkpoint_as_file(checkpoint);
+
             self.current_checkpoint_number += 1;
         }
         Ok(())
+    }
+
+    fn write_checkpoint_as_file(&self, cp: Arc<CheckpointData>) {
+        let write_dir_path = "downloaded-checkpoints";
+        let contents_blob = Blob::encode(&cp, BlobEncoding::Bcs)
+            .expect("Should be able to encode checkpoint data")
+            .to_bytes();
+        let file_name = format!("{}.chk", cp.checkpoint_summary.sequence_number);
+
+        fs::create_dir_all(write_dir_path).expect("Unable to create directory");
+
+        let file_path = Path::new(write_dir_path).join(file_name);
+        let mut file = File::create(&file_path).expect("Unable to create file");
+        file.write_all(&contents_blob)
+            .expect("Unable to write data to file");
     }
 
     pub fn initialize(
