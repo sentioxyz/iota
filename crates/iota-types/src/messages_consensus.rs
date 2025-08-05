@@ -11,10 +11,7 @@ use std::{
 };
 
 use byteorder::{BigEndian, ReadBytesExt};
-use fastcrypto::{
-    ed25519::Ed25519Signature, error::FastCryptoResult, groups::bls12381, hash::HashFunction,
-    traits::Signer,
-};
+use fastcrypto::{error::FastCryptoResult, groups::bls12381, hash::HashFunction};
 use fastcrypto_tbls::dkg_v1;
 use fastcrypto_zkp::bn254::zk_login::{JWK, JwkId};
 use schemars::JsonSchema;
@@ -25,8 +22,8 @@ use crate::{
     base_types::{
         AuthorityName, ConciseableName, ObjectID, ObjectRef, SequenceNumber, TransactionDigest,
     },
-    crypto::{AuthorityKeyPair, AuthoritySignature, DefaultHash, NetworkKeyPair},
-    digests::{ConsensusCommitDigest, Digest, SenderSignedDataDigest},
+    crypto::{AuthoritySignature, DefaultHash},
+    digests::{ConsensusCommitDigest, Digest},
     message_envelope::{Envelope, Message, VerifiedEnvelope},
     messages_checkpoint::{
         CheckpointSequenceNumber, CheckpointSignatureMessage, CheckpointTimestamp,
@@ -133,12 +130,20 @@ pub type SignedAuthorityCapabilitiesV1 = Envelope<AuthorityCapabilitiesV1, Autho
 pub type VerifiedAuthorityCapabilitiesV1 =
     VerifiedEnvelope<AuthorityCapabilitiesV1, AuthoritySignature>;
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct AuthorityCapabilitiesDigest(Digest);
 
 impl AuthorityCapabilitiesDigest {
     pub const fn new(digest: [u8; 32]) -> Self {
         Self(Digest::new(digest))
+    }
+}
+
+impl Debug for AuthorityCapabilitiesDigest {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        f.debug_tuple("AuthorityCapabilitiesDigest")
+            .field(&self.0)
+            .finish()
     }
 }
 
@@ -168,7 +173,7 @@ pub struct AuthorityCapabilitiesV1 {
 }
 
 impl Message for AuthorityCapabilitiesV1 {
-    type DigestType = SenderSignedDataDigest;
+    type DigestType = AuthorityCapabilitiesDigest;
     const SCOPE: IntentScope = IntentScope::AuthorityCapabilities;
 
     fn digest(&self) -> Self::DigestType {
@@ -176,7 +181,7 @@ impl Message for AuthorityCapabilitiesV1 {
         let mut hasher = DefaultHash::new();
         let serialized = bcs::to_bytes(&self).expect("BCS should not fail");
         hasher.update(&serialized);
-        SenderSignedDataDigest::new(<[u8; 32]>::from(hasher.finalize()))
+        AuthorityCapabilitiesDigest::new(<[u8; 32]>::from(hasher.finalize()))
     }
 }
 
@@ -217,12 +222,6 @@ impl AuthorityCapabilitiesV1 {
                 ),
             available_system_packages,
         }
-    }
-
-    fn sign(self, keypair: &AuthorityKeyPair) -> SignedAuthorityCapabilitiesV1 {
-        let msg = bcs::to_bytes(&self).expect("BCS serialization should not fail");
-        let sig = keypair.sign(&msg);
-        SignedAuthorityCapabilitiesV1::new_from_data_and_sig(self, sig)
     }
 }
 
