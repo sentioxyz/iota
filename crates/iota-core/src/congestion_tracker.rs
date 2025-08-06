@@ -125,6 +125,7 @@ impl CongestionTracker {
         }
     }
 
+    /// Process effects of all transactions included in a certain checkpoint.
     pub fn process_checkpoint_effects(
         &self,
         transaction_cache_reader: &dyn TransactionCacheRead,
@@ -202,13 +203,15 @@ impl CongestionTracker {
     /// For all the mutable shared inputs, sum the hotness of the objects.
     /// More sophisticated prediction can be implemented.
     pub fn get_suggested_gas_price_with_ogd(&self, transaction: &TransactionData) -> Option<u64> {
-        let hotness = self.get_total_hotness_for_objects(
-            transaction
-                .shared_input_objects()
-                .into_iter()
-                .filter(|id| id.mutable)
-                .map(|id| id.id),
-        ).unwrap_or(0);
+        let hotness = self
+            .get_total_hotness_for_objects(
+                transaction
+                    .shared_input_objects()
+                    .into_iter()
+                    .filter(|id| id.mutable)
+                    .map(|id| id.id),
+            )
+            .unwrap_or(0);
         Some(self.reference_gas_price + hotness as u64)
     }
 
@@ -243,11 +246,7 @@ impl CongestionTracker {
                 map.insert(obj.id, OrderedFloat(info.hotness));
             }
         }
-        if map.is_empty() {
-            None
-        } else {
-            Some(map)
-        }
+        if map.is_empty() { None } else { Some(map) }
     }
 }
 
@@ -659,14 +658,21 @@ mod tests {
         let obj2 = ObjectID::random();
 
         // First checkpoint with two congested objects
-        tracker.process_congestion_and_clearing_txs_data(1000, &[(100, vec![obj1, obj2], 1015)], &[]);
+        tracker.process_congestion_and_clearing_txs_data(
+            1000,
+            &[(100, vec![obj1, obj2], 1015)],
+            &[],
+        );
 
         // obj1 is not congested anymore
         tracker.process_congestion_and_clearing_txs_data(1000, &[(100, vec![obj2], 1018)], &[]);
         tracker.process_congestion_and_clearing_txs_data(1000, &[], &[]);
 
         // hotness for obj1 goes below 1.0 so it should be removed from cache
-        assert!(tracker.get_hotness_for_object(&obj1).is_none(), "obj1 should be removed from cache");
+        assert!(
+            tracker.get_hotness_for_object(&obj1).is_none(),
+            "obj1 should be removed from cache"
+        );
         let hotness = tracker.get_hotness_for_object(&obj2).unwrap_or(0.0);
         println!("hotness for obj2: {}", hotness);
         assert!(hotness == 3.0, "hotness for obj2 should be 3.0");

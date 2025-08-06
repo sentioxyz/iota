@@ -1132,8 +1132,11 @@ pub struct DryRunTransactionBlockResponse {
     #[schemars(with = "Option<BigInt<u64>>")]
     #[serde_as(as = "Option<BigInt<u64>>")]
     pub suggested_gas_price: Option<u64>,
+<<<<<<< HEAD
     #[schemars(with = "Option<HashMap<ObjectID, f64>>")]
     pub objects_hotness: Option<HashMap<ObjectID,OrderedFloat<f64>>>,
+=======
+>>>>>>> protocol-research/feat/congestion-tracker
 }
 
 #[derive(Eq, PartialEq, Clone, Debug, Default, Serialize, Deserialize, JsonSchema)]
