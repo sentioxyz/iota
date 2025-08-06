@@ -936,11 +936,19 @@ impl AuthorityPerEpochStore {
             _ => ZkLoginEnv::Test,
         };
 
+        // Get all active validators and filter out committee members to get
+        // non-committee validators
+        let active_validators = epoch_start_configuration
+            .epoch_start_state()
+            .get_active_validators();
+        let non_committee_validators: BTreeMap<_, _> = active_validators
+            .into_iter()
+            .filter(|(authority_name, _)| !committee.authority_exists(authority_name))
+            .collect();
+
         let signature_verifier = SignatureVerifier::new(
             committee.clone(),
-            epoch_start_configuration
-                .epoch_start_state()
-                .get_non_committee_validators(),
+            non_committee_validators,
             signature_verifier_metrics,
             zklogin_env,
             protocol_config.accept_zklogin_in_multisig(),
