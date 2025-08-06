@@ -212,7 +212,7 @@ impl CongestionTracker {
                     .map(|id| id.id),
             )
             .unwrap_or(0);
-        Some(self.reference_gas_price + hotness as u64)
+        Some(self.reference_gas_price + hotness)
     }
 
     /// Returns a map of all objects and their hotness values.
