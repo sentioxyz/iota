@@ -1695,20 +1695,17 @@ impl AuthorityState {
 
     /// Verifies the signature on the capability notification and updates the
     /// authority capabilities after verifying the signature
-    pub async fn handle_authority_capabilities(
+    pub fn handle_authority_capabilities(
         &self,
         verified_authority_capabilities: VerifiedAuthorityCapabilitiesV1,
-        _epoch_store: Arc<AuthorityPerEpochStore>,
+        epoch_store: Arc<AuthorityPerEpochStore>,
     ) -> Result<(), IotaError> {
         info!(
             "Received authority capabilities from non-validator authority. not doing anything with it. Received capabilities: {:?}",
             verified_authority_capabilities.data()
         );
 
-        // TODO: Implement the logic to handle authority capabilities from non-committee
-        //  active validators.
-
-        // epoch_store.record_capabilities_v1(verified_authority_capabilities.data())?;
+        epoch_store.record_capabilities_v1(verified_authority_capabilities.data())?;
 
         Ok(())
     }

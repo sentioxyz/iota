@@ -156,8 +156,7 @@ impl AuthorityAPI for LocalAuthorityClient {
         );
 
         state
-            .handle_authority_capabilities(verified_authority_capabilities, epoch_store.clone())
-            .await?;
+            .handle_authority_capabilities(verified_authority_capabilities, epoch_store.clone())?;
 
         Ok(HandleCapabilityNotificationV1Response {})
     }

@@ -1164,8 +1164,7 @@ impl ValidatorService {
 
         // Store or process the capabilities as needed
         self.state
-            .handle_authority_capabilities(verified_authority_capabilities, epoch_store.clone())
-            .await?;
+            .handle_authority_capabilities(verified_authority_capabilities, epoch_store.clone())?;
 
         Ok((
             tonic::Response::new(HandleCapabilityNotificationV1Response {}),
