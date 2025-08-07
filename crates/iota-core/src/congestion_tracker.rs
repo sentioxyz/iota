@@ -233,9 +233,10 @@ impl CongestionTracker {
             .map(|info| info.hotness)
     }
 
-    /// Given a transaction, return a map from touched ObjectID to its hotness (if present).
-    /// This is useful for third party clients who want to implement their own gas price prediction
-    /// algorithm. Returns `None` if none of the transaction's objects have hotness info.
+    /// Given a transaction, return a map from touched ObjectID to its hotness
+    /// (if present). This is useful for third party clients who want to
+    /// implement their own gas price prediction algorithm. Returns `None`
+    /// if none of the transaction's objects have hotness info.
     pub fn get_hotness_for_transaction(
         &self,
         tx: &TransactionData,
