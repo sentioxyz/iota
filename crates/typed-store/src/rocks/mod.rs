@@ -6,7 +6,6 @@ pub mod errors;
 pub(crate) mod iter;
 pub(crate) mod keys;
 pub(crate) mod safe_iter;
-pub(crate) mod values;
 
 use std::{
     borrow::Borrow,
@@ -23,7 +22,6 @@ use std::{
 use bincode::Options;
 use collectable::TryExtend;
 use iota_macros::{fail_point, nondeterministic};
-use itertools::Itertools;
 use prometheus::{Histogram, HistogramTimer};
 use rocksdb::{
     AsColumnFamilyRef, BlockBasedOptions, BottommostLevelCompaction, CStrLike, Cache,
@@ -37,7 +35,7 @@ use tap::TapFallible;
 use tokio::sync::oneshot;
 use tracing::{debug, error, info, instrument, warn};
 
-use self::{iter::Iter, keys::Keys, values::Values};
+use self::{iter::Iter, keys::Keys};
 use crate::{
     TypedStoreError,
     metrics::{DBMetrics, RocksDBPerfContext, SamplingInterval},
@@ -1774,19 +1772,6 @@ impl<'a> DBTransaction<'a> {
         Keys::new(db_iter)
     }
 
-    pub fn values<K: DeserializeOwned, V: DeserializeOwned>(
-        &'a self,
-        db: &DBMap<K, V>,
-    ) -> Values<'a, V> {
-        let mut db_iter = RocksDBRawIter::OptimisticTransaction(
-            self.transaction
-                .raw_iterator_cf_opt(&db.cf(), db.opts.readopts()),
-        );
-        db_iter.seek_to_first();
-
-        Values::new(db_iter)
-    }
-
     pub fn commit(self) -> Result<(), TypedStoreError> {
         fail_point!("transaction-commit");
         self.transaction.commit().map_err(|e| match e.kind() {
@@ -1881,7 +1866,6 @@ where
     type Iterator = Iter<'a, K, V>;
     type SafeIterator = SafeIter<'a, K, V>;
     type Keys = Keys<'a, K>;
-    type Values = Values<'a, V>;
 
     #[instrument(level = "trace", skip_all, err)]
     fn contains_key(&self, key: &K) -> Result<bool, TypedStoreError> {
@@ -1943,40 +1927,6 @@ where
             Some(data) => Ok(Some(
                 bcs::from_bytes(&data).map_err(typed_store_err_from_bcs_err)?,
             )),
-            None => Ok(None),
-        }
-    }
-
-    #[instrument(level = "trace", skip_all, err)]
-    fn get_raw_bytes(&self, key: &K) -> Result<Option<Vec<u8>>, TypedStoreError> {
-        let _timer = self
-            .db_metrics
-            .op_metrics
-            .rocksdb_get_latency_seconds
-            .with_label_values(&[&self.cf])
-            .start_timer();
-        let perf_ctx = if self.get_sample_interval.sample() {
-            Some(RocksDBPerfContext)
-        } else {
-            None
-        };
-        let key_buf = be_fix_int_ser(key)?;
-        let res = self
-            .rocksdb
-            .get_pinned_cf_opt(&self.cf(), &key_buf, &self.opts.readopts())
-            .map_err(typed_store_err_from_rocks_err)?;
-        self.db_metrics
-            .op_metrics
-            .rocksdb_get_bytes
-            .with_label_values(&[&self.cf])
-            .observe(res.as_ref().map_or(0.0, |v| v.len() as f64));
-        if perf_ctx.is_some() {
-            self.db_metrics
-                .read_perf_ctx_metrics
-                .report_metrics(&self.cf);
-        }
-        match res {
-            Some(data) => Ok(Some(data.to_vec())),
             None => Ok(None),
         }
     }
@@ -2231,32 +2181,6 @@ where
         Keys::new(db_iter)
     }
 
-    fn values(&'a self) -> Self::Values {
-        let mut db_iter = self
-            .rocksdb
-            .raw_iterator_cf(&self.cf(), self.opts.readopts());
-        db_iter.seek_to_first();
-
-        Values::new(db_iter)
-    }
-
-    /// Returns a vector of raw values corresponding to the keys provided.
-    #[instrument(level = "trace", skip_all, err)]
-    fn multi_get_raw_bytes<J>(
-        &self,
-        keys: impl IntoIterator<Item = J>,
-    ) -> Result<Vec<Option<Vec<u8>>>, TypedStoreError>
-    where
-        J: Borrow<K>,
-    {
-        let results = self
-            .multi_get_pinned(keys)?
-            .into_iter()
-            .map(|val| val.map(|v| v.to_vec()))
-            .collect();
-        Ok(results)
-    }
-
     /// Returns a vector of values corresponding to the keys provided.
     #[instrument(level = "trace", skip_all, err)]
     fn multi_get<J>(
@@ -2278,42 +2202,6 @@ where
             .collect();
 
         values_parsed
-    }
-
-    /// Returns a vector of values corresponding to the keys provided.
-    #[instrument(level = "trace", skip_all, err)]
-    fn chunked_multi_get<J>(
-        &self,
-        keys: impl IntoIterator<Item = J>,
-        chunk_size: usize,
-    ) -> Result<Vec<Option<V>>, TypedStoreError>
-    where
-        J: Borrow<K>,
-    {
-        let cf = self.cf();
-        let keys_bytes = keys
-            .into_iter()
-            .map(|k| (&cf, be_fix_int_ser(k.borrow()).unwrap()));
-        let chunked_keys = keys_bytes.into_iter().chunks(chunk_size);
-        let snapshot = self.snapshot()?;
-        let mut results = vec![];
-        for chunk in chunked_keys.into_iter() {
-            let chunk_result = snapshot.multi_get_cf(chunk);
-            let values_parsed: Result<Vec<_>, TypedStoreError> = chunk_result
-                .into_iter()
-                .map(|value_byte| {
-                    let value_byte = value_byte.map_err(typed_store_err_from_rocks_err)?;
-                    match value_byte {
-                        Some(data) => Ok(Some(
-                            bcs::from_bytes(&data).map_err(typed_store_err_from_bcs_err)?,
-                        )),
-                        None => Ok(None),
-                    }
-                })
-                .collect();
-            results.extend(values_parsed?);
-        }
-        Ok(results)
     }
 
     /// Convenience method for batch insertion

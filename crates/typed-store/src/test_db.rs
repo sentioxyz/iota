@@ -226,7 +226,6 @@ where
     type Iterator = std::iter::Empty<(K, V)>;
     type SafeIterator = TestDBIter<'a, K, V>;
     type Keys = TestDBKeys<'a, K>;
-    type Values = TestDBValues<'a, V>;
 
     fn contains_key(&self, key: &K) -> Result<bool, Self::Error> {
         let raw_key = be_fix_int_ser(key)?;
@@ -239,13 +238,6 @@ where
         let locked = self.rows.read().unwrap();
         let res = locked.get(&raw_key);
         Ok(res.map(|raw_value| bcs::from_bytes(raw_value).ok().unwrap()))
-    }
-
-    fn get_raw_bytes(&self, key: &K) -> Result<Option<Vec<u8>>, Self::Error> {
-        let raw_key = be_fix_int_ser(key)?;
-        let locked = self.rows.read().unwrap();
-        let res = locked.get(&raw_key);
-        Ok(res.cloned())
     }
 
     fn insert(&self, key: &K, value: &V) -> Result<(), Self::Error> {
@@ -327,15 +319,6 @@ where
 
     fn keys(&'a self) -> Self::Keys {
         TestDBKeysBuilder {
-            rows: self.rows.read().unwrap(),
-            iter_builder: |rows: &mut RwLockReadGuard<'a, BTreeMap<Vec<u8>, Vec<u8>>>| rows.iter(),
-            phantom: PhantomData,
-        }
-        .build()
-    }
-
-    fn values(&'a self) -> Self::Values {
-        TestDBValuesBuilder {
             rows: self.rows.read().unwrap(),
             iter_builder: |rows: &mut RwLockReadGuard<'a, BTreeMap<Vec<u8>, Vec<u8>>>| rows.iter(),
             phantom: PhantomData,
@@ -559,41 +542,6 @@ mod test {
     }
 
     #[test]
-    fn test_get_raw() {
-        let db = TestDB::open();
-        db.insert(&123456789, &"123456789".to_string())
-            .expect("Failed to insert");
-
-        let val_bytes = db
-            .get_raw_bytes(&123456789)
-            .expect("Failed to get_raw_bytes")
-            .unwrap();
-
-        assert_eq!(bcs::to_bytes(&"123456789".to_string()).unwrap(), val_bytes);
-        assert_eq!(
-            None,
-            db.get_raw_bytes(&000000000)
-                .expect("Failed to get_raw_bytes")
-        );
-    }
-
-    #[test]
-    fn test_multi_get() {
-        let db = TestDB::open();
-        db.insert(&123, &"123".to_string())
-            .expect("Failed to insert");
-        db.insert(&456, &"456".to_string())
-            .expect("Failed to insert");
-
-        let result = db.multi_get([123, 456, 789]).expect("Failed to multi get");
-
-        assert_eq!(result.len(), 3);
-        assert_eq!(result[0], Some("123".to_string()));
-        assert_eq!(result[1], Some("456".to_string()));
-        assert_eq!(result[2], None);
-    }
-
-    #[test]
     fn test_remove() {
         let db = TestDB::open();
         db.insert(&123456789, &"123456789".to_string())
@@ -647,10 +595,6 @@ mod test {
 
         db.insert(&123456789, &"123456789".to_string())
             .expect("Failed to insert");
-
-        let mut values = db.values();
-        assert_eq!(Some(Ok("123456789".to_string())), values.next());
-        assert_eq!(None, values.next());
     }
 
     #[test]
