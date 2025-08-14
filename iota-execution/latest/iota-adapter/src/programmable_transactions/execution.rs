@@ -58,6 +58,7 @@ mod checked {
     use move_vm_types::loaded_data::runtime_types::{CachedDatatype, Type};
     use serde::{Deserialize, de::DeserializeSeed};
     use tracing::instrument;
+    use iota_types::execution_status::ExecutionFailureStatus;
     use move_binary_format::call_trace::GasInfo;
     use move_core_types::annotated_value as A;
     use move_core_types::annotated_value::MoveStruct;
@@ -427,18 +428,11 @@ mod checked {
                     )?;
 
                     context.linkage_view.reset_linkage();
-
-                    // if the return values are an error, we need to return the call traces
-                    if return_values.is_err() {
-                        Mode::finish_command(
-                            context,
-                            mode_results,
-                            Mode::empty_arguments(),
-                            Vec::new().as_slice(),
-                            &Some(call_traces.clone()),
-                        )?;
-                    }
-                    (return_values?, Some(call_traces))
+                    assert!(
+                        call_traces.0.len() == 1,
+                        "Call traces length for move call should be 1",
+                    );
+                    (return_values.unwrap_or_default(), Some(call_traces))
                 } else {
                     let return_values = execute_move_call::<Mode>(
                         context,
@@ -484,6 +478,12 @@ mod checked {
         };
 
         Mode::finish_command(context, mode_results, argument_updates, &results, &trace_results)?;
+        if let Some(trace_results) = trace_results {
+            if trace_results.0[0].error.is_some() {
+                // return placeholder error
+                return Err(ExecutionError::from_kind(ExecutionFailureStatus::InvariantViolation));
+            }
+        }
         context.push_command_results(results)?;
         Ok(())
     }
