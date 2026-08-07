@@ -33,6 +33,11 @@ use crate::config::ReplayableNetworkConfigSet;
 pub(crate) const RPC_TIMEOUT_ERR_SLEEP_RETRY_PERIOD: Duration = Duration::from_millis(100_000);
 pub(crate) const RPC_TIMEOUT_ERR_NUM_RETRIES: u32 = 3;
 pub(crate) const MAX_CONCURRENT_REQUESTS: usize = 1_000;
+// The system-event query is served by a proxy that intermittently returns
+// malformed JSON-RPC responses; retry it enough times that a transient bad
+// response does not fail the whole trace.
+pub(crate) const EPOCH_EVENTS_QUERY_NUM_RETRIES: u32 = 10;
+pub(crate) const EPOCH_EVENTS_QUERY_RETRY_DELAY: Duration = Duration::from_millis(300);
 
 // Struct tag used in system epoch change events
 pub(crate) const EPOCH_CHANGE_STRUCT_TAGS: [&str; 2] = [

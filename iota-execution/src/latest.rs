@@ -37,6 +37,7 @@ use iota_types::{
     storage::BackingStore,
     transaction::CheckedInputObjects,
 };
+use iota_types::execution::{DevCallTrace, TraceResult};
 use iota_verifier_latest::meter::IotaVerifierMeter;
 use move_binary_format::CompiledModule;
 use move_bytecode_verifier_meter::Meter;
@@ -302,6 +303,73 @@ impl executor::Executor for Executor {
         store: Box<dyn TypeLayoutStore + 'store>,
     ) -> Box<dyn LayoutResolver + 'r> {
         Box::new(TypeLayoutResolver::new(&self.0, store))
+    }
+
+    fn dev_transaction_call_trace(
+        &self,
+        store: &dyn BackingStore,
+        // Configuration
+        protocol_config: &ProtocolConfig,
+        metrics: Arc<LimitsMetrics>,
+        enable_expensive_checks: bool,
+        certificate_deny_set: &HashSet<TransactionDigest>,
+        // Epoch
+        epoch_id: &EpochId,
+        epoch_timestamp_ms: u64,
+        // Transaction Inputs
+        input_objects: CheckedInputObjects,
+        // Gas related
+        gas_data: GasPayment,
+        gas_status: IotaGasStatus,
+        // Transaction
+        transaction_kind: TransactionKind,
+        transaction_signer: Address,
+        transaction_digest: TransactionDigest,
+        skip_all_checks: bool,
+    ) -> (
+        InnerTemporaryStore,
+        IotaGasStatus,
+        TransactionEffects,
+        Result<TraceResult, ExecutionError>,
+    ) {
+        let (inner_temp_store, gas_status, effects, result) = if skip_all_checks {
+            execute_transaction_to_effects::<DevCallTrace<true>>(
+                store,
+                input_objects,
+                gas_data,
+                gas_status,
+                transaction_kind,
+                transaction_signer,
+                transaction_digest,
+                &self.0,
+                epoch_id,
+                epoch_timestamp_ms,
+                protocol_config,
+                metrics,
+                enable_expensive_checks,
+                certificate_deny_set,
+                &mut None,
+            )
+        } else {
+            execute_transaction_to_effects::<DevCallTrace<false>>(
+                store,
+                input_objects,
+                gas_data,
+                gas_status,
+                transaction_kind,
+                transaction_signer,
+                transaction_digest,
+                &self.0,
+                epoch_id,
+                epoch_timestamp_ms,
+                protocol_config,
+                metrics,
+                enable_expensive_checks,
+                certificate_deny_set,
+                &mut None,
+            )
+        };
+        (inner_temp_store, gas_status, effects, result)
     }
 }
 

@@ -2,12 +2,8 @@
 // Modifications Copyright (c) 2024 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-use std::{
-    collections::{BTreeMap, HashSet},
-    path::PathBuf,
-    sync::{Arc, Mutex},
-};
-
+use std::{collections::{BTreeMap, HashSet}, path::PathBuf, sync::{Arc, Mutex}, thread};
+use std::sync::mpsc;
 use futures::executor::block_on;
 use iota_config::node::ExpensiveSafetyCheckConfig;
 use iota_core::authority::NodeStateDump;
@@ -75,7 +71,7 @@ use crate::{
     },
     types::*,
 };
-
+use crate::call_trace::CallTraceWithSource;
 // TODO: add persistent cache. But perf is good enough already.
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -93,6 +89,8 @@ pub struct ExecutionSandboxState {
     /// Status from executing this locally in `execute_transaction_to_effects`
     #[serde(skip)]
     pub local_exec_status: Option<Result<(), ExecutionError>>,
+    /// Trace results
+    pub trace_results: Option<Vec<CallTraceWithSource>>,
 }
 
 impl ExecutionSandboxState {
@@ -260,6 +258,8 @@ pub struct LocalExec {
     // Retry policies due to RPC errors
     pub num_retries_for_timeout: u32,
     pub sleep_period_for_timeout: std::time::Duration,
+    pub enable_trace: bool,
+    pub enable_trace_v2: bool,
 }
 
 impl LocalExec {
@@ -332,6 +332,15 @@ impl LocalExec {
         .await
     }
 
+    pub async fn init_for_tracer(
+        rpc_url: String,
+    ) -> Result<LocalExec, ReplayEngineError> {
+        LocalExec::new_from_fn_url(&rpc_url)
+            .await?
+            .init_for_execution()
+            .await
+    }
+
     pub async fn replay_with_network_config(
         rpc_url: String,
         tx_digest: TransactionDigest,
@@ -341,6 +350,8 @@ impl LocalExec {
         protocol_version: Option<i64>,
         enable_profiler: Option<PathBuf>,
         config_and_versions: Option<Vec<(ObjectId, Version)>>,
+        enable_trace: bool,
+        enable_trace_v2: bool,
     ) -> Result<ExecutionSandboxState, ReplayEngineError> {
         info!("Using RPC URL: {}", rpc_url);
         LocalExec::new_from_fn_url(&rpc_url)
@@ -355,7 +366,35 @@ impl LocalExec {
                 protocol_version,
                 enable_profiler,
                 config_and_versions,
+                enable_trace,
+                enable_trace_v2,
             )
+            .await
+    }
+
+    pub async fn replay_with_network_config_for_trace(
+        mut local_exec: LocalExec,
+        tx_digest: TransactionDigest,
+        expensive_safety_check_config: ExpensiveSafetyCheckConfig,
+        use_authority: bool,
+        executor_version: Option<i64>,
+        protocol_version: Option<i64>,
+        enable_profiler: Option<PathBuf>,
+        config_and_versions: Option<Vec<(ObjectId, Version)>>,
+        enable_trace: bool,
+        enable_trace_v2: bool,
+    ) -> Result<ExecutionSandboxState, ReplayEngineError> {
+        local_exec.execute_transaction(
+            &tx_digest,
+            expensive_safety_check_config,
+            use_authority,
+            executor_version,
+            protocol_version,
+            enable_profiler,
+            config_and_versions,
+            enable_trace,
+            enable_trace_v2,
+        )
             .await
     }
 
@@ -405,6 +444,8 @@ impl LocalExec {
             protocol_version: None,
             enable_profiler: None,
             config_and_versions: None,
+            enable_trace: false,
+            enable_trace_v2: false,
         })
     }
 
@@ -448,6 +489,8 @@ impl LocalExec {
             protocol_version: None,
             enable_profiler: None,
             config_and_versions: None,
+            enable_trace: false,
+            enable_trace_v2: false,
         })
     }
 
@@ -578,14 +621,22 @@ impl LocalExec {
         &self,
         object_id: &ObjectId,
     ) -> Result<Option<Object>, ReplayEngineError> {
-        let resp = block_on({
-            // info!("Downloading latest object {object_id}");
-            self.multi_download_latest(&[*object_id])
-        })
-        .map(|mut q| {
-            q.pop()
-                .unwrap_or_else(|| panic!("Downloaded obj response cannot be empty {}", *object_id))
+        let (tx, rx) = mpsc::channel();
+        let cloned_fetcher = self.fetcher.clone();
+        let cloned_object_id = object_id.clone();
+        thread::spawn(move || {
+            let resp = tokio::runtime::Runtime::new().unwrap().block_on(async {
+                cloned_fetcher.multi_get_latest(&[cloned_object_id]).await
+            });
+            tx.send(resp).unwrap();
         });
+        let resp = rx
+            .recv()
+            .unwrap()
+            .map(|mut q| {
+                q.pop()
+                    .unwrap_or_else(|| panic!("Downloaded obj response cannot be empty {}", *object_id))
+            });
 
         match resp {
             Ok(v) => Ok(Some(v)),
@@ -625,10 +676,20 @@ impl LocalExec {
         if local_object.is_some() {
             return Ok(local_object);
         }
-        let response = block_on({
-            self.fetcher
-                .get_child_object(object_id, version_upper_bound)
+
+        let (tx, rx) = mpsc::channel();
+        let cloned_fetcher = self.fetcher.clone();
+        let cloned_object_id = object_id.clone();
+        let cloned_version_upper_bound = version_upper_bound.clone();
+        thread::spawn(move || {
+            let resp = tokio::runtime::Runtime::new().unwrap().block_on(async {
+                cloned_fetcher.get_child_object(&cloned_object_id, cloned_version_upper_bound).await
+            });
+            tx.send(resp).unwrap();
         });
+        let response = rx
+            .recv()
+            .unwrap();
         match response {
             Ok(object) => {
                 let obj_ref = object.object_ref();
@@ -706,6 +767,8 @@ impl LocalExec {
                     None,
                     None,
                     None,
+                    false,
+                    false,
                 )
                 .await
                 .map(|q| q.check_effects())
@@ -792,24 +855,45 @@ impl LocalExec {
 
         let move_authenticators = tx_info.sender_signed_data.move_authenticators();
 
-        let (inner_store, gas_status, effects, result) = if move_authenticators.is_empty() {
+        let (inner_store, gas_status, effects, result, trace_result) = if self.enable_trace {
+            let (inner_store, gas_status, effects, trace_result) = executor
+                .dev_transaction_call_trace(
+                    &self,
+                    protocol_config,
+                    metrics.clone(),
+                    expensive_checks,
+                    &certificate_deny_set,
+                    &tx_info.executed_epoch,
+                    tx_info.epoch_start_timestamp,
+                    CheckedInputObjects::new_for_replay(input_objects.clone()),
+                    gas_data,
+                    gas_status,
+                    transaction_kind.clone(),
+                    tx_info.sender,
+                    *tx_digest,
+                    false,
+                );
+            (inner_store, gas_status, effects, Ok(()), Some(trace_result))
+        } else if move_authenticators.is_empty() {
             // Standard path: no MoveAuthenticator
-            executor.execute_transaction_to_effects(
-                &self,
-                protocol_config,
-                metrics.clone(),
-                expensive_checks,
-                &certificate_deny_set,
-                &tx_info.executed_epoch,
-                tx_info.epoch_start_timestamp,
-                CheckedInputObjects::new_for_replay(input_objects.clone()),
-                gas_data,
-                gas_status,
-                transaction_kind.clone(),
-                tx_info.sender,
-                *tx_digest,
-                &mut None,
-            )
+            let (inner_store, gas_status, effects, result) = executor
+                .execute_transaction_to_effects(
+                    &self,
+                    protocol_config,
+                    metrics.clone(),
+                    expensive_checks,
+                    &certificate_deny_set,
+                    &tx_info.executed_epoch,
+                    tx_info.epoch_start_timestamp,
+                    CheckedInputObjects::new_for_replay(input_objects.clone()),
+                    gas_data,
+                    gas_status,
+                    transaction_kind.clone(),
+                    tx_info.sender,
+                    *tx_digest,
+                    &mut None,
+                );
+            (inner_store, gas_status, effects, result, None)
         } else {
             // MoveAuthenticator path: split input objects and run authentication
             // before PTB execution, matching the production flow.
@@ -885,24 +969,26 @@ impl LocalExec {
                 sponsor_authenticator_function_ref,
             };
 
-            executor.authenticate_then_execute_transaction_to_effects(
-                &self,
-                protocol_config,
-                metrics.clone(),
-                expensive_checks,
-                &certificate_deny_set,
-                &tx_info.executed_epoch,
-                tx_info.epoch_start_timestamp,
-                gas_data,
-                gas_status,
-                move_authenticators,
-                CheckedInputObjects::new_for_replay(input_objects.clone()),
-                transaction_kind.clone(),
-                tx_info.sender,
-                *tx_digest,
-                auth_context_data,
-                &mut None,
-            )
+            let (inner_store, gas_status, effects, result) = executor
+                .authenticate_then_execute_transaction_to_effects(
+                    &self,
+                    protocol_config,
+                    metrics.clone(),
+                    expensive_checks,
+                    &certificate_deny_set,
+                    &tx_info.executed_epoch,
+                    tx_info.epoch_start_timestamp,
+                    gas_data,
+                    gas_status,
+                    move_authenticators,
+                    CheckedInputObjects::new_for_replay(input_objects.clone()),
+                    transaction_kind.clone(),
+                    tx_info.sender,
+                    *tx_digest,
+                    auth_context_data,
+                    &mut None,
+                );
+            (inner_store, gas_status, effects, result, None)
         };
 
         if let Err(err) = self.pretty_print_for_tracing(
@@ -929,6 +1015,15 @@ impl LocalExec {
             local_exec_temporary_store: Some(inner_store),
             local_exec_effects: effects,
             local_exec_status: Some(result),
+            trace_results: match trace_result {
+                Some(trace_result) => Some(
+                    trace_result.unwrap().0
+                        .into_iter()
+                        .map(|c| CallTraceWithSource::from(c, self.enable_trace_v2))
+                        .collect(),
+                ),
+                None => None,
+            },
         })
     }
 
@@ -1228,6 +1323,7 @@ impl LocalExec {
             local_exec_temporary_store: None, // We dont capture it for cert exec run
             local_exec_effects: effects,
             local_exec_status: Some(exec_res),
+            trace_results: None,
         })
     }
 
@@ -1288,11 +1384,16 @@ impl LocalExec {
         protocol_version: Option<i64>,
         enable_profiler: Option<PathBuf>,
         config_and_versions: Option<Vec<(ObjectId, Version)>>,
+        enable_trace: bool,
+        enable_trace_v2: bool,
     ) -> Result<ExecutionSandboxState, ReplayEngineError> {
+        info!("Executing transaction: {}", tx_digest);
         self.executor_version = executor_version;
         self.protocol_version = protocol_version;
         self.enable_profiler = enable_profiler;
         self.config_and_versions = config_and_versions;
+        self.enable_trace = enable_trace;
+        self.enable_trace_v2 = enable_trace_v2;
         if use_authority {
             self.certificate_execute(tx_digest, expensive_safety_check_config.clone())
                 .await
@@ -1396,7 +1497,9 @@ impl LocalExec {
         &self,
     ) -> Result<BTreeMap<u64, ProtocolVersionSummary>, ReplayEngineError> {
         let mut range_map = BTreeMap::new();
-        let epoch_change_events = self.fetcher.get_epoch_change_events(false).await?;
+        let mut epoch_change_events = self.fetcher.get_epoch_change_events(true).await?;
+        epoch_change_events.reverse();
+        info!("Found {} epoch change events", epoch_change_events.len());
 
         // Exception for Genesis: Protocol version 1 at epoch 0
         let mut tx_digest = *self

@@ -5565,6 +5565,7 @@ dependencies = [
  "move-vm-types",
  "parking_lot 0.12.3",
  "serde",
+ "serde_json",
  "tracing",
 ]
 
@@ -7389,6 +7390,7 @@ dependencies = [
  "bcs",
  "clap",
  "futures",
+ "hex",
  "http 1.4.0",
  "iota-common",
  "iota-config",
@@ -8076,6 +8078,18 @@ dependencies = [
  "tokio",
  "tracing",
  "typed-store",
+]
+
+[[package]]
+name = "iota-trace-server"
+version = "1.28.3"
+dependencies = [
+ "axum 0.8.8",
+ "axum-server",
+ "iota-replay",
+ "serde",
+ "tokio",
+ "tracing-subscriber",
 ]
 
 [[package]]

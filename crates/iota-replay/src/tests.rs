@@ -56,6 +56,8 @@ async fn execute_replay(
             None,
             None,
             None,
+            false,
+            false,
         )
         .await?
         .check_effects()?;

@@ -27,8 +27,12 @@ use iota_types::{
 use lru::LruCache;
 use parking_lot::RwLock;
 use rand::Rng;
+use tracing::warn;
 
-use crate::types::{EPOCH_CHANGE_STRUCT_TAGS, ReplayEngineError};
+use crate::types::{
+    EPOCH_CHANGE_STRUCT_TAGS, EPOCH_EVENTS_QUERY_NUM_RETRIES, EPOCH_EVENTS_QUERY_RETRY_DELAY,
+    ReplayEngineError,
+};
 
 /// This trait defines the interfaces for fetching data from some local or
 /// remote store
@@ -617,7 +621,6 @@ impl DataFetcher for RemoteFetcher {
             .map_err(|e| anyhow::anyhow!(e))?;
 
         let mut epoch_change_events: Vec<IotaEvent> = vec![];
-
         // Query each struct tag separately since fullnode doesn't support Any filter
         for struct_tag in struct_tags {
             let event_filter = EventFilter::MoveEventType(struct_tag);
@@ -625,14 +628,39 @@ impl DataFetcher for RemoteFetcher {
             let mut cursor = None;
 
             while has_next_page {
-                let page_data = self
-                    .rpc_client
-                    .event_api()
-                    .query_events(event_filter.clone(), cursor, None, reverse)
-                    .await
-                    .map_err(|e| ReplayEngineError::UnableToQuerySystemEvents {
-                        rpc_err: e.to_string(),
-                    })?;
+                // The proxy serving this query intermittently returns malformed
+                // JSON-RPC responses, which surface as transient parse errors. Retry a
+                // few times so a single bad response doesn't fail the whole trace.
+                let mut attempt = 0u32;
+                let page_data = loop {
+                    match self
+                        .rpc_client
+                        .event_api()
+                        .query_events(event_filter.clone(), cursor, None, reverse)
+                        .await
+                    {
+                        Ok(page) => break Some(page),
+                        Err(e) => {
+                            let msg = e.to_string();
+                            if msg.contains("Could not find the referenced transaction event") {
+                                warn!("Error querying epoch change events: {}", msg);
+                                break None;
+                            }
+                            if attempt >= EPOCH_EVENTS_QUERY_NUM_RETRIES {
+                                return Err(ReplayEngineError::UnableToQuerySystemEvents {
+                                    rpc_err: msg,
+                                });
+                            }
+                            attempt += 1;
+                            warn!(
+                                "Transient error querying epoch change events (attempt {}/{}), retrying: {}",
+                                attempt, EPOCH_EVENTS_QUERY_NUM_RETRIES, msg
+                            );
+                            tokio::time::sleep(EPOCH_EVENTS_QUERY_RETRY_DELAY).await;
+                        }
+                    }
+                };
+                let Some(page_data) = page_data else { break };
                 epoch_change_events.extend(page_data.data);
                 has_next_page = page_data.has_next_page;
                 cursor = page_data.next_cursor;

@@ -26,6 +26,7 @@ use iota_types::{
     storage::BackingStore,
     transaction::CheckedInputObjects,
 };
+use iota_types::execution::TraceResult;
 use move_trace_format::format::MoveTraceBuilder;
 
 /// Abstracts over access to the VM across versions of the execution layer.
@@ -168,4 +169,32 @@ pub trait Executor {
         &'vm self,
         store: Box<dyn TypeLayoutStore + 'store>,
     ) -> Box<dyn LayoutResolver + 'r>;
+
+    fn dev_transaction_call_trace(
+        &self,
+        store: &dyn BackingStore,
+        // Configuration
+        protocol_config: &ProtocolConfig,
+        metrics: Arc<LimitsMetrics>,
+        enable_expensive_checks: bool,
+        certificate_deny_set: &HashSet<TransactionDigest>,
+        // Epoch
+        epoch_id: &EpochId,
+        epoch_timestamp_ms: u64,
+        // Transaction Inputs
+        input_objects: CheckedInputObjects,
+        // Gas related
+        gas_data: GasPayment,
+        gas_status: IotaGasStatus,
+        // Transaction
+        transaction_kind: TransactionKind,
+        transaction_signer: Address,
+        transaction_digest: TransactionDigest,
+        skip_all_checks: bool,
+    ) -> (
+        InnerTemporaryStore,
+        IotaGasStatus,
+        TransactionEffects,
+        Result<TraceResult, ExecutionError>,
+    );
 }

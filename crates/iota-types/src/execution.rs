@@ -10,7 +10,7 @@ use iota_sdk_types::{
 };
 use once_cell::sync::Lazy;
 use serde::{Deserialize, Serialize};
-
+use move_binary_format::call_trace::CallTraces;
 use crate::{
     object::{MoveObjectExt, Object},
     storage::BackingPackageStore,
@@ -84,6 +84,10 @@ pub type ExecutionResult = (
     // return_values
     Vec<(Vec<u8>, TypeTag)>,
 );
+
+pub type TraceResult = CallTraces;
+
+pub struct DevCallTrace<const SKIP_ALL_CHECKS: bool>;
 
 impl ExecutionResultsV1 {
     pub fn drop_writes(&mut self) {
