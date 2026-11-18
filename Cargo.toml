@@ -146,6 +146,7 @@ members = [
   "crates/iota-test-transaction-builder",
   "crates/iota-tls",
   "crates/iota-tool",
+  "crates/iota-trace-server",
   "crates/iota-traffic-controller",
   "crates/iota-transaction-builder",
   "crates/iota-transaction-checks",

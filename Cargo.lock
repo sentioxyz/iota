@@ -7699,6 +7699,7 @@ dependencies = [
  "bcs 0.2.1",
  "clap",
  "futures",
+ "hex",
  "http 1.5.0",
  "iota-common",
  "iota-config",
@@ -8406,6 +8407,18 @@ dependencies = [
  "tokio",
  "tracing",
  "typed-store",
+]
+
+[[package]]
+name = "iota-trace-server"
+version = "1.36.2"
+dependencies = [
+ "axum 0.8.8",
+ "axum-server",
+ "iota-replay",
+ "serde",
+ "tokio",
+ "tracing-subscriber",
 ]
 
 [[package]]

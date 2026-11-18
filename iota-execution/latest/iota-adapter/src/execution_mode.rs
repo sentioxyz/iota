@@ -4,8 +4,12 @@
 
 use iota_sdk_types::{Argument, StructTag, TypeTag};
 use iota_types::{
-    error::ExecutionError, execution::ExecutionResult, invariant_violation, transfer::Receiving,
+    error::ExecutionError,
+    execution::{DevCallTrace, ExecutionResult, TraceResult},
+    invariant_violation,
+    transfer::Receiving,
 };
+use move_binary_format::call_trace::CallTraces;
 
 use crate::{
     execution_value::{RawValueType, Value},
@@ -39,6 +43,9 @@ pub trait ExecutionMode {
     /// UpgradeCap is produced
     fn packages_are_predefined() -> bool;
 
+    /// If set, the call trace will be returned in the ExecutionResult
+    fn get_call_trace() -> bool;
+
     fn empty_arguments() -> Self::ArgumentUpdates;
 
     fn empty_results() -> Self::ExecutionResults;
@@ -55,6 +62,7 @@ pub trait ExecutionMode {
         acc: &mut Self::ExecutionResults,
         argument_updates: Self::ArgumentUpdates,
         command_result: &[Value],
+        trace_results: &Option<CallTraces>,
     ) -> Result<(), ExecutionError>;
 
     /// Whether to allow passing in `AuthContext` as an argument to Move
@@ -106,6 +114,10 @@ impl ExecutionMode for Normal {
         false
     }
 
+    fn get_call_trace() -> bool {
+        false
+    }
+
     fn empty_arguments() -> Self::ArgumentUpdates {}
 
     fn empty_results() -> Self::ExecutionResults {}
@@ -124,6 +136,7 @@ impl ExecutionMode for Normal {
         _acc: &mut Self::ExecutionResults,
         _argument_updates: Self::ArgumentUpdates,
         _command_result: &[Value],
+        _trace_results: &Option<CallTraces>,
     ) -> Result<(), ExecutionError> {
         Ok(())
     }
@@ -179,6 +192,10 @@ impl ExecutionMode for Genesis {
         false
     }
 
+    fn get_call_trace() -> bool {
+        false
+    }
+
     fn empty_arguments() -> Self::ArgumentUpdates {}
 
     fn empty_results() -> Self::ExecutionResults {}
@@ -197,6 +214,7 @@ impl ExecutionMode for Genesis {
         _acc: &mut Self::ExecutionResults,
         _argument_updates: Self::ArgumentUpdates,
         _command_result: &[Value],
+        _trace_results: &Option<CallTraces>,
     ) -> Result<(), ExecutionError> {
         Ok(())
     }
@@ -258,6 +276,10 @@ impl ExecutionMode for System {
         true
     }
 
+    fn get_call_trace() -> bool {
+        false
+    }
+
     fn empty_arguments() -> Self::ArgumentUpdates {}
 
     fn empty_results() -> Self::ExecutionResults {}
@@ -276,6 +298,7 @@ impl ExecutionMode for System {
         _acc: &mut Self::ExecutionResults,
         _argument_updates: Self::ArgumentUpdates,
         _command_result: &[Value],
+        _trace_results: &Option<CallTraces>,
     ) -> Result<(), ExecutionError> {
         Ok(())
     }
@@ -344,11 +367,16 @@ impl ExecutionMode for Authentication {
         Ok(())
     }
 
+    fn get_call_trace() -> bool {
+        false
+    }
+
     fn finish_command(
         _resolver: &impl TypeTagResolver,
         _acc: &mut Self::ExecutionResults,
         _argument_updates: Self::ArgumentUpdates,
         _command_result: &[Value],
+        _trace_results: &Option<CallTraces>,
     ) -> Result<(), ExecutionError> {
         Ok(())
     }
@@ -406,6 +434,10 @@ impl<const SKIP_ALL_CHECKS: bool> ExecutionMode for DevInspect<SKIP_ALL_CHECKS> 
         false
     }
 
+    fn get_call_trace() -> bool {
+        false
+    }
+
     fn empty_arguments() -> Self::ArgumentUpdates {
         vec![]
     }
@@ -430,6 +462,7 @@ impl<const SKIP_ALL_CHECKS: bool> ExecutionMode for DevInspect<SKIP_ALL_CHECKS> 
         acc: &mut Self::ExecutionResults,
         argument_updates: Self::ArgumentUpdates,
         command_result: &[Value],
+        _trace_results: &Option<CallTraces>,
     ) -> Result<(), ExecutionError> {
         let command_bytes = command_result
             .iter()
@@ -462,6 +495,93 @@ impl<const SKIP_ALL_CHECKS: bool> ExecutionMode for DevInspect<SKIP_ALL_CHECKS> 
     ) -> Result<(), ExecutionError> {
         acc.push((argument_updates, command_result));
         Ok(())
+    }
+}
+
+impl<const SKIP_ALL_CHECKS: bool> ExecutionMode for DevCallTrace<SKIP_ALL_CHECKS> {
+    type ArgumentUpdates = Vec<(Argument, Vec<u8>, TypeTag)>;
+    type ExecutionResults = TraceResult;
+
+    fn allow_arbitrary_function_calls() -> bool {
+        false
+    }
+
+    fn allow_non_public_native_calls() -> bool {
+        false
+    }
+
+    fn allow_arbitrary_values() -> bool {
+        false
+    }
+
+    fn skip_conservation_checks() -> bool {
+        false
+    }
+
+    fn packages_are_predefined() -> bool {
+        false
+    }
+
+    fn get_call_trace() -> bool {
+        true
+    }
+
+    fn empty_arguments() -> Self::ArgumentUpdates {
+        vec![]
+    }
+
+    fn empty_results() -> Self::ExecutionResults {
+        CallTraces::new()
+    }
+
+    fn add_argument_update(
+        resolver: &impl TypeTagResolver,
+        acc: &mut Self::ArgumentUpdates,
+        arg: Argument,
+        new_value: &Value,
+    ) -> Result<(), ExecutionError> {
+        let (bytes, type_tag) = value_to_bytes_and_tag(resolver, new_value)?;
+        acc.push((arg, bytes, type_tag));
+        Ok(())
+    }
+
+    fn finish_command(
+        _resolver: &impl TypeTagResolver,
+        acc: &mut Self::ExecutionResults,
+        _argument_updates: Self::ArgumentUpdates,
+        _command_result: &[Value],
+        trace_results: &Option<CallTraces>,
+    ) -> Result<(), ExecutionError> {
+        match trace_results {
+            None => {}
+            Some(trace_result) => {
+                acc.override_call_trace(trace_result);
+            }
+        }
+        Ok(())
+    }
+
+    fn allow_auth_context() -> bool {
+        false
+    }
+
+    const TRACK_EXECUTION: bool = false;
+
+    fn add_argument_update_v2(
+        _acc: &mut Self::ArgumentUpdates,
+        _arg: Argument,
+        _bytes: Vec<u8>,
+        _type_: TypeTag,
+    ) -> Result<(), ExecutionError> {
+        invariant_violation!("should not be called");
+    }
+
+    fn finish_command_v2(
+        _acc: &mut Self::ExecutionResults,
+        _argument_updates: Vec<(Argument, Vec<u8>, TypeTag)>,
+        _command_result: Vec<(Vec<u8>, TypeTag)>,
+    ) -> Result<(), ExecutionError> {
+        invariant_violation!("should not be called");
     }
 }
 

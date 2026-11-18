@@ -6,6 +6,7 @@
 #![forbid(unsafe_code)]
 
 use std::fmt;
+use serde::{Deserialize, Serialize};
 
 pub mod binary_config;
 pub mod check_bounds;
@@ -22,6 +23,7 @@ pub mod normalized;
 #[cfg(any(test, feature = "fuzzing"))]
 pub mod proptest_types;
 pub mod serializer;
+pub mod call_trace;
 
 pub mod inclusion_mode;
 #[cfg(test)]
@@ -30,7 +32,7 @@ mod unit_tests;
 pub use file_format::CompiledModule;
 
 /// Represents a kind of index -- useful for error messages.
-#[derive(Copy, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[derive(Copy, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize, Deserialize)]
 pub enum IndexKind {
     ModuleHandle,
     DatatypeHandle,

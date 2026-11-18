@@ -11,6 +11,7 @@ use iota_sdk_types::{
     Argument, Event, ObjectData, ObjectDigest, ObjectId, ObjectReference, Owner, TransactionDigest,
     TransactionEffects, TypeTag, Version,
 };
+use move_binary_format::call_trace::CallTraces;
 use once_cell::sync::Lazy;
 use serde::{Deserialize, Serialize};
 
@@ -144,6 +145,10 @@ pub fn is_any_invariant_violation(kind: &ExecutionErrorKind) -> bool {
         ExecutionErrorKind::InvariantViolation | ExecutionErrorKind::VmInvariantViolation
     )
 }
+
+pub type TraceResult = CallTraces;
+
+pub struct DevCallTrace<const SKIP_ALL_CHECKS: bool>;
 
 impl ExecutionResultsV1 {
     pub fn drop_writes(&mut self) {
